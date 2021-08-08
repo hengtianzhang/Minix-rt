@@ -127,7 +127,7 @@ include(${SEL4M_BASE}/cmake/version.cmake)  # depends on hex.cmake
 include(${SEL4M_BASE}/cmake/python.cmake)
 include(${SEL4M_BASE}/cmake/ccache.cmake)
 
-set(KCONFIG_BINARY_DIR ${CMAKE_BINARY_DIR}/Kconfig)
+set(KCONFIG_BINARY_DIR ${CMAKE_BINARY_DIR}/kconfig)
 file(MAKE_DIRECTORY ${KCONFIG_BINARY_DIR})
 
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
@@ -149,10 +149,18 @@ sel4m_check_cache(ARCH REQUIRED)
 set(ARCH_MESSAGE "Arch: ${ARCH}")
 message(STATUS "${ARCH_MESSAGE}")
 
+# Populate USER_CACHE_DIR with a directory that user applications may
+# write cache files to.
+if(NOT DEFINED USER_CACHE_DIR)
+  find_appropriate_cache_directory(USER_CACHE_DIR)
+endif()
+message(STATUS "Cache files will be written to: ${USER_CACHE_DIR}")
 
+# Prevent CMake from testing the toolchain
+set(CMAKE_C_COMPILER_FORCED   1)
+set(CMAKE_CXX_COMPILER_FORCED 1)
 
-
-
+include(${SEL4M_BASE}/cmake/kconfig.cmake)
 
 
 

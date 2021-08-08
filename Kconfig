@@ -1,0 +1,7 @@
+
+mainmenu "$(KERNELVERSION) Kernel config"
+config AAA
+    int  "ssss"
+    default 0
+
+source "kernel/arch/$(ARCH)/Kconfig"

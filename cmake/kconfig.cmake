@@ -15,17 +15,18 @@ else()
   set(KCONFIG_ROOT ${SEL4M_BASE}/Kconfig)
 endif()
 
-if(EXISTS   ${APPLICATION_SOURCE_DIR}/configs/${KCONFIG_FILE})
-    set(SEL4M_DEFCONFIG ${APPLICATION_SOURCE_DIR}/configs/${KCONFIG_FILE})
-elseif(EXISTS   ${SEL4M_BASE}/kernel/arch/${ARCH}/configs/${KCONFIG_FILE})
-    set(SEL4M_DEFCONFIG ${SEL4M_BASE}/kernel/arch/${ARCH}/configs/${KCONFIG_FILE})
+find_file(SEL4M_DEFCONFIG ${KCONFIG_FILE} ${APPLICATION_SOURCE_DIR}/configs)
+if (SEL4M_DEFCONFIG STREQUAL SEL4M_DEFCONFIG-NOTFOUND)
+  find_file(SEL4M_DEFCONFIG ${KCONFIG_FILE} ${SEL4M_BASE}/kernel/arch/${ARCH}/configs)
 endif()
 
-if(NOT SEL4M_DEFCONFIG)
-    message(FATAL_ERROR "Invalid KCONFIG_FILE: ${KCONFIG_FILE}")
+if (SEL4M_DEFCONFIG STREQUAL SEL4M_DEFCONFIG-NOTFOUND)
+    message(FATAL_ERROR "Not Found KCONFIG_FILE. The example:
+      KCONFIG_FILE=defconfig
+")
 endif()
 
-print(KCONFIG_FILE)
+message(STATUS "Kconfig file: ${SEL4M_DEFCONFIG}")
 
 sel4m_check_cache(KCONFIG_FILE REQUIRED)
 

@@ -521,7 +521,7 @@ function(sel4m_check_compiler_flag lang option check)
 
   # Locate the cache directory
   set_ifndef(
-    $SEL4M_TOOLCHAIN_CAPABILITY_CACHE_DIR
+    SEL4M_TOOLCHAIN_CAPABILITY_CACHE_DIR
     ${USER_CACHE_DIR}/ToolchainCapabilityDatabase
     )
 

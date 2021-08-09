@@ -69,6 +69,7 @@ set(APPLICATION_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Application B
 
 set(elfloader__build_dir ${CMAKE_CURRENT_BINARY_DIR}/elfloader)
 set(kernel__build_dir ${CMAKE_CURRENT_BINARY_DIR}/kernel)
+set(services__build_dir ${CMAKE_CURRENT_BINARY_DIR}/projects)
 
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -107,6 +108,7 @@ file(TO_CMAKE_PATH "${SEL4M_BASE}" PROJECT_SOURCE_DIR)
 
 set(KERNEL_BINARY_DIR ${kernel__build_dir})
 set(ELFLOADER_BINARY_DIR ${elfloader__build_dir})
+set(SERVICES_BINARY_DIR ${services__build_dir})
 
 set(AUTOCONF_H ${PROJECT_BINARY_DIR}/include/generated/autoconf.h)
 # Re-configure (Re-execute all CMakeLists.txt code) when autoconf.h changes
@@ -160,9 +162,39 @@ message(STATUS "Cache files will be written to: ${USER_CACHE_DIR}")
 set(CMAKE_C_COMPILER_FORCED   1)
 set(CMAKE_CXX_COMPILER_FORCED 1)
 
+include(${SEL4M_BASE}/cmake/verify-toolchain.cmake)
+include(${SEL4M_BASE}/cmake/host-tools.cmake)
+
+# DTS should be close to kconfig because CONFIG_ variables from
+# kconfig and dts should be available at the same time.
+#
+# The DT system uses a C preprocessor for it's code generation needs.
+# This creates an awkward chicken-and-egg problem, because we don't
+# always know exactly which toolchain the user needs until we know
+# more about the target, e.g. after DT and Kconfig.
+#
+# To resolve this we find "some" C toolchain, configure it generically
+# with the minimal amount of configuration needed to have it
+# preprocess DT sources, and then, after we have finished processing
+# both DT and Kconfig we complete the target-specific configuration,
+# and possibly change the toolchain.
+include(${SEL4M_BASE}/cmake/generic_toolchain.cmake)
+# TODO
+# include(${SEL4M_BASE}/cmake/dts.cmake)
 include(${SEL4M_BASE}/cmake/kconfig.cmake)
 
+include(${SEL4M_BASE}/cmake/target_toolchain.cmake)
 
+enable_language(C CXX ASM)
+# The setup / configuration of the toolchain itself and the configuration of
+# supported compilation flags are now split, as this allows to use the toolchain
+# for generic purposes, for example DTS, and then test the toolchain for
+# supported flags at stage two.
+# Testing the toolchain flags requires the enable_language() to have been called in CMake.
+include(${SEL4M_BASE}/cmake/target_toolchain_flags.cmake)
 
+configure_file(${SEL4M_BASE}/version.h.in ${PROJECT_BINARY_DIR}/include/generated/version.h)
 
-message(" aaaa ${PROJECT_SOURCE_DIR} asdsad ${CONFIG}")
+add_subdirectory(${SEL4M_BASE}/kernel ${kernel__build_dir})
+add_subdirectory(${SEL4M_BASE}/projects ${services__build_dir})
+add_subdirectory(${SEL4M_BASE}/elfloader ${elfloader__build_dir})

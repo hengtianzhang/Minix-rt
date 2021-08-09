@@ -1,0 +1,16 @@
+#ifndef __KERNEL_VERSION_H_
+#define __KERNEL_VERSION_H_
+
+/* @templates@ values come from cmake/version.cmake */
+
+#cmakedefine SEL4M_VERSION_CODE @SEL4M_VERSION_CODE@
+#define SEL4M_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
+
+#define KERNELVERSION          @KERNELVERSION@
+#define KERNEL_VERSION_NUMBER  @KERNEL_VERSION_NUMBER@
+#define KERNEL_VERSION_MAJOR   @KERNEL_VERSION_MAJOR@
+#define KERNEL_VERSION_MINOR   @KERNEL_VERSION_MINOR@
+#define KERNEL_PATCHLEVEL      @KERNEL_PATCHLEVEL@
+#define KERNEL_VERSION_STRING  @KERNEL_VERSION_STRING@
+
+#endif /* !__KERNEL_VERSION_H_ */

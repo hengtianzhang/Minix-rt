@@ -29,3 +29,48 @@ assert(toolchain_is_ok "The toolchain is unable to build a dummy C file. See CMa
 project(kernel VERSION ${PROJECT_VERSION})
 enable_language(C CXX ASM)
 
+# In some cases the "final" things are not used at all and "_prebuilt"
+# is the last station. See "logical_target_for_kernel_elf" below for
+# details.
+set(CMAKE_EXECUTABLE_SUFFIX .elf)
+set(KERNEL_PREBUILT_EXECUTABLE kernel_prebuilt)
+set(KERNEL_FINAL_EXECUTABLE    kernel_final)
+
+define_property(GLOBAL PROPERTY PROPERTY_OUTPUT_FORMAT BRIEF_DOCS " " FULL_DOCS " ")
+
+add_library(kernel_interface INTERFACE)
+
+kernel_library_named(kernel)
+
+kernel_include_directories(
+	include
+	arch/${ARCH}/include
+	${APPLICATION_BINARY_DIR}/include/generated
+)
+
+kernel_compile_definitions(
+	__KERNEL__
+	__SEL4M__=1
+)
+
+kernel_compile_definitions($<TARGET_PROPERTY:compiler,security_fortify>)
+
+if(BUILD_VERSION)
+  kernel_compile_definitions(
+    BUILD_VERSION=${BUILD_VERSION}
+  )
+endif()
+
+# @Intent: Obtain compiler optimizations flags and store in variables
+# @details:
+#   If the user wants to tweak the optimizations, there are two ways:
+#    1) Using EXTRA_CFLAGS which is applied regardless of kconfig choice, or
+#    2) Rely on override support being implemented by your toolchain_cc_optimize_*()
+#
+get_property(OPTIMIZE_FOR_NO_OPTIMIZATIONS_FLAG TARGET compiler PROPERTY no_optimization)
+get_property(OPTIMIZE_FOR_DEBUG_FLAG TARGET compiler PROPERTY optimization_debug)
+get_property(OPTIMIZE_FOR_SPEED_FLAG TARGET compiler PROPERTY optimization_speed)
+get_property(OPTIMIZE_FOR_SIZE_FLAG  TARGET compiler PROPERTY optimization_size)
+
+sel4m_library_sources(init/main.c)
+

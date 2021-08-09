@@ -1,67 +1,124 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # https://cmake.org/cmake/help/latest/command/target_sources.html
-function(sel4m_sources location)
+function(kernel_sources)
 	foreach(arg ${ARGV})
 		if(IS_DIRECTORY ${arg})
 		message(FATAL_ERROR "kernel_sources() was called on a directory")
 		endif()
-		target_sources(${location} PRIVATE ${arg})
+		target_sources(kernel PRIVATE ${arg})
+	endforeach()
+endfunction()
+
+function(elfloader_sources)
+	foreach(arg ${ARGV})
+		if(IS_DIRECTORY ${arg})
+		message(FATAL_ERROR "elfloader_sources() was called on a directory")
+		endif()
+		target_sources(elfloader PRIVATE ${arg})
 	endforeach()
 endfunction()
 
 # https://cmake.org/cmake/help/latest/command/target_include_directories.html
-function(sel4m_include_directories location)
+function(kernel_include_directories)
   foreach(arg ${ARGV})
     if(IS_ABSOLUTE ${arg})
       set(path ${arg})
     else()
-      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${location}/${arg})
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
     endif()
-    target_include_directories(${location}_interface INTERFACE ${path})
+    target_include_directories(kernel_interface INTERFACE ${path})
+  endforeach()
+endfunction()
+
+function(elfloader_include_directories)
+  foreach(arg ${ARGV})
+    if(IS_ABSOLUTE ${arg})
+      set(path ${arg})
+    else()
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    endif()
+    target_include_directories(elfloader_interface INTERFACE ${path})
   endforeach()
 endfunction()
 
 # https://cmake.org/cmake/help/latest/command/target_include_directories.html
-function(sel4m_system_include_directories location)
+function(kernel_system_include_directories)
   foreach(arg ${ARGV})
     if(IS_ABSOLUTE ${arg})
       set(path ${arg})
     else()
-      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${location}/${arg})
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
     endif()
-    target_include_directories(${location}_interface SYSTEM INTERFACE ${path})
+    target_include_directories(kernel_interface SYSTEM INTERFACE ${path})
+  endforeach()
+endfunction()
+
+function(elfloader_system_include_directories)
+  foreach(arg ${ARGV})
+    if(IS_ABSOLUTE ${arg})
+      set(path ${arg})
+    else()
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    endif()
+    target_include_directories(elfloader_interface SYSTEM INTERFACE ${path})
   endforeach()
 endfunction()
 
 # https://cmake.org/cmake/help/latest/command/target_compile_definitions.html
-function(sel4m_compile_definitions location)
-  target_compile_definitions(${location}_interface INTERFACE ${ARGV})
+function(kernel_compile_definitions)
+  target_compile_definitions(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(elfloader_compile_definitions)
+  target_compile_definitions(elfloader_interface INTERFACE ${ARGV})
 endfunction()
 
 # https://cmake.org/cmake/help/latest/command/target_compile_options.html
-function(sel4m_compile_options location)
-  target_compile_options(${location}_interface INTERFACE ${ARGV})
+function(kernel_compile_options)
+  target_compile_options(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(elfloader_compile_options)
+  target_compile_options(elfloader_interface INTERFACE ${ARGV})
 endfunction()
 
 # https://cmake.org/cmake/help/latest/command/target_link_libraries.html
-function(sel4m_link_libraries location)
-  target_link_libraries(${location}_interface INTERFACE ${ARGV})
+function(kernel_link_libraries)
+  target_link_libraries(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(elfloader_link_libraries)
+  target_link_libraries(elfloader_interface INTERFACE ${ARGV})
 endfunction()
 
 # See this file section 3.1. target_cc_option
-function(sel4m_cc_option location)
+function(kernel_cc_option)
   foreach(arg ${ARGV})
-    target_cc_option(${location}_interface INTERFACE ${arg})
+    target_cc_option(kernel_interface INTERFACE ${arg})
   endforeach()
 endfunction()
 
-function(sel4m_cc_option_fallback option1 option2 location)
-    target_cc_option_fallback(${location}_interface INTERFACE ${option1} ${option2})
+function(elfloader_cc_option)
+  foreach(arg ${ARGV})
+    target_cc_option(elfloader_interface INTERFACE ${arg})
+  endforeach()
 endfunction()
 
-function(sel4m_ld_options location)
-    target_ld_options(${location}_interface INTERFACE ${ARGV})
+function(kernel_cc_option_fallback option1 option2)
+    target_cc_option_fallback(kernel_interface INTERFACE ${option1} ${option2})
+endfunction()
+
+function(elfloader_cc_option_fallback option1 option2)
+    target_cc_option_fallback(elfloader_interface INTERFACE ${option1} ${option2})
+endfunction()
+
+function(kernel_ld_options)
+    target_ld_options(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(elfloader_ld_options)
+    target_ld_options(elfloader_interface INTERFACE ${ARGV})
 endfunction()
 
 # Getter functions for extracting build information from
@@ -99,41 +156,73 @@ endfunction()
 # e.g.
 # kernel_get_include_directories_for_lang(ASM x)
 # writes "-Isome_dir;-Isome/other/dir" to x
-function(sel4m_get_include_directories_for_lang_as_string lang i location)
-  sel4m_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN} ${location})
+function(kernel_get_include_directories_for_lang_as_string lang i)
+  kernel_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
 
   convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
 
   set(${i} ${str_of_flags} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_system_include_directories_for_lang_as_string lang i location)
-  sel4m_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN} ${location})
+function(elfloader_get_include_directories_for_lang_as_string lang i)
+  elfloader_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
 
   convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
 
   set(${i} ${str_of_flags} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_compile_definitions_for_lang_as_string lang i location)
-  sel4m_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN} ${location})
+function(kernel_get_system_include_directories_for_lang_as_string lang i)
+  kernel_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
 
   convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
 
   set(${i} ${str_of_flags} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_compile_options_for_lang_as_string lang i location)
-  sel4m_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " " ${location})
+function(elfloader_get_system_include_directories_for_lang_as_string lang i)
+  elfloader_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
 
   convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
 
   set(${i} ${str_of_flags} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_include_directories_for_lang lang i location)
+function(kernel_get_compile_definitions_for_lang_as_string lang i)
+  kernel_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(elfloader_get_compile_definitions_for_lang_as_string lang i)
+  elfloader_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_options_for_lang_as_string lang i)
+  kernel_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " ")
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(elfloader_get_compile_options_for_lang_as_string lang i)
+  elfloader_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " ")
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_include_directories_for_lang lang i)
   sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET ${location}_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
   process_flags(${lang} flags output_list)
   string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
@@ -149,9 +238,27 @@ function(sel4m_get_include_directories_for_lang lang i location)
   set(${i} ${result_output_list} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_system_include_directories_for_lang lang i location)
+function(elfloader_get_include_directories_for_lang lang i)
   sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET ${location}_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
+  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  if(NOT ARGN)
+    set(result_output_list "-I$<JOIN:${genexp_output_list},$<SEMICOLON>-I>")
+  elseif(args_STRIP_PREFIX)
+    # The list has no prefix, so don't add it.
+    set(result_output_list ${output_list})
+  elseif(args_DELIMITER)
+    set(result_output_list "-I$<JOIN:${genexp_output_list},${args_DELIMITER}-I>")
+  endif()
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_system_include_directories_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
 
   process_flags(${lang} flags output_list)
   string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
@@ -162,9 +269,22 @@ function(sel4m_get_system_include_directories_for_lang lang i location)
   set(${i} ${result_output_list} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_compile_definitions_for_lang lang i location)
+function(elfloader_get_system_include_directories_for_lang lang i)
   sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET ${location}_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
+  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "$<$<BOOL:${genexp_output_list}>:-isystem$<JOIN:${genexp_output_list},${args_DELIMITER}-isystem>>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_definitions_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
 
   process_flags(${lang} flags output_list)
   string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
@@ -175,9 +295,35 @@ function(sel4m_get_compile_definitions_for_lang lang i location)
   set(${i} ${result_output_list} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_get_compile_options_for_lang lang i location)
+function(elfloader_get_compile_definitions_for_lang lang i)
   sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET ${location}_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
+  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "-D$<JOIN:${genexp_output_list},${args_DELIMITER}-D>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_options_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "$<JOIN:${genexp_output_list},${args_DELIMITER}>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(elfloader_get_compile_options_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
 
   process_flags(${lang} flags output_list)
   string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
@@ -302,7 +448,7 @@ endmacro()
 # boilerplate code.
 #
 # A sel4m library can be constructed by the function sel4m_library
-# or sel4m_library_named. The constructors create a CMake library
+# or ${location}_library_named. The constructors create a CMake library
 # with a name accessible through the variable SEL4M_CURRENT_LIBRARY.
 #
 # The variable SEL4M_CURRENT_LIBRARY should seldom be needed since
@@ -323,9 +469,14 @@ endmacro()
 # global configuration.
 
 # Constructor with a directory-inferred name
-macro(sel4m_library location)
-  sel4m_library_get_current_dir_lib_name(${SEL4M_BASE}/${location} lib_name)
-  sel4m_library_named(${lib_name} ${location})
+macro(kernel_library)
+  sel4m_library_get_current_dir_lib_name(${SEL4M_BASE}/kernel lib_name)
+  kernel_library_named(${lib_name})
+endmacro()
+
+macro(elfloader_library)
+  sel4m_library_get_current_dir_lib_name(${SEL4M_BASE}/elfloader lib_name)
+  elfloader_library_named(${lib_name})
 endmacro()
 
 # Determines what the current directory's lib name would be according to the
@@ -344,19 +495,34 @@ macro(sel4m_library_get_current_dir_lib_name base lib_name)
 endmacro()
 
 # Constructor with an explicitly given name.
-macro(sel4m_library_named name location)
+macro(kernel_library_named name)
   # This is a macro because we need add_library() to be executed
   # within the scope of the caller.
   set(SEL4M_CURRENT_LIBRARY ${name})
   add_library(${name} STATIC "")
 
-  sel4m_append_cmake_library(${name} ${location})
+  kernel_append_cmake_library(${name})
 
-  target_link_libraries(${name} PUBLIC ${location}_interface)
+  target_link_libraries(${name} PUBLIC kernel_interface)
 endmacro()
 
-function(sel4m_link_interface interface location)
-  target_link_libraries(${interface} INTERFACE ${location}_interface)
+macro(elfloader_library_named name)
+  # This is a macro because we need add_library() to be executed
+  # within the scope of the caller.
+  set(SEL4M_CURRENT_LIBRARY ${name})
+  add_library(${name} STATIC "")
+
+  elfloader_append_cmake_library(${name})
+
+  target_link_libraries(${name} PUBLIC elfloader_interface)
+endmacro()
+
+function(kernel_link_interface interface)
+  target_link_libraries(${interface} INTERFACE kernel_interface)
+endfunction()
+
+function(elfloader_link_interface interface)
+  target_link_libraries(${interface} INTERFACE elfloader_interface)
 endfunction()
 
 #
@@ -419,26 +585,46 @@ endfunction()
 # sel4m CMake libraries. This is done automatically by the
 # constructor but must called explicitly on CMake libraries that do
 # not use a sel4m library constructor.
-function(sel4m_append_cmake_library library location)
-  if(TARGET ${location}_prebuilt)
+function(kernel_append_cmake_library library)
+  if(TARGET kernel_prebuilt)
     message(WARNING
-      "sel4m_library() or sel4m_library_named() called in sel4m CMake "
+      "kernel_library() or kernel_library_named() called in sel4m CMake "
       "application mode. `${library}` will not be treated as a sel4m library."
       "To create a sel4m library in sel4m CMake kernel mode consider "
     )
   endif()
-  set_property(GLOBAL APPEND PROPERTY ${location}_LIBS ${library})
+  set_property(GLOBAL APPEND PROPERTY KERNEL_LIBS ${library})
+endfunction()
+
+function(elfloader_append_cmake_library library)
+  if(TARGET kernel_prebuilt)
+    message(WARNING
+      "elfloader_library() or elfloader_library_named() called in sel4m CMake "
+      "application mode. `${library}` will not be treated as a sel4m library."
+      "To create a sel4m library in sel4m CMake kernel mode consider "
+    )
+  endif()
+  set_property(GLOBAL APPEND PROPERTY ELFLOADER_LIBS ${library})
 endfunction()
 
 # Add the imported library 'library_name', located at 'library_path' to the
 # global list of sel4m CMake libraries.
-function(sel4m_library_import library_name library_path location)
+function(kernel_library_import library_name library_path)
   add_library(${library_name} STATIC IMPORTED GLOBAL)
   set_target_properties(${library_name}
     PROPERTIES IMPORTED_LOCATION
     ${library_path}
     )
-  sel4m_append_cmake_library(${library_name} ${location})
+  kernel_append_cmake_library(${library_name})
+endfunction()
+
+function(elfloader_library_import library_name library_path)
+  add_library(${library_name} STATIC IMPORTED GLOBAL)
+  set_target_properties(${library_name}
+    PROPERTIES IMPORTED_LOCATION
+    ${library_path}
+    )
+  elfloader_append_cmake_library(${library_name})
 endfunction()
 
 function(generate_inc_file
@@ -794,51 +980,99 @@ function(sel4m_library_sources_ifndef feature_toggle source)
   endif()
 endfunction()
 
-function(sel4m_sources_ifdef feature_toggle location)
+function(kernel_sources_ifdef feature_toggle)
   if(${${feature_toggle}})
-    sel4m_sources(${ARGN} ${location})
+    kernel_sources(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_sources_ifndef feature_toggle location)
+function(elfloader_sources_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    elfloader_sources(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_sources_ifndef feature_toggle)
    if(NOT ${feature_toggle})
-    sel4m_sources(${ARGN} ${location})
+    kernel_sources(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_cc_option_ifdef feature_toggle location)
-  if(${${feature_toggle}})
-    sel4m_cc_option(${ARGN} ${location})
+function(elfloader_sources_ifndef feature_toggle)
+   if(NOT ${feature_toggle})
+    elfloader_sources(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_ld_option_ifdef feature_toggle location)
+function(kernel_cc_option_ifdef feature_toggle)
   if(${${feature_toggle}})
-    sel4m_ld_options(${ARGN} ${location})
+    kernel_cc_option(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_link_libraries_ifdef feature_toggle location)
+function(elfloader_cc_option_ifdef feature_toggle)
   if(${${feature_toggle}})
-    sel4m_link_libraries(${ARGN} ${location})
+    elfloader_cc_option(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_compile_options_ifdef feature_toggle location)
+function(kernel_ld_option_ifdef feature_toggle)
   if(${${feature_toggle}})
-    sel4m_compile_options(${ARGN} ${location})
+    kernel_ld_options(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_compile_definitions_ifdef feature_toggle location)
+function(elfloader_ld_option_ifdef feature_toggle)
   if(${${feature_toggle}})
-  	sel4m_compile_definitions(${ARGN} ${location})
+    elfloader_ld_options(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_include_directories_ifdef feature_toggle location)
+function(kernel_link_libraries_ifdef feature_toggle)
   if(${${feature_toggle}})
-    sel4m_include_directories(${ARGN} ${location})
+    kernel_link_libraries(${ARGN})
+  endif()
+endfunction()
+
+function(elfloader_link_libraries_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    elfloader_link_libraries(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_compile_options_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_compile_options(${ARGN})
+  endif()
+endfunction()
+
+function(elfloader_compile_options_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    elfloader_compile_options(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_compile_definitions_ifdef feature_toggle)
+  if(${${feature_toggle}})
+  	kernel_compile_definitions(${ARGN})
+  endif()
+endfunction()
+
+function(elfloader_compile_definitions_ifdef feature_toggle)
+  if(${${feature_toggle}})
+  	elfloader_compile_definitions(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_include_directories_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_include_directories(${ARGN})
+  endif()
+endfunction()
+
+function(elfloader_include_directories_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    elfloader_include_directories(${ARGN})
   endif()
 endfunction()
 
@@ -854,9 +1088,15 @@ function(sel4m_library_compile_options_ifdef feature_toggle item)
   endif()
 endfunction()
 
-function(sel4m_link_interface_ifdef feature_toggle interface location)
+function(kernel_link_interface_ifdef feature_toggle interface)
   if(${${feature_toggle}})
-    target_link_libraries(${interface} INTERFACE ${location}_interface)
+    target_link_libraries(${interface} INTERFACE kernel_interface)
+  endif()
+endfunction()
+
+function(elfloader_link_interface_ifdef feature_toggle interface)
+  if(${${feature_toggle}})
+    target_link_libraries(${interface} INTERFACE elfloader_interface)
   endif()
 endfunction()
 
@@ -884,15 +1124,27 @@ function(target_cc_option_ifndef feature_toggle target scope option)
   endif()
 endfunction()
 
-function(sel4m_cc_option_ifndef feature_toggle location)
+function(kernel_cc_option_ifndef feature_toggle)
   if(NOT ${feature_toggle})
-    sel4m_cc_option(${ARGN} ${location})
+    kernel_cc_option(${ARGN})
   endif()
 endfunction()
 
-function(sel4m_compile_options_ifndef feature_toggle location)
+function(elfloader_cc_option_ifndef feature_toggle)
   if(NOT ${feature_toggle})
-    sel4m_compile_options(${ARGN} location)
+    elfloader_cc_option(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_compile_options_ifndef feature_toggle)
+  if(NOT ${feature_toggle})
+    kernel_compile_options(${ARGN})
+  endif()
+endfunction()
+
+function(elfloader_compile_options_ifndef feature_toggle)
+  if(NOT ${feature_toggle})
+    elfloader_compile_options(${ARGN})
   endif()
 endfunction()
 

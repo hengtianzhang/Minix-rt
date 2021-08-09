@@ -1,5 +1,6 @@
 
-mainmenu "$(KERNELVERSION) Kernel config"
+mainmenu "Sel4m (Version: $(KERNEL_VERSION_STRING)) Configure"
+
 config AAA
     int  "ssss"
     default 0

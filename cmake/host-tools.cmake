@@ -62,3 +62,8 @@ find_program(
 	IMGTOOL
 	imgtool
 	)
+
+find_program(
+  MKIMAGE
+  mkimage
+  )

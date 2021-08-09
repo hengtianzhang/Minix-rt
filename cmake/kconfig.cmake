@@ -7,10 +7,6 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/config)
 
 if(KCONFIG_ROOT)
   sel4m_file(APPLICATION_ROOT KCONFIG_ROOT)
-  # KCONFIG_ROOT has either been specified as a CMake variable or is
-  # already in the CMakeCache.txt. This has precedence.
-elseif(EXISTS   ${APPLICATION_SOURCE_DIR}/Kconfig)
-  set(KCONFIG_ROOT ${APPLICATION_SOURCE_DIR}/Kconfig)
 else()
   set(KCONFIG_ROOT ${SEL4M_BASE}/Kconfig)
 endif()
@@ -36,13 +32,14 @@ set(PARSED_KCONFIG_SOURCES_TXT ${PROJECT_BINARY_DIR}/kconfig/sources.txt)
 set(COMMON_KCONFIG_ENV_SETTINGS
   PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}
   srctree=${SEL4M_BASE}
-  KERNELVERSION=${KERNELVERSION}
+  KERNEL_VERSION_STRING=${KERNEL_VERSION_STRING}
   KCONFIG_CONFIG=${DOTCONFIG}
   # Set environment variables so that Kconfig can prune Kconfig source
   # files for other architectures
   ARCH=${ARCH}
   KCONFIG_BINARY_DIR=${KCONFIG_BINARY_DIR}
   TOOLCHAIN_KCONFIG_DIR=${TOOLCHAIN_KCONFIG_DIR}
+  APPLICATION_SOURCE_DIR=${APPLICATION_SOURCE_DIR}
 )
 
 # Allow out-of-tree users to add their own Kconfig python frontend

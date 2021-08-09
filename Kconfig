@@ -5,3 +5,5 @@ config AAA
     default 0
 
 source "kernel/arch/$(ARCH)/Kconfig"
+
+osource "$(APPLICATION_SOURCE_DIR)/Kconfig"

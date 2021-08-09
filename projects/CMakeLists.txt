@@ -4,7 +4,7 @@ if(NOT DEFINED SERVICES_BINARY_DIR)
   message(FATAL_ERROR "A user error has occurred.
 cmake was invoked with '${CMAKE_CURRENT_LIST_DIR}' specified as the source directory,
 but it must be invoked with an application source directory,
-such as '${CMAKE_CURRENT_LIST_DIR}/samples/hello_world'.
+such as '${CMAKE_CURRENT_LIST_DIR}/projects/hello_world'.
 Debug variables:
 CMAKE_CACHEFILE_DIR: ${CMAKE_CACHEFILE_DIR}
 ")

@@ -72,5 +72,93 @@ get_property(OPTIMIZE_FOR_DEBUG_FLAG TARGET compiler PROPERTY optimization_debug
 get_property(OPTIMIZE_FOR_SPEED_FLAG TARGET compiler PROPERTY optimization_speed)
 get_property(OPTIMIZE_FOR_SIZE_FLAG  TARGET compiler PROPERTY optimization_size)
 
-sel4m_library_sources(init/main.c)
+set(OPTIMIZATION_FLAG ${OPTIMIZE_FOR_SPEED_FLAG})
+kernel_compile_options(${OPTIMIZATION_FLAG})
 
+kernel_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${AUTOCONF_H}")
+kernel_compile_options($<TARGET_PROPERTY:compiler,diagnostic>)
+
+kernel_compile_options(
+  ${TOOLCHAIN_C_FLAGS}
+)
+
+kernel_compile_options($<$<COMPILE_LANGUAGE:ASM>:$<TARGET_PROPERTY:asm,required>>)
+
+# Common toolchain-agnostic assembly flags
+kernel_compile_options(
+  $<$<COMPILE_LANGUAGE:ASM>:-D__ASMLANGUAGE__>
+)
+
+sel4m_library_sources(init/main.c init/test.S)
+
+# @Intent: Add the basic toolchain warning flags
+kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_base>>)
+kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_base>>)
+
+# ==========================================================================
+#
+# cmake -DW=... settings
+#
+# W=1 - warnings that may be relevant and does not occur too often
+# W=2 - warnings that occur quite often but may still be relevant
+# W=3 - the more obscure warnings, can most likely be ignored
+# ==========================================================================
+# @Intent: Add cmake -DW toolchain supported warnings, if any
+if(W MATCHES "1")
+	kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_dw_1>>)
+	kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_dw_1>>)
+endif()
+
+if(W MATCHES "2")
+	kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_dw_2>>)
+	kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_dw_2>>)
+endif()
+
+if(W MATCHES "3")
+	kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_dw_3>>)
+	kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_dw_3>>)
+endif()
+
+kernel_compile_options($<TARGET_PROPERTY:compiler,warning_extended>)
+
+# @Intent: Trigger an error when a declaration does not specify a type
+kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_error_implicit_int>>)
+kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_error_implicit_int>>)
+
+# Allow the user to inject options when calling cmake, e.g.
+# 'cmake -DEXTRA_CFLAGS="-Werror -Wno-deprecated-declarations" ..'
+include(${SEL4M_BASE}/cmake/kernel_extra_flags.cmake)
+
+kernel_cc_option(-fno-asynchronous-unwind-tables)
+kernel_cc_option(-fno-pie)
+kernel_cc_option(-fno-pic)
+kernel_cc_option(-fno-strict-overflow)
+
+kernel_cc_option(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=CMAKE_SOURCE_DIR)
+kernel_cc_option(-fmacro-prefix-map=${SEL4M_BASE}=SEL4M_BASE)
+
+get_property(TOPT GLOBAL PROPERTY TOPT)
+set_ifndef(  TOPT -Wl,-T) # clang doesn't pick -T for some reason and complains,
+                          # while -Wl,-T works for both, gcc and clang
+
+set(LINKER_SCRIPT ${KERNEL_DIR}/arch/${ARCH}/core/linker.lds.S)
+
+if(NOT EXISTS ${LINKER_SCRIPT})
+  message(FATAL_ERROR "Could not find linker script: '${CMAKE_CURRENT_SOURCE_DIR}'. ${CMAKE_CURRENT_LIST_FILE} Corrupted configuration?")
+endif()
+
+add_subdirectory(arch/${ARCH})
+
+get_property(HEAD_S GLOBAL PROPERTY KERNEL_HEAD_S)
+
+if(NOT EXISTS ${HEAD_S})
+	message("Could not find header file: HEAD_S")
+endif()
+
+get_property(CSTD GLOBAL PROPERTY CSTD)
+set_ifndef(CSTD gnu89)
+
+# @Intent: Obtain compiler specific flag for specifying the c standard
+kernel_compile_options(
+  $<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,cstd>${CSTD}>
+)

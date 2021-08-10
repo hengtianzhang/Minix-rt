@@ -2,7 +2,7 @@
 
 # See root CMakeLists.txt for description and expectations of these macros
 
-macro(toolchain_ld_base location)
+macro(toolchain_ld_base)
 
   if(NOT PROPERTY_LINKER_SCRIPT_DEFINES)
     set_property(GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES -D__GCC_LINKER_CMD__)
@@ -12,13 +12,11 @@ macro(toolchain_ld_base location)
   # LINKERFLAGPREFIX comes from linker/ld/target.cmake
   sel4m_ld_options(
     ${TOOLCHAIN_LD_FLAGS}
-	${location}
   )
 
   sel4m_ld_options(
     ${LINKERFLAGPREFIX},--gc-sections
     ${LINKERFLAGPREFIX},--build-id=none
-	${location}
   )
 
   # Sort the common symbols and each input section by alignment
@@ -27,7 +25,6 @@ macro(toolchain_ld_base location)
     CONFIG_LINKER_SORT_BY_ALIGNMENT
     ${LINKERFLAGPREFIX},--sort-common=descending
     ${LINKERFLAGPREFIX},--sort-section=alignment
-	${location}
   )
 
 endmacro()

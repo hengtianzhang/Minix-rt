@@ -195,6 +195,10 @@ include(${SEL4M_BASE}/cmake/target_toolchain_flags.cmake)
 
 configure_file(${SEL4M_BASE}/version.h.in ${PROJECT_BINARY_DIR}/include/generated/version.h)
 
-add_subdirectory(${SEL4M_BASE}/kernel ${kernel__build_dir})
-add_subdirectory(${SEL4M_BASE}/projects ${services__build_dir})
-add_subdirectory(${SEL4M_BASE}/elfloader ${elfloader__build_dir})
+set(KERNEL_DIR ${SEL4M_BASE}/kernel CACHE PATH "")
+set(PROJECTS_DIR ${SEL4M_BASE}/projects CACHE PATH "")
+set(ELFLOADER_DIR ${SEL4M_BASE}/elfloader CACHE PATH "")
+
+add_subdirectory(${KERNEL_DIR} ${kernel__build_dir})
+add_subdirectory(${PROJECTS_DIR}  ${services__build_dir})
+add_subdirectory(${ELFLOADER_DIR}  ${elfloader__build_dir})

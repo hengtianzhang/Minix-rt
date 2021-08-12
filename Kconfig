@@ -3,10 +3,16 @@
 # Copyright (c) 2014-2015 Wind River Systems, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-mainmenu "Sel4m (Version: $(KERNEL_VERSION_STRING)) Configure (Project: $(APPLICATION_SOURCE))"
+mainmenu "Sel4m/$(ARCH) $(KERNEL_VERSION_STRING) Configuration (Project: $(APPLICATION_SOURCE))"
+
+source "scripts/Kconfig.include"
 
 source "kernel/Kconfig"
 
 source "projects/Kconfig"
 
 osource "$(APPLICATION_SOURCE_DIR)/Kconfig"
+
+config GCC_VERSION
+	int
+	default $(shell,$(srctree)/scripts/gcc-version.sh -p $(CC) | sed 's/^0*//') 

@@ -162,9 +162,8 @@ include(${SEL4M_BASE}/cmake/host-tools.cmake)
 # and possibly change the toolchain.
 include(${SEL4M_BASE}/cmake/generic_toolchain.cmake)
 
-include(${SEL4M_BASE}/cmake/kconfig.cmake)
-
-include(${SEL4M_BASE}/cmake/dts.cmake)
+# Here, Some host-tool is done.
+# TODO
 
 include(${SEL4M_BASE}/cmake/target_toolchain.cmake)
 
@@ -175,6 +174,10 @@ enable_language(C CXX ASM)
 # supported flags at stage two.
 # Testing the toolchain flags requires the enable_language() to have been called in CMake.
 include(${SEL4M_BASE}/cmake/target_toolchain_flags.cmake)
+
+include(${SEL4M_BASE}/cmake/kconfig.cmake)
+
+include(${SEL4M_BASE}/cmake/dts.cmake)
 
 set(CMAKE_PREFIX_PATH ${SEL4M_BASE} CACHE PATH "")
 

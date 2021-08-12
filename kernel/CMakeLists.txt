@@ -89,7 +89,7 @@ kernel_compile_options(
   $<$<COMPILE_LANGUAGE:ASM>:-D__ASMLANGUAGE__>
 )
 
-sel4m_library_sources(init/main.c init/test.S)
+kernel_library_sources(init/main.c init/test.S)
 
 # @Intent: Add the basic toolchain warning flags
 kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_base>>)

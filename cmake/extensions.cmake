@@ -2,558 +2,136 @@
 
 # https://cmake.org/cmake/help/latest/command/target_sources.html
 function(kernel_sources)
-	foreach(arg ${ARGV})
-		if(IS_DIRECTORY ${arg})
-		message(FATAL_ERROR "kernel_sources() was called on a directory")
-		endif()
-		target_sources(kernel PRIVATE ${arg})
-	endforeach()
-endfunction()
-
-function(elfloader_sources)
-	foreach(arg ${ARGV})
-		if(IS_DIRECTORY ${arg})
-		message(FATAL_ERROR "elfloader_sources() was called on a directory")
-		endif()
-		target_sources(elfloader PRIVATE ${arg})
-	endforeach()
-endfunction()
-
-# https://cmake.org/cmake/help/latest/command/target_include_directories.html
-function(kernel_include_directories)
   foreach(arg ${ARGV})
-    if(IS_ABSOLUTE ${arg})
-      set(path ${arg})
-    else()
-      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    if(IS_DIRECTORY ${arg})
+      message(FATAL_ERROR "kernel_sources() was called on a directory")
     endif()
-    target_include_directories(kernel_interface INTERFACE ${path})
+    target_sources(kernel PRIVATE ${arg})
   endforeach()
 endfunction()
 
-function(elfloader_include_directories)
-  foreach(arg ${ARGV})
-    if(IS_ABSOLUTE ${arg})
-      set(path ${arg})
-    else()
-      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
-    endif()
-    target_include_directories(elfloader_interface INTERFACE ${path})
-  endforeach()
-endfunction()
-
-# https://cmake.org/cmake/help/latest/command/target_include_directories.html
-function(kernel_system_include_directories)
-  foreach(arg ${ARGV})
-    if(IS_ABSOLUTE ${arg})
-      set(path ${arg})
-    else()
-      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
-    endif()
-    target_include_directories(kernel_interface SYSTEM INTERFACE ${path})
-  endforeach()
-endfunction()
-
-function(elfloader_system_include_directories)
-  foreach(arg ${ARGV})
-    if(IS_ABSOLUTE ${arg})
-      set(path ${arg})
-    else()
-      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
-    endif()
-    target_include_directories(elfloader_interface SYSTEM INTERFACE ${path})
-  endforeach()
-endfunction()
-
-# https://cmake.org/cmake/help/latest/command/target_compile_definitions.html
-function(kernel_compile_definitions)
-  target_compile_definitions(kernel_interface INTERFACE ${ARGV})
-endfunction()
-
-function(elfloader_compile_definitions)
-  target_compile_definitions(elfloader_interface INTERFACE ${ARGV})
-endfunction()
-
-# https://cmake.org/cmake/help/latest/command/target_compile_options.html
-function(kernel_compile_options)
-  target_compile_options(kernel_interface INTERFACE ${ARGV})
-endfunction()
-
-function(elfloader_compile_options)
-  target_compile_options(elfloader_interface INTERFACE ${ARGV})
-endfunction()
-
-# https://cmake.org/cmake/help/latest/command/target_link_libraries.html
-function(kernel_link_libraries)
-  target_link_libraries(kernel_interface INTERFACE ${ARGV})
-endfunction()
-
-function(elfloader_link_libraries)
-  target_link_libraries(elfloader_interface INTERFACE ${ARGV})
-endfunction()
-
-# See this file section 3.1. target_cc_option
-function(kernel_cc_option)
-  foreach(arg ${ARGV})
-    target_cc_option(kernel_interface INTERFACE ${arg})
-  endforeach()
-endfunction()
-
-function(elfloader_cc_option)
-  foreach(arg ${ARGV})
-    target_cc_option(elfloader_interface INTERFACE ${arg})
-  endforeach()
-endfunction()
-
-function(kernel_cc_option_fallback option1 option2)
-    target_cc_option_fallback(kernel_interface INTERFACE ${option1} ${option2})
-endfunction()
-
-function(elfloader_cc_option_fallback option1 option2)
-    target_cc_option_fallback(elfloader_interface INTERFACE ${option1} ${option2})
-endfunction()
-
-function(kernel_ld_options)
-    target_ld_options(kernel_interface INTERFACE ${ARGV})
-endfunction()
-
-function(elfloader_ld_options)
-    target_ld_options(elfloader_interface INTERFACE ${ARGV})
-endfunction()
-
-# Getter functions for extracting build information from
-# ${location}_interface. Returning lists, and strings is supported, as is
-# requesting specific categories of build information (defines,
-# includes, options).
-#
-# The naming convention follows:
-# ${location}_get_${build_information}_for_lang${format}(lang x [STRIP_PREFIX])
-# Where
-#  the argument 'x' is written with the result
-# and
-#  ${build_information} can be one of
-#   - include_directories           # -I directories
-#   - system_include_directories    # -isystem directories
-#   - compile_definitions           # -D'efines
-#   - compile_options               # misc. compiler flags
-# and
-#  ${format} can be
-#   - the empty string '', signifying that it should be returned as a list
-#   - _as_string signifying that it should be returned as a string
-# and
-#  ${lang} can be one of
-#   - C
-#   - CXX
-#   - ASM
-#
-# STRIP_PREFIX
-#
-# By default the result will be returned ready to be passed directly
-# to a compiler, e.g. prefixed with -D, or -I, but it is possible to
-# omit this prefix by specifying 'STRIP_PREFIX' . This option has no
-# effect for 'compile_options'.
-#
-# e.g.
-# kernel_get_include_directories_for_lang(ASM x)
-# writes "-Isome_dir;-Isome/other/dir" to x
-function(kernel_get_include_directories_for_lang_as_string lang i)
-  kernel_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_include_directories_for_lang_as_string lang i)
-  elfloader_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(kernel_get_system_include_directories_for_lang_as_string lang i)
-  kernel_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_system_include_directories_for_lang_as_string lang i)
-  elfloader_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(kernel_get_compile_definitions_for_lang_as_string lang i)
-  kernel_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_compile_definitions_for_lang_as_string lang i)
-  elfloader_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(kernel_get_compile_options_for_lang_as_string lang i)
-  kernel_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " ")
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_compile_options_for_lang_as_string lang i)
-  elfloader_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " ")
-
-  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
-
-  set(${i} ${str_of_flags} PARENT_SCOPE)
-endfunction()
-
-function(kernel_get_include_directories_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  if(NOT ARGN)
-    set(result_output_list "-I$<JOIN:${genexp_output_list},$<SEMICOLON>-I>")
-  elseif(args_STRIP_PREFIX)
-    # The list has no prefix, so don't add it.
-    set(result_output_list ${output_list})
-  elseif(args_DELIMITER)
-    set(result_output_list "-I$<JOIN:${genexp_output_list},${args_DELIMITER}-I>")
+function(kernel_sources_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_sources(${ARGN})
   endif()
-  set(${i} ${result_output_list} PARENT_SCOPE)
 endfunction()
 
-function(elfloader_get_include_directories_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  if(NOT ARGN)
-    set(result_output_list "-I$<JOIN:${genexp_output_list},$<SEMICOLON>-I>")
-  elseif(args_STRIP_PREFIX)
-    # The list has no prefix, so don't add it.
-    set(result_output_list ${output_list})
-  elseif(args_DELIMITER)
-    set(result_output_list "-I$<JOIN:${genexp_output_list},${args_DELIMITER}-I>")
+function(kernel_sources_ifndef feature_toggle)
+   if(NOT ${feature_toggle})
+    kernel_sources(${ARGN})
   endif()
-  set(${i} ${result_output_list} PARENT_SCOPE)
 endfunction()
-
-function(kernel_get_system_include_directories_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  set_ifndef(args_DELIMITER "$<SEMICOLON>")
-  set(result_output_list "$<$<BOOL:${genexp_output_list}>:-isystem$<JOIN:${genexp_output_list},${args_DELIMITER}-isystem>>")
-
-  set(${i} ${result_output_list} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_system_include_directories_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  set_ifndef(args_DELIMITER "$<SEMICOLON>")
-  set(result_output_list "$<$<BOOL:${genexp_output_list}>:-isystem$<JOIN:${genexp_output_list},${args_DELIMITER}-isystem>>")
-
-  set(${i} ${result_output_list} PARENT_SCOPE)
-endfunction()
-
-function(kernel_get_compile_definitions_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  set_ifndef(args_DELIMITER "$<SEMICOLON>")
-  set(result_output_list "-D$<JOIN:${genexp_output_list},${args_DELIMITER}-D>")
-
-  set(${i} ${result_output_list} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_compile_definitions_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  set_ifndef(args_DELIMITER "$<SEMICOLON>")
-  set(result_output_list "-D$<JOIN:${genexp_output_list},${args_DELIMITER}-D>")
-
-  set(${i} ${result_output_list} PARENT_SCOPE)
-endfunction()
-
-function(kernel_get_compile_options_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  set_ifndef(args_DELIMITER "$<SEMICOLON>")
-  set(result_output_list "$<JOIN:${genexp_output_list},${args_DELIMITER}>")
-
-  set(${i} ${result_output_list} PARENT_SCOPE)
-endfunction()
-
-function(elfloader_get_compile_options_for_lang lang i)
-  sel4m_get_parse_args(args ${ARGN})
-  get_property(flags TARGET elfloader_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
-
-  process_flags(${lang} flags output_list)
-  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
-
-  set_ifndef(args_DELIMITER "$<SEMICOLON>")
-  set(result_output_list "$<JOIN:${genexp_output_list},${args_DELIMITER}>")
-
-  set(${i} ${result_output_list} PARENT_SCOPE)
-endfunction()
-
-# This function writes a dict to it's output parameter
-# 'return_dict'. The dict has information about the parsed arguments,
-#
-# Usage:
-#   sel4m_get_parse_args(foo ${ARGN})
-#   print(foo_STRIP_PREFIX) # foo_STRIP_PREFIX might be set to 1
-function(sel4m_get_parse_args return_dict)
-  foreach(x ${ARGN})
-    if(DEFINED single_argument)
-      set(${single_argument} ${x} PARENT_SCOPE)
-      unset(single_argument)
-    else()
-      if(x STREQUAL STRIP_PREFIX)
-        set(${return_dict}_STRIP_PREFIX 1 PARENT_SCOPE)
-      elseif(x STREQUAL NO_SPLIT)
-        set(${return_dict}_NO_SPLIT 1 PARENT_SCOPE)
-      elseif(x STREQUAL DELIMITER)
-        set(single_argument ${return_dict}_DELIMITER)
-      endif()
-    endif()
-  endforeach()
-endfunction()
-
-function(process_flags lang input output)
-  # The flags might contains compile language generator expressions that
-  # look like this:
-  # $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
-  # $<$<COMPILE_LANGUAGE:CXX>:$<OTHER_EXPRESSION>>
-  #
-  # Flags that don't specify a language like this apply to all
-  # languages.
-  #
-  # See COMPILE_LANGUAGE in
-  # https://cmake.org/cmake/help/v3.3/manual/cmake-generator-expressions.7.html
-  #
-  # To deal with this, we apply a regex to extract the flag and also
-  # to find out if the language matches.
-  #
-  # If this doesn't work out we might need to ban the use of
-  # COMPILE_LANGUAGE and instead partition C, CXX, and ASM into
-  # different libraries
-  set(languages C CXX ASM)
-
-  set(tmp_list "")
-
-  foreach(flag ${${input}})
-    set(is_compile_lang_generator_expression 0)
-    foreach(l ${languages})
-      if(flag MATCHES "<COMPILE_LANGUAGE:${l}>:([^>]+)>")
-        set(updated_flag ${CMAKE_MATCH_1})
-        set(is_compile_lang_generator_expression 1)
-        if(${l} STREQUAL ${lang})
-          # This test will match in case there are more generator expressions in the flag.
-          # As example: $<$<COMPILE_LANGUAGE:C>:$<OTHER_EXPRESSION>>
-          #             $<$<OTHER_EXPRESSION:$<COMPILE_LANGUAGE:C>:something>>
-          string(REGEX MATCH "(\\\$<)[^\\\$]*(\\\$<)[^\\\$]*(\\\$<)" IGNORE_RESULT ${flag})
-          if(CMAKE_MATCH_2)
-            # Nested generator expressions are used, just substitue `$<COMPILE_LANGUAGE:${l}>` to `1`
-            string(REGEX REPLACE "\\\$<COMPILE_LANGUAGE:${l}>" "1" updated_flag ${flag})
-          endif()
-          list(APPEND tmp_list ${updated_flag})
-          break()
-        endif()
-      endif()
-    endforeach()
-
-    if(NOT is_compile_lang_generator_expression)
-      # SHELL is used to avoid de-deplucation, but when process flags
-      # then this tag must be removed to return real compile/linker flags.
-      if(flag MATCHES "SHELL:[ ]*(.*)")
-        separate_arguments(flag UNIX_COMMAND ${CMAKE_MATCH_1})
-      endif()
-      # Flags may be placed inside generator expression, therefore any flag
-      # which is not already a generator expression must have commas converted.
-      if(NOT flag MATCHES "\\\$<.*>")
-        string(REPLACE "," "$<COMMA>" flag "${flag}")
-      endif()
-      list(APPEND tmp_list ${flag})
-    endif()
-  endforeach()
-
-  set(${output} ${tmp_list} PARENT_SCOPE)
-endfunction()
-
-function(convert_list_of_flags_to_string_of_flags ptr_list_of_flags string_of_flags)
-  # Convert the list to a string so we can do string replace
-  # operations on it and replace the ";" list separators with a
-  # whitespace so the flags are spaced out
-  string(REPLACE ";"  " "  locally_scoped_string_of_flags "${${ptr_list_of_flags}}")
-
-  # Set the output variable in the parent scope
-  set(${string_of_flags} ${locally_scoped_string_of_flags} PARENT_SCOPE)
-endfunction()
-
-macro(get_property_and_add_prefix result target property prefix)
-  sel4m_get_parse_args(args ${ARGN})
-
-  if(args_STRIP_PREFIX)
-    set(maybe_prefix "")
-  else()
-    set(maybe_prefix ${prefix})
-  endif()
-
-  get_property(target_property TARGET ${target} PROPERTY ${property})
-  foreach(x ${target_property})
-    list(APPEND ${result} ${maybe_prefix}${x})
-  endforeach()
-endmacro()
-
-# sel4m libraries use CMake's library concept and a set of
-# assumptions about how sel4m code is organized to cut down on
-# boilerplate code.
-#
-# A sel4m library can be constructed by the function sel4m_library
-# or ${location}_library_named. The constructors create a CMake library
-# with a name accessible through the variable SEL4M_CURRENT_LIBRARY.
-#
-# The variable SEL4M_CURRENT_LIBRARY should seldom be needed since
-# the sel4m libraries have methods that modify the libraries. These
-# methods have the signature: sel4m_library_<target-function>
-#
-# The methods are wrappers around the CMake target_* functions. See
-# https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html for
-# documentation on the underlying target_* functions.
-#
-# The methods modify the CMake target_* API to reduce boilerplate;
-#  PRIVATE is assumed
-#  The target is assumed to be SEL4M_CURRENT_LIBRARY
-#
-# When a flag that is given through the sel4m_* API conflicts with
-# the sel4m_library_* API then precedence will be given to the
-# sel4m_library_* API. In other words, local configuration overrides
-# global configuration.
 
 # Constructor with a directory-inferred name
 macro(kernel_library)
-  sel4m_library_get_current_dir_lib_name(${SEL4M_BASE}/kernel lib_name)
+  kernel_library_get_current_dir_lib_name(${SEL4M_BASE}/kernel lib_name)
   kernel_library_named(${lib_name})
 endmacro()
 
-macro(elfloader_library)
-  sel4m_library_get_current_dir_lib_name(${SEL4M_BASE}/elfloader lib_name)
-  elfloader_library_named(${lib_name})
+macro(kernel_interface_library)
+  kernel_library_get_current_dir_lib_name(${SEL4M_BASE}/kernel lib_name)
+  kernel_interface_library_named(${lib_name})
 endmacro()
-
-# Determines what the current directory's lib name would be according to the
-# provided base and writes it to the argument "lib_name"
-macro(sel4m_library_get_current_dir_lib_name base lib_name)
-  # Remove the prefix (/home/sebo/sel4m/${location}/driver/serial/CMakeLists.txt => driver/serial/CMakeLists.txt)
-  file(RELATIVE_PATH name ${base} ${CMAKE_CURRENT_LIST_FILE})
-
-  # Remove the filename (driver/serial/CMakeLists.txt => driver/serial)
-  get_filename_component(name ${name} DIRECTORY)
-
-  # Replace / with __ (driver/serial => driver__serial)
-  string(REGEX REPLACE "/" "__" name ${name})
-
-  set(${lib_name} ${name})
-endmacro()
-
-# Constructor with an explicitly given name.
-macro(kernel_library_named name)
-  # This is a macro because we need add_library() to be executed
-  # within the scope of the caller.
-  set(SEL4M_CURRENT_LIBRARY ${name})
-  add_library(${name} STATIC "")
-
-  kernel_append_cmake_library(${name})
-
-  target_link_libraries(${name} PUBLIC kernel_interface)
-endmacro()
-
-macro(elfloader_library_named name)
-  # This is a macro because we need add_library() to be executed
-  # within the scope of the caller.
-  set(SEL4M_CURRENT_LIBRARY ${name})
-  add_library(${name} STATIC "")
-
-  elfloader_append_cmake_library(${name})
-
-  target_link_libraries(${name} PUBLIC elfloader_interface)
-endmacro()
-
-function(kernel_link_interface interface)
-  target_link_libraries(${interface} INTERFACE kernel_interface)
-endfunction()
-
-function(elfloader_link_interface interface)
-  target_link_libraries(${interface} INTERFACE elfloader_interface)
-endfunction()
 
 #
-# sel4m_library versions of normal CMake target_<func> functions
+# kernel_library versions of normal CMake target_<func> functions
 #
-function(sel4m_library_sources source)
-  target_sources(${SEL4M_CURRENT_LIBRARY} PRIVATE ${source} ${ARGN})
+function(kernel_library_sources source)
+  target_sources(${KERNEL_CURRENT_LIBRARY} PRIVATE ${source} ${ARGN})
 endfunction()
 
-function(sel4m_library_include_directories)
-  target_include_directories(${SEL4M_CURRENT_LIBRARY} PRIVATE ${ARGN})
+function(kernel_interface_library_sources source)
+  target_sources(${KERNEL_INTERFACE_CURRENT_LIBRARY} PRIVATE ${source} ${ARGN})
 endfunction()
 
-function(sel4m_library_link_libraries item)
-  target_link_libraries(${SEL4M_CURRENT_LIBRARY} PUBLIC ${item} ${ARGN})
+function(kernel_library_sources_ifdef feature_toggle source)
+  if(${${feature_toggle}})
+    kernel_library_sources(${source} ${ARGN})
+  endif()
 endfunction()
 
-function(sel4m_library_compile_definitions item)
-  target_compile_definitions(${SEL4M_CURRENT_LIBRARY} PRIVATE ${item} ${ARGN})
+function(kernel_interface_library_sources_ifdef feature_toggle source)
+  if(${${feature_toggle}})
+    kernel_interface_library_sources(${source} ${ARGN})
+  endif()
 endfunction()
 
-function(sel4m_library_compile_options item)
+function(kernel_library_sources_ifndef feature_toggle source)
+  if(NOT ${feature_toggle})
+    kernel_library_sources(${source} ${ARGN})
+  endif()
+endfunction()
+
+function(kernel_interface_library_sources_ifndef feature_toggle source)
+  if(NOT ${feature_toggle})
+    kernel_interface_library_sources(${source} ${ARGN})
+  endif()
+endfunction()
+
+function(kernel_library_include_directories)
+  target_include_directories(${KERNEL_CURRENT_LIBRARY} PRIVATE ${ARGN})
+endfunction()
+
+function(kernel_interface_library_include_directories)
+  target_include_directories(${KERNEL_INTERFACE_CURRENT_LIBRARY} PRIVATE ${ARGN})
+endfunction()
+
+function(kernel_link_interface_ifdef feature_toggle interface)
+  if(${${feature_toggle}})
+    target_link_libraries(${interface} INTERFACE kernel_interface)
+  endif()
+endfunction()
+
+function(services_link_interface_ifdef feature_toggle interface)
+  if(${${feature_toggle}})
+    target_link_libraries(${interface} INTERFACE services_interface)
+  endif()
+endfunction()
+
+function(kernel_library_link_libraries item)
+  target_link_libraries(${KERNEL_CURRENT_LIBRARY} PUBLIC ${item} ${ARGN})
+endfunction()
+
+function(kernel_library_link_libraries_ifdef feature_toggle item)
+  if(${${feature_toggle}})
+     kernel_library_link_libraries(${item})
+  endif()
+endfunction()
+
+function(kernel_interface_library_link_libraries item)
+  target_link_libraries(${KERNEL_INTERFACE_CURRENT_LIBRARY} PUBLIC ${item} ${ARGN})
+endfunction()
+
+function(kernel_library_compile_definitions item)
+  target_compile_definitions(${KERNEL_CURRENT_LIBRARY} PRIVATE ${item} ${ARGN})
+endfunction()
+
+function(kernel_library_compile_definitions_ifdef feature_toggle item)
+  if(${${feature_toggle}})
+    kernel_library_compile_definitions(${item} ${ARGN})
+  endif()
+endfunction()
+
+function(kernel_library_compile_definitions_ifndef feature_toggle item)
+  if(NOT ${${feature_toggle}})
+    kernel_library_compile_definitions(${item} ${ARGN})
+  endif()
+endfunction()
+
+function(kernel_interface_library_compile_definitions item)
+  target_compile_definitions(${KERNEL_INTERFACE_CURRENT_LIBRARY} PRIVATE ${item} ${ARGN})
+endfunction()
+
+function(kernel_library_compile_options item)
   # The compiler is relied upon for sane behaviour when flags are in
   # conflict. Compilers generally give precedence to flags given late
-  # on the command line. So to ensure that sel4m_library_* flags are
+  # on the command line. So to ensure that kernel_library_* flags are
   # placed late on the command line we create a dummy interface
   # library and link with it to obtain the flags.
   #
   # Linking with a dummy interface library will place flags later on
-  # the command line than the the flags from ${location}_interface because
-  # ${location}_interface will be the first interface library that flags
+  # the command line than the the flags from kernel_interface because
+  # kernel_interface will be the first interface library that flags
   # are taken from.
 
   string(MD5 uniqueness ${item})
@@ -567,113 +145,50 @@ function(sel4m_library_compile_options item)
   add_library(           ${lib_name} INTERFACE)
   target_compile_options(${lib_name} INTERFACE ${item} ${ARGN})
 
-  target_link_libraries(${SEL4M_CURRENT_LIBRARY} PRIVATE ${lib_name})
+  target_link_libraries(${KERNEL_CURRENT_LIBRARY} PRIVATE ${lib_name})
 endfunction()
 
-function(sel4m_library_cc_option)
+function(kernel_library_compile_options_ifdef feature_toggle item)
+  if(${${feature_toggle}})
+    kernel_library_compile_options(${item} ${ARGN})
+  endif()
+endfunction()
+
+function(kernel_interface_library_compile_options item)
+  string(MD5 uniqueness ${item})
+  set(lib_name options_interface_lib_${uniqueness})
+
+  if (TARGET ${lib_name})
+    # ${item} already added, ignoring duplicate just like CMake does
+    return()
+  endif()
+
+  add_library(           ${lib_name} INTERFACE)
+  target_compile_options(${lib_name} INTERFACE ${item} ${ARGN})
+
+  target_link_libraries(${KERNEL_INTERFACE_CURRENT_LIBRARY} PRIVATE ${lib_name})
+endfunction()
+
+function(kernel_library_cc_option)
   foreach(option ${ARGV})
     string(MAKE_C_IDENTIFIER check${option} check)
     sel4m_check_compiler_flag(C ${option} ${check})
 
     if(${check})
-      sel4m_library_compile_options(${option})
+      kernel_library_compile_options(${option})
     endif()
   endforeach()
 endfunction()
 
-# Add the existing CMake library 'library' to the global list of
-# sel4m CMake libraries. This is done automatically by the
-# constructor but must called explicitly on CMake libraries that do
-# not use a sel4m library constructor.
-function(kernel_append_cmake_library library)
-  if(TARGET kernel_prebuilt)
-    message(WARNING
-      "kernel_library() or kernel_library_named() called in sel4m CMake "
-      "application mode. `${library}` will not be treated as a sel4m library."
-      "To create a sel4m library in sel4m CMake kernel mode consider "
-    )
-  endif()
-  set_property(GLOBAL APPEND PROPERTY KERNEL_LIBS ${library})
-endfunction()
+function(kernel_interface_library_cc_option)
+  foreach(option ${ARGV})
+    string(MAKE_C_IDENTIFIER check${option} check)
+    sel4m_check_compiler_flag(C ${option} ${check})
 
-function(elfloader_append_cmake_library library)
-  if(TARGET kernel_prebuilt)
-    message(WARNING
-      "elfloader_library() or elfloader_library_named() called in sel4m CMake "
-      "application mode. `${library}` will not be treated as a sel4m library."
-      "To create a sel4m library in sel4m CMake kernel mode consider "
-    )
-  endif()
-  set_property(GLOBAL APPEND PROPERTY ELFLOADER_LIBS ${library})
-endfunction()
-
-# Add the imported library 'library_name', located at 'library_path' to the
-# global list of sel4m CMake libraries.
-function(kernel_library_import library_name library_path)
-  add_library(${library_name} STATIC IMPORTED GLOBAL)
-  set_target_properties(${library_name}
-    PROPERTIES IMPORTED_LOCATION
-    ${library_path}
-    )
-  kernel_append_cmake_library(${library_name})
-endfunction()
-
-function(elfloader_library_import library_name library_path)
-  add_library(${library_name} STATIC IMPORTED GLOBAL)
-  set_target_properties(${library_name}
-    PROPERTIES IMPORTED_LOCATION
-    ${library_path}
-    )
-  elfloader_append_cmake_library(${library_name})
-endfunction()
-
-function(generate_inc_file
-    source_file    # The source file to be converted to hex
-    generated_file # The generated file
-    )
-  add_custom_command(
-    OUTPUT ${generated_file}
-    COMMAND
-    ${PYTHON_EXECUTABLE}
-    ${SEL4M_BASE}/scripts/file2hex.py
-    ${ARGN} # Extra arguments are passed to file2hex.py
-    --file ${source_file}
-    > ${generated_file} # Does pipe redirection work on Windows?
-    DEPENDS ${source_file}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-endfunction()
-
-function(generate_inc_file_for_gen_target
-    target          # The cmake target that depends on the generated file
-    source_file     # The source file to be converted to hex
-    generated_file  # The generated file
-    gen_target      # The generated file target we depend on
-                    # Any additional arguments are passed on to file2hex.py
-    )
-  generate_inc_file(${source_file} ${generated_file} ${ARGN})
-
-  # Ensure 'generated_file' is generated before 'target' by creating a
-  # dependency between the two targets
-
-  add_dependencies(${target} ${gen_target})
-endfunction()
-
-function(generate_inc_file_for_target
-    target          # The cmake target that depends on the generated file
-    source_file     # The source file to be converted to hex
-    generated_file  # The generated file
-                    # Any additional arguments are passed on to file2hex.py
-    )
-  # Ensure 'generated_file' is generated before 'target' by creating a
-  # 'custom_target' for it and setting up a dependency between the two
-  # targets
-
-  # But first create a unique name for the custom target
-  generate_unique_target_name_from_filename(${generated_file} generated_target_name)
-
-  add_custom_target(${generated_target_name} DEPENDS ${generated_file})
-  generate_inc_file_for_gen_target(${target} ${source_file} ${generated_file} ${generated_target_name} ${ARGN})
+    if(${check})
+      kernel_interface_library_compile_options(${option})
+    endif()
+  endforeach()
 endfunction()
 
 # sel4m_check_compiler_flag is a part of sel4m's toolchain
@@ -814,6 +329,658 @@ function(sel4m_check_compiler_flag_hardcoded lang option check exists)
   endif()
 endfunction()
 
+# Determines what the current directory's lib name would be according to the
+# provided base and writes it to the argument "lib_name"
+macro(kernel_library_get_current_dir_lib_name base lib_name)
+  # Remove the prefix (/home/sebo/sel4m/kernel/driver/serial/CMakeLists.txt => driver/serial/CMakeLists.txt)
+  file(RELATIVE_PATH name ${base} ${CMAKE_CURRENT_LIST_FILE})
+
+  # Remove the filename (driver/serial/CMakeLists.txt => driver/serial)
+  get_filename_component(name ${name} DIRECTORY)
+
+  # Replace / with __ (driver/serial => driver__serial)
+  string(REGEX REPLACE "/" "__" name ${name})
+
+  set(${lib_name} ${name})
+endmacro()
+
+# Constructor with an explicitly given name.
+macro(kernel_library_named name)
+  # This is a macro because we need add_library() to be executed
+  # within the scope of the caller.
+  set(KERNEL_CURRENT_LIBRARY ${name})
+  add_library(${name} STATIC "")
+
+  kernel_append_cmake_library(${name})
+
+  target_link_libraries(${name} PUBLIC kernel_interface)
+endmacro()
+
+macro(kernel_interface_library_named name)
+  # This is a macro because we need add_library() to be executed
+  # within the scope of the caller.
+  set(KERNEL_INTERFACE_CURRENT_LIBRARY ${name})
+  add_library(${name} STATIC "")
+
+  kernel_interface_append_cmake_library(${name})
+
+  target_link_libraries(${name} PUBLIC kernel_interface)
+endmacro()
+
+# Add the existing CMake library 'library' to the global list of
+# kernel CMake libraries. This is done automatically by the
+# constructor but must called explicitly on CMake libraries that do
+# not use a kernel library constructor.
+function(kernel_append_cmake_library library)
+  set_property(GLOBAL APPEND PROPERTY KERNEL_BUILT_IN_LIBS ${library})
+endfunction()
+
+function(kernel_interface_append_cmake_library library)
+  set_property(GLOBAL APPEND PROPERTY KERNEL_INTERFACE_LIBS ${library})
+endfunction()
+
+# https://cmake.org/cmake/help/latest/command/target_include_directories.html
+function(kernel_include_directories)
+  foreach(arg ${ARGV})
+    if(IS_ABSOLUTE ${arg})
+      set(path ${arg})
+    else()
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    endif()
+    target_include_directories(kernel_interface INTERFACE ${path})
+  endforeach()
+endfunction()
+
+function(services_include_directories)
+  foreach(arg ${ARGV})
+    if(IS_ABSOLUTE ${arg})
+      set(path ${arg})
+    else()
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    endif()
+    target_include_directories(services_interface INTERFACE ${path})
+  endforeach()
+endfunction()
+
+# https://cmake.org/cmake/help/latest/command/target_include_directories.html
+function(kernel_system_include_directories)
+  foreach(arg ${ARGV})
+    if(IS_ABSOLUTE ${arg})
+      set(path ${arg})
+    else()
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    endif()
+    target_include_directories(kernel_interface SYSTEM INTERFACE ${path})
+  endforeach()
+endfunction()
+
+function(services_system_include_directories)
+  foreach(arg ${ARGV})
+    if(IS_ABSOLUTE ${arg})
+      set(path ${arg})
+    else()
+      set(path ${CMAKE_CURRENT_SOURCE_DIR}/${arg})
+    endif()
+    target_include_directories(services_interface SYSTEM INTERFACE ${path})
+  endforeach()
+endfunction()
+
+# https://cmake.org/cmake/help/latest/command/target_compile_definitions.html
+function(kernel_compile_definitions)
+  target_compile_definitions(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(services_compile_definitions)
+  target_compile_definitions(services_interface INTERFACE ${ARGV})
+endfunction()
+
+function(kernel_compile_definitions_ifdef feature_toggle)
+  if(${${feature_toggle}})
+  	kernel_compile_definitions(${ARGN})
+  endif()
+endfunction()
+
+function(services_compile_definitions_ifdef feature_toggle)
+  if(${${feature_toggle}})
+  	services_compile_definitions(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_compile_definitions_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+  	kernel_compile_definitions(${ARGN})
+  endif()
+endfunction()
+
+function(services_compile_definitions_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+  	services_compile_definitions(${ARGN})
+  endif()
+endfunction()
+
+# https://cmake.org/cmake/help/latest/command/target_compile_options.html
+function(kernel_compile_options)
+  target_compile_options(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(services_compile_options)
+  target_compile_options(services_interface INTERFACE ${ARGV})
+endfunction()
+
+function(kernel_compile_options_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_compile_options(${ARGN})
+  endif()
+endfunction()
+
+function(services_compile_options_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    services_compile_options(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_compile_options_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    kernel_compile_options(${ARGN})
+  endif()
+endfunction()
+
+function(services_compile_options_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    services_compile_options(${ARGN})
+  endif()
+endfunction()
+
+# https://cmake.org/cmake/help/latest/command/target_link_libraries.html
+function(kernel_link_libraries)
+  target_link_libraries(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(services_link_libraries)
+  target_link_libraries(services_interface INTERFACE ${ARGV})
+endfunction()
+
+function(kernel_link_libraries_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_link_libraries(${ARGN})
+  endif()
+endfunction()
+
+function(services_link_libraries_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    services_link_libraries(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_link_libraries_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    kernel_link_libraries(${ARGN})
+  endif()
+endfunction()
+
+function(services_link_libraries_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    services_link_libraries(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_cc_option)
+  foreach(arg ${ARGV})
+    target_cc_option(kernel_interface INTERFACE ${arg})
+  endforeach()
+endfunction()
+
+function(services_cc_option)
+  foreach(arg ${ARGV})
+    target_cc_option(services_interface INTERFACE ${arg})
+  endforeach()
+endfunction()
+
+function(kernel_cc_option_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_cc_option(${ARGN})
+  endif()
+endfunction()
+
+function(services_cc_option_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    services_cc_option(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_cc_option_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    kernel_cc_option(${ARGN})
+  endif()
+endfunction()
+
+function(services_cc_option_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    services_cc_option(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_cc_option_fallback option1 option2)
+    target_cc_option_fallback(kernel_interface INTERFACE ${option1} ${option2})
+endfunction()
+
+function(services_cc_option_fallback option1 option2)
+    target_cc_option_fallback(services_interface INTERFACE ${option1} ${option2})
+endfunction()
+
+function(kernel_ld_options)
+    target_ld_options(kernel_interface INTERFACE ${ARGV})
+endfunction()
+
+function(services_ld_options)
+    target_ld_options(services_interface INTERFACE ${ARGV})
+endfunction()
+
+function(kernel_ld_option_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    kernel_ld_options(${ARGN})
+  endif()
+endfunction()
+
+function(services_ld_option_ifdef feature_toggle)
+  if(${${feature_toggle}})
+    services_ld_options(${ARGN})
+  endif()
+endfunction()
+
+function(kernel_ld_option_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    kernel_ld_options(${ARGN})
+  endif()
+endfunction()
+
+function(services_ld_option_ifndef feature_toggle)
+  if(NOT ${${feature_toggle}})
+    services_ld_options(${ARGN})
+  endif()
+endfunction()
+
+
+
+
+# Getter functions for extracting build information from
+# kernel_interface. Returning lists, and strings is supported, as is
+# requesting specific categories of build information (defines,
+# includes, options).
+#
+# The naming convention follows:
+# kernel_get_${build_information}_for_lang${format}(lang x [STRIP_PREFIX])
+# Where
+#  the argument 'x' is written with the result
+# and
+#  ${build_information} can be one of
+#   - include_directories           # -I directories
+#   - system_include_directories    # -isystem directories
+#   - compile_definitions           # -D'efines
+#   - compile_options               # misc. compiler flags
+# and
+#  ${format} can be
+#   - the empty string '', signifying that it should be returned as a list
+#   - _as_string signifying that it should be returned as a string
+# and
+#  ${lang} can be one of
+#   - C
+#   - CXX
+#   - ASM
+#
+# STRIP_PREFIX
+#
+# By default the result will be returned ready to be passed directly
+# to a compiler, e.g. prefixed with -D, or -I, but it is possible to
+# omit this prefix by specifying 'STRIP_PREFIX' . This option has no
+# effect for 'compile_options'.
+#
+# e.g.
+# kernel_get_include_directories_for_lang(ASM x)
+# writes "-Isome_dir;-Isome/other/dir" to x
+
+function(kernel_get_include_directories_for_lang_as_string lang i)
+  kernel_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(services_get_include_directories_for_lang_as_string lang i)
+  services_get_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_system_include_directories_for_lang_as_string lang i)
+  kernel_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(services_get_system_include_directories_for_lang_as_string lang i)
+  services_get_system_include_directories_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_definitions_for_lang_as_string lang i)
+  kernel_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(services_get_compile_definitions_for_lang_as_string lang i)
+  services_get_compile_definitions_for_lang(${lang} list_of_flags DELIMITER " " ${ARGN})
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_options_for_lang_as_string lang i)
+  kernel_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " ")
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(services_get_compile_options_for_lang_as_string lang i)
+  services_get_compile_options_for_lang(${lang} list_of_flags DELIMITER " ")
+
+  convert_list_of_flags_to_string_of_flags(list_of_flags str_of_flags)
+
+  set(${i} ${str_of_flags} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_include_directories_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  if(NOT ARGN)
+    set(result_output_list "-I$<JOIN:${genexp_output_list},$<SEMICOLON>-I>")
+  elseif(args_STRIP_PREFIX)
+    # The list has no prefix, so don't add it.
+    set(result_output_list ${output_list})
+  elseif(args_DELIMITER)
+    set(result_output_list "-I$<JOIN:${genexp_output_list},${args_DELIMITER}-I>")
+  endif()
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(services_get_include_directories_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET services_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  if(NOT ARGN)
+    set(result_output_list "-I$<JOIN:${genexp_output_list},$<SEMICOLON>-I>")
+  elseif(args_STRIP_PREFIX)
+    # The list has no prefix, so don't add it.
+    set(result_output_list ${output_list})
+  elseif(args_DELIMITER)
+    set(result_output_list "-I$<JOIN:${genexp_output_list},${args_DELIMITER}-I>")
+  endif()
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_system_include_directories_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "$<$<BOOL:${genexp_output_list}>:-isystem$<JOIN:${genexp_output_list},${args_DELIMITER}-isystem>>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(services_get_system_include_directories_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET services_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "$<$<BOOL:${genexp_output_list}>:-isystem$<JOIN:${genexp_output_list},${args_DELIMITER}-isystem>>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_definitions_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "-D$<JOIN:${genexp_output_list},${args_DELIMITER}-D>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(services_get_compile_definitions_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET services_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "-D$<JOIN:${genexp_output_list},${args_DELIMITER}-D>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(kernel_get_compile_options_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "$<JOIN:${genexp_output_list},${args_DELIMITER}>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+function(services_get_compile_options_for_lang lang i)
+  sel4m_get_parse_args(args ${ARGN})
+  get_property(flags TARGET services_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
+
+  process_flags(${lang} flags output_list)
+  string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+  set_ifndef(args_DELIMITER "$<SEMICOLON>")
+  set(result_output_list "$<JOIN:${genexp_output_list},${args_DELIMITER}>")
+
+  set(${i} ${result_output_list} PARENT_SCOPE)
+endfunction()
+
+# This function writes a dict to it's output parameter
+# 'return_dict'. The dict has information about the parsed arguments,
+#
+# Usage:
+#   sel4m_get_parse_args(foo ${ARGN})
+#   print(foo_STRIP_PREFIX) # foo_STRIP_PREFIX might be set to 1
+function(sel4m_get_parse_args return_dict)
+  foreach(x ${ARGN})
+    if(DEFINED single_argument)
+      set(${single_argument} ${x} PARENT_SCOPE)
+      unset(single_argument)
+    else()
+      if(x STREQUAL STRIP_PREFIX)
+        set(${return_dict}_STRIP_PREFIX 1 PARENT_SCOPE)
+      elseif(x STREQUAL NO_SPLIT)
+        set(${return_dict}_NO_SPLIT 1 PARENT_SCOPE)
+      elseif(x STREQUAL DELIMITER)
+        set(single_argument ${return_dict}_DELIMITER)
+      endif()
+    endif()
+  endforeach()
+endfunction()
+
+function(process_flags lang input output)
+  # The flags might contains compile language generator expressions that
+  # look like this:
+  # $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+  # $<$<COMPILE_LANGUAGE:CXX>:$<OTHER_EXPRESSION>>
+  #
+  # Flags that don't specify a language like this apply to all
+  # languages.
+  #
+  # See COMPILE_LANGUAGE in
+  # https://cmake.org/cmake/help/v3.3/manual/cmake-generator-expressions.7.html
+  #
+  # To deal with this, we apply a regex to extract the flag and also
+  # to find out if the language matches.
+  #
+  # If this doesn't work out we might need to ban the use of
+  # COMPILE_LANGUAGE and instead partition C, CXX, and ASM into
+  # different libraries
+  set(languages C CXX ASM)
+
+  set(tmp_list "")
+
+  foreach(flag ${${input}})
+    set(is_compile_lang_generator_expression 0)
+    foreach(l ${languages})
+      if(flag MATCHES "<COMPILE_LANGUAGE:${l}>:([^>]+)>")
+        set(updated_flag ${CMAKE_MATCH_1})
+        set(is_compile_lang_generator_expression 1)
+        if(${l} STREQUAL ${lang})
+          # This test will match in case there are more generator expressions in the flag.
+          # As example: $<$<COMPILE_LANGUAGE:C>:$<OTHER_EXPRESSION>>
+          #             $<$<OTHER_EXPRESSION:$<COMPILE_LANGUAGE:C>:something>>
+          string(REGEX MATCH "(\\\$<)[^\\\$]*(\\\$<)[^\\\$]*(\\\$<)" IGNORE_RESULT ${flag})
+          if(CMAKE_MATCH_2)
+            # Nested generator expressions are used, just substitue `$<COMPILE_LANGUAGE:${l}>` to `1`
+            string(REGEX REPLACE "\\\$<COMPILE_LANGUAGE:${l}>" "1" updated_flag ${flag})
+          endif()
+          list(APPEND tmp_list ${updated_flag})
+          break()
+        endif()
+      endif()
+    endforeach()
+
+    if(NOT is_compile_lang_generator_expression)
+      # SHELL is used to avoid de-deplucation, but when process flags
+      # then this tag must be removed to return real compile/linker flags.
+      if(flag MATCHES "SHELL:[ ]*(.*)")
+        separate_arguments(flag UNIX_COMMAND ${CMAKE_MATCH_1})
+      endif()
+      # Flags may be placed inside generator expression, therefore any flag
+      # which is not already a generator expression must have commas converted.
+      if(NOT flag MATCHES "\\\$<.*>")
+        string(REPLACE "," "$<COMMA>" flag "${flag}")
+      endif()
+      list(APPEND tmp_list ${flag})
+    endif()
+  endforeach()
+
+  set(${output} ${tmp_list} PARENT_SCOPE)
+endfunction()
+
+function(convert_list_of_flags_to_string_of_flags ptr_list_of_flags string_of_flags)
+  # Convert the list to a string so we can do string replace
+  # operations on it and replace the ";" list separators with a
+  # whitespace so the flags are spaced out
+  string(REPLACE ";"  " "  locally_scoped_string_of_flags "${${ptr_list_of_flags}}")
+
+  # Set the output variable in the parent scope
+  set(${string_of_flags} ${locally_scoped_string_of_flags} PARENT_SCOPE)
+endfunction()
+
+macro(get_property_and_add_prefix result target property prefix)
+  sel4m_get_parse_args(args ${ARGN})
+
+  if(args_STRIP_PREFIX)
+    set(maybe_prefix "")
+  else()
+    set(maybe_prefix ${prefix})
+  endif()
+
+  get_property(target_property TARGET ${target} PROPERTY ${property})
+  foreach(x ${target_property})
+    list(APPEND ${result} ${maybe_prefix}${x})
+  endforeach()
+endmacro()
+
+# These functions are useful if there is a need to generate a file
+# that can be included into the application at build time. The file
+# can also be compressed automatically when embedding it.
+#
+# See tests/application_development/gen_inc_file for an example of
+# usage.
+function(generate_inc_file
+    source_file    # The source file to be converted to hex
+    generated_file # The generated file
+    )
+  add_custom_command(
+    OUTPUT ${generated_file}
+    COMMAND
+    ${PYTHON_EXECUTABLE}
+    ${SEL4M_BASE}/scripts/file2hex.py
+    ${ARGN} # Extra arguments are passed to file2hex.py
+    --file ${source_file}
+    > ${generated_file} # Does pipe redirection work on Windows?
+    DEPENDS ${source_file}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endfunction()
+
+function(generate_inc_file_for_gen_target
+    target          # The cmake target that depends on the generated file
+    source_file     # The source file to be converted to hex
+    generated_file  # The generated file
+    gen_target      # The generated file target we depend on
+                    # Any additional arguments are passed on to file2hex.py
+    )
+  generate_inc_file(${source_file} ${generated_file} ${ARGN})
+
+  # Ensure 'generated_file' is generated before 'target' by creating a
+  # dependency between the two targets
+
+  add_dependencies(${target} ${gen_target})
+endfunction()
+
+function(generate_inc_file_for_target
+    target          # The cmake target that depends on the generated file
+    source_file     # The source file to be converted to hex
+    generated_file  # The generated file
+                    # Any additional arguments are passed on to file2hex.py
+    )
+  # Ensure 'generated_file' is generated before 'target' by creating a
+  # 'custom_target' for it and setting up a dependency between the two
+  # targets
+
+  # But first create a unique name for the custom target
+  generate_unique_target_name_from_filename(${generated_file} generated_target_name)
+
+  add_custom_target(${generated_target_name} DEPENDS ${generated_file})
+  generate_inc_file_for_gen_target(${target} ${source_file} ${generated_file} ${generated_target_name} ${ARGN})
+endfunction()
+
 # Usage:
 #   check_dtc_flag("-Wtest" DTC_WARN_TEST)
 #
@@ -835,11 +1002,6 @@ function(check_dtc_flag flag ok)
     set(${ok} 0 PARENT_SCOPE)
   endif()
 endfunction()
-
-#
-# Kconfig is a configuration language developed for the Linux
-# kernel. The below functions integrate CMake with Kconfig.
-#
 
 #
 # import_kconfig(<prefix> <kconfig_fragment> [<keys>])
@@ -883,39 +1045,6 @@ function(import_kconfig prefix kconfig_fragment)
   endforeach()
 endfunction()
 
-#
-# These functions extend the CMake API in a way that is not particular
-# to sel4m. Primarily they work around limitations in the CMake
-# language to allow cleaner build scripts.
-
-# 3.1. *_ifdef
-#
-# Functions for conditionally executing CMake functions with oneliners
-# e.g.
-#
-# if(CONFIG_FFT)
-#   sel4m_library_source(
-#     fft_32.c
-#     fft_utils.c
-#     )
-# endif()
-#
-# Becomes
-#
-# sel4m_source_ifdef(
-#   CONFIG_FFT
-#   fft_32.c
-#   fft_utils.c
-#   )
-#
-# More Generally
-# "<function-name>_ifdef(CONDITION args)"
-# Becomes
-# """
-# if(CONDITION)
-#   <function-name>(args)
-# endif()
-# """
 #
 # ifdef functions are added on an as-need basis. See
 # https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html for
@@ -968,144 +1097,6 @@ function(target_cc_option_ifdef feature_toggle target scope option)
   endif()
 endfunction()
 
-function(sel4m_library_sources_ifdef feature_toggle source)
-  if(${${feature_toggle}})
-    sel4m_library_sources(${source} ${ARGN})
-  endif()
-endfunction()
-
-function(sel4m_library_sources_ifndef feature_toggle source)
-  if(NOT ${feature_toggle})
-    sel4m_library_sources(${source} ${ARGN})
-  endif()
-endfunction()
-
-function(kernel_sources_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    kernel_sources(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_sources_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    elfloader_sources(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_sources_ifndef feature_toggle)
-   if(NOT ${feature_toggle})
-    kernel_sources(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_sources_ifndef feature_toggle)
-   if(NOT ${feature_toggle})
-    elfloader_sources(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_cc_option_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    kernel_cc_option(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_cc_option_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    elfloader_cc_option(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_ld_option_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    kernel_ld_options(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_ld_option_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    elfloader_ld_options(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_link_libraries_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    kernel_link_libraries(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_link_libraries_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    elfloader_link_libraries(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_compile_options_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    kernel_compile_options(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_compile_options_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    elfloader_compile_options(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_compile_definitions_ifdef feature_toggle)
-  if(${${feature_toggle}})
-  	kernel_compile_definitions(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_compile_definitions_ifdef feature_toggle)
-  if(${${feature_toggle}})
-  	elfloader_compile_definitions(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_include_directories_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    kernel_include_directories(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_include_directories_ifdef feature_toggle)
-  if(${${feature_toggle}})
-    elfloader_include_directories(${ARGN})
-  endif()
-endfunction()
-
-function(sel4m_library_compile_definitions_ifdef feature_toggle item)
-  if(${${feature_toggle}})
-    sel4m_library_compile_definitions(${item} ${ARGN})
-  endif()
-endfunction()
-
-function(sel4m_library_compile_options_ifdef feature_toggle item)
-  if(${${feature_toggle}})
-    sel4m_library_compile_options(${item} ${ARGN})
-  endif()
-endfunction()
-
-function(kernel_link_interface_ifdef feature_toggle interface)
-  if(${${feature_toggle}})
-    target_link_libraries(${interface} INTERFACE kernel_interface)
-  endif()
-endfunction()
-
-function(elfloader_link_interface_ifdef feature_toggle interface)
-  if(${${feature_toggle}})
-    target_link_libraries(${interface} INTERFACE elfloader_interface)
-  endif()
-endfunction()
-
-function(sel4m_library_link_libraries_ifdef feature_toggle item)
-  if(${${feature_toggle}})
-     sel4m_library_link_libraries(${item})
-  endif()
-endfunction()
-
 macro(list_append_ifdef feature_toggle list)
   if(${${feature_toggle}})
     list(APPEND ${list} ${ARGN})
@@ -1121,30 +1112,6 @@ endfunction()
 function(target_cc_option_ifndef feature_toggle target scope option)
   if(NOT ${feature_toggle})
     target_cc_option(${target} ${scope} ${option})
-  endif()
-endfunction()
-
-function(kernel_cc_option_ifndef feature_toggle)
-  if(NOT ${feature_toggle})
-    kernel_cc_option(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_cc_option_ifndef feature_toggle)
-  if(NOT ${feature_toggle})
-    elfloader_cc_option(${ARGN})
-  endif()
-endfunction()
-
-function(kernel_compile_options_ifndef feature_toggle)
-  if(NOT ${feature_toggle})
-    kernel_compile_options(${ARGN})
-  endif()
-endfunction()
-
-function(elfloader_compile_options_ifndef feature_toggle)
-  if(NOT ${feature_toggle})
-    elfloader_compile_options(${ARGN})
   endif()
 endfunction()
 
@@ -1528,7 +1495,7 @@ endfunction()
 #                          Issue an error for any relative path not specified
 #                          by user with `-D<path>`
 #
-# CONF_FILES <path>: TODO
+# CONF_FILES <path>: Nothing to do
 #
 # returns an updated list of absolute paths
 function(sel4m_file)
@@ -1586,7 +1553,7 @@ Relative paths are only allowed with `-D${ARGV1}=<path>`")
   endif()
 
   if(FILE_CONF_FILES)
-    message(WARNING "CONF_FILES TODO")
+    message(WARNING "Do not implement.")
   endif()
 endfunction()
 
@@ -1757,7 +1724,7 @@ function(sel4m_get_targets directory types targets)
     endforeach()
 
     foreach(directory ${sub_directories})
-        sel4m_get_targets(${directory} "${types}" ${targets})
+		sel4m_get_targets(${directory} "${types}" ${targets})
     endforeach()
     set(${targets} ${${targets}} PARENT_SCOPE)
 endfunction()

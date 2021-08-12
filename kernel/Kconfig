@@ -1,0 +1,10 @@
+
+
+
+
+
+
+
+
+
+source "kernel/arch/$(ARCH)/Kconfig"

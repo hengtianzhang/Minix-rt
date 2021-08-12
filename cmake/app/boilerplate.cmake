@@ -36,38 +36,21 @@ cmake_policy(SET CMP0002 NEW)
 # CMP0079: "target_link_libraries() allows use with targets in other directories"
 cmake_policy(SET CMP0079 OLD)
 
-define_property(GLOBAL PROPERTY KERNEL_LIBS
-    BRIEF_DOCS "Global list of all kernel CMake libs that should be linked in"
-    FULL_DOCS  "Global list of all kernel CMake libs that should be linked in.
+define_property(GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS
+    BRIEF_DOCS "Global list of all kernel built-in CMake libs that should be linked in"
+    FULL_DOCS  "Global list of all kernel built-in CMake libs that should be linked in.
 kernel_library() appends libs to this list.")
-set_property(GLOBAL PROPERTY KERNEL_LIBS "")
+set_property(GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS "")
 
-define_property(GLOBAL PROPERTY ELFLOADER_LIBS
-    BRIEF_DOCS "Global list of all elfloader CMake libs that should be linked in"
-    FULL_DOCS  "Global list of all elfloader CMake libs that should be linked in.
-elfloader_library() appends libs to this list.")
-set_property(GLOBAL PROPERTY ELFLOADER_LIBS "")
-
-define_property(GLOBAL PROPERTY GENERATED_KERNEL_SOURCE_FILES
-  BRIEF_DOCS "Source files that are generated after kernel has been linked once."
-  FULL_DOCS "\
-Source files that are generated after kernel has been linked once.\
-May include isr_tables.c etc."
-  )
-set_property(GLOBAL PROPERTY GENERATED_KERNEL_SOURCE_FILES "")
-
-define_property(GLOBAL PROPERTY GENERATED_ELFLOADER_SOURCE_FILES
-  BRIEF_DOCS "Source files that are generated after elfloader has been linked once."
-  FULL_DOCS "\
-Source files that are generated after elfloader has been linked once.\
-May include isr_tables.c etc."
-  )
-set_property(GLOBAL PROPERTY GENERATED_ELFLOADER_SOURCE_FILES "")
+define_property(GLOBAL PROPERTY KERNEL_INTERFACE_LIBS
+    BRIEF_DOCS "Global list of all kernel interface CMake libs that should be linked in"
+    FULL_DOCS  "Global list of all kernel interface CMake libs that should be linked in.
+kernel_interface_library() appends libs to this list.")
+set_property(GLOBAL PROPERTY KERNEL_INTERFACE_LIBS "")
 
 set(APPLICATION_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Application Source Directory")
 set(APPLICATION_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Application Binary Directory")
 
-set(elfloader__build_dir ${CMAKE_CURRENT_BINARY_DIR}/elfloader)
 set(kernel__build_dir ${CMAKE_CURRENT_BINARY_DIR}/kernel)
 set(services__build_dir ${CMAKE_CURRENT_BINARY_DIR}/projects)
 
@@ -107,7 +90,6 @@ endif()
 file(TO_CMAKE_PATH "${SEL4M_BASE}" PROJECT_SOURCE_DIR)
 
 set(KERNEL_BINARY_DIR ${kernel__build_dir})
-set(ELFLOADER_BINARY_DIR ${elfloader__build_dir})
 set(SERVICES_BINARY_DIR ${services__build_dir})
 
 set(AUTOCONF_H ${PROJECT_BINARY_DIR}/include/generated/autoconf.h)
@@ -179,9 +161,10 @@ include(${SEL4M_BASE}/cmake/host-tools.cmake)
 # both DT and Kconfig we complete the target-specific configuration,
 # and possibly change the toolchain.
 include(${SEL4M_BASE}/cmake/generic_toolchain.cmake)
-# TODO
-# include(${SEL4M_BASE}/cmake/dts.cmake)
+
 include(${SEL4M_BASE}/cmake/kconfig.cmake)
+
+include(${SEL4M_BASE}/cmake/dts.cmake)
 
 include(${SEL4M_BASE}/cmake/target_toolchain.cmake)
 
@@ -193,6 +176,8 @@ enable_language(C CXX ASM)
 # Testing the toolchain flags requires the enable_language() to have been called in CMake.
 include(${SEL4M_BASE}/cmake/target_toolchain_flags.cmake)
 
+set(CMAKE_PREFIX_PATH ${SEL4M_BASE} CACHE PATH "")
+
 configure_file(${SEL4M_BASE}/version.h.in ${PROJECT_BINARY_DIR}/include/generated/version.h)
 
 set(KERNEL_DIR ${SEL4M_BASE}/kernel CACHE PATH "")
@@ -201,4 +186,4 @@ set(ELFLOADER_DIR ${SEL4M_BASE}/elfloader CACHE PATH "")
 
 add_subdirectory(${KERNEL_DIR} ${kernel__build_dir})
 add_subdirectory(${PROJECTS_DIR}  ${services__build_dir})
-add_subdirectory(${ELFLOADER_DIR}  ${elfloader__build_dir})
+

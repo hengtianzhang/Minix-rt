@@ -1,0 +1,4 @@
+
+config DTC_OVERLAY_FILE
+    string "Test dtc overlay file"
+	default "origin"

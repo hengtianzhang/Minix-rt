@@ -1,0 +1,8 @@
+/dts-v1/;
+
+/ {
+	model = "Orign platforms";
+	compatible = "origin,platforms";
+	#address-cells = <2>;
+	#size-cells = <2>;
+};

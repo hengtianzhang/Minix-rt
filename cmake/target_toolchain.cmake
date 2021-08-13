@@ -42,6 +42,9 @@ endif()
 unset(CMAKE_C_COMPILER)
 unset(CMAKE_C_COMPILER CACHE)
 
+unset(CMAKE_LINKER)
+unset(CMAKE_LINKER CACHE)
+
 # A toolchain consist of a compiler and a linker.
 # In sel4m, toolchains require a port under cmake/toolchain/.
 # Each toolchain port must set COMPILER and LINKER.

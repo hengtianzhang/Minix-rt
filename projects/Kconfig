@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Sel4m Projects configuration"
+
 # C++ configuration options
 
 # Copyright (c) 2018 B. Leforestier
@@ -65,3 +69,12 @@ config RTTI
 endif # LIB_CPLUSPLUS
 
 endif # CPLUSPLUS
+
+menuconfig HAS_PROJECT
+	bool "Project $(APPLICATION_SOURCE) Configuration"
+
+if HAS_PROJECT
+osource "$(APPLICATION_SOURCE_DIR)/Kconfig"
+endif
+
+endmenu

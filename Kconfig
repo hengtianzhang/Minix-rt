@@ -10,9 +10,3 @@ source "scripts/Kconfig.include"
 source "kernel/Kconfig"
 
 source "projects/Kconfig"
-
-osource "$(APPLICATION_SOURCE_DIR)/Kconfig"
-
-config GCC_VERSION
-	int
-	default $(shell,$(srctree)/scripts/gcc-version.sh -p $(CC) | sed 's/^0*//') 

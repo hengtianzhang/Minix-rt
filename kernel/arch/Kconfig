@@ -1,0 +1,144 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# General architecture dependent options
+#
+
+source "kernel/arch/$(ARCH)/Kconfig"
+
+menu "General architecture-dependent options"
+
+config HAVE_EFFICIENT_UNALIGNED_ACCESS
+	bool
+	help
+	  Some architectures are unable to perform unaligned accesses
+	  without the use of get_unaligned/put_unaligned. Others are
+	  unable to perform such accesses efficiently (e.g. trap on
+	  unaligned access and require fixing it up in the exception
+	  handler.)
+
+	  This symbol should be selected by an architecture if it can
+	  perform unaligned accesses efficiently to allow different
+	  code paths to be selected for these cases. Some network
+	  drivers, for example, could opt to not fix up alignment
+	  problems with received packets if doing so would not help
+	  much.
+
+	  See Documentation/unaligned-memory-access.txt for more
+	  information on the topic of unaligned memory accesses.
+
+config ARCH_USE_BUILTIN_BSWAP
+       bool
+       help
+	 Modern versions of GCC (since 4.4) have builtin functions
+	 for handling byte-swapping. Using these, instead of the old
+	 inline assembler that the architecture code provides in the
+	 __arch_bswapXX() macros, allows the compiler to see what's
+	 happening and offers more opportunity for optimisation. In
+	 particular, the compiler will be able to combine the byteswap
+	 with a nearby load or store and use load-and-swap or
+	 store-and-swap instructions if the architecture has them. It
+	 should almost *never* result in code which is worse than the
+	 hand-coded assembler in <asm/swab.h>.  But just in case it
+	 does, the use of the builtins is optional.
+
+	 Any architecture with load-and-swap or store-and-swap
+	 instructions should set this. And it shouldn't hurt to set it
+	 on architectures that don't have such instructions.
+
+config HAVE_ALIGNED_STRUCT_PAGE
+	bool
+	help
+	  This makes sure that struct pages are double word aligned and that
+	  e.g. the SLUB allocator can perform double word atomic operations
+	  on a struct page for better performance. However selecting this
+	  might increase the size of a struct page by a word.
+
+config HAVE_CMPXCHG_DOUBLE
+	bool
+
+config HAVE_STACKPROTECTOR
+	bool
+	help
+	  An arch should select this symbol if:
+	  - it has implemented a stack canary (e.g. __stack_chk_guard)
+
+config CC_HAS_STACKPROTECTOR_NONE
+	def_bool $(cc-option,-fno-stack-protector)
+
+config STACKPROTECTOR
+	bool "Stack Protector buffer overflow detection"
+	depends on HAVE_STACKPROTECTOR
+	depends on $(cc-option,-fstack-protector)
+	default y
+	help
+	  This option turns on the "stack-protector" GCC feature. This
+	  feature puts, at the beginning of functions, a canary value on
+	  the stack just before the return address, and validates
+	  the value just before actually returning.  Stack based buffer
+	  overflows (that need to overwrite this return address) now also
+	  overwrite the canary, which gets detected and the attack is then
+	  neutralized via a kernel panic.
+
+	  Functions will have the stack-protector canary logic added if they
+	  have an 8-byte or larger character array on the stack.
+
+	  This feature requires gcc version 4.2 or above, or a distribution
+	  gcc with the feature backported ("-fstack-protector").
+
+	  On an x86 "defconfig" build, this feature adds canary checks to
+	  about 3% of all kernel functions, which increases kernel code size
+	  by about 0.3%.
+
+config STACKPROTECTOR_STRONG
+	bool "Strong Stack Protector"
+	depends on STACKPROTECTOR
+	depends on $(cc-option,-fstack-protector-strong)
+	default y
+	help
+	  Functions will have the stack-protector canary logic added in any
+	  of the following conditions:
+
+	  - local variable's address used as part of the right hand side of an
+	    assignment or function argument
+	  - local variable is an array (or union containing an array),
+	    regardless of array type or length
+	  - uses register local variables
+
+	  This feature requires gcc version 4.9 or above, or a distribution
+	  gcc with the feature backported ("-fstack-protector-strong").
+
+	  On an x86 "defconfig" build, this feature adds canary checks to
+	  about 20% of all kernel functions, which increases the kernel code
+	  size by about 2%.
+
+config PGTABLE_LEVELS
+	int
+	default 2
+
+config HAVE_STACK_VALIDATION
+	bool
+	help
+	  Architecture supports the 'objtool check' host tool command, which
+	  performs compile-time stack metadata validation.
+
+config HAVE_ARCH_COMPILER_H
+	bool
+	help
+	  An architecture can select this if it provides an
+	  asm/compiler.h header that should be included after
+	  linux/compiler-*.h in order to override macro definitions that those
+	  headers generally provide.
+
+config ARCH_WANT_LD_ORPHAN_WARN
+	bool
+	help
+	  An arch should select this symbol once all linker sections are explicitly
+	  included, size-asserted, or discarded in the linker scripts. This is
+	  important because we never want expected sections to be placed heuristically
+	  by the linker, since the locations of such sections can change between linker
+	  versions.
+
+config CPU_NO_EFFICIENT_FFS
+	def_bool n
+
+endmenu

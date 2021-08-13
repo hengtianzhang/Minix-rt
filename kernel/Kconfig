@@ -1,10 +1,13 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Sel4m kernel configuration"
 
+source "kernel/init/Kconfig"
 
+source "kernel/drivers/Kconfig"
 
+source "kernel/lib/Kconfig"
 
+source "kernel/lib/Kconfig.debug"
 
-
-
-
-
-source "kernel/arch/$(ARCH)/Kconfig"
+endmenu

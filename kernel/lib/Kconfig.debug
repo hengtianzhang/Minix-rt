@@ -1,0 +1,146 @@
+menu "Kernel hacking"
+
+menu "Compile-time checks and compiler options"
+
+config DEBUG_INFO
+	bool "Compile the kernel with debug info"
+	depends on DEBUG_KERNEL
+	help
+          If you say Y here the resulting kernel image will include
+	  debugging info resulting in a larger kernel image.
+	  This adds debug symbols to the kernel and modules (gcc -g), and
+	  is needed if you intend to use kernel crashdump or binary object
+	  tools like crash, kgdb, LKCD, gdb, etc on the kernel.
+	  Say Y here only if you plan to debug the kernel.
+
+	  If unsure, say N.
+
+config DEBUG_INFO_REDUCED
+	bool "Reduce debugging information"
+	depends on DEBUG_INFO
+	help
+	  If you say Y here gcc is instructed to generate less debugging
+	  information for structure types. This means that tools that
+	  need full debugging information (like kgdb or systemtap) won't
+	  be happy. But if you merely need debugging information to
+	  resolve line numbers there is no loss. Advantage is that
+	  build directory object sizes shrink dramatically over a full
+	  DEBUG_INFO build and compile times are reduced too.
+	  Only works with newer gcc versions.
+
+config DEBUG_INFO_SPLIT
+	bool "Produce split debuginfo in .dwo files"
+	depends on DEBUG_INFO
+	help
+	  Generate debug info into separate .dwo files. This significantly
+	  reduces the build directory size for builds with DEBUG_INFO,
+	  because it stores the information only once on disk in .dwo
+	  files instead of multiple times in object files and executables.
+	  In addition the debug information is also compressed.
+
+	  Requires recent gcc (4.7+) and recent gdb/binutils.
+	  Any tool that packages or reads debug information would need
+	  to know about the .dwo files and include them.
+	  Incompatible with older versions of ccache.
+
+config DEBUG_INFO_DWARF4
+	bool "Generate dwarf4 debuginfo"
+	depends on DEBUG_INFO
+	help
+	  Generate dwarf4 debug info. This requires recent versions
+	  of gcc and gdb. It makes the debug information larger.
+	  But it significantly improves the success of resolving
+	  variables in gdb on optimized code.
+
+config ENABLE_MUST_CHECK
+	bool "Enable __must_check logic"
+	default y
+	help
+	  Enable the __must_check logic in the kernel build.  Disable this to
+	  suppress the "warning: ignoring return value of 'foo', declared with
+	  attribute warn_unused_result" messages.
+
+config FRAME_WARN
+	int "Warn for stack frames larger than (needs gcc 4.4)"
+	range 0 8192
+	default 1280 if (!64BIT && PARISC)
+	default 1024 if (!64BIT && !PARISC)
+	default 2048 if 64BIT
+	help
+	  Tell gcc to warn at build time for stack frames larger than this.
+	  Setting this too low will cause a lot of warnings.
+	  Setting it to 0 disables the warning.
+	  Requires gcc 4.4
+
+config STRIP_ASM_SYMS
+	bool "Strip assembler-generated symbols during link"
+	default n
+	help
+	  Strip internal assembler-generated symbols during a link (symbols
+	  that look like '.Lxxx') so they don't pollute the output of
+	  get_wchan() and suchlike.
+
+config DEBUG_SECTION_MISMATCH
+	bool "Enable full Section mismatch analysis"
+	help
+	  The section mismatch analysis checks if there are illegal
+	  references from one section to another section.
+	  During linktime or runtime, some sections are dropped;
+	  any use of code/data previously in these sections would
+	  most likely result in an oops.
+	  In the code, functions and variables are annotated with
+	  __init,, etc. (see the full list in include/linux/init.h),
+	  which results in the code/data being placed in specific sections.
+	  The section mismatch analysis is always performed after a full
+	  kernel build, and enabling this option causes the following
+	  additional steps to occur:
+	  - Add the option -fno-inline-functions-called-once to gcc commands.
+	    When inlining a function annotated with __init in a non-init
+	    function, we would lose the section information and thus
+	    the analysis would not catch the illegal reference.
+	    This option tells gcc to inline less (but it does result in
+	    a larger kernel).
+
+#
+# Select this config option from the architecture Kconfig, if it
+# is preferred to always offer frame pointers as a config
+# option on the architecture (regardless of KERNEL_DEBUG):
+#
+config ARCH_WANT_FRAME_POINTERS
+	bool
+
+config FRAME_POINTER
+	bool "Compile the kernel with frame pointers"
+	depends on DEBUG_KERNEL && (M68K || SUPERH) || ARCH_WANT_FRAME_POINTERS
+	default y if (DEBUG_INFO) || ARCH_WANT_FRAME_POINTERS
+	help
+	  If you say Y here the resulting kernel image will be slightly
+	  larger and slower, but it gives very useful debugging information
+	  in case of kernel bugs. (precise oopses/stacktraces/warnings)
+
+config STACK_VALIDATION
+	bool "Compile-time stack metadata validation"
+	depends on HAVE_STACK_VALIDATION
+	default n
+	help
+	  Add compile-time checks to validate stack metadata, including frame
+	  pointers (if CONFIG_FRAME_POINTER is enabled).  This helps ensure
+	  that runtime stack traces are more reliable.
+
+	  This is also a prerequisite for generation of ORC unwind data, which
+	  is needed for CONFIG_UNWINDER_ORC.
+
+	  For more information, see
+	  tools/objtool/Documentation/stack-validation.txt.
+
+endmenu # "Compiler options"
+
+config DEBUG_KERNEL
+	bool "Kernel debugging"
+	help
+	  Say Y here if you are developing drivers or trying to debug and
+	  identify kernel problems.
+
+source "kernel/arch/$(ARCH)/Kconfig.debug"
+
+endmenu # Kernel hacking

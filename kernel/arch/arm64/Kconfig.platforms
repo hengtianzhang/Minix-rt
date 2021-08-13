@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0
+
+menu "Platform selection"
+
+config ARCH_ORIGIN
+	bool "Orign platform"
+
+endmenu

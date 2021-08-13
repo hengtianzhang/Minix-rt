@@ -33,10 +33,7 @@ enable_language(C CXX ASM)
 # is the last station. See "logical_target_for_kernel_elf" below for
 # details.
 set(CMAKE_EXECUTABLE_SUFFIX .elf)
-set(KERNEL_PREBUILT_EXECUTABLE kernel_prebuilt)
 set(KERNEL_FINAL_EXECUTABLE    kernel_final)
-
-define_property(GLOBAL PROPERTY PROPERTY_OUTPUT_FORMAT BRIEF_DOCS " " FULL_DOCS " ")
 
 add_library(kernel_interface INTERFACE)
 
@@ -52,8 +49,6 @@ kernel_compile_definitions(
 	__KERNEL__
 	__SEL4M__=1
 )
-
-kernel_compile_definitions($<TARGET_PROPERTY:compiler,security_fortify>)
 
 if(BUILD_VERSION)
   kernel_compile_definitions(

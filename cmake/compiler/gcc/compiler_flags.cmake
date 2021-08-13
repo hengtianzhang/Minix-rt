@@ -1,8 +1,8 @@
 # Those are flags not to test for CXX compiler.
 list(APPEND CXX_EXCLUDED_OPTIONS
-  -Werror=implicit-int
-  -Wold-style-definition
-  -Wno-pointer-sign
+	-Werror=implicit-int
+	-Wold-style-definition
+	-Wno-pointer-sign
 )
 
 ########################################################
@@ -14,9 +14,9 @@ list(APPEND CXX_EXCLUDED_OPTIONS
 #####################################################
 set_compiler_property(PROPERTY no_optimization -O0)
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS "4.8.0")
-  set_compiler_property(PROPERTY optimization_debug -O0)
+	set_compiler_property(PROPERTY optimization_debug -O0)
 else()
-  set_compiler_property(PROPERTY optimization_debug -Og)
+	set_compiler_property(PROPERTY optimization_debug -Og)
 endif()
 set_compiler_property(PROPERTY optimization_speed -O2)
 set_compiler_property(PROPERTY optimization_size  -Os)
@@ -27,11 +27,11 @@ set_compiler_property(PROPERTY optimization_size  -Os)
 
 # GCC Option standard warning base in sel4m
 set_compiler_property(PROPERTY warning_base
-    -Wall
-    -Wformat
-    -Wformat-security
-    -Wno-format-zero-length
-    -Wno-main
+		-Wall
+		-Wformat
+		-Wformat-security
+		-Wno-format-zero-length
+		-Wno-main
 )
 
 check_set_compiler_property(APPEND PROPERTY warning_base -Wno-pointer-sign)
@@ -43,53 +43,53 @@ check_set_compiler_property(APPEND PROPERTY warning_base -Wpointer-arith)
 check_set_compiler_property(APPEND PROPERTY warning_base -Wexpansion-to-defined)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "9.1.0")
-  set_compiler_property(APPEND PROPERTY warning_base
-                        # FIXME: Remove once #16587 is fixed
-                        -Wno-address-of-packed-member
-  )
+	set_compiler_property(APPEND PROPERTY warning_base
+									# FIXME: Remove once #16587 is fixed
+									-Wno-address-of-packed-member
+	)
 endif()
 
 
 # GCC options for warning levels 1, 2, 3, when using `-DW=[1|2|3]`
 set_compiler_property(PROPERTY warning_dw_1
-                      -Waggregate-return
-                      -Wcast-align
-                      -Wdisabled-optimization
-                      -Wnested-externs
-                      -Wshadow
+									-Waggregate-return
+									-Wcast-align
+									-Wdisabled-optimization
+									-Wnested-externs
+									-Wshadow
 )
 check_set_compiler_property(APPEND PROPERTY warning_dw_1
-                            -Wlogical-op
-                            -Wmissing-field-initializers
+									-Wlogical-op
+									-Wmissing-field-initializers
 )
 
 set_compiler_property(PROPERTY warning_dw_2
-                      -Wbad-function-cast
-                      -Wcast-qual
-                      -Wconversion
-                      -Wpacked
-                      -Wpadded
-                      -Wpointer-arith
-                      -Wredundant-decls
-                      -Wswitch-default
+									-Wbad-function-cast
+									-Wcast-qual
+									-Wconversion
+									-Wpacked
+									-Wpadded
+									-Wpointer-arith
+									-Wredundant-decls
+									-Wswitch-default
 )
 check_set_compiler_property(APPEND PROPERTY warning_dw_2
-                            -Wpacked-bitfield-compat
-                            -Wvla
+									-Wpacked-bitfield-compat
+									-Wvla
 )
 set_compiler_property(PROPERTY warning_dw_3
-                      -Wbad-function-cast
-                      -Wcast-qual
-                      -Wconversion
-                      -Wpacked
-                      -Wpadded
-                      -Wpointer-arith
-                      -Wredundant-decls
-                      -Wswitch-default
+									-Wbad-function-cast
+									-Wcast-qual
+									-Wconversion
+									-Wpacked
+									-Wpadded
+									-Wpointer-arith
+									-Wredundant-decls
+									-Wswitch-default
 )
 check_set_compiler_property(APPEND PROPERTY warning_dw_3
-                            -Wpacked-bitfield-compat
-                            -Wvla
+									-Wpacked-bitfield-compat
+									-Wvla
 )
 
 check_set_compiler_property(PROPERTY warning_extended -Wno-unused-but-set-variable)
@@ -99,10 +99,10 @@ check_set_compiler_property(PROPERTY warning_error_implicit_int -Werror=implicit
 set_compiler_property(PROPERTY warning_error_misra_sane -Werror=vla)
 
 set_compiler_property(PROPERTY warning_error_coding_guideline
-                      -Werror=vla
-                      -Wimplicit-fallthrough=2
-                      -Wconversion
-                      -Woverride-init
+									-Werror=vla
+									-Wimplicit-fallthrough=2
+									-Wconversion
+									-Woverride-init
 )
 
 ###########################################################################
@@ -112,13 +112,8 @@ set_compiler_property(PROPERTY warning_error_coding_guideline
 # GCC compiler flags for C standard. The specific standard must be appended by user.
 set_compiler_property(PROPERTY cstd -std=)
 
-if (NOT CONFIG_NEWLIB_LIBC AND
-    NOT COMPILER STREQUAL "xcc" AND
-    NOT SEL4M_TOOLCHAIN STREQUAL "espressif" AND
-    NOT CONFIG_NATIVE_APPLICATION)
-  set_compiler_property(PROPERTY nostdinc -nostdinc)
-  set_compiler_property(APPEND PROPERTY nostdinc_include ${NOSTDINC})
-endif()
+set_compiler_property(PROPERTY nostdinc -nostdinc)
+set_compiler_property(APPEND PROPERTY nostdinc_include ${NOSTDINC})
 
 # Required C++ flags when using gcc
 set_property(TARGET compiler-cpp PROPERTY required "-fcheck-new")
@@ -129,7 +124,7 @@ set_property(TARGET compiler-cpp PROPERTY dialect_cpp11 "-std=c++11" "-Wno-regis
 set_property(TARGET compiler-cpp PROPERTY dialect_cpp14 "-std=c++14" "-Wno-register")
 set_property(TARGET compiler-cpp PROPERTY dialect_cpp17 "-std=c++17" "-Wno-register")
 set_property(TARGET compiler-cpp PROPERTY dialect_cpp2a "-std=c++2a"
-  "-Wno-register" "-Wno-volatile")
+	"-Wno-register" "-Wno-volatile")
 
 # Disable exeptions flag in C++
 set_property(TARGET compiler-cpp PROPERTY no_exceptions "-fno-exceptions")
@@ -151,12 +146,10 @@ set_compiler_property(PROPERTY security_canaries -fstack-protector-all)
 # Only a valid option with GCC 7.x and above, so let's do check and set.
 check_set_compiler_property(APPEND PROPERTY security_canaries -mstack-protector-guard=global)
 
-if(NOT CONFIG_NO_OPTIMIZATIONS)
-  # _FORTIFY_SOURCE: Detect common-case buffer overflows for certain functions
-  # _FORTIFY_SOURCE=1 : Compile-time checks (requires -O1 at least)
-  # _FORTIFY_SOURCE=2 : Additional lightweight run-time checks
-  set_compiler_property(PROPERTY security_fortify _FORTIFY_SOURCE=2)
-endif()
+# _FORTIFY_SOURCE: Detect common-case buffer overflows for certain functions
+# _FORTIFY_SOURCE=1 : Compile-time checks (requires -O1 at least)
+# _FORTIFY_SOURCE=2 : Additional lightweight run-time checks
+set_compiler_property(PROPERTY security_fortify _FORTIFY_SOURCE=)
 
 # gcc flag for a hosted (no-freestanding) application
 check_set_compiler_property(APPEND PROPERTY hosted -fno-freestanding)

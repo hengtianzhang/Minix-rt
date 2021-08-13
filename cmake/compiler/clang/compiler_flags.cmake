@@ -22,12 +22,12 @@ set_compiler_property(PROPERTY diagnostic -fcolor-diagnostics)
 
 # clang option standard warning base in sel4m
 set_compiler_property(PROPERTY warning_base
-                      -Wall
-                      -Wformat
-                      -Wformat-security
-                      -Wno-format-zero-length
-                      -Wno-main
-                      -Wno-typedef-redefinition
+					  -Wall
+					  -Wformat
+					  -Wformat-security
+					  -Wno-format-zero-length
+					  -Wno-main
+					  -Wno-typedef-redefinition
 )
 
 check_set_compiler_property(APPEND PROPERTY warning_base -Wno-pointer-sign)
@@ -37,71 +37,71 @@ check_set_compiler_property(APPEND PROPERTY warning_base -Wpointer-arith)
 
 # clang options for warning levels 1, 2, 3, when using `-DW=[1|2|3]`
 set_compiler_property(PROPERTY warning_dw_1
-                      -Wextra
-                      -Wunused
-                      -Wno-unused-parameter
-                      -Wmissing-declarations
-                      -Wmissing-format-attribute
+					  -Wextra
+					  -Wunused
+					  -Wno-unused-parameter
+					  -Wmissing-declarations
+					  -Wmissing-format-attribute
 )
 check_set_compiler_property(APPEND PROPERTY warning_dw_1
-                            -Wold-style-definition
-                            -Wmissing-prototypes
-                            -Wmissing-include-dirs
-                            -Wunused-but-set-variable
-                            -Wno-missing-field-initializers
+							-Wold-style-definition
+							-Wmissing-prototypes
+							-Wmissing-include-dirs
+							-Wunused-but-set-variable
+							-Wno-missing-field-initializers
 )
 
 set_compiler_property(PROPERTY warning_dw_2
-                      -Waggregate-return
-                      -Wcast-align
-                      -Wdisabled-optimization
-                      -Wnested-externs
-                      -Wshadow
+					  -Waggregate-return
+					  -Wcast-align
+					  -Wdisabled-optimization
+					  -Wnested-externs
+					  -Wshadow
 )
 
 check_set_compiler_property(APPEND PROPERTY warning_dw_2
-                            -Wlogical-op
-                            -Wmissing-field-initializers
+							-Wlogical-op
+							-Wmissing-field-initializers
 )
 
 set_compiler_property(PROPERTY warning_dw_3
-                      -Wbad-function-cast
-                      -Wcast-qual
-                      -Wconversion
-                      -Wpacked
-                      -Wpadded
-                      -Wpointer-arith
-                      -Wredundant-decls
-                      -Wswitch-default
+					  -Wbad-function-cast
+					  -Wcast-qual
+					  -Wconversion
+					  -Wpacked
+					  -Wpadded
+					  -Wpointer-arith
+					  -Wredundant-decls
+					  -Wswitch-default
 )
 
 check_set_compiler_property(APPEND PROPERTY warning_dw_3
-                            -Wpacked-bitfield-compat
-                            -Wvla
+							-Wpacked-bitfield-compat
+							-Wvla
 )
 
 
 check_set_compiler_property(PROPERTY warning_extended
-                            #FIXME: need to fix all of those
-                            -Wno-sometimes-uninitialized
-                            -Wno-shift-overflow
-                            -Wno-missing-braces
-                            -Wno-self-assign
-                            -Wno-address-of-packed-member
-                            -Wno-unused-function
-                            -Wno-initializer-overrides
-                            -Wno-section
-                            -Wno-unknown-warning-option
-                            -Wno-unused-variable
-                            -Wno-format-invalid-specifier
-                            -Wno-gnu
-                            # comparison of unsigned expression < 0 is always false
-                            -Wno-tautological-compare
+							#FIXME: need to fix all of those
+							-Wno-sometimes-uninitialized
+							-Wno-shift-overflow
+							-Wno-missing-braces
+							-Wno-self-assign
+							-Wno-address-of-packed-member
+							-Wno-unused-function
+							-Wno-initializer-overrides
+							-Wno-section
+							-Wno-unknown-warning-option
+							-Wno-unused-variable
+							-Wno-format-invalid-specifier
+							-Wno-gnu
+							# comparison of unsigned expression < 0 is always false
+							-Wno-tautological-compare
 )
 
 set_compiler_property(PROPERTY warning_error_coding_guideline
-                      -Werror=vla
-                      -Wimplicit-fallthrough
-                      -Wconversion
-                      -Woverride-init
+					  -Werror=vla
+					  -Wimplicit-fallthrough
+					  -Wconversion
+					  -Woverride-init
 )

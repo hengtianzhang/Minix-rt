@@ -3,20 +3,14 @@
 # Configures CMake for using GCC
 
 find_program(CMAKE_C_COMPILER gcc)
-
-if(CONFIG_CPLUSPLUS)
-  set(cplusplus_compiler g++)
-else()
-  if(EXISTS g++)
-    set(cplusplus_compiler g++)
-  else()
-    # When the toolchain doesn't support C++, and we aren't building
-    # with C++ support just set it to something so CMake doesn't
-    # crash, it won't actually be called
-    set(cplusplus_compiler ${CMAKE_C_COMPILER})
-  endif()
+if (NOT CMAKE_C_COMPILER)
+	message(FATAL_ERROR "C compiler gcc not found - Please check your toolchain installation")
 endif()
-find_program(CMAKE_CXX_COMPILER ${cplusplus_compiler}     CACHE INTERNAL " " FORCE)
+
+find_program(CMAKE_CXX_COMPILER g++)
+if (NOT CMAKE_CXX_COMPILER)
+	message(FATAL_ERROR "C compiler g++ not found - Please check your toolchain installation")
+endif()
 
 # The x32 version of libgcc is usually not available (can't trust gcc
 # -mx32 --print-libgcc-file-name) so don't fail to build for something

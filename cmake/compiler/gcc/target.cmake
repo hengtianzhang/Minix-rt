@@ -1,28 +1,23 @@
 # SPDX-License-Identifier: Apache-2.0
 
+set_ifndef(CC gcc)
 set_ifndef(C++ g++)
 
 # Configures CMake for using GCC, this script is re-used by several
 # GCC-based toolchains
+if(DEFINED TOOLCHAIN_HOME)
+  set(find_program_gcc_args PATHS ${TOOLCHAIN_HOME} NO_DEFAULT_PATH)
+endif()
 
 find_program(CMAKE_C_COMPILER ${CROSS_COMPILE}${CC} ${find_program_gcc_args})
 if(${CMAKE_C_COMPILER} STREQUAL CMAKE_C_COMPILER-NOTFOUND)
   message(FATAL_ERROR "C compiler ${CROSS_COMPILE}${CC} not found - Please check your toolchain installation")
 endif()
 
-if(CONFIG_CPLUSPLUS)
-  set(cplusplus_compiler ${CROSS_COMPILE}${C++})
-else()
-  if(EXISTS ${CROSS_COMPILE}${C++})
-    set(cplusplus_compiler ${CROSS_COMPILE}${C++})
-  else()
-    # When the toolchain doesn't support C++, and we aren't building
-    # with C++ support just set it to something so CMake doesn't
-    # crash, it won't actually be called
-    set(cplusplus_compiler ${CMAKE_C_COMPILER})
-  endif()
+find_program(CMAKE_CXX_COMPILER ${CROSS_COMPILE}${C++} ${find_program_gcc_args})
+if(${CMAKE_CXX_COMPILER} STREQUAL CMAKE_CXX_COMPILER-NOTFOUND)
+  message(FATAL_ERROR "C compiler ${CROSS_COMPILE}${C++} not found - Please check your toolchain installation")
 endif()
-find_program(CMAKE_CXX_COMPILER ${cplusplus_compiler} ${find_program_gcc_args})
 
 set(NOSTDINC "")
 

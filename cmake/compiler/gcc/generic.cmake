@@ -1,32 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 set_ifndef(CC gcc)
+set_ifndef(C++ g++)
 
-if(DEFINED TOOLCHAIN_HOME)
-  set(find_program_gcc_args PATHS ${TOOLCHAIN_HOME} NO_DEFAULT_PATH)
+find_program(CMAKE_C_COMPILER ${CC})
+if (NOT CMAKE_C_COMPILER)
+	message(FATAL_ERROR "C compiler ${CC} not found - Please check your toolchain installation")
 endif()
 
-find_program(CMAKE_C_COMPILER ${CROSS_COMPILE}${CC}   ${find_program_gcc_args})
-
-if(CMAKE_C_COMPILER STREQUAL CMAKE_C_COMPILER-NOTFOUND)
-  message(FATAL_ERROR "sel4m was unable to find the toolchain. Is the environment misconfigured?
-User-configuration:
-SEL4M_TOOLCHAIN: ${SEL4M_TOOLCHAIN}
-Internal variables:
-CROSS_COMPILE: ${CROSS_COMPILE}
-TOOLCHAIN_HOME: ${TOOLCHAIN_HOME}
-")
-endif()
-
-execute_process(
-  COMMAND ${CMAKE_C_COMPILER} --version
-  RESULT_VARIABLE ret
-  OUTPUT_QUIET
-  ERROR_QUIET
-  )
-if(ret)
-  message(FATAL_ERROR "Executing the below command failed. Are permissions set correctly?
-'${CMAKE_C_COMPILER} --version'
-"
-    )
+find_program(CMAKE_CXX_COMPILER ${C++})
+if (NOT CMAKE_CXX_COMPILER)
+	message(FATAL_ERROR "C compiler ${C++} not found - Please check your toolchain installation")
 endif()

@@ -81,3 +81,16 @@ macro(toolchain_cc_nostdinc location)
     sel4m_compile_options( -nostdinc ${location})
   endif()
 endmacro()
+
+if((NOT (DEFINED CROSS_COMPILE)) AND (DEFINED ENV{CROSS_COMPILE}))
+  set(CROSS_COMPILE $ENV{CROSS_COMPILE})
+endif()
+
+set(CROSS_COMPILE ${CROSS_COMPILE} CACHE STRING "")
+assert(CROSS_COMPILE "CROSS_COMPILE is not set")
+
+string(REGEX REPLACE "-$" "" triple ${CROSS_COMPILE})
+
+set(CMAKE_C_COMPILER_TARGET   ${triple})
+set(CMAKE_ASM_COMPILER_TARGET ${triple})
+set(CMAKE_CXX_COMPILER_TARGET ${triple})

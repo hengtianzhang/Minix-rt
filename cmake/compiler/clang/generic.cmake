@@ -1,7 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
-if(DEFINED TOOLCHAIN_HOME)
-  set(find_program_clang_args PATHS ${TOOLCHAIN_HOME} NO_DEFAULT_PATH)
+find_program(CMAKE_C_COMPILER clang)
+if (NOT CMAKE_C_COMPILER)
+	message(FATAL_ERROR "C compiler clang not found - Please check your toolchain installation")
 endif()
 
-find_program(CMAKE_C_COMPILER clang ${find_program_clang_args})
+find_program(CMAKE_CXX_COMPILER clang++)
+if (NOT CMAKE_CXX_COMPILER)
+	message(FATAL_ERROR "C compiler clang++ not found - Please check your toolchain installation")
+endif()

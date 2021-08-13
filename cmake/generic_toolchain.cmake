@@ -1,5 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
+unset(CMAKE_C_COMPILER)
+unset(CMAKE_C_COMPILER CACHE)
+
+unset(CMAKE_CXX_COMPILER)
+unset(CMAKE_CXX_COMPILER CACHE)
+
+unset(CMAKE_LINKER)
+unset(CMAKE_LINKER CACHE)
+
 if(NOT TOOLCHAIN_ROOT)
   if(DEFINED ENV{TOOLCHAIN_ROOT})
     # Support for out-of-tree toolchain

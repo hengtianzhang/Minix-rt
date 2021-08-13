@@ -1,6 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
-find_program(CMAKE_LINKER     ld.lld )
+if(DEFINED TOOLCHAIN_HOME)
+  # When Toolchain home is defined, then we are cross-compiling, so only look
+  # for linker in that path, else we are using host tools.
+  set(LLD_SEARCH_PATH PATHS ${TOOLCHAIN_HOME} NO_DEFAULT_PATH)
+endif()
+
+find_program(CMAKE_LINKER     ld.lld ${LLD_SEARCH_PATH})
 
 set_ifndef(LINKERFLAGPREFIX -Wl)
 

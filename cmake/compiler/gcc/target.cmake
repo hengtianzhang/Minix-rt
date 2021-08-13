@@ -21,70 +21,14 @@ endif()
 
 set(NOSTDINC "")
 
-# Note that NOSYSDEF_CFLAG may be an empty string, and
-# set_ifndef() does not work with empty string.
-if(NOT DEFINED NOSYSDEF_CFLAG)
-  set(NOSYSDEF_CFLAG -undef)
-endif()
+execute_process(
+	COMMAND ${CMAKE_C_COMPILER} --print-file-name=include
+	OUTPUT_VARIABLE _OUTPUT
+)
 
-foreach(file_name include/stddef.h include-fixed/limits.h)
-  execute_process(
-    COMMAND ${CMAKE_C_COMPILER} --print-file-name=${file_name}
-    OUTPUT_VARIABLE _OUTPUT
-    )
-  get_filename_component(_OUTPUT "${_OUTPUT}" DIRECTORY)
-  string(REGEX REPLACE "\n" "" _OUTPUT "${_OUTPUT}")
+string(REGEX REPLACE "\n" "" _OUTPUT "${_OUTPUT}")
 
-  list(APPEND NOSTDINC ${_OUTPUT})
-endforeach()
-
-include(${SEL4M_BASE}/cmake/gcc-m-cpu.cmake)
-
-if("${ARCH}" STREQUAL "arm")
-  include(${SEL4M_BASE}/cmake/compiler/gcc/target_arm.cmake)
-elseif("${ARCH}" STREQUAL "arm64")
-  include(${SEL4M_BASE}/cmake/compiler/gcc/target_arm64.cmake)
-elseif("${ARCH}" STREQUAL "arc")
-  list(APPEND TOOLCHAIN_C_FLAGS
-    -mcpu=${GCC_M_CPU}
-    )
-elseif("${ARCH}" STREQUAL "riscv")
-  include(${CMAKE_CURRENT_LIST_DIR}/target_riscv.cmake)
-elseif("${ARCH}" STREQUAL "x86")
-  include(${CMAKE_CURRENT_LIST_DIR}/target_x86.cmake)
-elseif("${ARCH}" STREQUAL "sparc")
-  include(${CMAKE_CURRENT_LIST_DIR}/target_sparc.cmake)
-endif()
-
-if(NOT no_libgcc)
-  # This libgcc code is partially duplicated in compiler/*/target.cmake
-  execute_process(
-    COMMAND ${CMAKE_C_COMPILER} ${TOOLCHAIN_C_FLAGS} --print-libgcc-file-name
-    OUTPUT_VARIABLE LIBGCC_FILE_NAME
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-  assert_exists(LIBGCC_FILE_NAME)
-
-  get_filename_component(LIBGCC_DIR ${LIBGCC_FILE_NAME} DIRECTORY)
-
-  assert_exists(LIBGCC_DIR)
-
-  LIST(APPEND LIB_INCLUDE_DIR "-L\"${LIBGCC_DIR}\"")
-  LIST(APPEND TOOLCHAIN_LIBS gcc)
-endif()
-
-if(SYSROOT_DIR)
-  # The toolchain has specified a sysroot dir that we can use to set
-  # the libc path's
-  execute_process(
-    COMMAND ${CMAKE_C_COMPILER} ${TOOLCHAIN_C_FLAGS} --print-multi-directory
-    OUTPUT_VARIABLE NEWLIB_DIR
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-  set(LIBC_LIBRARY_DIR "\"${SYSROOT_DIR}\"/lib/${NEWLIB_DIR}")
-endif()
+list(APPEND NOSTDINC ${_OUTPUT})
 
 # For CMake to be able to test if a compiler flag is supported by the
 # toolchain we need to give CMake the necessary flags to compile and

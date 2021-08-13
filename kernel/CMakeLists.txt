@@ -154,6 +154,8 @@ get_property(HEAD_S GLOBAL PROPERTY KERNEL_HEAD_S)
 if(NOT EXISTS ${HEAD_S})
 	message("Could not find header file: HEAD_S")
 endif()
+kernel_compile_options($<TARGET_PROPERTY:compiler,nostdinc>)
+target_include_directories(kernel_interface SYSTEM INTERFACE $<TARGET_PROPERTY:compiler,nostdinc_include>)
 
 get_property(CSTD GLOBAL PROPERTY CSTD)
 set_ifndef(CSTD gnu89)

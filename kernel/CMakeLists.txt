@@ -50,10 +50,38 @@ kernel_compile_definitions(
 	__SEL4M__=1
 )
 
+# Common toolchain-agnostic assembly flags
+kernel_compile_options(
+  $<$<COMPILE_LANGUAGE:ASM>:-D__ASSEMBLY__>
+)
+
 if(BUILD_VERSION)
   kernel_compile_definitions(
     BUILD_VERSION=${BUILD_VERSION}
   )
+endif()
+
+kernel_compile_options($<$<COMPILE_LANGUAGE:C>:
+	-Wundef -Werror=strict-prototypes -Wno-trigraphs
+	-fno-strict-aliasing -fshort-wchar
+	-Werror-implicit-function-declaration
+	-Wno-format-security
+	>
+)
+
+if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+execute_process(
+	COMMAND which
+	${CMAKE_LINKER}
+	OUTPUT_VARIABLE GCC_TOOLCHAIN_DIR
+)
+get_filename_component(GCC_TOOLCHAIN_DIR ${GCC_TOOLCHAIN_DIR} DIRECTORY)
+kernel_cc_option(--prefix=${GCC_TOOLCHAIN_DIR})
+
+get_filename_component(SECOND_FOLDER ${GCC_TOOLCHAIN_DIR} DIRECTORY)
+kernel_cc_option(--gcc-toolchain=${SECOND_FOLDER})
+
+kernel_cc_option(-no-integrated-as)
 endif()
 
 # @Intent: Obtain compiler optimizations flags and store in variables
@@ -104,11 +132,6 @@ kernel_compile_options($<TARGET_PROPERTY:compiler,no_common>)
 # ToDo: Remember to get feedback from Oticon on this, as they might use the `ASM_BASE_FLAG` since this is done this way.
 kernel_compile_options($<$<COMPILE_LANGUAGE:ASM>:$<TARGET_PROPERTY:asm,required>>)
 
-# Common toolchain-agnostic assembly flags
-kernel_compile_options(
-  $<$<COMPILE_LANGUAGE:ASM>:-D__ASSEMBLY__>
-)
-
 # @Intent: Add the basic toolchain warning flags
 kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_base>>)
 kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_base>>)
@@ -149,8 +172,7 @@ kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,
 include(${SEL4M_BASE}/cmake/kernel_extra_flags.cmake)
 
 kernel_cc_option(-fno-asynchronous-unwind-tables)
-kernel_cc_option(-fno-pie)
-kernel_cc_option(-fno-pic)
+kernel_cc_option(-fno-PIE)
 kernel_cc_option(-fno-strict-overflow)
 
 kernel_cc_option(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=CMAKE_SOURCE_DIR)

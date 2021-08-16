@@ -175,13 +175,6 @@ config FORCE_MAX_ZONEORDER
 	  However for 4K, we choose a higher default value, 11 as opposed to 10, giving us
 	  4M allocations matching the default size used by generic code.
 
-config CC_HAVE_STACKPROTECTOR_SYSREG
-	def_bool $(cc-option,-mstack-protector-guard=sysreg -mstack-protector-guard-reg=sp_el0 -mstack-protector-guard-offset=0)
-
-config STACKPROTECTOR_PER_TASK
-	def_bool y
-	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_SYSREG
-
 config MEMBLOCK_REGIONS_NUM
 	int "Memblock regions numbers"
 	default 128

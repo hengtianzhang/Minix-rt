@@ -49,3 +49,5 @@ find_program(BOSSAC bossac)
 find_program(IMGTOOL imgtool)
 
 find_program(MKIMAGE mkimage)
+
+find_program(SHELL sh REQUIRED)

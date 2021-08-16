@@ -45,7 +45,7 @@ kernel_library_named(kernel)
 kernel_include_directories(
 	include
 	arch/${ARCH}/include
-	${APPLICATION_BINARY_DIR}/include/generated
+	${APPLICATION_BINARY_DIR}/include
 )
 
 kernel_compile_definitions(
@@ -321,6 +321,8 @@ add_dependencies(kernel_generated_headers
 
 # Read list content
 get_property(KERNEL_BUILT_IN_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS)
+# Read list content
+get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIBS)
 
 foreach(kernel_built_in_lib ${KERNEL_BUILT_IN_LIBS_PROPERTY})
   # TODO: Could this become an INTERFACE property of zephyr_interface?
@@ -334,18 +336,36 @@ endif()
 
 kernel_get_include_directories_for_lang(C KERNEL_INCLUDE_DIRS STRIP_PREFIX)
 
-#configure_linker_script(
-#	linker_zephyr_prebuilt.cmd
-#	"-DLINKER_ZEPHYR_PREBUILT"
-#	${APP_SMEM_ALIGNED_DEP}
-#	${KOBJECT_LINKER_DEP}
-#	${CODE_RELOCATION_DEP}
-#	zephyr_generated_headers
-#)
+configure_linker_script(
+	${PROJECT_BINARY_DIR}/linker.lds
+	"-D__ASSEMBLY__ -DLINKER_SCRIPT -U${ARCH}"
+	kernel_generated_headers
+)
+
+add_custom_target(
+	linker_kernel_prebuilt_script_target
+	DEPENDS
+	${PROJECT_BINARY_DIR}/linker.lds
+)
+
+set_property(TARGET
+	linker_kernel_prebuilt_script_target
+	PROPERTY INCLUDE_DIRECTORIES
+	${KERNEL_INCLUDE_DIRS}
+)
 
 get_property(HEAD_S GLOBAL PROPERTY KERNEL_HEAD_S)
 if(NOT EXISTS ${HEAD_S})
 	message("Could not find header file: HEAD_S")
 endif()
+
+add_executable(${KERNEL_FINAL_EXECUTABLE} ${HEAD_S})
+toolchain_ld_link_kernel_elf(
+	TARGET_ELF            ${KERNEL_FINAL_EXECUTABLE}
+	OUTPUT_MAP            ${PROJECT_BINARY_DIR}/${KERNEL_FINAL_EXECUTABLE}.map
+	LINKER_SCRIPT         ${PROJECT_BINARY_DIR}/linker.lds
+)
+set_property(TARGET   ${KERNEL_FINAL_EXECUTABLE} PROPERTY LINK_DEPENDS ${PROJECT_BINARY_DIR}/linker.lds)
+add_dependencies(${KERNEL_FINAL_EXECUTABLE} linker_kernel_prebuilt_script_target)
 
 kernel_library_sources(init/main.c init/test.S)

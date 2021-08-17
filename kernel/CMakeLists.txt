@@ -51,6 +51,10 @@ set(KERNEL_FINAL_EXECUTABLE    kernel_final)
 # Set some phony targets to collect dependencies
 set(ASM_OFFSETS_H_TARGET           asm_offsets_h)
 set(TIMECONST_H_TARGET           timeconst_h)
+
+# FIXME
+# Changes to the link script linker.lds and target versiion do not result 
+# in an update to compile.h "please clear the build directory to manually update"
 set(COMPILE_H_TARGET           compile_h)
 
 add_library(kernel_interface INTERFACE)
@@ -422,12 +426,7 @@ set_property(TARGET
 	${KERNEL_INCLUDE_DIRS}
 )
 
-get_property(HEAD_S GLOBAL PROPERTY KERNEL_HEAD_S)
-if(NOT EXISTS ${HEAD_S})
-	message("Could not find header file: HEAD_S")
-endif()
-
-add_executable(${KERNEL_FINAL_EXECUTABLE} ${HEAD_S})
+add_executable(${KERNEL_FINAL_EXECUTABLE} ${SEL4M_BASE}/misc/empty.c)
 toolchain_ld_link_kernel_elf(
 	TARGET_ELF            ${KERNEL_FINAL_EXECUTABLE}
 	OUTPUT_MAP            ${PROJECT_BINARY_DIR}/${KERNEL_FINAL_EXECUTABLE}.map

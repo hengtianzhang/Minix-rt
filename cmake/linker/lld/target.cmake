@@ -54,11 +54,39 @@ macro(configure_linker_script linker_script_gen linker_pass_define location)
     -E ${LINKER_SCRIPT}
     -P # Prevent generation of debug `#line' directives.
     -o ${linker_script_gen}
+		BYPRODUCTS
+		${linker_script_gen}.dep
     VERBATIM
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     COMMAND_EXPAND_LISTS
   )
 endmacro()
+
+function(toolchain_ld_link_kernel_elf)
+	cmake_parse_arguments(
+		TOOLCHAIN_LD_LINK_ELF                                     # prefix of output variables
+		""                                                        # list of names of the boolean arguments
+		"TARGET_ELF;OUTPUT_MAP;LINKER_SCRIPT"                     # list of names of scalar arguments
+		"LIBRARIES_PRE_SCRIPT;LIBRARIES_POST_SCRIPT;DEPENDENCIES" # list of names of list arguments
+		${ARGN}                                                   # input args to parse
+	)
+
+	target_link_libraries(
+		${TOOLCHAIN_LD_LINK_ELF_TARGET_ELF}
+		${use_linker}
+		${TOPT}
+		${TOOLCHAIN_LD_LINK_ELF_LINKER_SCRIPT}
+		${LINKERFLAGPREFIX},-Map=${TOOLCHAIN_LD_LINK_ELF_OUTPUT_MAP}
+		${LINKERFLAGPREFIX},--whole-archive
+		${KERNEL_BUILT_IN_LIBS_PROPERTY}
+		${LINKERFLAGPREFIX},--no-whole-archive
+		${LINKERFLAGPREFIX},--start-group
+		${KERNEL_INTERFACE_LIBS_PROPERTY}
+		${LINKERFLAGPREFIX},--end-group
+		-nostdlib -static
+		${TOOLCHAIN_LD_LINK_ELF_DEPENDENCIES}
+	)
+endfunction()
 
 # Force symbols to be entered in the output file as undefined symbols
 function(toolchain_ld_force_undefined_symbols location)

@@ -51,3 +51,5 @@ find_program(IMGTOOL imgtool)
 find_program(MKIMAGE mkimage)
 
 find_program(SHELL sh REQUIRED)
+
+find_program(GREP grep REQUIRED)

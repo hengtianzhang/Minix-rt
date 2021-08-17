@@ -73,6 +73,12 @@ config DEFAULT_HOSTNAME
 	  but you may wish to use a different default here to make a minimal
 	  system more usable with less configuration.
 
+config KERNEL_BIN_NAME
+	string "The kernel binary name"
+	default "kernel"
+	help
+	  This option sets the name of the generated kernel binary.
+
 #
 # For architectures that know their GCC __int128 support is sound
 #

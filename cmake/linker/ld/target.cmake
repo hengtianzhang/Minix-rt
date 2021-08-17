@@ -67,6 +67,8 @@ macro(configure_linker_script linker_script_gen linker_pass_define)
 		-E ${LINKER_SCRIPT}
 		-P # Prevent generation of debug `#line' directives.
 		-o ${linker_script_gen}
+		BYPRODUCTS
+		${linker_script_gen}.dep
 		VERBATIM
 		WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 		COMMAND_EXPAND_LISTS
@@ -157,7 +159,6 @@ function(toolchain_ld_link_kernel_elf)
 		${TOOLCHAIN_LD_LINK_ELF_DEPENDENCIES}
 	)
 endfunction()
-
 
 # Load toolchain_ld-family macros
 include(${SEL4M_BASE}/cmake/linker/${LINKER}/target_base.cmake)

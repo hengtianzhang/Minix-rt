@@ -29,6 +29,19 @@ assert(toolchain_is_ok "The toolchain is unable to build a dummy C file. See CMa
 project(kernel VERSION ${PROJECT_VERSION})
 enable_language(C CXX ASM)
 
+set(KERNEL_NAME ${CONFIG_KERNEL_BIN_NAME})
+
+set(KERNEL_ELF_NAME   ${KERNEL_NAME}.elf)
+set(KERNEL_BIN_NAME   ${KERNEL_NAME}.bin)
+set(KERNEL_HEX_NAME   ${KERNEL_NAME}.hex)
+set(KERNEL_UF2_NAME   ${KERNEL_NAME}.uf2)
+set(KERNEL_MAP_NAME   ${KERNEL_NAME}.map)
+set(KERNEL_LST_NAME   ${KERNEL_NAME}.lst)
+set(KERNEL_S19_NAME   ${KERNEL_NAME}.s19)
+set(KERNEL_EXE_NAME   ${KERNEL_NAME}.exe)
+set(KERNEL_STAT_NAME  ${KERNEL_NAME}.stat)
+set(KERNEL_STRIP_NAME ${KERNEL_NAME}.strip)
+
 # In some cases the "final" things are not used at all and "_prebuilt"
 # is the last station. See "logical_target_for_kernel_elf" below for
 # details.
@@ -85,6 +98,11 @@ get_filename_component(SECOND_FOLDER ${GCC_TOOLCHAIN_DIR} DIRECTORY)
 kernel_cc_option(--gcc-toolchain=${SECOND_FOLDER})
 
 kernel_cc_option(-no-integrated-as)
+
+kernel_cc_option(-Wno-unused-value)
+kernel_cc_option(-Wno-sign-compare)
+kernel_cc_option(-Wno-uninitialized)
+
 endif()
 
 kernel_cc_option(-fno-delete-null-pointer-checks)
@@ -277,7 +295,6 @@ include(${SEL4M_BASE}/cmake/kernel_extra_flags.cmake)
 
 kernel_cc_option(-fno-asynchronous-unwind-tables)
 kernel_cc_option(-fno-PIE)
-kernel_cc_option(-fno-strict-overflow)
 
 get_property(CSTD GLOBAL PROPERTY CSTD)
 set_ifndef(CSTD gnu89)
@@ -311,6 +328,9 @@ add_custom_command(
 	$<TARGET_OBJECTS:${ASM_OFFSETS_LIB}>
 )
 add_custom_target(${ASM_OFFSETS_H_TARGET} DEPENDS ${ASM_OFFSETS_H_PATH})
+
+set(GLOBAL PROPERTY KERNEL_POST_BUILD_COMMANDS "")
+set(GLOBAL PROPERTY KERNEL_POST_BUILD_BYPRODUCTS "")
 
 add_subdirectory(arch/${ARCH})
 
@@ -367,5 +387,47 @@ toolchain_ld_link_kernel_elf(
 )
 set_property(TARGET   ${KERNEL_FINAL_EXECUTABLE} PROPERTY LINK_DEPENDS ${PROJECT_BINARY_DIR}/linker.lds)
 add_dependencies(${KERNEL_FINAL_EXECUTABLE} linker_kernel_prebuilt_script_target)
+set_target_properties(${KERNEL_FINAL_EXECUTABLE} PROPERTIES OUTPUT_NAME ${KERNEL_NAME})
+
+set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_COMMANDS
+	COMMAND
+	${CMAKE_COMMAND} -E rename ${KERNEL_FINAL_EXECUTABLE}.map ${KERNEL_MAP_NAME}
+) 
+set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_BYPRODUCTS
+	${KERNEL_MAP_NAME}
+)
+
+set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_COMMANDS
+	COMMAND
+	${SHELL}
+	${SEL4M_BASE}/scripts/mksysmap
+	${CMAKE_NM}
+	${KERNEL_ELF_NAME}
+	${GREP}
+	${PROJECT_BINARY_DIR}/System.map
+) 
+set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_BYPRODUCTS
+	${PROJECT_BINARY_DIR}/System.map
+)
+
+get_property(post_build_commands GLOBAL PROPERTY KERNEL_POST_BUILD_COMMANDS)
+get_property(post_build_byproducts GLOBAL PROPERTY KERNEL_POST_BUILD_BYPRODUCTS)
+
+# Add post_build_commands to post-process the final .elf file produced by
+# either the ZEPHYR_PREBUILT_EXECUTABLE or the KERNEL_ELF executable
+# targets above.
+add_custom_command(
+	TARGET ${KERNEL_FINAL_EXECUTABLE}
+	POST_BUILD
+	${post_build_commands}
+	BYPRODUCTS
+	${post_build_byproducts}
+	COMMAND_EXPAND_LISTS
+	# NB: COMMENT only works for some CMake-Generators
+)
 
 kernel_library_sources(init/main.c init/test.S)

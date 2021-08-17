@@ -18,3 +18,4 @@ endif()
 kernel_ld_option_ifdef(CONFIG_LD_IS_LLD -z norelro)
 
 add_subdirectory(core)
+add_subdirectory(boot)

@@ -26,6 +26,9 @@
 		__stop_notes = .;					\
 	}
 
+OUTPUT_ARCH(aarch64)
+ENTRY(_text)
+
 SECTIONS
 {
 	/*
@@ -50,6 +53,7 @@ SECTIONS
 		_text = .;
 		HEAD_TEXT
 	}
+	. = ALIGN(16);
 	.text : {			/* Real text segment		*/
 		_stext = .;		/* Text and read-only data	*/
 			__exception_text_start = .;
@@ -87,4 +91,14 @@ SECTIONS
 		*(BSS_MAIN)						\
 		*(COMMON)						\
 	}
+	_end = .;
+	/*
+	 * Sections that should stay zero sized, which is safer to
+	 * explicitly check instead of blindly discarding.
+	 */
+	.plt : {
+		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
+	}
+
+	.data.rel.ro : { *(.data.rel.ro) }
 }

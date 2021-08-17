@@ -53,7 +53,7 @@ set(ASM_OFFSETS_H_TARGET           asm_offsets_h)
 set(TIMECONST_H_TARGET           timeconst_h)
 
 # FIXME
-# Changes to the link script linker.lds and target versiion do not result 
+# Changes to the link script linker.lds and target version do not result 
 # in an update to compile.h "please clear the build directory to manually update"
 set(COMPILE_H_TARGET           compile_h)
 

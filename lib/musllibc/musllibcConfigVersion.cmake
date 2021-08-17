@@ -1,0 +1,1 @@
+message("Versionssssss ${CMAKE_LINKER}")

@@ -356,23 +356,22 @@ add_custom_target(${TIMECONST_H_TARGET} DEPENDS ${TIMECONST_H_PATH})
 
 set(COMPILE_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/compile.h)
 
-add_custom_command(
-	OUTPUT ${COMPILE_H_PATH}
+add_custom_target(${COMPILE_H_TARGET}
 	COMMAND ${SHELL} ${SEL4M_BASE}/scripts/mkcompile_h
 	${COMPILE_H_PATH}
 	${UTS_MACHINE}
 	"SMP"
 	${CMAKE_C_COMPILER}
+	${APPLICATION_BINARY_DIR}
+	BYPRODUCTS ${COMPILE_H_PATH}
 	WORKING_DIRECTORY
 	${PROJECT_BINARY_DIR}
 )
-add_custom_target(${COMPILE_H_TARGET} DEPENDS ${COMPILE_H_PATH})
 
 add_custom_target(kernel_generated_headers)
 add_dependencies(kernel_generated_headers
 	asm_offsets_h
 	timeconst_h
-	compile_h
 )
 
 add_subdirectory(init)
@@ -389,11 +388,13 @@ get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIB
 foreach(kernel_built_in_lib ${KERNEL_BUILT_IN_LIBS_PROPERTY})
   # TODO: Could this become an INTERFACE property of kernel_interface?
   add_dependencies(${kernel_built_in_lib} kernel_generated_headers)
+  add_dependencies(${COMPILE_H_TARGET} ${kernel_built_in_lib})
 endforeach()
 
 foreach(kernel_interface_lib ${KERNEL_INTERFACE_LIBS_PROPERTY})
   # TODO: Could this become an INTERFACE property of kernel_interface?
   add_dependencies(${kernel_interface_lib} kernel_generated_headers)
+  add_dependencies(${COMPILE_H_TARGET} ${kernel_interface_lib})
 endforeach()
 
 get_property(LINKER_SCRIPT GLOBAL PROPERTY LINKER_SCRIPT_S)

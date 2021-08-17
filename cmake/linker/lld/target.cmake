@@ -79,6 +79,7 @@ function(toolchain_ld_link_kernel_elf)
 		${LINKERFLAGPREFIX},-Map=${TOOLCHAIN_LD_LINK_ELF_OUTPUT_MAP}
 		${LINKERFLAGPREFIX},--whole-archive
 		${KERNEL_BUILT_IN_LIBS_PROPERTY}
+    version
 		${LINKERFLAGPREFIX},--no-whole-archive
 		${LINKERFLAGPREFIX},--start-group
 		${KERNEL_INTERFACE_LIBS_PROPERTY}

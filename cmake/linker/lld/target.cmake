@@ -67,7 +67,7 @@ function(toolchain_ld_link_kernel_elf)
 		TOOLCHAIN_LD_LINK_ELF                                     # prefix of output variables
 		""                                                        # list of names of the boolean arguments
 		"TARGET_ELF;OUTPUT_MAP;LINKER_SCRIPT"                     # list of names of scalar arguments
-		"LIBRARIES_PRE_SCRIPT;LIBRARIES_POST_SCRIPT;DEPENDENCIES" # list of names of list arguments
+		"DEPENDENCIES" # list of names of list arguments
 		${ARGN}                                                   # input args to parse
 	)
 
@@ -89,8 +89,8 @@ function(toolchain_ld_link_kernel_elf)
 endfunction()
 
 # Force symbols to be entered in the output file as undefined symbols
-function(toolchain_ld_force_undefined_symbols location)
+function(toolchain_ld_kernel_force_undefined_symbols location)
   foreach(symbol ${ARGN})
-    sel4m_link_libraries(${LINKERFLAGPREFIX},-u,${symbol} ${location})
+    kernel_link_libraries(${LINKERFLAGPREFIX},-u,${symbol} ${location})
   endforeach()
 endfunction()

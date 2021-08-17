@@ -76,65 +76,18 @@ macro(configure_linker_script linker_script_gen linker_pass_define)
 endmacro()
 
 # Force symbols to be entered in the output file as undefined symbols
-function(toolchain_ld_force_undefined_symbols location)
+function(toolchain_ld_kernel_force_undefined_symbols location)
 	foreach(symbol ${ARGN})
-		sel4m_link_libraries(${LINKERFLAGPREFIX},-u,${symbol} ${location})
+		kernel_link_libraries(${LINKERFLAGPREFIX},-u,${symbol} ${location})
 	endforeach()
 endfunction()
-
-# Link a target to given libraries with toolchain-specific argument order
-#
-# Usage:
-#   toolchain_ld_link_elf(
-#     TARGET_ELF             <target_elf>
-#     OUTPUT_MAP             <output_map_file_of_target>
-#     LIBRARIES_PRE_SCRIPT   [libraries_pre_script]
-#     LINKER_SCRIPT          <linker_script>
-#     LIBRARIES_POST_SCRIPT  [libraries_post_script]
-#     DEPENDENCIES           [dependencies]
-#   )
-function(toolchain_ld_link_elf)
-	cmake_parse_arguments(
-		TOOLCHAIN_LD_LINK_ELF                                     # prefix of output variables
-		""                                                        # list of names of the boolean arguments
-		"TARGET_ELF;OUTPUT_MAP;LINKER_SCRIPT"                     # list of names of scalar arguments
-		"LIBRARIES_PRE_SCRIPT;LIBRARIES_POST_SCRIPT;DEPENDENCIES" # list of names of list arguments
-		${ARGN}                                                   # input args to parse
-	)
-
-	if(${CMAKE_LINKER} STREQUAL "${CROSS_COMPILE}ld.bfd")
-		# ld.bfd was found so let's explicitly use that for linking, see #32237
-		set(use_linker "-fuse-ld=bfd")
-	endif()
-
-	target_link_libraries(
-		${TOOLCHAIN_LD_LINK_ELF_TARGET_ELF}
-		${TOOLCHAIN_LD_LINK_ELF_LIBRARIES_PRE_SCRIPT}
-		${use_linker}
-		${TOPT}
-		${TOOLCHAIN_LD_LINK_ELF_LINKER_SCRIPT}
-		${TOOLCHAIN_LD_LINK_ELF_LIBRARIES_POST_SCRIPT}
-
-		${LINKERFLAGPREFIX},-Map=${TOOLCHAIN_LD_LINK_ELF_OUTPUT_MAP}
-		${LINKERFLAGPREFIX},--whole-archive
-		${SEL4M_LIBS_PROPERTY}
-		${LINKERFLAGPREFIX},--no-whole-archive
-		kernel
-		$<TARGET_OBJECTS:${OFFSETS_LIB}>
-		${LIB_INCLUDE_DIR}
-		-L${PROJECT_BINARY_DIR}
-		${TOOLCHAIN_LIBS}
-
-		${TOOLCHAIN_LD_LINK_ELF_DEPENDENCIES}
-	)
-endfunction(toolchain_ld_link_elf)
 
 function(toolchain_ld_link_kernel_elf)
 	cmake_parse_arguments(
 		TOOLCHAIN_LD_LINK_ELF                                     # prefix of output variables
 		""                                                        # list of names of the boolean arguments
 		"TARGET_ELF;OUTPUT_MAP;LINKER_SCRIPT"                     # list of names of scalar arguments
-		"LIBRARIES_PRE_SCRIPT;LIBRARIES_POST_SCRIPT;DEPENDENCIES" # list of names of list arguments
+		"DEPENDENCIES" # list of names of list arguments
 		${ARGN}                                                   # input args to parse
 	)
 
@@ -159,8 +112,3 @@ function(toolchain_ld_link_kernel_elf)
 		${TOOLCHAIN_LD_LINK_ELF_DEPENDENCIES}
 	)
 endfunction()
-
-# Load toolchain_ld-family macros
-include(${SEL4M_BASE}/cmake/linker/${LINKER}/target_base.cmake)
-include(${SEL4M_BASE}/cmake/linker/${LINKER}/target_baremetal.cmake)
-include(${SEL4M_BASE}/cmake/linker/${LINKER}/target_cpp.cmake)

@@ -339,6 +339,12 @@ add_dependencies(kernel_generated_headers
 	asm_offsets_h
 )
 
+add_subdirectory(init)
+add_subdirectory(drivers)
+add_subdirectory(core)
+add_subdirectory(lib)
+add_subdirectory(mm)
+
 # Read list content
 get_property(KERNEL_BUILT_IN_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS)
 # Read list content
@@ -429,5 +435,3 @@ add_custom_command(
 	COMMAND_EXPAND_LISTS
 	# NB: COMMENT only works for some CMake-Generators
 )
-
-kernel_library_sources(init/main.c init/test.S)

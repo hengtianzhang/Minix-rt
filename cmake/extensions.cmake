@@ -351,8 +351,6 @@ macro(add_depends_file_touch name)
 		COMMAND
 		${SHELL} ${SEL4M_BASE}/scripts/gen_depends_file.sh
 		${APPLICATION_BINARY_DIR}
-		BYPRODUCTS
-		${APPLICATION_BINARY_DIR}/.gen_depend
 		COMMAND_EXPAND_LISTS
 )
 endmacro()

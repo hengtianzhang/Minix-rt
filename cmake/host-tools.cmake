@@ -53,3 +53,5 @@ find_program(MKIMAGE mkimage)
 find_program(SHELL sh REQUIRED)
 
 find_program(GREP grep REQUIRED)
+
+find_program(BC bc REQUIRED)

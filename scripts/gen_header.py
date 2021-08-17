@@ -18,8 +18,8 @@ import sys
 import re
 
 
-def gen_offset_header(input_name, input_file, output_file):
-    include_guard = "__ASM_OFFSETS_H_"
+def gen_offset_header(input_name, input_file, output_file, name):
+    include_guard = name
     output_file.write("""/* THIS FILE IS AUTO GENERATED.  PLEASE DO NOT EDIT.
  *
  * This header file provides macros for the offsets of various structure
@@ -61,10 +61,17 @@ if __name__ == '__main__':
         required=True,
         help="Output header file")
 
+    parser.add_argument(
+        "-n",
+        "--name",
+        required=True,
+        help="Output define name")
+
     args = parser.parse_args()
 
     input_file = open(args.input, 'rb')
     output_file = open(args.output, 'w')
+    name = args.name
 
-    ret = gen_offset_header(args.input, input_file, output_file)
+    ret = gen_offset_header(args.input, input_file, output_file, name)
     sys.exit(ret)

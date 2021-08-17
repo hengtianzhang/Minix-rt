@@ -50,6 +50,8 @@ set(KERNEL_FINAL_EXECUTABLE    kernel_final)
 
 # Set some phony targets to collect dependencies
 set(ASM_OFFSETS_H_TARGET           asm_offsets_h)
+set(TIMECONST_H_TARGET           timeconst_h)
+set(COMPILE_H_TARGET           compile_h)
 
 add_library(kernel_interface INTERFACE)
 
@@ -309,6 +311,11 @@ get_property(TOPT GLOBAL PROPERTY TOPT)
 set_ifndef(  TOPT -Wl,-T) # clang doesn't pick -T for some reason and complains,
 													# while -Wl,-T works for both, gcc and clang
 
+set(GLOBAL PROPERTY KERNEL_POST_BUILD_COMMANDS "")
+set(GLOBAL PROPERTY KERNEL_POST_BUILD_BYPRODUCTS "")
+
+add_subdirectory(arch/${ARCH})
+
 set(ASM_OFFSETS_LIB asm_offsets)
 
 set(ASM_OFFSETS_C_PATH ${KERNEL_DIR}/arch/${ARCH}/core/asm-offsets.c)
@@ -321,22 +328,51 @@ set_target_properties(${ASM_OFFSETS_LIB} PROPERTIES COMPILE_OPTIONS "-S")
 add_custom_command(
 	OUTPUT ${ASM_OFFSETS_H_PATH}
 	COMMAND ${PYTHON_EXECUTABLE} ${SEL4M_BASE}/scripts/gen_header.py
+	-n "__ASM_OFFSETS_H_"
 	-i $<TARGET_OBJECTS:${ASM_OFFSETS_LIB}>
 	-o ${ASM_OFFSETS_H_PATH}
 	DEPENDS
 	${ASM_OFFSETS_LIB}
 	$<TARGET_OBJECTS:${ASM_OFFSETS_LIB}>
+	WORKING_DIRECTORY
+	${PROJECT_BINARY_DIR}
 )
 add_custom_target(${ASM_OFFSETS_H_TARGET} DEPENDS ${ASM_OFFSETS_H_PATH})
 
-set(GLOBAL PROPERTY KERNEL_POST_BUILD_COMMANDS "")
-set(GLOBAL PROPERTY KERNEL_POST_BUILD_BYPRODUCTS "")
+set(TIMECONST_BC_PATH ${KERNEL_DIR}/core/time/timeconst.bc)
+set(TIMECONST_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/timeconst.h)
 
-add_subdirectory(arch/${ARCH})
+add_custom_command(
+	OUTPUT ${TIMECONST_H_PATH}
+	COMMAND ${SHELL} ${SEL4M_BASE}/scripts/timeconst.sh
+	${CONFIG_HZ}
+	${BC}
+	${TIMECONST_BC_PATH}
+	${TIMECONST_H_PATH}
+	WORKING_DIRECTORY
+	${PROJECT_BINARY_DIR}
+)
+add_custom_target(${TIMECONST_H_TARGET} DEPENDS ${TIMECONST_H_PATH})
+
+set(COMPILE_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/compile.h)
+
+add_custom_command(
+	OUTPUT ${COMPILE_H_PATH}
+	COMMAND ${SHELL} ${SEL4M_BASE}/scripts/mkcompile_h
+	${COMPILE_H_PATH}
+	${UTS_MACHINE}
+	"SMP"
+	${CMAKE_C_COMPILER}
+	WORKING_DIRECTORY
+	${PROJECT_BINARY_DIR}
+)
+add_custom_target(${COMPILE_H_TARGET} DEPENDS ${COMPILE_H_PATH})
 
 add_custom_target(kernel_generated_headers)
 add_dependencies(kernel_generated_headers
 	asm_offsets_h
+	timeconst_h
+	compile_h
 )
 
 add_subdirectory(init)
@@ -351,8 +387,13 @@ get_property(KERNEL_BUILT_IN_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS)
 get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIBS)
 
 foreach(kernel_built_in_lib ${KERNEL_BUILT_IN_LIBS_PROPERTY})
-  # TODO: Could this become an INTERFACE property of zephyr_interface?
+  # TODO: Could this become an INTERFACE property of kernel_interface?
   add_dependencies(${kernel_built_in_lib} kernel_generated_headers)
+endforeach()
+
+foreach(kernel_interface_lib ${KERNEL_INTERFACE_LIBS_PROPERTY})
+  # TODO: Could this become an INTERFACE property of kernel_interface?
+  add_dependencies(${kernel_interface_lib} kernel_generated_headers)
 endforeach()
 
 get_property(LINKER_SCRIPT GLOBAL PROPERTY LINKER_SCRIPT_S)
@@ -420,12 +461,20 @@ set_property(GLOBAL APPEND
 	${PROJECT_BINARY_DIR}/System.map
 )
 
+set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_COMMANDS
+	COMMAND
+	${SHELL} ${SEL4M_BASE}/scripts/gen_version.sh
+	${APPLICATION_BINARY_DIR}
+) 
+set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_BYPRODUCTS
+	${APPLICATION_BINARY_DIR}/.version
+)
+
 get_property(post_build_commands GLOBAL PROPERTY KERNEL_POST_BUILD_COMMANDS)
 get_property(post_build_byproducts GLOBAL PROPERTY KERNEL_POST_BUILD_BYPRODUCTS)
 
-# Add post_build_commands to post-process the final .elf file produced by
-# either the ZEPHYR_PREBUILT_EXECUTABLE or the KERNEL_ELF executable
-# targets above.
 add_custom_command(
 	TARGET ${KERNEL_FINAL_EXECUTABLE}
 	POST_BUILD

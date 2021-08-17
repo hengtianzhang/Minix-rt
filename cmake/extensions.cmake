@@ -375,6 +375,8 @@ macro(kernel_interface_library_named name)
 	set(KERNEL_INTERFACE_CURRENT_LIBRARY ${name})
 	add_library(${name} STATIC "")
 
+	add_depends_file_touch(${name})
+
 	kernel_interface_append_cmake_library(${name})
 
 	target_link_libraries(${name} PUBLIC kernel_interface)

@@ -25,9 +25,9 @@ set_compiler_property(PROPERTY warning_base
 					  -Wall
 					  -Wformat
 					  -Wformat-security
-					  -Wno-format-zero-length
+					  -Wformat-zero-length
 					  -Wno-main
-					  -Wno-typedef-redefinition
+					  -Wtypedef-redefinition
 )
 
 check_set_compiler_property(APPEND PROPERTY warning_base -Wno-pointer-sign)
@@ -83,20 +83,20 @@ check_set_compiler_property(APPEND PROPERTY warning_dw_3
 
 check_set_compiler_property(PROPERTY warning_extended
 							#FIXME: need to fix all of those
-							-Wno-sometimes-uninitialized
-							-Wno-shift-overflow
-							-Wno-missing-braces
-							-Wno-self-assign
-							-Wno-address-of-packed-member
-							-Wno-unused-function
-							-Wno-initializer-overrides
-							-Wno-section
-							-Wno-unknown-warning-option
-							-Wno-unused-variable
-							-Wno-format-invalid-specifier
+							-Wsometimes-uninitialized
+							-Wshift-overflow
+							-Wmissing-braces
+							-Wself-assign
+							-Waddress-of-packed-member
+							-Wunused-function
+							-Winitializer-overrides
+							-Wsection
+							-Wunknown-warning-option
+							-Wunused-variable
+							-Wformat-invalid-specifier
 							-Wno-gnu
 							# comparison of unsigned expression < 0 is always false
-							-Wno-tautological-compare
+							-Wtautological-compare
 )
 
 set_compiler_property(PROPERTY warning_error_coding_guideline

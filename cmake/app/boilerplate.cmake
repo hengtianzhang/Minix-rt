@@ -54,6 +54,9 @@ set(APPLICATION_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Application B
 set(kernel__build_dir ${CMAKE_CURRENT_BINARY_DIR}/kernel)
 set(services__build_dir ${CMAKE_CURRENT_BINARY_DIR}/projects)
 
+set(kernel__sources_dir ${SEL4M_BASE}/kernel)
+set(services__sources_dir ${SEL4M_BASE}/projects)
+
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 if(${CMAKE_VERSION} VERSION_EQUAL 3.19.0 OR
@@ -92,7 +95,10 @@ file(TO_CMAKE_PATH "${SEL4M_BASE}" PROJECT_SOURCE_DIR)
 set(KERNEL_BINARY_DIR ${kernel__build_dir})
 set(SERVICES_BINARY_DIR ${services__build_dir})
 
-set(AUTOCONF_H ${PROJECT_BINARY_DIR}/include/generated/autoconf.h)
+set(KERNEL_SOURCES_DIR ${kernel__sources_dir})
+set(SERVICES_SOURCE_DIR ${services__sources_dir})
+
+set(AUTOCONF_H ${APPLICATION_BINARY_DIR}/include/generated/autoconf.h)
 # Re-configure (Re-execute all CMakeLists.txt code) when autoconf.h changes
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${AUTOCONF_H})
 
@@ -181,10 +187,10 @@ include(${SEL4M_BASE}/cmake/dts.cmake)
 
 set(CMAKE_PREFIX_PATH ${SEL4M_BASE} CACHE PATH "")
 
-configure_file(${SEL4M_BASE}/version.h.in ${PROJECT_BINARY_DIR}/include/generated/version.h)
+configure_file(${SEL4M_BASE}/version.h.in ${APPLICATION_BINARY_DIR}/include/generated/version.h)
 
-set(KERNEL_DIR ${SEL4M_BASE}/kernel CACHE PATH "")
-set(PROJECTS_DIR ${SEL4M_BASE}/projects CACHE PATH "")
+set(KERNEL_SOURCES_DIR ${SEL4M_BASE}/kernel CACHE PATH "")
+set(SERVICES_SOURCE_DIR ${SEL4M_BASE}/projects CACHE PATH "")
 
-add_subdirectory(${PROJECTS_DIR}  ${services__build_dir})
-add_subdirectory(${KERNEL_DIR} ${kernel__build_dir})
+add_subdirectory(${SERVICES_SOURCE_DIR}  ${services__build_dir})
+add_subdirectory(${KERNEL_SOURCES_DIR} ${kernel__build_dir})

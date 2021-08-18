@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/generated)
+file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/generated)
 
 if(CONFIG_DTC_OVERLAY_FILE)
 	unset(DTC_OVERLAY_FILE_AS_LIST)
@@ -36,7 +36,7 @@ if(CONFIG_DTC_OVERLAY_FILE)
 		DTS_ROOT
 	)
 
-	file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/dts)
+	file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/dts)
 	set(i 0)
 	foreach(file ${dts_files})
 		message(STATUS "Found dts: ${file}")
@@ -69,13 +69,13 @@ if(CONFIG_DTC_OVERLAY_FILE)
 			COMMAND ${CMAKE_DTS_PREPROCESSOR}
 			-E   # Stop after preprocessing
 			-P
-			-Wp,-MD,${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.d.pre.tmp
+			-Wp,-MD,${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.d.pre.tmp
 			-nostdinc
 			${DTS_ROOT_SYSTEM_INCLUDE_DIRS_${i}}
 			-undef
 			-D__DTS__
 			-x assembler-with-cpp
-			-o ${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.dts.tmp
+			-o ${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.dts.tmp
 			${file}
 			WORKING_DIRECTORY ${APPLICATION_SOURCE_DIR}
 			RESULT_VARIABLE ret
@@ -88,7 +88,7 @@ if(CONFIG_DTC_OVERLAY_FILE)
 			execute_process(
 				COMMAND ${DTC}
 				-O dtb
-				-o ${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb
+				-o ${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb
 				-b 0
 				${DTS_ROOT_INCLUDE_DIRS_${i}}
 				-Wno-unit_address_vs_reg
@@ -99,10 +99,10 @@ if(CONFIG_DTC_OVERLAY_FILE)
 				-Wno-simple_bus_reg
 				-Wno-unique_unit_address
 				-Wno-pci_device_reg
-				-d ${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.d.dtc.tmp
-				${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.dts.tmp
+				-d ${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.d.dtc.tmp
+				${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.dts.tmp
 				OUTPUT_QUIET # Discard stdout
-				WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+				WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
 				RESULT_VARIABLE ret
 			)
 			if(NOT "${ret}" STREQUAL "0")
@@ -112,12 +112,12 @@ if(CONFIG_DTC_OVERLAY_FILE)
 
 		execute_process(
 			COMMAND cat
-			${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.d.pre.tmp
-			${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.d.dtc.tmp
+			${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.d.pre.tmp
+			${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.d.dtc.tmp
 			OUTPUT_FILE
-			${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.d
+			${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.d
 			OUTPUT_QUIET # Discard stdout
-			WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+			WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
 			RESULT_VARIABLE ret
 		)
 		if(NOT "${ret}" STREQUAL "0")
@@ -125,7 +125,7 @@ if(CONFIG_DTC_OVERLAY_FILE)
 		endif()
 
 		toolchain_parse_make_rule(
-			${PROJECT_BINARY_DIR}/dts/${dtsfile}.dtb.d
+			${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb.d
 			include_files_${i} # Output parameter
 			)
 

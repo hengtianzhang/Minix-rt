@@ -322,7 +322,7 @@ add_subdirectory(arch/${ARCH})
 
 set(ASM_OFFSETS_LIB asm_offsets)
 
-set(ASM_OFFSETS_C_PATH ${KERNEL_DIR}/arch/${ARCH}/core/asm-offsets.c)
+set(ASM_OFFSETS_C_PATH ${KERNEL_SOURCES_DIR}/arch/${ARCH}/core/asm-offsets.c)
 set(ASM_OFFSETS_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/asm-offsets.h)
 
 add_library(${ASM_OFFSETS_LIB} OBJECT ${ASM_OFFSETS_C_PATH})
@@ -339,11 +339,11 @@ add_custom_command(
 	${ASM_OFFSETS_LIB}
 	$<TARGET_OBJECTS:${ASM_OFFSETS_LIB}>
 	WORKING_DIRECTORY
-	${PROJECT_BINARY_DIR}
+	${KERNEL_BINARY_DIR}
 )
 add_custom_target(${ASM_OFFSETS_H_TARGET} DEPENDS ${ASM_OFFSETS_H_PATH})
 
-set(TIMECONST_BC_PATH ${KERNEL_DIR}/core/time/timeconst.bc)
+set(TIMECONST_BC_PATH ${KERNEL_SOURCES_DIR}/core/time/timeconst.bc)
 set(TIMECONST_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/timeconst.h)
 
 add_custom_command(
@@ -354,7 +354,7 @@ add_custom_command(
 	${TIMECONST_BC_PATH}
 	${TIMECONST_H_PATH}
 	WORKING_DIRECTORY
-	${PROJECT_BINARY_DIR}
+	${KERNEL_BINARY_DIR}
 )
 add_custom_target(${TIMECONST_H_TARGET} DEPENDS ${TIMECONST_H_PATH})
 
@@ -369,7 +369,7 @@ add_custom_target(${COMPILE_H_TARGET}
 	${APPLICATION_BINARY_DIR}
 	BYPRODUCTS ${COMPILE_H_PATH}
 	WORKING_DIRECTORY
-	${PROJECT_BINARY_DIR}
+	${KERNEL_BINARY_DIR}
 )
 
 add_custom_target(kernel_generated_headers)
@@ -409,7 +409,7 @@ endif()
 kernel_get_include_directories_for_lang(C KERNEL_INCLUDE_DIRS STRIP_PREFIX)
 
 configure_linker_script(
-	${PROJECT_BINARY_DIR}/linker.lds
+	${KERNEL_BINARY_DIR}/linker.lds
 	"-D__ASSEMBLY__ -DLINKER_SCRIPT -U${ARCH}"
 	kernel_generated_headers
 )
@@ -417,7 +417,7 @@ configure_linker_script(
 add_custom_target(
 	linker_kernel_prebuilt_script_target
 	DEPENDS
-	${PROJECT_BINARY_DIR}/linker.lds
+	${KERNEL_BINARY_DIR}/linker.lds
 )
 
 set_property(TARGET
@@ -429,10 +429,10 @@ set_property(TARGET
 add_executable(${KERNEL_FINAL_EXECUTABLE} ${SEL4M_BASE}/misc/empty.c)
 toolchain_ld_link_kernel_elf(
 	TARGET_ELF            ${KERNEL_FINAL_EXECUTABLE}
-	OUTPUT_MAP            ${PROJECT_BINARY_DIR}/${KERNEL_FINAL_EXECUTABLE}.map
-	LINKER_SCRIPT         ${PROJECT_BINARY_DIR}/linker.lds
+	OUTPUT_MAP            ${KERNEL_BINARY_DIR}/${KERNEL_FINAL_EXECUTABLE}.map
+	LINKER_SCRIPT         ${KERNEL_BINARY_DIR}/linker.lds
 )
-set_property(TARGET   ${KERNEL_FINAL_EXECUTABLE} PROPERTY LINK_DEPENDS ${PROJECT_BINARY_DIR}/linker.lds)
+set_property(TARGET   ${KERNEL_FINAL_EXECUTABLE} PROPERTY LINK_DEPENDS ${KERNEL_BINARY_DIR}/linker.lds)
 add_dependencies(${KERNEL_FINAL_EXECUTABLE} linker_kernel_prebuilt_script_target)
 set_target_properties(${KERNEL_FINAL_EXECUTABLE} PROPERTIES OUTPUT_NAME ${KERNEL_NAME})
 
@@ -454,11 +454,11 @@ set_property(GLOBAL APPEND
 	${CMAKE_NM}
 	${KERNEL_ELF_NAME}
 	${GREP}
-	${PROJECT_BINARY_DIR}/System.map
+	${KERNEL_BINARY_DIR}/System.map
 ) 
 set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_BYPRODUCTS
-	${PROJECT_BINARY_DIR}/System.map
+	${KERNEL_BINARY_DIR}/System.map
 )
 
 set_property(GLOBAL APPEND

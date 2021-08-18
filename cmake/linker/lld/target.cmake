@@ -22,7 +22,7 @@ macro(configure_linker_script linker_script_gen linker_pass_define location)
     set(linker_script_dep IMPLICIT_DEPENDS C ${LINKER_SCRIPT})
   elseif(CMAKE_GENERATOR STREQUAL "Ninja")
     # Using DEPFILE with other generators than Ninja is an error.
-    set(linker_script_dep DEPFILE ${PROJECT_BINARY_DIR}/${linker_script_gen}.dep)
+    set(linker_script_dep DEPFILE ${linker_script_gen}.dep)
   else()
     # TODO: How would the linker script dependencies work for non-linker
     # script generators.
@@ -57,7 +57,7 @@ macro(configure_linker_script linker_script_gen linker_pass_define location)
 		BYPRODUCTS
 		${linker_script_gen}.dep
     VERBATIM
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
     COMMAND_EXPAND_LISTS
   )
 endmacro()

@@ -2,8 +2,8 @@
 
 # Folders needed for conf/mconf files (kconfig has no method of redirecting all output files).
 # conf/mconf needs to be run from a different directory because of: GH-3408
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/generated)
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/config)
+file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/generated)
+file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/config)
 
 if(KCONFIG_ROOT)
 	sel4m_file(APPLICATION_ROOT KCONFIG_ROOT)
@@ -26,8 +26,8 @@ message(STATUS "Kconfig file: ${SEL4M_DEFCONFIG}")
 
 sel4m_check_cache(KCONFIG_FILE REQUIRED)
 
-set(DOTCONFIG                  ${PROJECT_BINARY_DIR}/.config)
-set(PARSED_KCONFIG_SOURCES_TXT ${PROJECT_BINARY_DIR}/kconfig/sources.txt)
+set(DOTCONFIG                  ${APPLICATION_BINARY_DIR}/.config)
+set(PARSED_KCONFIG_SOURCES_TXT ${APPLICATION_BINARY_DIR}/kconfig/sources.txt)
 
 get_filename_component(APPLICATION_SOURCE ${APPLICATION_SOURCE_DIR} NAME)
 set(APPLICATION_SOURCE ${APPLICATION_SOURCE})
@@ -84,7 +84,7 @@ foreach(kconfig_target
 		${PYTHON_EXECUTABLE}
 		${EXTRA_KCONFIG_TARGET_COMMAND_FOR_${kconfig_target}}
 		${KCONFIG_ROOT}
-		WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/kconfig
+		WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}/kconfig
 		USES_TERMINAL
 		COMMAND_EXPAND_LISTS
 		)
@@ -107,7 +107,7 @@ foreach (name ${cache_variable_names})
 endforeach()
 
 if(EXTRA_KCONFIG_OPTIONS)
-	set(EXTRA_KCONFIG_OPTIONS_FILE ${PROJECT_BINARY_DIR}/misc/generated/extra_kconfig_options.conf)
+	set(EXTRA_KCONFIG_OPTIONS_FILE ${APPLICATION_BINARY_DIR}/misc/generated/extra_kconfig_options.conf)
 	file(WRITE
 		${EXTRA_KCONFIG_OPTIONS_FILE}
 		${EXTRA_KCONFIG_OPTIONS}
@@ -157,7 +157,7 @@ endforeach()
 
 # Create a new .config if it does not exists, or if the checksum of
 # the dependencies has changed
-set(merge_config_files_checksum_file ${PROJECT_BINARY_DIR}/.cmake.dotconfig.checksum)
+set(merge_config_files_checksum_file ${APPLICATION_BINARY_DIR}/.cmake.dotconfig.checksum)
 set(CREATE_NEW_DOTCONFIG 1)
 # Check if the checksum file exists too before trying to open it, though it
 # should under normal circumstances

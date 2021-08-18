@@ -32,7 +32,6 @@ macro(configure_linker_script linker_script_gen linker_pass_define location)
   endif()
 
   kernel_get_include_directories_for_lang(C current_includes ${location})
-  get_filename_component(base_name ${CMAKE_CURRENT_BINARY_DIR} NAME)
   get_property(current_defines GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES)
 
   add_custom_command(
@@ -45,7 +44,7 @@ macro(configure_linker_script linker_script_gen linker_pass_define location)
     COMMAND ${CMAKE_C_COMPILER}
     -x assembler-with-cpp
     -undef
-    -MD -MF ${linker_script_gen}.dep -MT ${base_name}/${linker_script_gen}
+    -MD -MF ${linker_script_gen}.dep -MT ${linker_script_gen}
     -D_LINKER
     -D_ASMLANGUAGE
     ${current_includes}

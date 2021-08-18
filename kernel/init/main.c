@@ -13,5 +13,5 @@ void start_kernel(void)
 	test1(2);
 	muslc();
 
-	bbb= CONFIG_NR_CPUS;
+	bbb = CONFIG_NR_CPUS;
 }

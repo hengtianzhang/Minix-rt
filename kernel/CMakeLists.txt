@@ -392,6 +392,17 @@ get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIB
 
 get_property(KERNEL_IMPORTED_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_IMPORTED_LIBS)
 
+add_library(version ${KERNEL_SOURCES_DIR}/init/version.c)
+set_target_properties(
+	version
+	PROPERTIES
+  	COMPILE_DEFINITIONS
+	__KERNEL_VERSION__
+)
+add_dependencies(version ${COMPILE_H_TARGET})
+# FIXME, kernel_interface import from KERNEL_IMPORTED_LIBS_PROPERTY
+kernel_imported_link_libraries(version ${KERNEL_IMPORTED_LIBS_PROPERTY})
+
 foreach(kernel_built_in_lib ${KERNEL_BUILT_IN_LIBS_PROPERTY})
   # TODO: Could this become an INTERFACE property of kernel_interface?
   add_dependencies(${kernel_built_in_lib} kernel_generated_headers)

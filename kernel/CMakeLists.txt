@@ -52,9 +52,10 @@ set(KERNEL_FINAL_EXECUTABLE    kernel_final)
 set(ASM_OFFSETS_H_TARGET           asm_offsets_h)
 set(TIMECONST_H_TARGET           timeconst_h)
 
+# Changes to the link script 'linker.lds', 'KERNEL_IMPORTED_LIBS' and 
+# target 'libversion.a' do not result in an update to compile.h 
 # FIXME
-# Changes to the link script linker.lds and target version do not result 
-# in an update to compile.h "please clear the build directory to manually update"
+# "please clear the build directory to manually update"
 set(COMPILE_H_TARGET           compile_h)
 
 add_library(kernel_interface INTERFACE)
@@ -389,16 +390,20 @@ get_property(KERNEL_BUILT_IN_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS)
 # Read list content
 get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIBS)
 
+get_property(KERNEL_IMPORTED_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_IMPORTED_LIBS)
+
 foreach(kernel_built_in_lib ${KERNEL_BUILT_IN_LIBS_PROPERTY})
   # TODO: Could this become an INTERFACE property of kernel_interface?
   add_dependencies(${kernel_built_in_lib} kernel_generated_headers)
   add_dependencies(${COMPILE_H_TARGET} ${kernel_built_in_lib})
+  kernel_imported_link_libraries(${kernel_built_in_lib} ${KERNEL_IMPORTED_LIBS_PROPERTY})
 endforeach()
 
 foreach(kernel_interface_lib ${KERNEL_INTERFACE_LIBS_PROPERTY})
   # TODO: Could this become an INTERFACE property of kernel_interface?
   add_dependencies(${kernel_interface_lib} kernel_generated_headers)
   add_dependencies(${COMPILE_H_TARGET} ${kernel_interface_lib})
+  kernel_imported_link_libraries(${kernel_interface_lib} ${KERNEL_IMPORTED_LIBS_PROPERTY})
 endforeach()
 
 get_property(LINKER_SCRIPT GLOBAL PROPERTY LINKER_SCRIPT_S)

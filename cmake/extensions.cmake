@@ -102,6 +102,10 @@ function(kernel_interface_library_link_libraries item)
 	target_link_libraries(${KERNEL_INTERFACE_CURRENT_LIBRARY} PUBLIC ${item} ${ARGN})
 endfunction()
 
+function(kernel_imported_link_libraries item location)
+	target_link_libraries(${item} PUBLIC ${location})
+endfunction()
+
 function(kernel_library_compile_definitions item)
 	target_compile_definitions(${KERNEL_CURRENT_LIBRARY} PRIVATE ${item} ${ARGN})
 endfunction()
@@ -352,7 +356,7 @@ macro(add_depends_file_touch name)
 		${SHELL} ${SEL4M_BASE}/scripts/gen_depends_file.sh
 		${APPLICATION_BINARY_DIR}
 		COMMAND_EXPAND_LISTS
-)
+	)
 endmacro()
 
 # Constructor with an explicitly given name.

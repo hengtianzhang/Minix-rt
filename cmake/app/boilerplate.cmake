@@ -31,10 +31,8 @@ cmake_minimum_required(VERSION 3.13.1)
 # CMP0002: "Logical target names must be globally unique"
 cmake_policy(SET CMP0002 NEW)
 
-# Use the old CMake behaviour until the build scripts have been ported
-# to the new behaviour.
 # CMP0079: "target_link_libraries() allows use with targets in other directories"
-cmake_policy(SET CMP0079 OLD)
+cmake_policy(SET CMP0079 NEW)
 
 define_property(GLOBAL PROPERTY KERNEL_BUILT_IN_LIBS
     BRIEF_DOCS "Global list of all kernel built-in CMake libs that should be linked in"
@@ -47,6 +45,12 @@ define_property(GLOBAL PROPERTY KERNEL_INTERFACE_LIBS
     FULL_DOCS  "Global list of all kernel interface CMake libs that should be linked in.
 kernel_interface_library() appends libs to this list.")
 set_property(GLOBAL PROPERTY KERNEL_INTERFACE_LIBS "")
+
+define_property(GLOBAL PROPERTY KERNEL_IMPORTED_LIBS
+    BRIEF_DOCS "Global list of all kernel imported CMake libs that should be linked in"
+    FULL_DOCS  "Global list of all kernel imported CMake libs that should be linked in.
+xxxx_kernel_import_libraries() appends libs to this list.")
+set_property(GLOBAL PROPERTY KERNEL_IMPORTED_LIBS "")
 
 set(APPLICATION_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Application Source Directory")
 set(APPLICATION_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Application Binary Directory")

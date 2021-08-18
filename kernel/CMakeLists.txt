@@ -243,11 +243,11 @@ if(W MATCHES "3")
 	kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_dw_3>>)
 endif()
 
-kernel_ld_options(--build-id)
+kernel_ld_options(-Wl,--build-id)
 
-kernel_ld_option_ifdef(CONFIG_STRIP_ASM_SYMS -X)
+kernel_ld_option_ifdef(CONFIG_STRIP_ASM_SYMS -Wl,-X)
 
-kernel_ld_option_ifdef(CONFIG_LD_ORPHAN_WARN --orphan-handling=warn)
+kernel_ld_option_ifdef(CONFIG_LD_ORPHAN_WARN -Wl,--orphan-handling=warn)
 
 # @Intent: Obtain compiler specific flags related to C++ that are not influenced by kconfig
 kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,required>>)

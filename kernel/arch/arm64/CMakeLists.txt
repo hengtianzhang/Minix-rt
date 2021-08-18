@@ -9,11 +9,11 @@ kernel_cc_option(-mabi=lp64)
 
 if(CONFIG_CPU_BIG_ENDIAN)
 kernel_compile_options(-mbig-endian)
-kernel_ld_options(-EB -maarch64elfb)
+kernel_ld_options(-Wl,-EB -Wl,-maarch64elfb)
 set(UTS_MACHINE "aarch64_be" CACHE PATH "")
 else()
 kernel_compile_options(-mlittle-endian)
-kernel_ld_options(-EL -maarch64elf)
+kernel_ld_options(-Wl,-EL -Wl,-maarch64elf)
 set(UTS_MACHINE "aarch64" CACHE PATH "")
 endif()
 

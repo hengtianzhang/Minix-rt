@@ -3,6 +3,8 @@
 
 #include <muslc/muslc.h>
 
+#include <misc/misc.h>
+
 extern void test1(int d);
 
 int bbb;

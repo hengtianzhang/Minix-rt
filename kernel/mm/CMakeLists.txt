@@ -3,6 +3,6 @@ kernel_library()
 
 kernel_library_sources(test1.c)
 
-find_package(musllibc REQUIRED)
+find_package(misclibc REQUIRED)
 
-musllibc_kernel_import_libraries()
+misclibc_kernel_import_libraries()

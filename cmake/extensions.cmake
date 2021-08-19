@@ -102,8 +102,10 @@ function(kernel_interface_library_link_libraries item)
 	target_link_libraries(${KERNEL_INTERFACE_CURRENT_LIBRARY} PUBLIC ${item} ${ARGN})
 endfunction()
 
-function(kernel_imported_link_libraries item location)
-	target_link_libraries(${item} PUBLIC ${location})
+function(kernel_imported_link_libraries item)
+	foreach(imported_lib ${ARGN})
+		target_link_libraries(${item} PUBLIC ${imported_lib})
+	endforeach()
 endfunction()
 
 function(kernel_library_compile_definitions item)

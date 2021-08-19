@@ -8,8 +8,6 @@ extern void test1(int d);
 int bbb;
 void start_kernel(void)
 {
-	int a;
-
 	test1(2);
 	muslc();
 

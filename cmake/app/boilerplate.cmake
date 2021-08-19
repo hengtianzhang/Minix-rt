@@ -17,7 +17,10 @@
 # It exists to reduce boilerplate code that sel4m expects to be in
 # application CMakeLists.txt code.
 
-# CMake version 3.13.1 is the real minimum supported version.
+# CMake version 3.20.0 is the real minimum supported version.
+#
+# Makefile Generators, for some toolchains, now use the compiler to extract 
+# implicit dependencies while compiling source files.
 #
 # Unfortunately CMake requires the toplevel CMakeLists.txt file to
 # define the required version, not even invoking it from an included
@@ -26,7 +29,7 @@
 #
 # Under these restraints we use a second 'cmake_minimum_required'
 # invocation in every toplevel CMakeLists.txt.
-cmake_minimum_required(VERSION 3.13.1)
+cmake_minimum_required(VERSION 3.20.0)
 
 # CMP0002: "Logical target names must be globally unique"
 cmake_policy(SET CMP0002 NEW)

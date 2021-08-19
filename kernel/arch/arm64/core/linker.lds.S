@@ -92,6 +92,12 @@ SECTIONS
 		*(COMMON)						\
 	}
 	_end = .;
+
+	.comment 0 : { *(.comment) }
+	.symtab 0 : { *(.symtab) }
+	.strtab 0 : { *(.strtab) }
+	.shstrtab 0 : { *(.shstrtab) }
+
 	/*
 	 * Sections that should stay zero sized, which is safer to
 	 * explicitly check instead of blindly discarding.

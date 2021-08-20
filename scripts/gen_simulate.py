@@ -15,15 +15,14 @@ def gen_file(output_file, name):
     output_file.write("""
 #!/bin/sh
 
-qemu-system-aarch64 -cpu cortex-a57 -machine type=virt,gic-version=2
-        -append "rdinit=/linuxrc console=ttyAMA0 earlycon=115200 rodata=nofull"
-        -kernel ../../arch/arm64/boot/Image
-        -initrd initrd.img
-        -device virtio-scsi-device
-        -smp cores=4,threads=2
-        -m 4G
-        -nographic
-""")
+qemu-system-aarch64 -cpu cortex-a57 -machine type=virt,gic-version=2    \
+        -append "rdinit=/linuxrc console=ttyAMA0 earlycon=115200 rodata=nofull" \
+        -kernel %s \
+        -device virtio-scsi-device  \
+        -smp cores=4,threads=2  \
+        -m 4G   \
+        -nographic  \
+""" % (name))
 
     return 0
 

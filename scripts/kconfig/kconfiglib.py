@@ -1467,6 +1467,9 @@ class Kconfig(object):
         chunks = [header]  # "".join()ed later
         add = chunks.append
 
+        add("#ifndef __GEERATED_AUTOCONF_H_\n")
+        add("#define __GEERATED_AUTOCONF_H_\n")
+
         for sym in self.unique_defined_syms:
             # _write_to_conf is determined when the value is calculated. This
             # is a hidden function call due to property magic.
@@ -1497,6 +1500,8 @@ class Kconfig(object):
 
                 add("#define {}{} {}\n"
                     .format(self.config_prefix, sym.name, val))
+
+        add("#endif /* !__GEERATED_AUTOCONF_H_ */\n")
 
         return "".join(chunks)
 

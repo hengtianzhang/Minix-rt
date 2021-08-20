@@ -25,6 +25,14 @@ set_compiler_property(PROPERTY optimization_size  -Os)
 # This section covers flags related to warning levels #
 #######################################################
 
+check_set_compiler_property(
+	APPEND PROPERTY app_warning_base
+	-Wall
+	-Wmissing-prototypes
+	-Wstrict-prototypes
+	-fomit-frame-pointer
+)
+
 # GCC Option standard warning base in sel4m
 set_compiler_property(PROPERTY warning_base
 		-Wall

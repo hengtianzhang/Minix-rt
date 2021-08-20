@@ -13,6 +13,8 @@ endif()
 
 set_ifndef(LINKERFLAGPREFIX -Wl)
 
+set_property(GLOBAL PROPERTY TOPT "-Wl,-T")
+
 if(CONFIG_EXCEPTIONS)
 	# When building with C++ Exceptions, it is important that crtbegin and crtend
 	# are linked at specific locations.
@@ -68,6 +70,57 @@ macro(configure_linker_script linker_script_gen linker_pass_define)
 		-o ${linker_script_gen}
 		BYPRODUCTS
 		${linker_script_gen}.dep
+		VERBATIM
+		WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
+		COMMAND_EXPAND_LISTS
+	)
+endmacro()
+
+# Run $LINKER_SCRIPT file through the C preprocessor, producing ${linker_script_gen}
+# NOTE: ${linker_script_gen} will be produced at build-time; not at configure-time
+macro(configure_services_linker_script services_linker_script_gen services_linker_pass_define)
+	set(services_extra_dependencies ${ARGN})
+
+	# Different generators deal with depfiles differently.
+	if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+		# Note that the IMPLICIT_DEPENDS option is currently supported only
+		# for Makefile generators and will be ignored by other generators.
+		set(services_linker_script_dep IMPLICIT_DEPENDS C ${SERVICES_LINKER_SCRIPT})
+	elseif(CMAKE_GENERATOR STREQUAL "Ninja")
+		# Using DEPFILE with other generators than Ninja is an error.
+		set(services_linker_script_dep DEPFILE ${services_linker_script_gen}.dep)
+	else()
+		# TODO: How would the linker script dependencies work for non-linker
+		# script generators.
+		message(STATUS "Warning; this generator is not well supported. The
+	Linker script may not be regenerated when it should.")
+		set(services_linker_script_dep "")
+	endif()
+
+	services_get_include_directories_for_lang(C services_current_includes)
+	get_property(services_current_defines GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES)
+
+	add_custom_command(
+		OUTPUT ${services_linker_script_gen}
+		DEPENDS
+		${SERVICES_LINKER_SCRIPT}
+		${extra_dependencies}
+		# NB: 'services_linker_script_dep' will use a keyword that ends 'DEPENDS'
+		${services_linker_script_dep}
+		COMMAND ${CMAKE_C_COMPILER}
+		-x assembler-with-cpp
+		-undef
+		-MD -MF ${services_linker_script_gen}.dep -MT ${services_linker_script_gen}
+		-D_LINKER
+		-D_ASMLANGUAGE
+		${services_current_includes}
+		${services_current_defines}
+		${services_linker_pass_define}
+		-E ${SERVICES_LINKER_SCRIPT}
+		-P # Prevent generation of debug `#line' directives.
+		-o ${services_linker_script_gen}
+		BYPRODUCTS
+		${services_linker_script_gen}.dep
 		VERBATIM
 		WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
 		COMMAND_EXPAND_LISTS

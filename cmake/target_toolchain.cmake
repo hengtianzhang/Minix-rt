@@ -27,7 +27,7 @@ set(CMAKE_SYSTEM_PROCESSOR ${ARCH})
 #   When the CMAKE_SYSTEM_NAME variable is set explicitly to enable cross
 #   compiling then the value of CMAKE_SYSTEM_VERSION must also be set
 #   explicitly to specify the target system version.
-set(CMAKE_SYSTEM_VERSION ${PROJECT_VERSION})
+set(CMAKE_SYSTEM_VERSION ${SEL4M_PROJECT_VERSION})
 
 # We are not building dynamically loadable libraries
 set(BUILD_SHARED_LIBS OFF)

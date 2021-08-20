@@ -17,6 +17,8 @@ set_compiler_property(PROPERTY optimization_size)
 # This section covers flags related to warning levels #
 #######################################################
 
+set_compiler_property(PROPERTY app_warning_base)
+
 # Property for standard warning base in sel4m, this will always bet set when compiling.
 set_compiler_property(PROPERTY warning_base)
 

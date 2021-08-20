@@ -102,7 +102,7 @@ file(TO_CMAKE_PATH "${SEL4M_BASE}" PROJECT_SOURCE_DIR)
 set(KERNEL_BINARY_DIR ${kernel__build_dir})
 set(SERVICES_BINARY_DIR ${services__build_dir})
 
-set(KERNEL_SOURCES_DIR ${kernel__sources_dir})
+set(KERNEL_SOURCE_DIR ${kernel__sources_dir})
 set(SERVICES_SOURCE_DIR ${services__sources_dir})
 
 set(AUTOCONF_H ${APPLICATION_BINARY_DIR}/include/generated/autoconf.h)
@@ -196,8 +196,7 @@ set(CMAKE_PREFIX_PATH ${SEL4M_BASE} CACHE PATH "")
 
 configure_file(${SEL4M_BASE}/version.h.in ${APPLICATION_BINARY_DIR}/include/generated/version.h)
 
-set(KERNEL_SOURCES_DIR ${SEL4M_BASE}/kernel CACHE PATH "")
+set(KERNEL_SOURCE_DIR ${SEL4M_BASE}/kernel CACHE PATH "")
 set(SERVICES_SOURCE_DIR ${SEL4M_BASE}/projects CACHE PATH "")
 
 add_subdirectory(${SERVICES_SOURCE_DIR}  ${services__build_dir})
-add_subdirectory(${KERNEL_SOURCES_DIR} ${kernel__build_dir})

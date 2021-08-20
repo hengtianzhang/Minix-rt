@@ -70,6 +70,52 @@ endif # LIB_CPLUSPLUS
 
 endif # CPLUSPLUS
 
+menu "Compiler Options"
+
+choice
+	prompt "Optimization level"
+	default SPEED_OPTIMIZATIONS
+	help
+	Note that these flags shall only control the compiler
+	optimization level, and that no extra debug code shall be
+	conditionally compiled based on them.
+
+config SIZE_OPTIMIZATIONS
+	bool "Optimize for size"
+	help
+	  Compiler optimizations will be set to -Os independently of other
+	  options.
+
+config SPEED_OPTIMIZATIONS
+	bool "Optimize for speed"
+	help
+	  Compiler optimizations will be set to -O2 independently of other
+	  options.
+
+config DEBUG_OPTIMIZATIONS
+	bool "Optimize debugging experience"
+	help
+	  Compiler optimizations will be set to -Og independently of other
+	  options.
+
+config NO_OPTIMIZATIONS
+	bool "Optimize nothing"
+	help
+	  Compiler optimizations will be set to -O0 independently of other
+	  options.
+
+endchoice
+
+config DEBUG_APP
+	bool "Debugging application"
+	default n
+	depends on !DEBUG_OPTIMIZATIONS
+	help
+	  Compiler Debug will be set to -g independently of other
+	  options.
+
+endmenu
+
 menuconfig HAS_PROJECT
 	bool "Project $(APPLICATION_SOURCE) Configuration"
 

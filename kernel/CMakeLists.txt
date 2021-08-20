@@ -10,6 +10,16 @@ CMAKE_CACHEFILE_DIR: ${CMAKE_CACHEFILE_DIR}
 ")
 endif()
 
+if(NOT DEFINED KERNEL_SOURCE_DIR)
+	message(FATAL_ERROR "A user error has occurred.
+cmake was invoked with '${CMAKE_CURRENT_LIST_DIR}' specified as the source directory,
+but it must be invoked with an application source directory,
+such as '${CMAKE_CURRENT_LIST_DIR}/projects/hello_world'.
+Debug variables:
+CMAKE_CACHEFILE_DIR: ${CMAKE_CACHEFILE_DIR}
+")
+endif()
+
 # See https://gitlab.kitware.com/cmake/cmake/issues/16228
 # and https://cmake.org/pipermail/cmake/2019-May/thread.html#69496
 if(NOT ${SEL4M_BASE}/kernel STREQUAL CMAKE_CURRENT_SOURCE_DIR)
@@ -26,7 +36,7 @@ endif()
 sel4m_check_compiler_flag(C "" toolchain_is_ok)
 assert(toolchain_is_ok "The toolchain is unable to build a dummy C file. See CMakeError.log.")
 
-project(kernel VERSION ${PROJECT_VERSION})
+project(kernel VERSION ${SEL4M_PROJECT_VERSION})
 enable_language(C CXX ASM)
 
 set(KERNEL_NAME ${CONFIG_KERNEL_BIN_NAME})
@@ -273,7 +283,7 @@ if(CONFIG_CPLUSPLUS)
 	kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:${STD_CPP_DIALECT_FLAGS}>)
 endif()
 
-set(KCONFIG_H ${KERNEL_SOURCES_DIR}/include/linux/kconfig.h)
+set(KCONFIG_H ${KERNEL_SOURCE_DIR}/include/linux/kconfig.h)
 kernel_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${KCONFIG_H}")
 
 # @Intent: Set compiler specific flag for bare metal freestanding option
@@ -324,7 +334,7 @@ add_subdirectory(arch/${ARCH})
 
 set(ASM_OFFSETS_LIB asm_offsets)
 
-set(ASM_OFFSETS_C_PATH ${KERNEL_SOURCES_DIR}/arch/${ARCH}/core/asm-offsets.c)
+set(ASM_OFFSETS_C_PATH ${KERNEL_SOURCE_DIR}/arch/${ARCH}/core/asm-offsets.c)
 set(ASM_OFFSETS_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/asm-offsets.h)
 
 add_library(${ASM_OFFSETS_LIB} OBJECT ${ASM_OFFSETS_C_PATH})
@@ -345,7 +355,7 @@ add_custom_command(
 )
 add_custom_target(${ASM_OFFSETS_H_TARGET} DEPENDS ${ASM_OFFSETS_H_PATH})
 
-set(TIMECONST_BC_PATH ${KERNEL_SOURCES_DIR}/core/time/timeconst.bc)
+set(TIMECONST_BC_PATH ${KERNEL_SOURCE_DIR}/core/time/timeconst.bc)
 set(TIMECONST_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/timeconst.h)
 
 add_custom_command(
@@ -393,7 +403,7 @@ get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIB
 
 get_property(KERNEL_IMPORTED_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_IMPORTED_LIBS)
 
-add_library(version ${KERNEL_SOURCES_DIR}/init/version.c)
+add_library(version ${KERNEL_SOURCE_DIR}/init/version.c)
 set_target_properties(
 	version
 	PROPERTIES

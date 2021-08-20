@@ -45,6 +45,7 @@ def gen_offset_header(input_name, input_file, output_file, name):
 
     return 0
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=__doc__,

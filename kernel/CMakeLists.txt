@@ -58,6 +58,8 @@ set(KERNEL_STRIP_NAME ${KERNEL_NAME}.strip)
 set(CMAKE_EXECUTABLE_SUFFIX .elf)
 set(KERNEL_FINAL_EXECUTABLE    kernel_final)
 
+set_property(GLOBAL PROPERTY CORE_IMAGE_TARGET ${KERNEL_FINAL_EXECUTABLE})
+
 # Set some phony targets to collect dependencies
 set(ASM_OFFSETS_H_TARGET           asm_offsets_h)
 set(TIMECONST_H_TARGET           timeconst_h)
@@ -472,7 +474,7 @@ set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_COMMANDS
 	COMMAND
 	${CMAKE_COMMAND} -E rename ${KERNEL_FINAL_EXECUTABLE}.map ${KERNEL_MAP_NAME}
-) 
+)
 set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_BYPRODUCTS
 	${KERNEL_MAP_NAME}

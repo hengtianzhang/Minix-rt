@@ -19,4 +19,15 @@ if(binary IN_LIST elfconvert_formats)
 	${KERNEL_BIN_NAME}
 	# ${out_hex_byprod} # Is this needed ?
 	)
+
+	set_property(GLOBAL APPEND
+		PROPERTY KERNEL_POST_BUILD_COMMANDS
+		COMMAND ${CMAKE_COMMAND}
+		-E copy ${KERNEL_BIN_NAME} ${APPLICATION_BINARY_DIR}/images/Image
+	)
+	set_property(GLOBAL APPEND
+	PROPERTY KERNEL_POST_BUILD_BYPRODUCTS
+	${APPLICATION_BINARY_DIR}/images/Image
+	)
+	set_property(GLOBAL PROPERTY CORE_IMAGE_NAME "${APPLICATION_BINARY_DIR}/images/Image")
 endif()

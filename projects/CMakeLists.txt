@@ -167,6 +167,8 @@ function(DeclareRootservices rootservicesname)
 	make_kernel_archive(${SERVICES_ARCHIVE_FILE_PROPERTY} "$<TARGET_FILE:${rootservicesname}>")
 
 	add_subdirectory(${KERNEL_SOURCE_DIR} ${kernel__build_dir})
+
+	qemu_virt_setup()
 endfunction(DeclareRootservices)
 
 function(DeclareServicesApp servicesappname)
@@ -201,4 +203,22 @@ function(make_kernel_archive output_name input_files)
 		VERBATIM
 	)
 	add_custom_target(services_archive DEPENDS ${output_name})
+endfunction()
+
+function(qemu_virt_setup)
+	if (CONFIG_QEMU_VIRT)
+	get_property(CORE_IMAGE_NAME_PROPERTY GLOBAL PROPERTY CORE_IMAGE_NAME)
+	get_property(CORE_IMAGE_TARGET_PROPERTY GLOBAL PROPERTY CORE_IMAGE_TARGET)
+	add_custom_command(
+		OUTPUT ${APPLICATION_BINARY_DIR}/simulate
+		COMMAND ${PYTHON_EXECUTABLE} ${SEL4M_BASE}/scripts/gen_simulate.py
+		-n ${CORE_IMAGE_NAME_PROPERTY}
+		-o ${APPLICATION_BINARY_DIR}/simulate
+		DEPENDS
+		${CORE_IMAGE_TARGET_PROPERTY}
+		WORKING_DIRECTORY
+		${APPLICATION_BINARY_DIR}
+	)
+	add_custom_target(qemu_virt ALL DEPENDS ${APPLICATION_BINARY_DIR}/simulate)
+	endif()
 endfunction()

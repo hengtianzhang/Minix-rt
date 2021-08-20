@@ -116,6 +116,48 @@ config DEBUG_APP
 
 endmenu
 
+menuconfig QEMU_VIRT
+	bool "Qemu virt Support for the application"
+	help
+	  This option enables qemu virt.
+
+if QEMU_VIRT
+
+config QEMU_SYSTEM
+	string "Qemu system select"
+	default "aarch64" if ARM64
+
+
+config QEMU_CPU
+	string "Qemu cpu select"
+	default "cortex-a57" if ARM64
+
+config QEMU_MACHINE
+	string
+	default "virt"
+
+config QEMU_APPEND
+	string "Qemu append"
+	default ""
+
+config QEMU_INITRD
+	string "Qemu initrd"
+	default ""
+
+config QEMU_MEMORY
+	string "Qemu memory"
+	default "4G"
+
+config QEMU_GRAPHIC
+	bool "Qemu graphic"
+	default n
+
+config QEMU_DEBUG
+	bool "Qemu debug"
+	default n
+
+endif
+
 menuconfig HAS_PROJECT
 	bool "Project $(APPLICATION_SOURCE) Configuration"
 

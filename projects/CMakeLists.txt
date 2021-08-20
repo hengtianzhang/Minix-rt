@@ -181,4 +181,4 @@ function(DeclareServicesApp servicesappname)
 	add_dependencies(${servicesappname} linker_services_prebuilt_script_target)
 
 	target_link_libraries(${servicesappname} PUBLIC services_interface)
-endfunction(DeclareRootservices)
+endfunction(DeclareServicesApp)

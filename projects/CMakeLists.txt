@@ -143,6 +143,8 @@ set_property(TARGET
 	${SERVICES_INCLUDE_DIRS}
 )
 
+set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/archive.S")
+
 function(DeclareRootservices rootservicesname)
 	target_link_libraries(${rootservicesname} PRIVATE sel4mruntime_crt_obj)
 
@@ -160,6 +162,9 @@ function(DeclareRootservices rootservicesname)
 	add_dependencies(${rootservicesname} linker_services_prebuilt_script_target)
 
 	target_link_libraries(${rootservicesname} PUBLIC services_interface)
+
+	get_property(SERVICES_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY SERVICES_ARCHIVE_FILE)
+	make_kernel_archive(${SERVICES_ARCHIVE_FILE_PROPERTY} "$<TARGET_FILE:${rootservicesname}>")
 
 	add_subdirectory(${KERNEL_SOURCE_DIR} ${kernel__build_dir})
 endfunction(DeclareRootservices)
@@ -182,3 +187,18 @@ function(DeclareServicesApp servicesappname)
 
 	target_link_libraries(${servicesappname} PUBLIC services_interface)
 endfunction(DeclareServicesApp)
+
+function(make_kernel_archive output_name input_files)
+	add_custom_command(
+		OUTPUT ${output_name}
+		COMMAND rm -f ${output_name}
+		COMMAND ${SHELL} -c
+		"echo 'X.section .archive_services,\"aw\"X.globl __archive_services_start, \
+		__archive_services_endX__archive_services_start:X.incbin \"${input_files}\"X__archive_services_end:X' | tr X '\\n'"
+		> ${output_name}
+		DEPENDS
+		${input_files}
+		VERBATIM
+	)
+	add_custom_target(services_archive DEPENDS ${output_name})
+endfunction()

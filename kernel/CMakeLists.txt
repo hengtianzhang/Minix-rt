@@ -463,6 +463,11 @@ set_property(TARGET   ${KERNEL_FINAL_EXECUTABLE} PROPERTY LINK_DEPENDS ${KERNEL_
 add_dependencies(${KERNEL_FINAL_EXECUTABLE} linker_kernel_prebuilt_script_target)
 set_target_properties(${KERNEL_FINAL_EXECUTABLE} PROPERTIES OUTPUT_NAME ${KERNEL_NAME})
 
+add_dependencies(${KERNEL_FINAL_EXECUTABLE} services_archive)
+add_dependencies(linker_kernel_prebuilt_script_target services_archive)
+get_property(SERVICES_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY SERVICES_ARCHIVE_FILE)
+kernel_sources(${SERVICES_ARCHIVE_FILE_PROPERTY})
+
 set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_COMMANDS
 	COMMAND

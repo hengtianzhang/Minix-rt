@@ -93,6 +93,12 @@ SECTIONS
 	}
 	_end = .;
 
+	.archive_services : {
+		__start_archive = .;
+		KEEP(*(.archive_services))
+		__end_archive = .;
+	}
+
 	.comment 0 : { *(.comment) }
 	.symtab 0 : { *(.symtab) }
 	.strtab 0 : { *(.strtab) }

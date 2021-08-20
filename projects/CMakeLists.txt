@@ -214,6 +214,7 @@ function(qemu_virt_setup)
 		COMMAND ${PYTHON_EXECUTABLE} ${SEL4M_BASE}/scripts/gen_simulate.py
 		-n ${CORE_IMAGE_NAME_PROPERTY}
 		-o ${APPLICATION_BINARY_DIR}/simulate
+		COMMAND chmod u+x "${APPLICATION_BINARY_DIR}/simulate"
 		DEPENDS
 		${CORE_IMAGE_TARGET_PROPERTY}
 		WORKING_DIRECTORY

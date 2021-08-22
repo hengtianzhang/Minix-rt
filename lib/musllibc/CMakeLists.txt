@@ -13,4 +13,4 @@ target_sources(musllibc
 
 target_include_directories(musllibc PUBLIC include)
 
-target_link_libraries(musllibc misclibc)
+target_link_libraries(musllibc PUBLIC misclibc)

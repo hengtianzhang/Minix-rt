@@ -16,7 +16,7 @@ function(musllibc_kernel_import_libraries)
 		set_property(GLOBAL PROPERTY KERNEL_IMPORTED_MUSLLIBC TRUE)
 
 		set_property(GLOBAL APPEND PROPERTY KERNEL_IMPORTED_LIBS musllibc)
-		target_link_libraries(musllibc kernel_interface)
+		target_link_libraries(musllibc PUBLIC kernel_interface)
 	endif()
 endfunction()
 

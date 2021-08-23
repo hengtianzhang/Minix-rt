@@ -112,6 +112,8 @@ endif()
 
 services_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${AUTOCONF_H}")
 
+services_compile_options($<TARGET_PROPERTY:compiler,diagnostic>)
+
 services_compile_options($<TARGET_PROPERTY:compiler,nostdinc>)
 target_include_directories(services_interface SYSTEM INTERFACE $<TARGET_PROPERTY:compiler,nostdinc_include>)
 

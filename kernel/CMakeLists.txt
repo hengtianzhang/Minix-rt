@@ -324,6 +324,8 @@ kernel_compile_options(
 	$<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,cstd>${CSTD}>
 )
 
+kernel_compile_options($<TARGET_PROPERTY:compiler,diagnostic>)
+
 get_property(TOPT GLOBAL PROPERTY TOPT)
 
 set_ifndef(  TOPT -Wl,-T) # clang doesn't pick -T for some reason and complains,

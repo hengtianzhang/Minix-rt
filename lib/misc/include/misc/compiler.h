@@ -90,13 +90,11 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
 	}
 }
 
-#ifndef smp_read_barrier_depends
-#define smp_read_barrier_depends() do {} while(0);
-#endif
+#include <asm/misc/barrier.h>
 
 #define __READ_ONCE(x)						\
 ({									\
-	union { typeof(x) __val; char __c[1]; } __u;			\							\
+	union { typeof(x) __val; char __c[1]; } __u;			\
 	__read_once_size(&(x), __u.__c, sizeof(x));		\
 	smp_read_barrier_depends(); /* Enforce dependency ordering from x */ \
 	__u.__val;							\

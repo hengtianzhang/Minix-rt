@@ -79,12 +79,6 @@ config KERNEL_BIN_NAME
 	help
 	  This option sets the name of the generated kernel binary.
 
-#
-# For architectures that know their GCC __int128 support is sound
-#
-config ARCH_SUPPORTS_INT128
-	bool
-
 choice
 	prompt "Compiler optimization level"
 	default CC_OPTIMIZE_FOR_PERFORMANCE

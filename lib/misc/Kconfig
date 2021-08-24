@@ -2,6 +2,18 @@
 #
 menu "Misc libc configuration"
 
+config GENERIC_FIND_FIRST_BIT
+	bool
+
+config ARCH_HAS_FAST_MULTIPLIER
+	bool
+
+#
+# For architectures that know their GCC __int128 support is sound
+#
+config ARCH_SUPPORTS_INT128
+	bool
+
 source "lib/misc/arch/Kconfig"
 
 endmenu

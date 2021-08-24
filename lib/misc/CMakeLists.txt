@@ -6,10 +6,7 @@ project(libmisc VERSION 0.0.1)
 
 add_library(misc STATIC EXCLUDE_FROM_ALL)
 
-target_sources(misc
-	PRIVATE
-	src/bitmap.c
-)
+add_subdirectory(src)
 
 # Common toolchain-agnostic assembly flags
 target_compile_options(misc PUBLIC

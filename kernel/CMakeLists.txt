@@ -415,6 +415,7 @@ set_target_properties(
 	__KERNEL_VERSION__
 )
 add_dependencies(version ${COMPILE_H_TARGET})
+target_link_libraries(version PUBLIC kernel_interface)
 # FIXME, kernel_interface import from KERNEL_IMPORTED_LIBS_PROPERTY
 kernel_imported_link_libraries(version ${KERNEL_IMPORTED_LIBS_PROPERTY})
 

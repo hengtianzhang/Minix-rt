@@ -7,6 +7,7 @@ project(libmisc VERSION 0.0.1)
 add_library(misc STATIC EXCLUDE_FROM_ALL)
 
 add_subdirectory(src)
+add_subdirectory(arch/${ARCH})
 
 # Common toolchain-agnostic assembly flags
 target_compile_options(misc PUBLIC

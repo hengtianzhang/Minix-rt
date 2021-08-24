@@ -101,6 +101,12 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
 })
 #define READ_ONCE(x) __READ_ONCE(x)
 
+static __always_inline
+unsigned long long read_word_at_a_time(const void *addr)
+{
+	return *(unsigned long long *)addr;
+}
+
 #define WRITE_ONCE(x, val) \
 ({							\
 	union { typeof(x) __val; char __c[1]; } __u =	\

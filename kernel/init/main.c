@@ -3,7 +3,7 @@
 #include <misc/compiler.h>
 #include <misc/types.h>
 #include <misc/common.h>
-#include <misc/atomic.h>
+#include <misc/bitmap.h>
 
 
 #include <asm/barrier.h>

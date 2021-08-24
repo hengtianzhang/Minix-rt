@@ -32,9 +32,6 @@ set_compiler_property(PROPERTY warning_base
 
 check_set_compiler_property(APPEND PROPERTY warning_base -Wno-pointer-sign)
 
-# Prohibit void pointer arithmetic. Illegal in C99
-check_set_compiler_property(APPEND PROPERTY warning_base -Wpointer-arith)
-
 # clang options for warning levels 1, 2, 3, when using `-DW=[1|2|3]`
 set_compiler_property(PROPERTY warning_dw_1
 					  -Wextra

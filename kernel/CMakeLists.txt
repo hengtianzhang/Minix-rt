@@ -285,7 +285,6 @@ if(CONFIG_CPLUSPLUS)
 	kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:${STD_CPP_DIALECT_FLAGS}>)
 endif()
 
-set(KCONFIG_H ${KERNEL_SOURCE_DIR}/include/linux/kconfig.h)
 kernel_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${KCONFIG_H}")
 
 # @Intent: Set compiler specific flag for bare metal freestanding option

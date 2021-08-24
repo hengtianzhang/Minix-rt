@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __LINUX_STDDEF_H_
-#define __LINUX_STDDEF_H_
+#ifndef __MISC_STDDEF_H_
+#define __MISC_STDDEF_H_
 
 #ifndef __ASSEMBLY__
 
@@ -37,4 +37,4 @@ enum {
 	(offsetof(TYPE, MEMBER)	+ sizeof_field(TYPE, MEMBER))
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__LINUX_STDDEF_H_ */
+#endif /* !__MISC_STDDEF_H_ */

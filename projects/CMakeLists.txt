@@ -110,7 +110,7 @@ if(CONFIG_CPLUSPLUS)
 	services_compile_options($<$<COMPILE_LANGUAGE:CXX>:${STD_CPP_DIALECT_FLAGS}>)
 endif()
 
-services_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${AUTOCONF_H}")
+services_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${KCONFIG_H}")
 
 services_compile_options($<TARGET_PROPERTY:compiler,diagnostic>)
 

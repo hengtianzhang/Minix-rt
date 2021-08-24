@@ -255,3 +255,18 @@ foreach (name ${cache_variable_names})
 		endif()
 	endif()
 endforeach()
+
+set(KCONFIG_H ${APPLICATION_BINARY_DIR}/include/generated/kconfig.h CACHE PATH "")
+
+execute_process(
+	COMMAND ${PYTHON_EXECUTABLE}
+	${SEL4M_BASE}/scripts/mkkconfig_h.py
+	-o ${KCONFIG_H}
+	OUTPUT_FILE ${KCONFIG_H}
+	OUTPUT_QUIET # Discard stdout
+	WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
+	RESULT_VARIABLE ret
+)
+if(NOT "${ret}" STREQUAL "0")
+	message(FATAL_ERROR "command failed with return code: ${ret}")
+endif()

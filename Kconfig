@@ -9,4 +9,6 @@ source "scripts/Kconfig.include"
 
 source "kernel/Kconfig"
 
+source "lib/Kconfig"
+
 source "projects/Kconfig"

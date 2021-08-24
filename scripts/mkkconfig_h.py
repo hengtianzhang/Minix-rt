@@ -1,6 +1,19 @@
+#!/usr/bin/env python3
+#
+# Copyright (c) 2017 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+import argparse
+import sys
+
+
+def gen_file(output_file):
+    output_file.write("""
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __LINUX_KCONFIG_H_
-#define __LINUX_KCONFIG_H_
+#ifndef __GENERATED_KCONFIG_H_
+#define __GENERATED_KCONFIG_H_
 
 #include <generated/autoconf.h>
 
@@ -55,4 +68,28 @@
  */
 #define IS_ENABLED(option) IS_BUILTIN(option)
 
-#endif /* !__LINUX_KCONFIG_H_ */
+#endif /* !__GENERATED_KCONFIG_H_ */
+""")
+
+    return 0
+
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        required=True,
+        help="Output header file")
+
+    args = parser.parse_args()
+
+    output_file = open(args.output, 'w')
+
+    ret = gen_file(output_file)
+
+    sys.exit(ret)

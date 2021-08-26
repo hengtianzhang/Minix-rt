@@ -17,23 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-typedef unsigned long long size_t;
-#include <linux/kbuild.h>
-
-struct aa {
-	int bb;
-	long long cc;
-};
-
-struct bb {
-	unsigned long scs;
-	struct aa vv;
-	int a;
-};
+#include <sel4m/kbuild.h>
+#include <sel4m/smp.h>
 
 int main(void)
 {
-	DEFINE(CC,	offsetof(struct aa, cc));
-	DEFINE(SDASD,	offsetof(struct bb, a));
+	DEFINE(CPU_BOOT_STACK,	offsetof(struct secondary_data, stack));
+	DEFINE(CPU_BOOT_TASK,		offsetof(struct secondary_data, task));
+
 	return 0;
 }

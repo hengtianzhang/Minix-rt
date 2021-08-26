@@ -18,6 +18,9 @@
  */
 #include <sel4m/cache.h>
 #include <sel4m/types.h>
+#include <sel4m/init.h>
+
+phys_addr_t __fdt_pointer __initdata;
 
 /*
  * The recorded values of x0 .. x3 upon kernel entry.

@@ -160,6 +160,11 @@
 	*(.data..read_mostly)						\
 	. = ALIGN(align);
 
+#define KERNEL_STACK_DATA				\
+	__start_kernel_stack = .;			\
+	KEEP(*(.data..kernel_stack))			\
+	__end_kernel_stack	= .;
+
 #define DATA_DATA							\
 	*(DATA_MAIN)							\
 	__start_once = .;						\
@@ -172,6 +177,7 @@
 		PAGE_ALIGNED_DATA(pagealigned)				\
 		CACHELINE_ALIGNED_DATA(cacheline)			\
 		READ_MOSTLY_DATA(cacheline)				\
+		KERNEL_STACK_DATA					\
 		DATA_DATA						\
 		CONSTRUCTORS						\
 	}								\

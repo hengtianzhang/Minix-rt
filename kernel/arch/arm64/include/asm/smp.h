@@ -32,4 +32,33 @@
 #define CPU_STUCK_REASON_52_BIT_VA	(ULL(1) << CPU_STUCK_REASON_SHIFT)
 #define CPU_STUCK_REASON_NO_GRAN	(ULL(2) << CPU_STUCK_REASON_SHIFT)
 
+#ifndef __ASSEMBLY__
+
+#include <sel4m/types.h>
+#include <sel4m/linkage.h>
+#include <sel4m/sched.h>
+
+/*
+ * Called from the secondary holding pen, this is the secondary CPU entry point.
+ */
+asmlinkage void secondary_start_kernel(void);
+
+/*
+ * Initial data for bringing up a secondary CPU.
+ * @stack  - sp for the secondary CPU
+ * @status - Result passed back from the secondary CPU to
+ *           indicate failure.
+ */
+struct secondary_data {
+	void *stack;
+	struct task_struct *task;
+	s64 status;
+};
+
+extern struct secondary_data secondary_data;
+
+extern s64 __early_cpu_boot_status;
+extern void secondary_entry(void);
+
+#endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_SMP_H_ */

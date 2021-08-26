@@ -22,6 +22,7 @@
 #define __ASM_MEMORY_H_
 
 #include <sel4m/const.h>
+#include <sel4m/sizes.h>
 
 #define VA_BITS			(CONFIG_ARM64_VA_BITS)
 #define VA_START		(ULL(0xffffffffffffffff) - \
@@ -49,7 +50,25 @@
 #define MT_NORMAL		4
 #define MT_NORMAL_WT		5
 
+#define MIN_THREAD_SHIFT	(14)
+
+#define THREAD_SHIFT		MIN_THREAD_SHIFT
+
+#define THREAD_SIZE		(ULL(1) << THREAD_SHIFT)
+
+#define THREAD_ALIGN		THREAD_SIZE
+
+#define IRQ_STACK_SIZE		THREAD_SIZE
+
+#define THREAD_STACK_ALIGN	SZ_16
+
 #ifndef __ASSEMBLY__
+
+/* the virtual base of the kernel image (minus TEXT_OFFSET) */
+extern u64			kimage_vaddr;
+
+/* the offset between the kernel virtual and physical mappings */
+extern u64			kimage_voffset;
 
 /*
  * TCR.T0SZ value to use when the ID map is active. Usually equals

@@ -20,6 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <generated/asm-offsets.h>
+
 #include <sel4m/init.h>
 
 #include <asm/sysreg.h>
@@ -358,9 +360,41 @@ ENDPROC(__create_page_tables)
  *   x0 = __PHYS_OFFSET
  */
 __primary_switched:
+	adrp	x4, kernel_stack_alloc
+	add	sp, x4, #THREAD_SIZE
+
+	adr_l	x8, vectors			// load VBAR_EL1 with virtual
+	msr	vbar_el1, x8			// vector table address
+	isb
+
+	stp	xzr, x30, [sp, #-16]!
+	mov	x29, sp
+
+	str_l	x21, __fdt_pointer, x5		// Save FDT pointer
+
+	ldr_l	x4, kimage_vaddr		// Save the offset between
+	sub	x4, x4, x0			// the kernel virtual and
+	str_l	x4, kimage_voffset, x5		// physical mappings
+
+	// Clear BSS
+	adr_l	x0, __bss_start
+	mov	x1, xzr
+	adr_l	x2, __bss_stop
+	sub	x2, x2, x0
+	bl	__pi_memset
+	dsb	ishst				// Make zero page visible to PTW
 
 	b	start_kernel
 ENDPROC(__primary_switched)
+
+/*
+ * end early head section, begin head code that is also used for
+ * hotplug and needs to have the same protections as the text region
+ */
+	.section ".idmap.text","awx"
+
+ENTRY(kimage_vaddr)
+	.quad		_text
 
 /*
  * If we're fortunate enough to boot at EL2, ensure that the world is
@@ -435,6 +469,42 @@ ENTRY(__early_cpu_boot_status)
 	.long 	0
 
 	.popsection
+
+	/*
+	 * Secondary entry point that jumps straight into the kernel. Only to
+	 * be used where CPUs are brought online dynamically by the kernel.
+	 */
+ENTRY(secondary_entry)
+	bl	el2_setup			// Drop to EL1
+	bl	set_cpu_boot_mode_flag
+	b	secondary_startup
+ENDPROC(secondary_entry)
+
+secondary_startup:
+	/*
+	 * Common entry point for secondary CPUs.
+	 */
+	bl	__cpu_setup			// initialise processor
+	adrp	x1, swapper_pg_dir
+	bl	__enable_mmu
+	ldr	x8, =__secondary_switched
+	br	x8
+ENDPROC(secondary_startup)
+
+__secondary_switched:
+	adr_l	x5, vectors
+	msr	vbar_el1, x5
+	isb
+
+	adr_l	x0, secondary_data
+	ldr	x1, [x0, #CPU_BOOT_STACK]	// get secondary_data.stack
+	mov	sp, x1
+	ldr	x2, [x0, #CPU_BOOT_TASK]
+	msr	sp_el0, x2
+	mov	x29, #0
+	mov	x30, #0
+	b	secondary_start_kernel
+ENDPROC(__secondary_switched)
 
 /*
  * The booting CPU updates the failed status @__early_cpu_boot_status,

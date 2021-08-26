@@ -14,7 +14,7 @@ set_property(GLOBAL PROPERTY TOPT "-Wl,-T")
 
 # Run $LINKER_SCRIPT file through the C preprocessor, producing ${linker_script_gen}
 # NOTE: ${linker_script_gen} will be produced at build-time; not at configure-time
-macro(configure_linker_script linker_script_gen linker_pass_define location)
+macro(configure_linker_script linker_script_gen linker_pass_define)
 	set(extra_dependencies ${ARGN})
 
 	# Different generators deal with depfiles differently.
@@ -33,7 +33,7 @@ macro(configure_linker_script linker_script_gen linker_pass_define location)
 		set(linker_script_dep "")
 	endif()
 
-	kernel_get_include_directories_for_lang(C current_includes ${location})
+	kernel_get_include_directories_for_lang(C current_includes)
 	get_property(current_defines GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES)
 
 	add_custom_command(

@@ -441,7 +441,7 @@ kernel_get_include_directories_for_lang(C KERNEL_INCLUDE_DIRS STRIP_PREFIX)
 
 configure_linker_script(
 	${KERNEL_BINARY_DIR}/linker.lds
-	"-D__ASSEMBLY__ -DLINKER_SCRIPT -U${ARCH}"
+	"-D__ASSEMBLY__;-DLINKER_SCRIPT;-U${ARCH}"
 	kernel_generated_headers
 )
 

@@ -1,6 +1,8 @@
-
-
-kernel_sources(test1.c test2.c test3.S)
-
+# SPDX-License-Identifier: Apache-2.0
 
 kernel_library()
+
+kernel_library_sources(
+	cache.S proc.S
+	mmu.c context.c
+)

@@ -35,9 +35,6 @@ config ARM64_CONT_SHIFT
 config ARCH_PHYS_ADDR_T_64BIT
 	def_bool y
 
-config ARCH_DMA_ADDR_T_64BIT
-	def_bool y
-
 config ILLEGAL_POINTER_VALUE
 	hex
 	default 0xdead000000000000
@@ -140,6 +137,10 @@ config NR_CPUS
 	range 2 4096
 	# These have to remain sorted largest to smallest
 	default "64"
+
+config BROKEN_GAS_INST
+	bool "Detected assembler with broken .inst"
+	default y
 
 source "kernel/core/Kconfig.hz"
 

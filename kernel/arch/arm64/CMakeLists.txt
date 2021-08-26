@@ -21,5 +21,6 @@ kernel_ld_options(${LINKERFLAGPREFIX},-EL ${LINKERFLAGPREFIX},-maarch64elf)
 set(UTS_MACHINE "aarch64" CACHE PATH "")
 endif()
 
-add_subdirectory(core)
 add_subdirectory(boot)
+add_subdirectory(core)
+add_subdirectory(mm)

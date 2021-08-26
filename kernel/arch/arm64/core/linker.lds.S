@@ -4,30 +4,25 @@
  * taken from the i386 version by Russell King
  * Written by Martin Mares <mj@atrey.karlin.mff.cuni.cz>
  */
+#include <generated/kconfig.h>
 
-#include <linux/stddef.h>
+#include <sel4m/sizes.h>
 
-#define ARM_EXIT_KEEP(x)	x
-#define ARM_EXIT_DISCARD(x)
+#include <asm-generic/linker.lds.h>
 
-#ifndef BSS_FIRST_SECTIONS
-#define BSS_FIRST_SECTIONS
-#endif
+#include <asm/kernel-pgtable.h>
+#include <asm/cache.h>
 
-/* Section used for early init (in .S files) */
-#define HEAD_TEXT  KEEP(*(.head.text))
-
-#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]*
-
-#define NOTES								\
-	.notes : AT(ADDR(.notes) - 0) {			\
-		__start_notes = .;					\
-		KEEP(*(.note.*))					\
-		__stop_notes = .;					\
-	}
+#include "image.h"
 
 OUTPUT_ARCH(aarch64)
 ENTRY(_text)
+
+#define IDMAP_TEXT					\
+	. = ALIGN(SZ_4K);				\
+	__idmap_text_start = .;				\
+	*(.idmap.text)					\
+	__idmap_text_end = .;
 
 SECTIONS
 {
@@ -38,8 +33,6 @@ SECTIONS
 	 * order of matching.
 	 */
 	/DISCARD/ : {
-		ARM_EXIT_DISCARD(EXIT_TEXT)
-		ARM_EXIT_DISCARD(EXIT_DATA)
 		*(.discard)
 		*(.discard.*)
 		*(.interp .dynamic)
@@ -47,62 +40,123 @@ SECTIONS
 		*(.eh_frame)
 	}
 
-	. = 0x0;
+	. = KIMAGE_VADDR;
 
 	.head.text : {
 		_text = .;
 		HEAD_TEXT
 	}
-	. = ALIGN(16);
-	.text : {			/* Real text segment		*/
-		_stext = .;		/* Text and read-only data	*/
+
+	.text : {
+		_stext = .;
 			__exception_text_start = .;
 			*(.exception.text)
 			__exception_text_end = .;
-			*(.text.hot .text .text.[0-9a-zA-Z_]* .text.fixup .text.unlikely)
+			IRQENTRY_TEXT
+			ENTRY_TEXT
+			TEXT_TEXT
+			SCHED_TEXT
+			CPUIDLE_TEXT
+			LOCK_TEXT
+			IDMAP_TEXT
 			*(.fixup)
 			*(.gnu.warning)
 		. = ALIGN(16);
 		*(.got)			/* Global offset table		*/
 	}
 
+	. = ALIGN(SEGMENT_ALIGN);
 	_etext = .;			/* End of text section */
 
+	RO_DATA(PAGE_SIZE)
+	EXCEPTION_TABLE(8)
+	NOTES
+
+	. = ALIGN(PAGE_SIZE);
+	idmap_pg_dir = .;
+	. += IDMAP_DIR_SIZE;
+
+	swapper_pg_dir = .;
+	. += PAGE_SIZE;
+	swapper_pg_end = .;
+
+	. = ALIGN(SEGMENT_ALIGN);
+	__init_begin = .;
+	__inittext_begin = .;
+
+	INIT_TEXT_SECTION(8)
+
+	. = ALIGN(4);
 	. = ALIGN(4);
 	.altinstructions : {
 		__alt_instructions = .;
 		*(.altinstructions)
 		__alt_instructions_end = .;
 	}
+	.altinstr_replacement : {
+		*(.altinstr_replacement)
+	}
+
+	. = ALIGN(PAGE_SIZE);
+	__inittext_end = .;
+	__initdata_begin = .;
+
+	.init.data : {
+		INIT_DATA
+		*(.init.rodata.* .init.bss)	/* from the EFI stub */
+	}
+
+	ARCHIVE_SERVICES(PAGE_SIZE)
 
 	.rela.dyn : ALIGN(8) {
 		*(.rela .rela*)
 	}
 
-	.data : AT(ADDR(.data) - 0) {
-		*(.data .data.[0-9a-zA-Z_]* .data..LPBX*)
+	__rela_offset	= ABSOLUTE(ADDR(.rela.dyn) - KIMAGE_VADDR);
+	__rela_size	= SIZEOF(.rela.dyn);
+
+	. = ALIGN(SEGMENT_ALIGN);
+	__initdata_end = .;
+	__init_end = .;
+
+	_data = .;
+	_sdata = .;
+	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE)
+
+	/*
+	 * Data written with the MMU off but read with the MMU on requires
+	 * cache lines to be invalidated, discarding up to a Cache Writeback
+	 * Granule (CWG) of data from the cache. Keep the section that
+	 * requires this type of maintenance to be in its own Cache Writeback
+	 * Granule (CWG) area so the cache maintenance operations don't
+	 * interfere with adjacent data.
+	 */
+	.mmuoff.data.write : ALIGN(SZ_2K) {
+		__mmuoff_data_start = .;
+		*(.mmuoff.data.write)
 	}
-	NOTES
-	. = ALIGN(8);						\
-	.bss : AT(ADDR(.bss) - 0) {				\
-		BSS_FIRST_SECTIONS					\
-		*(.bss..page_aligned)					\
-		*(.dynbss)						\
-		*(BSS_MAIN)						\
-		*(COMMON)						\
+	. = ALIGN(SZ_2K);
+	.mmuoff.data.read : {
+		*(.mmuoff.data.read)
+		__mmuoff_data_end = .;
 	}
+
+	_edata = .;
+
+	BSS_SECTION(0, 0, 0)
+
+	. = ALIGN(PAGE_SIZE);
+	init_pg_dir = .;
+	. += INIT_DIR_SIZE;
+	init_pg_end = .;
+
 	_end = .;
 
-	.archive_services : {
-		__start_archive = .;
-		KEEP(*(.archive_services))
-		__end_archive = .;
-	}
+	STABS_DEBUG
+	DWARF_DEBUG
+	ELF_DETAILS
 
-	.comment 0 : { *(.comment) }
-	.symtab 0 : { *(.symtab) }
-	.strtab 0 : { *(.strtab) }
-	.shstrtab 0 : { *(.shstrtab) }
+	HEAD_SYMBOLS
 
 	/*
 	 * Sections that should stay zero sized, which is safer to
@@ -111,6 +165,15 @@ SECTIONS
 	.plt : {
 		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
 	}
+	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
 
 	.data.rel.ro : { *(.data.rel.ro) }
+	ASSERT(SIZEOF(.data.rel.ro) == 0, "Unexpected RELRO detected!")
 }
+
+ASSERT(__idmap_text_end - (__idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
+	"ID map text too big or misaligned")
+/*
+ * If padding is applied before .head.text, virt<->phys conversions will fail.
+ */
+ASSERT(_text == KIMAGE_VADDR, "HEAD is misaligned")

@@ -15,11 +15,11 @@ def gen_file(output_file, name):
     output_file.write("""
 #!/bin/sh
 
-qemu-system-aarch64 -cpu cortex-a57 -machine type=virt,gic-version=2    \
+qemu-system-aarch64 -cpu cortex-a57 -machine type=virt,gic-version=2,dumpdtb=file.dtb    \
         -append "rdinit=/linuxrc console=ttyAMA0 earlycon=115200 rodata=nofull" \
         -kernel %s \
         -device virtio-scsi-device  \
-        -smp cores=4,threads=2  \
+        -smp 8  \
         -m 4G   \
         -nographic  \
 """ % (name))

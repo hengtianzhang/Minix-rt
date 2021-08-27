@@ -1,4 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0
 menu "Device Drivers"
 
+config OF
+	bool "Support DTB OF"
+	default n
+
+if OF
+osource "kernel/drivers/of/Kconfig"
+endif
+
 endmenu

@@ -40,6 +40,10 @@ function(kernel_library_sources source)
 	target_sources(${KERNEL_CURRENT_LIBRARY} PRIVATE ${source} ${ARGN})
 endfunction()
 
+function(kernel_library_dependencies target)
+	add_dependencies(${KERNEL_CURRENT_LIBRARY} ${target})
+endfunction()
+
 function(kernel_interface_library_sources source)
 	target_sources(${KERNEL_INTERFACE_CURRENT_LIBRARY} PRIVATE ${source} ${ARGN})
 endfunction()

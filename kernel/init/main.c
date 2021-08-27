@@ -12,6 +12,8 @@
 #include <sel4m/compiler.h>
 #include <sel4m/linkage.h>
 
+#include <generated/gen_dtb.h>
+
 asmlinkage __visible void __init start_kernel(void)
 {
     while (1);

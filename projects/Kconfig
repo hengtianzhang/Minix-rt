@@ -136,6 +136,10 @@ config QEMU_MACHINE
 	string
 	default "virt"
 
+config QEMU_VIRT_OPTION
+	string "Qemu virt optin"
+	default "gic-version=2"
+
 config QEMU_APPEND
 	string "Qemu append"
 	default ""

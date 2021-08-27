@@ -2,7 +2,22 @@
 
 file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/generated)
 
-if(CONFIG_DTC_OVERLAY_FILE)
+if(CONFIG_QEMU_VIRT)
+	set(QEMU_OUTPUT_DTB ${APPLICATION_BINARY_DIR}/dts/qemu_virt.dtb)
+	set_property(GLOBAL PROPERTY KERNEL_USE_DTB "${APPLICATION_BINARY_DIR}/dts/qemu_virt.dtb")
+	execute_process(
+		COMMAND
+		qemu-system-${CONFIG_QEMU_SYSTEM} -cpu ${CONFIG_QEMU_CPU}
+		-machine type=virt,${CONFIG_QEMU_VIRT_OPTION},dumpdtb=${QEMU_OUTPUT_DTB}
+		-smp ${CONFIG_NR_CPUS} -m ${CONFIG_QEMU_MEMORY}
+		-nographic
+		OUTPUT_FILE ${QEMU_OUTPUT_DTB}
+	)
+
+	set(USE_QEMU_DTB 1)
+endif()
+
+if(CONFIG_DTC_OVERLAY_FILE AND (NOT DEFINED USE_QEMU_DTB))
 	unset(DTC_OVERLAY_FILE_AS_LIST)
 	unset(dts_files)
 	# Convert from space-separated files into file list
@@ -108,6 +123,8 @@ if(CONFIG_DTC_OVERLAY_FILE)
 			if(NOT "${ret}" STREQUAL "0")
 				message(FATAL_ERROR "command failed with return code: ${ret}")
 			endif()
+
+			set_property(GLOBAL PROPERTY KERNEL_USE_DTB "${APPLICATION_BINARY_DIR}/dts/${dtsfile}.dtb")
 		endif(DTC)
 
 		execute_process(

@@ -71,6 +71,36 @@ def dump_memory_reg(fdt_property, address_cells, size_cells):
     return reg
 
 
+def fdt_scan_initrd(fdt_data, output_file):
+    initrd_start = ""
+    initrd_end = ""
+    for location in fdt_data:
+        if location == "chosen":
+            for i in fdt_data["chosen"]:
+                if i == "linux,initrd-start":
+                    initrd_start = fdt_data["chosen"][i][1]
+                if i == "linux,initrd-end":
+                    initrd_end = fdt_data["chosen"][i][1]
+
+    if len(initrd_start) == 0:
+        initrd_start_value = 0
+    else:
+        initrd_start_value = int(initrd_start, 16)
+
+    if len(initrd_end) == 0:
+        initrd_end_value = 0
+    else:
+        initrd_end_value = int(initrd_end, 16)
+
+    output_file.write("""
+static const
+phys_addr_t phys_initrd_start __initconst = 0x%lx;
+
+static const
+phys_addr_t phys_initrd_end __initconst = 0x%lx;
+""" % (initrd_start_value, initrd_end_value))
+
+
 def fdt_scan_memory(fdt_data, output_file):
     fdt_property = []
     fdt_foreach_property(fdt_property, fdt_data, "device_type")
@@ -166,6 +196,8 @@ static const char machine_name[] __initconst = "%s";
 
     fdt_check_address_cell(fdt_data)
     fdt_check_size_cell(fdt_data)
+
+    fdt_scan_initrd(fdt_data, output_file)
 
     fdt_scan_memory(fdt_data, output_file)
 

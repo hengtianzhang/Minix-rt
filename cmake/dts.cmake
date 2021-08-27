@@ -3,6 +3,7 @@
 file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/generated)
 
 if(CONFIG_QEMU_VIRT)
+	file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/dts)
 	set(QEMU_OUTPUT_DTB ${APPLICATION_BINARY_DIR}/dts/qemu_virt.dtb)
 	set_property(GLOBAL PROPERTY KERNEL_USE_DTB "${APPLICATION_BINARY_DIR}/dts/qemu_virt.dtb")
 	execute_process(

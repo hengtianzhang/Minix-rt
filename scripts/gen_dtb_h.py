@@ -408,6 +408,12 @@ def gen_dtb_c_file(input_file, output_file):
 	fdt = dtb.to_fdt()
 	fdt_json = fdt.to_json()
 	fdt_data = json.loads(fdt_json)
+	input_file.seek(4)
+	totalsize_int = input_file.read(4)
+	totalsize = (totalsize_int[0] << 24) \
+		+ (totalsize_int[1] << 16) \
+		+ (totalsize_int[2] << 8)	\
+		+ totalsize_int[3]
 
 	output_file.write("""
 #ifndef __GENERATED_GEN_DTB_H_
@@ -415,6 +421,8 @@ def gen_dtb_c_file(input_file, output_file):
 
 #include <sel4m/types.h>
 #include <sel4m/init.h>
+
+static const u32 fdt_totalsize __initconst = 0x%lx;
 
 struct memory_reg {
 	phys_addr_t base;
@@ -446,7 +454,7 @@ struct interrupt_devices {
     struct interrupt_devices *child;
 	char *compatible;
 };
-""")
+""" % (totalsize))
 
 	machine = ""
 	for location in fdt_data:

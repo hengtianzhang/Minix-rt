@@ -257,6 +257,49 @@ struct psci_devices psci_dt __initconst = {
 """ % (dump_psci_dt(fdt_data)))
 
 
+def dump_cpus_desc(fdt_property):
+	str_buffer = ""
+	for j in fdt_property:
+		str_buffer += "{ "
+		if j["device_type"][1] == "cpu":
+			str_buffer += ".reg = %s," % (j["reg"][1])
+			enable_method = j["enable-method"][1]
+			if enable_method == "psci":
+				str_buffer += ".enable_method = ENABLE_METHOD_PSCI,"
+			else:
+				str_buffer += ".enable_method = ENABLE_METHOD_SPIN_TABLE,"
+			compatible = j["compatible"]
+			del compatible[0]
+			str_buffer += ".compatible = \""
+			for k in compatible:
+				str_buffer += "%s " % k
+			str_buffer += "\""
+		str_buffer += "},\n\t"
+	return str_buffer
+
+
+def fdt_scan_cpus(fdt_data, output_file):
+	output_file.write("""
+struct cpus_desc {
+    u32 reg;
+#define ENABLE_METHOD_PSCI 1
+#define ENABLE_METHOD_SPIN_TABLE 2
+    u32 enable_method;
+    char *compatible;
+};
+""")
+	for i in fdt_data:
+		if i == "cpus":
+			fdt_property = []
+			fdt_foreach_property(fdt_property, fdt_data[i], "device_type")
+			output_file.write("""
+static const
+struct cpus_desc cpus_dt[] __initconst = {
+	%s
+};
+""" % (dump_cpus_desc(fdt_property)))
+
+
 def fdt_scan_interrupt(fdt_data, output_file):
 	global interrupt_cells
 	interrupt_cells = 0
@@ -432,6 +475,8 @@ static const char machine_name[] __initconst = "%s";
 	fdt_scan_stdout_path(fdt_data, output_file)
 
 	fdt_scan_psci(fdt_data, output_file)
+
+	fdt_scan_cpus(fdt_data, output_file)
 
 	fdt_scan_interrupt(fdt_data, output_file)
 

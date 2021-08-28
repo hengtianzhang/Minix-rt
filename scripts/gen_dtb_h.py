@@ -12,7 +12,7 @@ This script gen dtb to c sources file.
 
 import argparse
 import sys
-from pyfdt.pyfdt import FdtBlobParse
+from pyfdt.pyfdt import FDT_PROP, FdtBlobParse
 import json
 
 
@@ -39,17 +39,23 @@ def fdt_foreach_property(fdt_property, fdt_data, fdt_key):
 			fdt_foreach_property(fdt_property, fdt_data[location], fdt_key)
 
 
-def scan_memory_dump(dump_data, flags):
+def scan_memory_dump(dump_data, flags, name_base=[]):
 	str_buffer = ""
+	prefix = ""
+	index = 0
 	for location in dump_data:
-		str_buffer += "{ .base = 0x%lx, .size = 0x%lx, .flags = %lx },"   \
-			% (location[0], location[1], flags)
+		if len(name_base) != 0:
+			prefix = name_base[index]
+			prefix += " = "
+			index += 1
+
+		str_buffer += "%s{ .base = 0x%lx, .size = 0x%lx, .flags = %lx },"   \
+			% (prefix, location[0], location[1], flags)
 
 	return str_buffer
 
 
-def dump_memory_reg(fdt_property, address_cells, size_cells):
-	index = 1
+def foreach_reg(fdt_property, address_cells, size_cells, index, reg):
 	if address_cells == 2:
 		high = int(fdt_property["reg"][index], 16) << 32
 		index += 1
@@ -66,7 +72,18 @@ def dump_memory_reg(fdt_property, address_cells, size_cells):
 		size = high + low
 	else:
 		size = int(fdt_property["reg"][index], 16)
-	reg = [address, size]
+
+	index += 1
+	reg.append(address)
+	reg.append(size)
+	if index < len(fdt_property["reg"]):
+		foreach_reg(fdt_property, address_cells, size_cells, index, reg)
+
+
+def dump_memory_reg(fdt_property, address_cells, size_cells):
+	index = 1
+	reg = []
+	foreach_reg(fdt_property, address_cells, size_cells, index, reg)
 
 	return reg
 
@@ -194,6 +211,155 @@ struct memory_reg dtb_reserverd_memory[] __initconst = {
 """ % dump_reserverd_memory(fdt_data, fdt))
 
 
+def dump_psci_dt(fdt_data):
+	str_buffer = ""
+	valid = 0
+	for i in fdt_data:
+		if i == "psci":
+			valid = 1
+	if valid == 0:
+		str_buffer += ".valid = 0,\n\t"
+		return str_buffer
+	
+	for i in fdt_data["psci"]:
+		if i == "migrate":
+			str_buffer += ".migrate = %s,\n\t" % fdt_data["psci"][i][1]
+		if i == "cpu_on":
+			str_buffer += ".cpu_on = %s,\n\t" % fdt_data["psci"][i][1]
+		if i == "cpu_off":
+			str_buffer += ".cpu_off = %s,\n\t" % fdt_data["psci"][i][1]
+		if i == "cpu_suspend":
+			str_buffer += ".cpu_suspend = %s,\n\t" % fdt_data["psci"][i][1]
+		if i == "method":
+			if fdt_data["psci"]["method"][1] == "hvc":
+				str_buffer += ".method = HVC_METHOD,\n\t"
+			else:
+				str_buffer += ".method = SMC_METHOD,\n\t"
+		if i == "compatible":
+			compatile = fdt_data["psci"]["compatible"]
+			del compatile[0]
+			str_buffer += ".compatible = \""
+			for j in compatile:
+				str_buffer += "%s " % j
+			str_buffer += "\",\n\t"
+
+	str_buffer += ".valid = 1,"
+
+	return str_buffer
+
+
+def fdt_scan_psci(fdt_data, output_file):
+	output_file.write("""
+static const
+struct psci_devices psci_dt __initconst = {
+	%s
+};
+""" % (dump_psci_dt(fdt_data)))
+
+
+def fdt_scan_interrupt(fdt_data, output_file):
+	global interrupt_cells
+	interrupt_cells = 0
+	for i in fdt_data:
+		if i == "interrupt-parent":
+			phandle = fdt_data[i][1]
+			fdt_property = []
+			fdt_foreach_property(fdt_property, fdt_data, "phandle")
+			for j in fdt_property:
+				if j["phandle"][1] == phandle:
+					interrupt_node = j
+					break
+			break
+	for i in interrupt_node:
+		if i == "#interrupt-cells":
+			interrupt_cells = int(interrupt_node["#interrupt-cells"][1], 16)
+		if i == "interrupt-controller":
+			devices_reg = []
+			reg = dump_memory_reg(interrupt_node, address_cells, size_cells)
+			for j in range(0, len(reg), 2):
+				devices_reg.append(reg[j:j + 2])
+			name_base = [".dist_base", ".cpu_base"]
+			compatible = interrupt_node["compatible"]
+			del compatible[0]
+			str_compatible = ""
+			for k in compatible:
+				str_compatible += "%s" % k
+			output_file.write("""
+static const
+struct interrupt_devices interrupt_dt __initconst = {
+	%s
+	.child = NULL,
+	.compatible = "%s",
+};
+""" % (scan_memory_dump(devices_reg, 0, name_base),
+	str_compatible))
+
+
+def dump_timer_devices_desc(interrupts_desc):
+	str_buffer = ""
+	prefix = ["irq_type", "number", "trig_type"]
+	for i  in interrupts_desc:
+		str_buffer += "{"
+		index = 0
+		for j in i:
+			str_buffer += ".%s = 0x%lx, " % (prefix[index], j)
+			index += 1
+		str_buffer += "},\n\t"
+	return str_buffer
+
+
+def fdt_scan_timer(fdt_data, output_file):
+	if interrupt_cells == 0:
+		return 0
+
+	for i in fdt_data:
+		if i == "timer":
+			output_file.write("""
+struct interrupt_desc {
+	u32		irq_type;
+	u32		number;
+	u32		trig_type;
+};
+""")
+			for j in fdt_data[i]:
+				always_on = 0
+				if j == "always-on":
+					always_on = 1
+				if j == "compatible":
+					compatible = fdt_data[i]["compatible"]
+					del compatible[0]
+					str_compatible = ""
+					for k in compatible:
+						str_compatible += "%s " % k
+				if j == "interrupts":
+					interrupts = fdt_data[i][j]
+					del interrupts[0]
+					interrupts = [ int(x, 16) for x in interrupts ]
+					interrupts_desc = []
+					for j in range(0, len(interrupts), interrupt_cells):
+						interrupts_desc.append(interrupts[j:j + interrupt_cells])
+					output_file.write("""
+static const
+struct interrupt_desc timer_descs[] = {
+	%s
+};
+
+struct timer_devices {
+	const struct interrupt_desc *timer_desc;
+	int 	always_on;
+	char 	*compatible;
+};
+""" % (dump_timer_devices_desc(interrupts_desc)))
+			output_file.write("""
+static const
+struct timer_devices timer_dt __initconst = {
+	.timer_desc = timer_descs,
+	.always_on = %d,
+	.compatible = "%s",
+}; 
+""" % (always_on, str_compatible))
+
+
 def gen_dtb_c_file(input_file, output_file):
 	dtb = FdtBlobParse(input_file)
 	fdt = dtb.to_fdt()
@@ -217,6 +383,25 @@ struct memory_reg {
 struct devcie_node {
 	char *compatile;
 	struct memory_reg reg;
+};
+
+struct psci_devices {
+	phys_addr_t migrate;
+	phys_addr_t cpu_on;
+	phys_addr_t cpu_off;
+	phys_addr_t cpu_suspend;
+#define HVC_METHOD  1
+#define SMC_METHOD  2
+	int			method;
+	int			valid;
+	char *compatible;
+};
+
+struct interrupt_devices {
+	struct memory_reg dist_base;
+    struct memory_reg cpu_base;
+    struct interrupt_devices *child;
+	char *compatible;
 };
 """)
 
@@ -245,6 +430,12 @@ static const char machine_name[] __initconst = "%s";
 	fdt_scan_reserverd_memory(fdt_data, fdt, output_file)
 
 	fdt_scan_stdout_path(fdt_data, output_file)
+
+	fdt_scan_psci(fdt_data, output_file)
+
+	fdt_scan_interrupt(fdt_data, output_file)
+
+	fdt_scan_timer(fdt_data, output_file)
 
 	output_file.write("""
 #endif /* !__GENERATED_GEN_DTB_H_ */

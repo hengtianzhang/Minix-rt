@@ -1,7 +1,14 @@
 #include <sel4m/compiler.h>
 #include <sel4m/linkage.h>
 
-asmlinkage __visible int printf(const char *fmt, ...)
+/**
+ *	panic - halt the system
+ *	@fmt: The text string to print
+ *
+ *	Display a message, then perform cleanups.
+ *
+ *	This function never returns.
+ */
+void panic(const char *fmt, ...)
 {
-    return 0;
 }

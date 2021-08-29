@@ -1,4 +1,4 @@
 
 kernel_sources(
-    stack.c
+    stack.c panic.c printf.c
 )

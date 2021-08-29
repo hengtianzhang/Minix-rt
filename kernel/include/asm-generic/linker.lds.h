@@ -100,6 +100,17 @@
 	}
 
 /*
+ * Allow architectures to handle ro_after_init data on their
+ * own by defining an empty RO_AFTER_INIT_DATA.
+ */
+#ifndef RO_AFTER_INIT_DATA
+#define RO_AFTER_INIT_DATA						\
+	__start_ro_after_init = .;					\
+	*(.data..ro_after_init)						\
+	__end_ro_after_init = .;
+#endif
+
+/*
  * Read only Data
  */
 #define RO_DATA_SECTION(align)						\
@@ -107,6 +118,7 @@
 	.rodata : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
 		__start_rodata = .;					\
 		*(.rodata) *(.rodata.*)					\
+		RO_AFTER_INIT_DATA	/* Read only after init */	\
 	}				\
 					\
 	.rodata1 : AT(ADDR(.rodata1) - LOAD_OFFSET) {		\

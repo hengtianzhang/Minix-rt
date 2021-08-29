@@ -31,6 +31,9 @@
 	(ULL(1) << (VA_BITS - 1)) + 1)
 #define KIMAGE_VADDR		(VA_START)
 
+#define RESERVED_IO_SPACE	SZ_2M
+#define	FIXADDR_TOP		(PAGE_OFFSET - RESERVED_IO_SPACE)
+
 #define MAX_USER_VA_BITS	VA_BITS
 
 /*

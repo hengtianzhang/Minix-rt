@@ -419,6 +419,8 @@ def gen_dtb_c_file(input_file, output_file):
 #ifndef __GENERATED_GEN_DTB_H_
 #define __GENERATED_GEN_DTB_H_
 
+#ifndef __ASSEMBLY__
+
 #include <sel4m/types.h>
 #include <sel4m/init.h>
 
@@ -491,6 +493,7 @@ static const char machine_name[] __initconst = "%s";
 	fdt_scan_timer(fdt_data, output_file)
 
 	output_file.write("""
+#endif /* !__ASSEMBLY__ */
 #endif /* !__GENERATED_GEN_DTB_H_ */
 """)
 

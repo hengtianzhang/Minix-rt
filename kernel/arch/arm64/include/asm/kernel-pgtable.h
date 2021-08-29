@@ -31,39 +31,21 @@ typedef u64 pmdval_t;
 typedef u64 pudval_t;
 typedef u64 pgdval_t;
 
-typedef struct { pgdval_t pgd; } pgd_t;
-#define pgd_val(x)	((x).pgd)
-#define __pgd(x)	((pgd_t) { (x) } )
-
 typedef struct { pteval_t pgprot; } pgprot_t;
 #define pgprot_val(x)	((x).pgprot)
 #define __pgprot(x)	((pgprot_t) { (x) } )
 
-#if CONFIG_PGTABLE_LEVELS > 3
-#define __PAGETABLE_PUD_FOLDED 1
+typedef struct { pgdval_t pgd; } pgd_t;
+#define pgd_val(x)	((x).pgd)
+#define __pgd(x)	((pgd_t) { (x) } )
+
 typedef struct { pudval_t pud; } pud_t;
 #define pud_val(x)	((x).pud)
 #define __pud(x)	((pud_t) { (x) } )
-#else
-typedef struct { pgd_t pgd; } pud_t;
-#define pud_val(x)				(pgd_val((x).pgd))
-#define __pud(x)				((pud_t) { __pgd(x) })
-#undef  pud_addr_end
-#define pud_addr_end(addr, end)			(end)
-#endif
 
-#if CONFIG_PGTABLE_LEVELS > 2
 typedef struct { pmdval_t pmd; } pmd_t;
 #define pmd_val(x)	((x).pmd)
 #define __pmd(x)	((pmd_t) { (x) } )
-#else
-#define __PAGETABLE_PMD_FOLDED 1
-typedef struct { pud_t pud; } pmd_t;
-#define pmd_val(x)				(pud_val((x).pud))
-#define __pmd(x)				((pmd_t) { __pud(x) } )
-#undef  pmd_addr_end
-#define pmd_addr_end(addr, end)			(end)
-#endif
 
 /*
  * These are used to make use of C type-checking..
@@ -112,32 +94,18 @@ typedef struct { pteval_t pte; } pte_t;
 /*
  * PMD_SHIFT determines the size a level 2 page table entry can map.
  */
-#if CONFIG_PGTABLE_LEVELS > 2
 #define PMD_SHIFT		ARM64_HW_PGTABLE_LEVEL_SHIFT(2)
 #define PMD_SIZE		(_AC(1, ULL) << PMD_SHIFT)
 #define PMD_MASK		(~(PMD_SIZE-1))
 #define PTRS_PER_PMD		PTRS_PER_PTE
-#else
-#define PMD_SHIFT	PUD_SHIFT
-#define PMD_SIZE  	(1UL << PMD_SHIFT)
-#define PMD_MASK  	(~(PMD_SIZE-1))
-#define PTRS_PER_PMD	1
-#endif
 
 /*
  * PUD_SHIFT determines the size a level 1 page table entry can map.
  */
-#if CONFIG_PGTABLE_LEVELS > 3
 #define PUD_SHIFT		ARM64_HW_PGTABLE_LEVEL_SHIFT(1)
 #define PUD_SIZE		(_AC(1, ULL) << PUD_SHIFT)
 #define PUD_MASK		(~(PUD_SIZE-1))
 #define PTRS_PER_PUD		PTRS_PER_PTE
-#else
-#define PUD_SHIFT	PGDIR_SHIFT
-#define PUD_SIZE	(1UL << PUD_SHIFT)
-#define PUD_MASK	(~(PUD_SIZE-1))
-#define PTRS_PER_PUD	1
-#endif
 
 /*
  * PGDIR_SHIFT determines the size a top-level page table entry can map
@@ -158,16 +126,8 @@ typedef struct { pteval_t pte; } pte_t;
 /*
  * Contiguous page definitions.
  */
-#ifdef CONFIG_ARM64_64K_PAGES
-#define CONT_PTE_SHIFT		5
-#define CONT_PMD_SHIFT		5
-#elif defined(CONFIG_ARM64_16K_PAGES)
-#define CONT_PTE_SHIFT		7
-#define CONT_PMD_SHIFT		5
-#else
 #define CONT_PTE_SHIFT		4
 #define CONT_PMD_SHIFT		4
-#endif
 
 #define CONT_PTES		(1 << CONT_PTE_SHIFT)
 #define CONT_PTE_SIZE		(CONT_PTES * PAGE_SIZE)
@@ -403,18 +363,6 @@ typedef struct { pteval_t pte; } pte_t;
 #endif /* !__ASSEMBLY__ */
 
 /*
- * The linear mapping and the start of memory are both 2M aligned (per
- * the arm64 booting.txt requirements). Hence we can use section mapping
- * with 4K (section size = 2M) but not with 16K (section size = 32M) or
- * 64K (section size = 512M).
- */
-#ifdef CONFIG_ARM64_4K_PAGES
-#define ARM64_SWAPPER_USES_SECTION_MAPS 1
-#else
-#define ARM64_SWAPPER_USES_SECTION_MAPS 0
-#endif
-
-/*
  * The idmap and swapper page tables need some space reserved in the kernel
  * image. Both require pgd, pud (4 levels only) and pmd tables to (section)
  * map the kernel. With the 64K page configuration, swapper and idmap need to
@@ -424,13 +372,8 @@ typedef struct { pteval_t pte; } pte_t;
  * VA range, so pages required to map highest possible PA are reserved in all
  * cases.
  */
-#if ARM64_SWAPPER_USES_SECTION_MAPS
 #define SWAPPER_PGTABLE_LEVELS	(CONFIG_PGTABLE_LEVELS - 1)
 #define IDMAP_PGTABLE_LEVELS	(ARM64_HW_PGTABLE_LEVELS(PHYS_MASK_SHIFT) - 1)
-#else
-#define SWAPPER_PGTABLE_LEVELS	(CONFIG_PGTABLE_LEVELS)
-#define IDMAP_PGTABLE_LEVELS	(ARM64_HW_PGTABLE_LEVELS(PHYS_MASK_SHIFT))
-#endif
 
 /*
  * If KASLR is enabled, then an offset K is added to the kernel address
@@ -475,15 +418,9 @@ typedef struct { pteval_t pte; } pte_t;
 #define RESERVED_TTBR0_SIZE	(0)
 
 /* Initial memory map size */
-#if ARM64_SWAPPER_USES_SECTION_MAPS
 #define SWAPPER_BLOCK_SHIFT	SECTION_SHIFT
 #define SWAPPER_BLOCK_SIZE	SECTION_SIZE
 #define SWAPPER_TABLE_SHIFT	PUD_SHIFT
-#else
-#define SWAPPER_BLOCK_SHIFT	PAGE_SHIFT
-#define SWAPPER_BLOCK_SIZE	PAGE_SIZE
-#define SWAPPER_TABLE_SHIFT	PMD_SHIFT
-#endif
 
 /* The size of the initial kernel direct mapping */
 #define SWAPPER_INIT_MAP_SIZE	(_AC(1, ULL) << SWAPPER_TABLE_SHIFT)
@@ -494,11 +431,7 @@ typedef struct { pteval_t pte; } pte_t;
 #define SWAPPER_PTE_FLAGS	(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
 #define SWAPPER_PMD_FLAGS	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
 
-#if ARM64_SWAPPER_USES_SECTION_MAPS
 #define SWAPPER_MM_MMUFLAGS	(PMD_ATTRINDX(MT_NORMAL) | SWAPPER_PMD_FLAGS)
-#else
-#define SWAPPER_MM_MMUFLAGS	(PTE_ATTRINDX(MT_NORMAL) | SWAPPER_PTE_FLAGS)
-#endif
 
 /*
  * To make optimal use of block mappings when laying out the linear
@@ -507,13 +440,7 @@ typedef struct { pteval_t pte; } pte_t;
  * (64k granule), or a multiple that can be mapped using contiguous bits
  * in the page tables: 32 * PMD_SIZE (16k granule)
  */
-#if defined(CONFIG_ARM64_4K_PAGES)
 #define ARM64_MEMSTART_SHIFT		PUD_SHIFT
-#elif defined(CONFIG_ARM64_16K_PAGES)
-#define ARM64_MEMSTART_SHIFT		(PMD_SHIFT + 5)
-#else
-#define ARM64_MEMSTART_SHIFT		PMD_SHIFT
-#endif
 
 #define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
 

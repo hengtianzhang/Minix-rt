@@ -22,7 +22,6 @@
 #include <sel4m/init.h>
 
 #include <asm/pgtable.h>
-#include <asm/fixmap.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -33,5 +32,5 @@ u64 __cacheline_aligned boot_args[4];
 
 void __init early_arch_platform_init(void)
 {
-    early_fixmap_init();
+
 }

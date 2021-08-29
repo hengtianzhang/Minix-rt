@@ -30,7 +30,6 @@
 #define PAGE_OFFSET		(ULL(0xffffffffffffffff) - \
 	(ULL(1) << (VA_BITS - 1)) + 1)
 #define KIMAGE_VADDR		(VA_START)
-#define FIXADDR_TOP		(PAGE_OFFSET - SZ_2M)
 
 #define MAX_USER_VA_BITS	VA_BITS
 

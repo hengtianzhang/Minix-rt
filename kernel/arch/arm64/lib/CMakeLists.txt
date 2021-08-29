@@ -3,5 +3,5 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-	memset.S
+	memset.S strlen.S
 )

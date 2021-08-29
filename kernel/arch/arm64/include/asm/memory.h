@@ -30,6 +30,7 @@
 #define PAGE_OFFSET		(ULL(0xffffffffffffffff) - \
 	(ULL(1) << (VA_BITS - 1)) + 1)
 #define KIMAGE_VADDR		(VA_START)
+#define FIXADDR_TOP		(PAGE_OFFSET - SZ_2M)
 
 #define MAX_USER_VA_BITS	VA_BITS
 
@@ -77,6 +78,13 @@ extern u64			kimage_voffset;
  */
 extern u64 idmap_t0sz;
 extern u64 idmap_ptrs_per_pgd;
+
+#define __kimg_to_phys(addr)	((addr) - kimage_voffset)
+#define __phys_to_kimg(x)	((u64)((x) + kimage_voffset))
+
+#define __phys_addr_symbol(x)	__kimg_to_phys((phys_addr_t)(x))
+
+#define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
 
 #endif /* !__ASSEMBLY__ */
 

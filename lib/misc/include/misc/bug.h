@@ -1,7 +1,7 @@
 #ifndef __MISC_BUG_H_
 #define __MISC_BUG_H_
 
-#include <misc/compiler.h>
+#include <sel4m/compiler.h>
 
 #ifndef __ASSEMBLY__
 

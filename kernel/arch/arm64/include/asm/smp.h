@@ -38,6 +38,32 @@
 #include <sel4m/linkage.h>
 #include <sel4m/sched.h>
 
+#include <asm/stack_pointer.h>
+
+static inline void set_my_cpu_offset(u64 off)
+{
+	asm volatile("msr tpidr_el1, %0"
+			:: "r" (off) : "memory");
+}
+
+static inline u64 __my_cpu_offset(void)
+{
+	u64 off;
+
+	/*
+	 * We want to allow caching the value, so avoid using volatile and
+	 * instead use a fake stack read to hazard against barrier().
+	 */
+	asm("mrs %0, tpidr_el1"
+		: "=r" (off) :
+		"Q" (*(const u64 *)current_stack_pointer));
+
+	return off;
+}
+#define __my_cpu_offset __my_cpu_offset()
+
+#define raw_smp_processor_id() (__my_cpu_offset)
+
 /*
  * Called from the secondary holding pen, this is the secondary CPU entry point.
  */

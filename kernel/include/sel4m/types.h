@@ -37,5 +37,7 @@ typedef u64 	phys_addr_t;
 typedef u32 	phys_addr_t;
 #endif
 
+typedef s64		ptrdiff_t;
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_TYPES_H_ */

@@ -2,6 +2,9 @@
 #
 menu "Base libc configuration"
 
+config ARCH_HAS_FAST_MULTIPLIER
+	bool
+
 source "lib/base/arch/Kconfig"
 
 endmenu

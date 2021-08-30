@@ -38,4 +38,10 @@ struct memblock {
 	struct memblock_type reserved;
 };
 
+/* Flags for memblock allocation APIs */
+#define MEMBLOCK_ALLOC_ANYWHERE	(~(phys_addr_t)0)
+#define MEMBLOCK_ALLOC_ACCESSIBLE	0
+
+void __init_memblock memblock_init(struct memblock *mb);
+
 #endif /* !__MEMBLOCK_MEMBLOCK_H_ */

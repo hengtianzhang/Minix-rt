@@ -4,6 +4,8 @@
 
 #ifndef __ASSEMBLY__
 
+#define __must_check
+
 #define __user
 #define __kernel
 #define __safe
@@ -28,10 +30,10 @@
 #define ___PASTE(a,b) a##b
 #define __PASTE(a,b) ___PASTE(a,b)
 
-#ifdef __KERNEL__
-
 /* Attributes */
 #include <base/compiler_attributes.h>
+
+#ifdef __KERNEL__
 
 /* Compiler specific macros. */
 #ifdef __clang__
@@ -54,8 +56,6 @@
 #ifdef CONFIG_HAVE_ARCH_COMPILER_H
 #include <asm/base/compiler.h>
 #endif
-
-#define __must_check
 
 #if defined(CC_USING_HOTPATCH)
 #define notrace			__attribute__((hotpatch(0, 0)))

@@ -118,6 +118,16 @@ void __write_once_size(volatile void *p, void *res, __s32 size)
 })
 #define WRITE_ONCE(x, val) __WRITE_ONCE(x, val)
 
+#else
+/* workaround for GCC PR82365 if needed */
+#ifndef barrier_before_unreachable
+#define barrier_before_unreachable() do { } while (0)
+#endif
+
+#ifndef barrier_data
+#define barrier_data(ptr)
+#endif
+
 #endif /* __KERNEL__ */
 
 /*

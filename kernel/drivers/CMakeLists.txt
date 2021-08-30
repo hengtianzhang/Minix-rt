@@ -1,2 +1,3 @@
 
 add_subdirectory_ifdef(CONFIG_OF of)
+add_subdirectory(serial)

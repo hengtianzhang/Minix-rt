@@ -28,6 +28,9 @@ extern pgd_t idmap_pg_dir[PTRS_PER_PGD];
 
 extern pgd_t *kernel_pgd;
 
+/* Find an entry in the third-level page table. */
+#define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
+
 #define pte_valid(pte)		(!!(pte_val(pte) & PTE_VALID))
 
 #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)

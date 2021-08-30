@@ -26,6 +26,8 @@
 #include <asm/memory.h>
 #include <asm/pgtable.h>
 
+#include <generated/gen_dtb.h>
+
 u64 idmap_t0sz = TCR_T0SZ(VA_BITS);
 u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
 
@@ -74,4 +76,6 @@ void __init early_fixmap_init(void)
 		__pud_populate(pudp, __pa_symbol(bm_pmd), PMD_TYPE_TABLE);
 	pmdp = fixmap_pmd(addr);
 	__pmd_populate(pmdp, __pa_symbol(bm_pte), PMD_TYPE_TABLE);
+	bm_pte[pte_index(addr)] = __pte(dtb_stdout_path.reg.base | pgprot_val(FIXMAP_PAGE_IO));
+	dsb(ishst);
 }

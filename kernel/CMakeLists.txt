@@ -406,6 +406,10 @@ get_property(KERNEL_INTERFACE_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_INTERFACE_LIB
 
 get_property(KERNEL_IMPORTED_LIBS_PROPERTY GLOBAL PROPERTY KERNEL_IMPORTED_LIBS)
 
+foreach(impored_lib ${KERNEL_IMPORTED_LIBS_PROPERTY})
+	target_link_libraries(${ASM_OFFSETS_LIB} ${impored_lib})
+endforeach()
+
 add_library(version ${KERNEL_SOURCE_DIR}/init/version.c)
 set_target_properties(
 	version

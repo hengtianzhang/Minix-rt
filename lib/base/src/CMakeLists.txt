@@ -1,2 +1,6 @@
 
-target_sources(${BASE_VAR}base PRIVATE test.c)
+target_sources(
+	${base_VAR}base
+	PRIVATE
+	string.c
+)

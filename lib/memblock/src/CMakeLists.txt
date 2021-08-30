@@ -1,2 +1,2 @@
 
-target_sources(${MEMBLOCK_VAR}memblock PRIVATE memblock.c)
+target_sources(${memblock_VAR}memblock PRIVATE memblock.c)

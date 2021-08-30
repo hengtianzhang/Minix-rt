@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
 #
 menu "Sel4m lib configuration"
+
+source "lib/base/Kconfig"
+
 source "lib/memblock/Kconfig"
+
 endmenu

@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Base libc configuration"
+
+source "lib/base/arch/Kconfig"
+
+endmenu

@@ -20,6 +20,6 @@ void __weak __init early_arch_platform_init(void) {}
 asmlinkage __visible void __init start_kernel(void)
 {
     early_arch_platform_init();
-
+    printf("ssssssssss\n");
     while (1);
 }

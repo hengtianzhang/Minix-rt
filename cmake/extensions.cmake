@@ -1777,3 +1777,32 @@ function(target_byproducts)
 		COMMENT "Logical command for additional byproducts on target: ${TB_TARGET}"
 	)
 endfunction()
+
+macro(sel4m_import_libs_boilerplate lib_name)
+	set(${lib_name}_LIBS_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "")
+	mark_as_advanced(${lib_name}_LIBS_DIR)
+
+	function(${lib_name}_kernel_import_libraries)
+		get_property(KERNEL_IMPORTED_${lib_name}_PROERTY GLOBAL PROPERTY KERNEL_IMPORTED_${lib_name})
+		if (NOT DEFINED KERNEL_IMPORTED_${lib_name}_PROERTY)
+			set_property(GLOBAL PROPERTY KERNEL_IMPORTED_${lib_name} TRUE)
+			set(${lib_name}_VAR "k")
+
+			add_subdirectory(${${lib_name}_LIBS_DIR} k${lib_name})
+
+			set_property(GLOBAL APPEND PROPERTY KERNEL_IMPORTED_LIBS k${lib_name})
+			target_link_libraries(k${lib_name} PUBLIC kernel_interface)
+		endif()
+	endfunction()
+
+	function(${lib_name}_user_import_libraries)
+		get_property(USER_IMPORTED_${lib_name}_PROERTY GLOBAL PROPERTY USER_IMPORTED_${lib_name})
+		if (NOT DEFINED USER_IMPORTED_${lib_name}_PROERTY)
+			set_property(GLOBAL PROPERTY USER_IMPORTED_${lib_name} TRUE)
+			set(${lib_name}_VAR "")
+
+			add_subdirectory(${${lib_name}_LIBS_DIR} ${lib_name})
+			target_link_libraries(${lib_name} PUBLIC services_interface)
+		endif()
+	endfunction()
+endmacro()

@@ -13,6 +13,8 @@
 #include <sel4m/linkage.h>
 #include <sel4m/kernel.h>
 
+#include <memblock/memblock.h>
+
 void __weak __init early_arch_platform_init(void) {}
 
 asmlinkage __visible void __init start_kernel(void)

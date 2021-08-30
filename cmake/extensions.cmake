@@ -1739,19 +1739,19 @@ endfunction()
 #
 # returns a list of targets in <targets> matching the required <types>.
 function(sel4m_get_targets directory types targets)
-		get_property(sub_directories DIRECTORY ${directory} PROPERTY SUBDIRECTORIES)
-		get_property(dir_targets DIRECTORY ${directory} PROPERTY BUILDSYSTEM_TARGETS)
-		foreach(dir_target ${dir_targets})
-			get_property(target_type TARGET ${dir_target} PROPERTY TYPE)
-			if(${target_type} IN_LIST types)
-				list(APPEND ${targets} ${dir_target})
-			endif()
-		endforeach()
+	get_property(sub_directories DIRECTORY ${directory} PROPERTY SUBDIRECTORIES)
+	get_property(dir_targets DIRECTORY ${directory} PROPERTY BUILDSYSTEM_TARGETS)
+	foreach(dir_target ${dir_targets})
+		get_property(target_type TARGET ${dir_target} PROPERTY TYPE)
+		if(${target_type} IN_LIST types)
+			list(APPEND ${targets} ${dir_target})
+		endif()
+	endforeach()
 
-		foreach(directory ${sub_directories})
-		sel4m_get_targets(${directory} "${types}" ${targets})
-		endforeach()
-		set(${targets} ${${targets}} PARENT_SCOPE)
+	foreach(directory ${sub_directories})
+	sel4m_get_targets(${directory} "${types}" ${targets})
+	endforeach()
+	set(${targets} ${${targets}} PARENT_SCOPE)
 endfunction()
 
 # Usage:
@@ -1772,8 +1772,8 @@ function(target_byproducts)
 	endif()
 
 	add_custom_command(TARGET ${TB_TARGET}
-										 POST_BUILD COMMAND ${CMAKE_COMMAND} -E echo ""
-										 BYPRODUCTS ${TB_BYPRODUCTS}
-										 COMMENT "Logical command for additional byproducts on target: ${TB_TARGET}"
+		POST_BUILD COMMAND ${CMAKE_COMMAND} -E echo ""
+		BYPRODUCTS ${TB_BYPRODUCTS}
+		COMMENT "Logical command for additional byproducts on target: ${TB_TARGET}"
 	)
 endfunction()

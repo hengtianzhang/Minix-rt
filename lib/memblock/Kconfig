@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Memblock libc configuration"
+
+config MEMBLOCK_REGIONS_NUM
+	int "Memblock regions number"
+	default 128
+
+endmenu

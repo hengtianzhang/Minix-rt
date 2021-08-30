@@ -1,5 +1,5 @@
 
-#include <memalloc/memblock.h>
+#include <memblock/memblock.h>
 
 int main(void)
 {

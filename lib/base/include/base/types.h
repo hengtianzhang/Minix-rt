@@ -45,5 +45,7 @@ typedef u32 	dma_addr_t;
 
 typedef s64		ptrdiff_t;
 
+typedef unsigned long		uintptr_t;
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_TYPES_H_ */

@@ -14,12 +14,15 @@
 #include <sel4m/kernel.h>
 
 #include <memblock/memblock.h>
+#include <base/common.h>
+
+#include <asm/memory.h>
 
 void __weak __init early_arch_platform_init(void) {}
 
 asmlinkage __visible void __init start_kernel(void)
 {
     early_arch_platform_init();
-    printf("ssssssssss\n");
+    printf("sssss fdd 0x%llx\n", FIXADDR_TOP);
     while (1);
 }

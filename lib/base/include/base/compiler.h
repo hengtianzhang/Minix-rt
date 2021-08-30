@@ -57,11 +57,6 @@
 	__asm__ ("" : "=r" (var) : "0" (var))
 #endif
 
-/* Not-quite-unique ID. */
-#ifndef __UNIQUE_ID
-#define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
-#endif
-
 #include <asm/base/barrier.h>
 
 static __always_inline
@@ -129,6 +124,11 @@ void __write_once_size(volatile void *p, void *res, __s32 size)
 #endif
 
 #endif /* __KERNEL__ */
+
+/* Not-quite-unique ID. */
+#ifndef __UNIQUE_ID
+#define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
+#endif
 
 /*
  * Force the compiler to emit 'sym' as a symbol, so that we can reference

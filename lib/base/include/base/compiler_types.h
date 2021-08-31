@@ -33,8 +33,6 @@
 /* Attributes */
 #include <base/compiler_attributes.h>
 
-#ifdef __KERNEL__
-
 /* Compiler specific macros. */
 #ifdef __clang__
 #include <base/compiler-clang.h>
@@ -104,8 +102,6 @@
  * noinline_for_stack instead.  For documentation reasons.
  */
 #define noinline_for_stack noinline
-
-#endif /* __KERNEL__ */
 
 #endif /* !__ASSEMBLY__ */
 

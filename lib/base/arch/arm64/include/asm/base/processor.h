@@ -20,7 +20,6 @@
 #define __ASM_BASE_PROCESSOR_H_
 
 #ifndef __ASSEMBLY__
-#ifdef __KERNEL__
 
 static inline void cpu_relax(void)
 {
@@ -49,6 +48,5 @@ static inline void spin_lock_prefetch(const void *ptr)
 		    : : "p" (ptr));
 }
 
-#endif /* __KERNEL__ */
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_BASE_PROCESSOR_H_ */

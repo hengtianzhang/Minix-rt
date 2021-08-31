@@ -3,14 +3,10 @@
 
 #include <base/compiler_types.h>
 
-#include <asm/base/types.h>
-
 #ifndef __ASSEMBLY__
 
 #define likely(x)	__builtin_expect(!!(x), 1)
 #define unlikely(x)	__builtin_expect(!!(x), 0)
-
-#ifdef __KERNEL__
 
 /* Optimization barrier */
 #ifndef barrier
@@ -57,6 +53,12 @@
 	__asm__ ("" : "=r" (var) : "0" (var))
 #endif
 
+/* Not-quite-unique ID. */
+#ifndef __UNIQUE_ID
+#define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
+#endif
+
+#include <asm/base/types.h>
 #include <asm/base/barrier.h>
 
 static __always_inline
@@ -112,23 +114,6 @@ void __write_once_size(volatile void *p, void *res, __s32 size)
 	__u.__val;					\
 })
 #define WRITE_ONCE(x, val) __WRITE_ONCE(x, val)
-
-#else
-/* workaround for GCC PR82365 if needed */
-#ifndef barrier_before_unreachable
-#define barrier_before_unreachable() do { } while (0)
-#endif
-
-#ifndef barrier_data
-#define barrier_data(ptr)
-#endif
-
-#endif /* __KERNEL__ */
-
-/* Not-quite-unique ID. */
-#ifndef __UNIQUE_ID
-#define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
-#endif
 
 /*
  * Force the compiler to emit 'sym' as a symbol, so that we can reference

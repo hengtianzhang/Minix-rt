@@ -4,17 +4,6 @@
 
 menu "Library routines"
 
-config BITREVERSE
-	bool
-
-config HAVE_ARCH_BITREVERSE
-	bool
-	default n
-	depends on BITREVERSE
-	help
-	  This option enables the use of hardware bit-reversal instructions on
-	  architectures which support such operations.
-
 config CRC32
 	bool "CRC32/CRC32c functions"
 	default y

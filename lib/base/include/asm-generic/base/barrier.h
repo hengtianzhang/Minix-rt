@@ -17,8 +17,6 @@
 
 #ifndef __ASSEMBLY__
 
-#ifdef __KERNEL__
-
 #ifndef nop
 #define nop()	asm volatile ("nop")
 #endif
@@ -191,6 +189,5 @@ do {									\
 })
 #endif
 
-#endif /* __KERNEL__ */
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_GENERIC_BASE_BARRIER_H_ */

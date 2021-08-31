@@ -5,6 +5,26 @@ menu "Base libc configuration"
 config ARCH_HAS_FAST_MULTIPLIER
 	bool
 
+config GENERIC_FIND_FIRST_BIT
+	bool
+
+config BITREVERSE
+	bool
+
+config HAVE_ARCH_BITREVERSE
+	bool
+	default n
+	depends on BITREVERSE
+	help
+	  This option enables the use of hardware bit-reversal instructions on
+	  architectures which support such operations.
+
+#
+# For architectures that know their GCC __int128 support is sound
+#
+config ARCH_SUPPORTS_INT128
+	bool
+
 source "lib/base/arch/Kconfig"
 
 endmenu

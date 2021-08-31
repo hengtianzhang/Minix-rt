@@ -7,6 +7,8 @@
 #include <base/types.h>
 #include <base/compiler.h>
 #include <base/bug.h>
+#include <base/log2.h>
+#include <base/math64.h>
 #include <base/typecheck.h>
 
 #define USHRT_MAX	((u16)(~0U))
@@ -270,10 +272,10 @@ static inline u32 reciprocal_scale(u32 val, u32 ep_ro)
 }
 
 __printf(1, 2)
-void hang(const char *fmt, ...) __noreturn __cold;
+extern void hang(const char *fmt, ...) __noreturn __cold;
 
 asmlinkage __printf(1, 2) __cold
-int printf(const char *fmt, ...);
+extern int printf(const char *fmt, ...);
 
 extern const char hex_asc[];
 #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
@@ -296,6 +298,10 @@ static inline char *hex_byte_pack_upper(char *buf, u8 byte)
 	*buf++ = hex_asc_upper_lo(byte);
 	return buf;
 }
+
+extern int hex_to_bin(char ch);
+extern int hex2bin(u8 *dst, const char *src, size_t count);
+extern char *bin2hex(char *dst, const void *src, size_t count);
 
 /*
  * min()/max()/clamp() macros must accomplish three things:

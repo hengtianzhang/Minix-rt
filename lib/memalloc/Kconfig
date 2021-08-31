@@ -6,4 +6,6 @@ config MEMBLOCK_REGIONS_NUM
 	int "Memblock regions number"
 	default 128
 
+source "lib/memalloc/arch/Kconfig"
+
 endmenu

@@ -13,3 +13,7 @@ config ARCH_DMA_ADDR_T_64BIT
 
 config GENERIC_HWEIGHT
 	def_bool y
+
+config ILLEGAL_POINTER_VALUE
+	hex
+	default 0xdead000000000000

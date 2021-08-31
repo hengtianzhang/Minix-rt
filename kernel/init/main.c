@@ -24,12 +24,21 @@ struct memblock memblock;
 
 asmlinkage __visible void __init start_kernel(void)
 {
+    int i;
+    phys_addr_t start_pfn, end_pfn;
+
     early_arch_platform_init();
     printf("sssss fdd 0x%llx\n", FIXADDR_TOP);
 
-    memblock_debug_enable();
     memblock_init(&memblock);
-    memblock_add(&memblock, 0x300, 0x100);
+    memblock_add(&memblock, 0x40000000, 0x10000000);
+    memblock_add(&memblock, 0x40000000, 0x100000);
+    memblock_add(&memblock, 0x80000000, 0x1060000);
     memblock_dump_all(&memblock);
+    printf("ssssssssssss 0x%lx\n", BIT(VA_BITS - 1));
+    for_each_mem_pfn_range(&memblock, i, &start_pfn, &end_pfn)
+        printf("i = %d, start 0x%llx end 0x%llx\n",i, start_pfn, end_pfn);
+    
+    printf("adasdasdasds 0x%llx\n", memblock_alloc(&memblock, 0x100, PAGE_SIZE));
     while (1);
 }

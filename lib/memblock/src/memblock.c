@@ -847,26 +847,29 @@ void __init_memblock __next_mem_range_rev(u64 *idx,
  * Iterate over all reserved memory regions.
  */
 void __init_memblock __next_mem_pfn_range(struct memblock *mb,
-					   u64 *idx,
+					   int *idx,
 					   phys_addr_t *out_start_pfn,
 					   phys_addr_t *out_end_pfn)
 {
 	struct memblock_type *type = &mb->memory;
+	struct memblock_region *r;
 
-	if (*idx < type->cnt) {
-		struct memblock_region *r = &type->regions[*idx];
+	while (++*idx < type->cnt) {
+		r = &type->regions[*idx];
 
-		if (out_start_pfn)
-			*out_start_pfn = PFN_UP(r->base);
-		if (out_end_pfn)
-			*out_end_pfn = PFN_DOWN(r->base + r->size);
-
-		*idx += 1;
+		if (PFN_UP(r->base) >= PFN_DOWN(r->base + r->size))
+			continue;
+		break;
+	}
+	if (*idx >= type->cnt) {
+		*idx = -1;
 		return;
 	}
 
-	/* signal end of iteration */
-	*idx = ULLONG_MAX;
+	if (out_start_pfn)
+		*out_start_pfn = PFN_UP(r->base);
+	if (out_end_pfn)
+		*out_end_pfn = PFN_DOWN(r->base + r->size);
 }
 
 static phys_addr_t __init __memblock_alloc_range(struct memblock *mb,

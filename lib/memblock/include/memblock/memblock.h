@@ -225,7 +225,7 @@ void __next_reserved_mem_region(struct memblock *mb,
 	     __next_reserved_mem_region(mb, &i, p_start, p_end))
 
 void __next_mem_pfn_range(struct memblock *mb,
-			  u64 *idx, phys_addr_t *out_start_pfn,
+			  int *idx, phys_addr_t *out_start_pfn,
 			  phys_addr_t *out_end_pfn);
 
 #define for_each_mem_pfn_range(mb, i, p_start, p_end)		\

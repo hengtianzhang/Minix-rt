@@ -9,9 +9,9 @@ project(hello_world)
 add_executable(hello_world)
 target_sources(hello_world PRIVATE src/main.c)
 
-find_package(memblock)
-memblock_user_import_libraries()
+find_package(memalloc)
+memalloc_user_import_libraries()
 
-target_link_libraries(hello_world PRIVATE memblock)
+target_link_libraries(hello_world PRIVATE memalloc)
 
 DeclareRootservices(hello_world)

@@ -4,6 +4,6 @@ menu "Sel4m lib configuration"
 
 source "lib/base/Kconfig"
 
-source "lib/memblock/Kconfig"
+source "lib/memalloc/Kconfig"
 
 endmenu

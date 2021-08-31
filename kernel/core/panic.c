@@ -1,6 +1,8 @@
 #include <sel4m/compiler.h>
 #include <sel4m/linkage.h>
 
+#include <base/common.h>
+
 #ifdef CONFIG_STACKPROTECTOR
 
 /*
@@ -35,4 +37,17 @@ void panic(const char *fmt, ...)
  */
 void hang(const char *fmt, ...)
 {
+    static char buf[1024];
+    s64 len;
+	va_list args;
+
+	va_start(args, fmt);
+	len = vscnprintf(buf, sizeof(buf), fmt, args);
+	va_end(args);
+
+	if (len && buf[len - 1] == '\n')
+		buf[len - 1] = '\0';
+
+    printf("%s\n", buf);
+    while (1);
 }

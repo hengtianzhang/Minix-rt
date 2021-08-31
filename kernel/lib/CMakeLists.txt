@@ -5,5 +5,5 @@ kernel_interface_library_sources(
     test.c
 )
 
-find_package(memblock REQUIRED)
-memblock_kernel_import_libraries()
+find_package(memalloc REQUIRED)
+memalloc_kernel_import_libraries()

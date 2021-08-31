@@ -13,7 +13,7 @@
 #include <base/common.h>
 #include <base/errno.h>
 
-#include <memblock/memblock.h>
+#include <memalloc/memblock.h>
 
 int memblock_debug __initdata_memblock;
 

@@ -13,7 +13,7 @@
 #include <sel4m/linkage.h>
 #include <sel4m/kernel.h>
 
-#include <memblock/memblock.h>
+#include <memalloc/memblock.h>
 #include <base/common.h>
 
 #include <asm/memory.h>
@@ -40,5 +40,6 @@ asmlinkage __visible void __init start_kernel(void)
         printf("i = %d, start 0x%llx end 0x%llx\n",i, start_pfn, end_pfn);
     
     printf("adasdasdasds 0x%llx\n", memblock_alloc(&memblock, 0x100, PAGE_SIZE));
+    hang("ssdasdas\n");
     while (1);
 }

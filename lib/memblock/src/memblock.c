@@ -15,7 +15,7 @@
 
 #include <memblock/memblock.h>
 
-int memblock_debug;
+int memblock_debug __initdata_memblock;
 
 void __init_memblock memblock_init(struct memblock *mb)
 {

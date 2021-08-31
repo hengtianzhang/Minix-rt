@@ -20,9 +20,16 @@
 
 void __weak __init early_arch_platform_init(void) {}
 
+struct memblock memblock;
+
 asmlinkage __visible void __init start_kernel(void)
 {
     early_arch_platform_init();
     printf("sssss fdd 0x%llx\n", FIXADDR_TOP);
+
+    memblock_debug_enable();
+    memblock_init(&memblock);
+    memblock_add(&memblock, 0x300, 0x100);
+    memblock_dump_all(&memblock);
     while (1);
 }

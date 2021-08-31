@@ -3,7 +3,7 @@ target_sources(
 	${base_VAR}base
 	PRIVATE
 	string.c ctype.c hexdump.c find_bit.c bitmap.c
-	div64.c
+	div64.c vsprintf.c kstrtox.c
 )
 
 target_sources_ifdef(CONFIG_GENERIC_HWEIGHT

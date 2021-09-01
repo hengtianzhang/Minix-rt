@@ -13,12 +13,9 @@
 #include <sel4m/linkage.h>
 #include <sel4m/kernel.h>
 
-#include <memalloc/mmzone.h>
 #include <memalloc/memblock.h>
 #include <base/common.h>
 #include <base/list.h>
-#include <memalloc/mmzone.h>
-#include <memalloc/gfp.h>
 #include <asm/memory.h>
 
 void __weak __init early_arch_platform_init(void) {}

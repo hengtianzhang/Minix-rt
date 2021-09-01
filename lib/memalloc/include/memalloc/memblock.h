@@ -1,5 +1,5 @@
-#ifndef __MEMBLOCK_MEMBLOCK_H_
-#define __MEMBLOCK_MEMBLOCK_H_
+#ifndef __MEMALLOC_MEMBLOCK_H_
+#define __MEMALLOC_MEMBLOCK_H_
 
 #include <base/init.h>
 #include <base/types.h>
@@ -355,4 +355,4 @@ static inline phys_addr_t __init memblock_alloc_low(struct memblock *mb,
 				      ARCH_LOW_ADDRESS_LIMIT);
 }
 
-#endif /* !__MEMBLOCK_MEMBLOCK_H_ */
+#endif /* !__MEMALLOC_MEMBLOCK_H_ */

@@ -14,6 +14,15 @@
 #endif
 
 /*
+ * __read_mostly is used to keep rarely changing variables out of frequently
+ * updated cachelines. If an architecture doesn't support it, ignore the
+ * hint.
+ */
+#ifndef __read_mostly
+#define __read_mostly
+#endif
+
+/*
  * The maximum alignment needed for some critical structures
  * These could be inter-node cacheline sizes/L3 cacheline
  * size etc.  Define this in asm/cache.h for your arch

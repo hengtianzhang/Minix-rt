@@ -1,5 +1,6 @@
 config MEMALLOC_ARM64
     def_bool y
+	select HAVE_ALIGNED_STRUCT_PAGE
 
 config FORCE_MAX_ZONEORDER
 	int

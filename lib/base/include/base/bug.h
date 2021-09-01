@@ -97,8 +97,6 @@
 })
 #endif
 
-#ifdef __KERNEL__
-
 #define WARN_ON_ONCE(condition)	({				\
 	static bool __section(.data.once) __warned;		\
 	int __ret_warn_once = !!(condition);			\
@@ -119,6 +117,5 @@
 	unlikely(__ret_warn_once);				\
 })
 
-#endif /* !__KERNEL__ */
 #endif /* !__ASSEMBLY__ */
 #endif /* !__BASE_BUG_H_ */

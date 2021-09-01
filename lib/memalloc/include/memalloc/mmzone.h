@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __BASE_MMZONE_H_
-#define __BASE_MMZONE_H_
+#ifndef __MEMALLOC_MMZONE_H_
+#define __MEMALLOC_MMZONE_H_
 
 #ifndef __ASSEMBLY__
 
@@ -64,5 +64,8 @@ typedef struct pglist_data {
 	unsigned long   flags;
 } pg_data_t;
 
+extern struct pglist_data node_data;
+#define NODE_DATA()		(&node_data)
+
 #endif /* !__ASSEMBLY__ */
-#endif /* !__BASE_MMZONE_H_ */
+#endif /* !__MEMALLOC_MMZONE_H_ */

@@ -18,7 +18,7 @@
 #include <base/common.h>
 #include <base/list.h>
 #include <memalloc/mmzone.h>
-
+#include <memalloc/gfp.h>
 #include <asm/memory.h>
 
 void __weak __init early_arch_platform_init(void) {}
@@ -38,7 +38,7 @@ asmlinkage __visible void __init start_kernel(void)
     memblock_add(&memblock, 0x40000000, 0x100000);
     memblock_add(&memblock, 0x80000000, 0x1060000);
     memblock_dump_all(&memblock);
-    printf("ssssssssssss 0x%lx\n", BIT(VA_BITS - 1));
+
     for_each_mem_pfn_range(&memblock, i, &start_pfn, &end_pfn)
         printf("i = %d, start 0x%llx end 0x%llx\n",i, start_pfn, end_pfn);
     

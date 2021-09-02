@@ -6,4 +6,6 @@ source "lib/base/Kconfig"
 
 source "lib/memalloc/Kconfig"
 
+source "lib/of/Kconfig"
+
 endmenu

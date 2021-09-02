@@ -20,3 +20,6 @@ else()
 	file(REMOVE ${APPLICATION_BINARY_DIR}/include/generated/gen_dtb.h)
 	file(TOUCH ${APPLICATION_BINARY_DIR}/include/generated/gen_dtb.h)
 endif()
+
+find_package(of REQUIRED)
+of_kernel_import_libraries()

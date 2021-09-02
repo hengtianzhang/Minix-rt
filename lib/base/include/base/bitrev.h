@@ -3,6 +3,7 @@
 #define _LINUX_BITREV_H
 
 #include <base/types.h>
+#include <base/compiler.h>
 
 #ifdef CONFIG_HAVE_ARCH_BITREVERSE
 #include <asm/base/bitrev.h>

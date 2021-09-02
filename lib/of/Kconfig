@@ -1,5 +1,15 @@
 # SPDX-License-Identifier: GPL-2.0
 #
-menu "of libc configuration"
+# SPDX-License-Identifier: GPL-2.0
 
-endmenu
+menuconfig OF
+	bool "Device Tree and Open Firmware support"
+	help
+	  This option enables the device tree infrastructure.
+	  It is automatically selected by platforms that need it or can
+	  be enabled manually for unittests, overlays or
+	  compile-coverage.
+
+if OF
+
+endif # OF

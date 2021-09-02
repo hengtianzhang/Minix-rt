@@ -6,3 +6,9 @@ target_sources(
 	strchr.S strcmp.S strlen.S strncmp.S strnlen.S
 	strrchr.S
 )
+
+target_sources_ifdef(CONFIG_CRC32
+	${base_VAR}base
+	PRIVATE
+	crc32.S
+)

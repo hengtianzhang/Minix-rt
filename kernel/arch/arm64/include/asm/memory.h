@@ -87,7 +87,9 @@ extern u64 idmap_ptrs_per_pgd;
 #define __phys_addr_symbol(x)	__kimg_to_phys((phys_addr_t)(x))
 
 #define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
+#define __pa(x)	(x)
 
+#define phys_to_virt(x) ((void *)x)
 #endif /* !__ASSEMBLY__ */
 
 #endif /* !__ASM_MEMORY_H_ */

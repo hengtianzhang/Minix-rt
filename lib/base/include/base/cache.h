@@ -37,6 +37,10 @@
 #define __ro_after_init __attribute__((__section__(".data..ro_after_init")))
 #endif
 
+#ifndef ____cacheline_aligned
+#define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
+#endif
+
 /*
  * The maximum alignment needed for some critical structures
  * These could be inter-node cacheline sizes/L3 cacheline

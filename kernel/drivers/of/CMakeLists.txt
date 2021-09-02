@@ -21,5 +21,14 @@ else()
 	file(TOUCH ${APPLICATION_BINARY_DIR}/include/generated/gen_dtb.h)
 endif()
 
+if(CONFIG_OF_EARLY_FLATTREE)
+	kernel_library()
+	kernel_library_sources(fdt.c)
+	kernel_library_sources_ifdef(
+		CONFIG_OF_RESERVED_MEM
+		of_reserved_mem.c
+	)
+endif()
+
 find_package(of REQUIRED)
 of_kernel_import_libraries()

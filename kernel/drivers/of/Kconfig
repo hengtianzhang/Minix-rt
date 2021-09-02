@@ -1,0 +1,9 @@
+
+config OF_EARLY_FLATTREE
+	bool
+
+config OF_RESERVED_MEM
+	depends on OF_EARLY_FLATTREE
+	bool
+	help
+	  Helpers to allow for reservation of memory regions

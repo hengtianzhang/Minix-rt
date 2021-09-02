@@ -8,13 +8,13 @@ config ARM64
 	select ARM_ARCH_TIMER
 	select ARM_PSCI_FW
 	select BUILDTIME_EXTABLE_SORT
-	select CRC32
 	select FRAME_POINTER
 	select HAVE_ALIGNED_STRUCT_PAGE
 	select HAVE_CMPXCHG_DOUBLE
 	select HAVE_STACKPROTECTOR
 	select OF
 	select OF_EARLY_FLATTREE
+	select OF_RESERVED_MEM
 
 config 64BIT
 	def_bool y

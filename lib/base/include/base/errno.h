@@ -1,6 +1,8 @@
 #ifndef __BASE_ERRNO_H_
 #define __BASE_ERRNO_H_
 
+#include <base/err.h>
+
 #include <asm/base/errno.h>
 
 /*

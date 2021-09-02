@@ -38,7 +38,7 @@ asmlinkage __visible void __init start_kernel(void)
 
     for_each_mem_pfn_range(&memblock, i, &start_pfn, &end_pfn)
         printf("i = %d, start 0x%llx end 0x%llx\n",i, start_pfn, end_pfn);
-    
+
     hang("ssdasdas\n");
     while (1);
 }

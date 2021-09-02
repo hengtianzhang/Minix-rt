@@ -12,7 +12,7 @@
 #ifndef __SEL4M_IRQFLAGS_H_
 #define __SEL4M_IRQFLAGS_H_
 
-#include <sel4m/typecheck.h>
+#include <base/typecheck.h>
 
 #include <asm/irqflags.h>
 

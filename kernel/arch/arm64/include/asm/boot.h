@@ -17,7 +17,7 @@
 #ifndef __ASSEMBLY__
 
 #include <base/types.h>
-#include <sel4m/init.h>
+#include <base/init.h>
 
 /*
  * __boot_cpu_mode records what mode CPUs were booted in.

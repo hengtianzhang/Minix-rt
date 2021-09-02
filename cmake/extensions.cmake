@@ -746,6 +746,28 @@ function(kernel_get_include_directories_for_lang lang i)
 	set(${i} ${result_output_list} PARENT_SCOPE)
 endfunction()
 
+function(kernel_get_imported_include_directories_for_lang lang i)
+	foreach(imported_lib ${KERNEL_IMPORTED_LIBS_PROPERTY})
+		sel4m_get_parse_args(args ${ARGN})
+		get_property(flags TARGET ${imported_lib} PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+
+		process_flags(${lang} flags output_list)
+		string(REPLACE ";" "$<SEMICOLON>" genexp_output_list "${output_list}")
+
+		if(NOT ARGN)
+			set(result_output_list "-I$<JOIN:${genexp_output_list},$<SEMICOLON>-I>")
+		elseif(args_STRIP_PREFIX)
+			# The list has no prefix, so don't add it.
+			set(result_output_list ${output_list})
+		elseif(args_DELIMITER)
+			set(result_output_list "-I$<JOIN:${genexp_output_list},${args_DELIMITER}-I>")
+		endif()
+
+		list(APPEND tmp_list ${result_output_list})
+	endforeach()
+	set(${i} ${tmp_list} PARENT_SCOPE)
+endfunction()
+
 function(services_get_include_directories_for_lang lang i)
 	sel4m_get_parse_args(args ${ARGN})
 	get_property(flags TARGET services_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)

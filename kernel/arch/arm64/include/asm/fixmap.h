@@ -1,7 +1,7 @@
 #ifndef __ASM_FIXMAP_H_
 #define __ASM_FIXMAP_H_
 
-#include <sel4m/init.h>
+#include <base/init.h>
 
 #ifndef __ASSEMBLY__
 

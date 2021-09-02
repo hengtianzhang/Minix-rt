@@ -22,7 +22,7 @@
 
 #include <generated/asm-offsets.h>
 
-#include <sel4m/init.h>
+#include <base/init.h>
 
 #include <asm/sysreg.h>
 #include <asm/image.h>

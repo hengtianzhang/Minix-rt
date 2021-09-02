@@ -20,9 +20,8 @@
 #ifndef __ASM_SYSREG_H_
 #define __ASM_SYSREG_H_
 
-
-#include <sel4m/const.h>
-#include <sel4m/stringify.h>
+#include <base/const.h>
+#include <base/stringify.h>
 
 /*
  * ARMv8 ARM reserves the following encoding for system registers:

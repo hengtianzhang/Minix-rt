@@ -1,7 +1,6 @@
-#include <sel4m/compiler.h>
-#include <sel4m/linkage.h>
-
+#include <base/linkage.h>
 #include <base/common.h>
+#include <base/compiler.h>
 
 #ifdef CONFIG_STACKPROTECTOR
 

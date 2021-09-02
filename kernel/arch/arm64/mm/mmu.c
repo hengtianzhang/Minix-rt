@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <sel4m/types.h>
-#include <sel4m/init.h>
+#include <base/init.h>
+#include <base/cache.h>
+#include <base/bug.h>
+#include <base/types.h>
+
 #include <sel4m/page.h>
-#include <sel4m/bug.h>
-#include <sel4m/cache.h>
 
 #include <asm/fixmap.h>
 #include <asm/memory.h>

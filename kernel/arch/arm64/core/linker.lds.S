@@ -4,14 +4,15 @@
  * taken from the i386 version by Russell King
  * Written by Martin Mares <mj@atrey.karlin.mff.cuni.cz>
  */
-#include <generated/kconfig.h>
+#include <base/sizes.h>
 
-#include <sel4m/sizes.h>
+#include <generated/kconfig.h>
 
 #include <asm-generic/linker.lds.h>
 
+#include <asm/base/cache.h>
+
 #include <asm/kernel-pgtable.h>
-#include <asm/cache.h>
 
 #include "image.h"
 

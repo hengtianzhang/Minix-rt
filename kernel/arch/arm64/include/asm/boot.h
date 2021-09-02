@@ -3,7 +3,7 @@
 #ifndef __ASM_BOOT_H_
 #define __ASM_BOOT_H_
 
-#include <sel4m/sizes.h>
+#include <base/sizes.h>
 
 #define BOOT_CPU_MODE_EL1	(0xe11)
 #define BOOT_CPU_MODE_EL2	(0xe12)
@@ -16,7 +16,7 @@
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/types.h>
+#include <base/types.h>
 #include <sel4m/init.h>
 
 /*

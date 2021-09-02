@@ -1,6 +1,6 @@
-#include <sel4m/compiler.h>
-#include <sel4m/linkage.h>
-#include <sel4m/kernel.h>
+#include <base/linkage.h>
+#include <base/compiler.h>
+#include <base/common.h>
 
 unsigned long long __stack_chk_guard;
 

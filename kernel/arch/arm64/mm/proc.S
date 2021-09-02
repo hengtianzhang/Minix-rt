@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <sel4m/init.h>
-#include <sel4m/linkage.h>
+#include <base/linkage.h>
+#include <base/init.h>
 
 #include <asm/sysreg.h>
 #include <asm/assembler.h>

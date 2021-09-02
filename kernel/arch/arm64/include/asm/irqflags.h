@@ -16,7 +16,7 @@
 #ifndef __ASM_IRQFLAGS_H_
 #define __ASM_IRQFLAGS_H_
 
-#include <sel4m/types.h>
+#include <base/types.h>
 
 #include <asm/ptrace.h>
 

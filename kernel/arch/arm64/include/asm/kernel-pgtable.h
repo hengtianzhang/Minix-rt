@@ -19,12 +19,13 @@
 #ifndef __ASM_KERNEL_PGTABLE_H_
 #define __ASM_KERNEL_PGTABLE_H_
 
-#include <asm/page-def.h>
+#include <asm/base/page-def.h>
+
 #include <asm/memory.h>
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/types.h>
+#include <base/types.h>
 
 typedef u64 pteval_t;
 typedef u64 pmdval_t;

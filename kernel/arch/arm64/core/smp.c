@@ -4,7 +4,8 @@
  * (C) Jens Axboe <jens.axboe@oracle.com> 2008
  */
 
-#include <sel4m/linkage.h>
+#include <base/linkage.h>
+
 #include <sel4m/smp.h>
 
 /*

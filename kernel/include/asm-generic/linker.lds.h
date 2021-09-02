@@ -1,7 +1,7 @@
 #ifndef __ASM_GENERIC_LINKER_LDS_H_
 #define __ASM_GENERIC_LINKER_LDS_H_
 
-#include <sel4m/linkage.h>
+#include <base/linkage.h>
 
 #ifndef LOAD_OFFSET
 #define LOAD_OFFSET 0

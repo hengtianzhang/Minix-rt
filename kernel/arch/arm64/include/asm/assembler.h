@@ -23,7 +23,9 @@
 #ifndef __ASM_ASSEMBLER_H_
 #define __ASM_ASSEMBLER_H_
 
-#include <sel4m/linkage.h>
+#include <base/linkage.h>
+
+#include <asm/base/assembler.h>
 
 #include <asm/kernel-pgtable.h>
 
@@ -193,23 +195,5 @@
  */
 	.macro	offset_ttbr1, ttbr
 	.endm
-
-/*
- * Select code when configured for BE.
- */
-#ifdef CONFIG_CPU_BIG_ENDIAN
-#define CPU_BE(code...) code
-#else
-#define CPU_BE(code...)
-#endif
-
-/*
- * Select code when configured for LE.
- */
-#ifdef CONFIG_CPU_BIG_ENDIAN
-#define CPU_LE(code...)
-#else
-#define CPU_LE(code...) code
-#endif
 
 #endif /* !__ASM_ASSEMBLER_H_ */

@@ -2,7 +2,7 @@
 #ifndef __ASM_STACK_POINTER_H_
 #define __ASM_STACK_POINTER_H_
 
-#include <sel4m/types.h>
+#include <base/types.h>
 
 /*
  * how to get the current stack pointer from C

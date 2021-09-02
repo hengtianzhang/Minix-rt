@@ -421,8 +421,8 @@ def gen_dtb_c_file(input_file, output_file):
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/types.h>
-#include <sel4m/init.h>
+#include <base/types.h>
+#include <base/init.h>
 
 static const u32 fdt_totalsize __initconst = 0x%lx;
 

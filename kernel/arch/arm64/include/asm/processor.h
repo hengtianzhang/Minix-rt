@@ -21,7 +21,7 @@
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/types.h>
+#include <base/types.h>
 
 static inline void cpu_relax(void)
 {

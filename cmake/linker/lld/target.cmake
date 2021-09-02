@@ -34,6 +34,7 @@ macro(configure_linker_script linker_script_gen linker_pass_define)
 	endif()
 
 	kernel_get_include_directories_for_lang(C current_includes)
+	kernel_get_imported_include_directories_for_lang(C current_imported_includes)
 	get_property(current_defines GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES)
 
 	add_custom_command(
@@ -50,6 +51,7 @@ macro(configure_linker_script linker_script_gen linker_pass_define)
 		-D_LINKER
 		-D_ASMLANGUAGE
 		${current_includes}
+		${current_imported_includes}
 		${current_defines}
 		${linker_pass_define}
 		-E ${LINKER_SCRIPT}

@@ -1,5 +1,5 @@
 
-#include <sel4m/types.h>
+#include <base/types.h>
 
 #include <asm/fixmap.h>
 

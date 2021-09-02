@@ -4,8 +4,9 @@
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/types.h>
-#include <sel4m/compiler.h>
+#include <base/compiler.h>
+
+#include <base/types.h>
 
 #include <asm/smp.h>
 #include <asm/memory.h>

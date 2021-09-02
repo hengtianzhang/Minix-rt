@@ -21,8 +21,8 @@
 #ifndef __ASM_MEMORY_H_
 #define __ASM_MEMORY_H_
 
-#include <sel4m/const.h>
-#include <sel4m/sizes.h>
+#include <base/sizes.h>
+#include <base/const.h>
 
 #define VA_BITS			(CONFIG_ARM64_VA_BITS)
 #define VA_START		(ULL(0xffffffffffffffff) - \

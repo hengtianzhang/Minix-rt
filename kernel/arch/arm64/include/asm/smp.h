@@ -34,8 +34,8 @@
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/types.h>
-#include <sel4m/linkage.h>
+#include <base/types.h>
+#include <base/linkage.h>
 #include <sel4m/sched.h>
 
 #include <asm/stack_pointer.h>

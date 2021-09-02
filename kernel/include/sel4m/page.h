@@ -1,7 +1,7 @@
 #ifndef __SEL4M_PAGE_H_
 #define __SEL4M_PAGE_H_
 
-#include <sel4m/compiler.h>
+#include <base/compiler.h>
 
 #include <asm/pgtable.h>
 

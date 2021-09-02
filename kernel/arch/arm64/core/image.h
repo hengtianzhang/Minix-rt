@@ -23,7 +23,8 @@
 #endif
 
 #include <asm/image.h>
-#include <asm/page-def.h>
+
+#include <asm//base/page-def.h>
 
 /*
  * There aren't any ELF relocations we can use to endian-swap values known only

@@ -364,6 +364,8 @@ ENDPROC(__create_page_tables)
 __primary_switched:
 	adrp	x4, kernel_stack_alloc
 	add	sp, x4, #THREAD_SIZE
+	adr_l	x5, init_task
+	msr	sp_el0, x5			// Save thread_info
 
 	adr_l	x8, vectors			// load VBAR_EL1 with virtual
 	msr	vbar_el1, x8			// vector table address

@@ -29,6 +29,81 @@
 
 #include <asm/kernel-pgtable.h>
 
+#include <generated/asm-offsets.h>
+
+	.macro save_and_disable_daif, flags
+	mrs	\flags, daif
+	msr	daifset, #0xf
+	.endm
+
+	.macro disable_daif
+	msr	daifset, #0xf
+	.endm
+
+	.macro enable_daif
+	msr	daifclr, #0xf
+	.endm
+
+	.macro	restore_daif, flags:req
+	msr	daif, \flags
+	.endm
+
+	/* Only on aarch64 pstate, PSR_D_BIT is different for aarch32 */
+	.macro	inherit_daif, pstate:req, tmp:req
+	and	\tmp, \pstate, #(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
+	msr	daif, \tmp
+	.endm
+
+	/* IRQ is the lowest priority flag, unconditionally unmask the rest. */
+	.macro enable_da_f
+	msr	daifclr, #(8 | 4 | 1)
+	.endm
+
+/*
+ * Enable and disable interrupts.
+ */
+	.macro	disable_irq
+	msr	daifset, #2
+	.endm
+
+	.macro	enable_irq
+	msr	daifclr, #2
+	.endm
+
+	.macro	save_and_disable_irq, flags
+	mrs	\flags, daif
+	msr	daifset, #2
+	.endm
+
+	.macro	restore_irq, flags
+	msr	daif, \flags
+	.endm
+
+	.macro	enable_dbg
+	msr	daifclr, #8
+	.endm
+
+/*
+ * SMP data memory barrier
+ */
+	.macro	smp_dmb, opt
+	dmb	\opt
+	.endm
+
+/*
+ * RAS Error Synchronization barrier
+ */
+	.macro  esb
+	hint    #16
+	.endm
+
+/*
+ * Value prediction barrier
+ */
+	.macro	csdb
+	hint	#20
+	.endm
+
 	/*
 	 * Emit a 64-bit absolute little endian symbol reference in a way that
 	 * ensures that it will be resolved at build time, even when building a
@@ -107,6 +182,13 @@
 	.endm
 
 /*
+ * mmid - get context id from mm pointer (mm->context.id)
+ */
+	.macro	mmid, rd, rn
+	ldr	\rd, [\rn, #MM_CONTEXT_ID]
+	.endm
+
+/*
  * dcache_line_size - get the safe D-cache line size across all CPUs
  */
 	.macro	dcache_line_size, reg, tmp
@@ -144,10 +226,6 @@
 
 	.macro	pte_to_phys, phys, pte
 	and	\phys, \pte, #PTE_ADDR_MASK
-	.endm
-
-	.macro	enable_dbg
-	msr	daifclr, #8
 	.endm
 
 /*

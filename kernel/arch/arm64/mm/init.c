@@ -40,3 +40,10 @@ int pfn_valid(unsigned long pfn)
 
 	return memblock_is_map_memory(&memblock_kernel, addr);
 }
+
+void __init arm64_memblock_init(void)
+{
+	const s64 linear_region_size = -(s64)PAGE_OFFSET;
+
+	printf("sdadasdsa  0x%llx\n", linear_region_size);
+}

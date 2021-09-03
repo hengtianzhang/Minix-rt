@@ -18,6 +18,8 @@ struct mm_struct {
 	mm_context_t context;
 };
 
+extern struct mm_struct init_mm;
+
 /*
  * Used for sizing the vmemmap region on some architectures
  */

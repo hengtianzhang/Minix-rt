@@ -43,6 +43,71 @@
 #define MAIR(attr, mt)	((attr) << ((mt) * 8))
 
 /*
+ *	cpu_do_idle()
+ *
+ *	Idle the processor (wait for interrupt).
+ */
+ENTRY(cpu_do_idle)
+	dsb	sy				// WFI may enter a low-power mode
+	wfi
+	ret
+ENDPROC(cpu_do_idle)
+
+/*
+ *	cpu_do_switch_mm(pgd_phys, tsk)
+ *
+ *	Set the translation table base pointer to be pgd_phys.
+ *
+ *	- pgd_phys - physical address of new TTB
+ */
+ENTRY(cpu_do_switch_mm)
+	mrs	x2, ttbr1_el1
+	mmid	x1, x1				// get mm->context.id
+	phys_to_ttbr x3, x0
+
+	bfi	x2, x1, #48, #16		// set the ASID
+	msr	ttbr1_el1, x2			// in TTBR1 (since TCR.A1 is set)
+	isb
+	msr	ttbr0_el1, x3			// now update TTBR0
+	isb
+	b	post_ttbr_update_workaround	// Back to C code...
+ENDPROC(cpu_do_switch_mm)
+
+	.pushsection ".idmap.text", "awx"
+
+.macro	__idmap_cpu_set_reserved_ttbr1, tmp1, tmp2
+	adrp	\tmp1, empty_zero_page
+	phys_to_ttbr \tmp2, \tmp1
+	offset_ttbr1 \tmp2
+	msr	ttbr1_el1, \tmp2
+	isb
+	tlbi	vmalle1
+	dsb	nsh
+	isb
+.endm
+
+/*
+ * void idmap_cpu_replace_ttbr1(phys_addr_t ttbr1)
+ *
+ * This is the low-level counterpart to cpu_replace_ttbr1, and should not be
+ * called by anything else. It can only be executed from a TTBR0 mapping.
+ */
+ENTRY(idmap_cpu_replace_ttbr1)
+	save_and_disable_daif flags=x2
+
+	__idmap_cpu_set_reserved_ttbr1 x1, x3
+
+	offset_ttbr1 x0
+	msr	ttbr1_el1, x0
+	isb
+
+	restore_daif x2
+
+	ret
+ENDPROC(idmap_cpu_replace_ttbr1)
+	.popsection
+
+/*
  *	__cpu_setup
  *
  *	Initialise the processor for turning the MMU on.  Return in x0 the

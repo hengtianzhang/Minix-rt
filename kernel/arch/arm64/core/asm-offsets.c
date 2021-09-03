@@ -19,11 +19,15 @@
  */
 #include <sel4m/kbuild.h>
 #include <sel4m/smp.h>
+#include <sel4m/mm_types.h>
 
 int main(void)
 {
 	DEFINE(CPU_BOOT_STACK,	offsetof(struct secondary_data, stack));
 	DEFINE(CPU_BOOT_TASK,		offsetof(struct secondary_data, task));
+	BLANK();
+	DEFINE(MM_CONTEXT_ID,		offsetof(struct mm_struct, context.id.counter));
+	BLANK();
 
 	return 0;
 }

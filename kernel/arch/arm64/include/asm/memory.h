@@ -150,5 +150,7 @@ static inline void *phys_to_virt(phys_addr_t x)
 #define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
 #define virt_to_pfn(x)      __phys_to_pfn(__virt_to_phys((unsigned long)(x)))
 
+extern void arm64_memblock_init(void);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_MEMORY_H_ */

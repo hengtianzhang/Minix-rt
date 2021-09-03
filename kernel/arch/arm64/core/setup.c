@@ -33,6 +33,7 @@
 #include <asm/mmu.h>
 #include <asm/fixmap.h>
 #include <asm/pgtable.h>
+#include <asm/mmu_context.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -105,5 +106,12 @@ void __init setup_arch(char **cmdline_p)
 	 * occurred).
 	 */
 	local_daif_restore(DAIF_PROCCTX_NOIRQ);
-	printf("sdasdsad\n");
+
+	/*
+	 * TTBR0 is only used for the identity mapping at this stage. Make it
+	 * point to zero page to avoid speculatively fetching new entries.
+	 */
+	cpu_uninstall_idmap();
+
+	arm64_memblock_init();
 }

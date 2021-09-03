@@ -27,6 +27,11 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 extern pgd_t idmap_pg_dir[PTRS_PER_PGD];
 
 extern pgd_t *kernel_pgd;
+/*
+ * ZERO_PAGE is a global shared page that is always zero: used
+ * for zero-mapped memory areas etc..
+ */
+extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
 
 /*
  * Page vaild

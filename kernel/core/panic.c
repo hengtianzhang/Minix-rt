@@ -48,5 +48,7 @@ void hang(const char *fmt, ...)
 		buf[len - 1] = '\0';
 
     printf("%s\n", buf);
-    while (1);
+
+    while (1)
+		cpu_relax();
 }

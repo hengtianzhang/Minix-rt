@@ -17,6 +17,7 @@
 extern const char linux_banner[];
 
 void __weak __init early_arch_platform_init(void) {}
+void __weak __init setup_arch(void) {}
 
 asmlinkage __visible void __init start_kernel(void)
 {
@@ -28,5 +29,7 @@ asmlinkage __visible void __init start_kernel(void)
     early_arch_platform_init();
 
     printf("%s", linux_banner);
-    while (1);
+    setup_arch();
+
+    hang ("This is Stop!\n");
 }

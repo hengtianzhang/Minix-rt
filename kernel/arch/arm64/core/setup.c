@@ -27,6 +27,7 @@
 
 #include <asm/base/processor.h>
 
+#include <asm/daifflags.h>
 #include <asm/smp.h>
 #include <asm/cputype.h>
 #include <asm/mmu.h>
@@ -94,4 +95,15 @@ void __init early_arch_platform_init(void)
     setup_machine_fdt(__fdt_pointer);
 
     setup_fixmap_console();
+}
+
+void __init setup_arch(char **cmdline_p)
+{
+	/*
+	 * Unmask asynchronous aborts and fiq after bringing up possible
+	 * earlycon. (Report possible System Errors once we can report this
+	 * occurred).
+	 */
+	local_daif_restore(DAIF_PROCCTX_NOIRQ);
+	printf("sdasdsad\n");
 }

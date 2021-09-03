@@ -6,8 +6,16 @@
 
 #include <base/common.h>
 
+#include <asm/pgtable-types.h>
+#include <asm/mmu.h>
 struct page {
 	int a;
+};
+
+struct mm_struct {
+	pgd_t * pgd;
+	/* Architecture-specific MM context */
+	mm_context_t context;
 };
 
 /*

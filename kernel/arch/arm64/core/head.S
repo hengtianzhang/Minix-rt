@@ -24,6 +24,8 @@
 
 #include <base/init.h>
 
+#include <asm/base/page-def.h>
+
 #include <asm/sysreg.h>
 #include <asm/image.h>
 #include <asm/assembler.h>

@@ -1,7 +1,4 @@
 /*
- * Based on arch/arm/include/asm/processor.h
- *
- * Copyright (C) 1995-1999 Russell King
  * Copyright (C) 2012 ARM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,39 +13,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __ASM_PROCESSOR_H_
-#define __ASM_PROCESSOR_H_
+#ifndef __ASM_MMU_H_
+#define __ASM_MMU_H_
 
 #ifndef __ASSEMBLY__
-
 #include <base/types.h>
+#include <base/atomic.h>
 
-static inline void cpu_relax(void)
-{
-	asm volatile("yield" ::: "memory");
-}
+typedef struct {
+	atomic64_t	id;
+	void		*vdso;
+	unsigned long	flags;
+} mm_context_t;
 
 /*
- * Prefetching support
+ * This macro is only used by the TLBI code, which cannot race with an
+ * ASID change and therefore doesn't need to reload the counter using
+ * atomic64_read.
  */
-#define ARCH_HAS_PREFETCH
-static inline void prefetch(const void *ptr)
-{
-	asm volatile("prfm pldl1keep, %a0\n" : : "p" (ptr));
-}
+#define ASID(mm)	((mm)->context.id.counter & 0xffff)
 
-#define ARCH_HAS_PREFETCHW
-static inline void prefetchw(const void *ptr)
-{
-	asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
-}
-
-#define ARCH_HAS_SPINLOCK_PREFETCH
-static inline void spin_lock_prefetch(const void *ptr)
-{
-	asm volatile("prfm pstl1strm, %a0"
-		    : : "p" (ptr));
-}
+extern void *fixmap_remap_fdt(phys_addr_t dt_phys);
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__ASM_PROCESSOR_H_ */
+#endif /* !__ASM_MMU_H_ */

@@ -80,6 +80,7 @@
 #include <base/bug.h>
 #include <base/types.h>
 #include <base/pfn.h>
+#include <base/bits.h>
 
 extern s64			memstart_addr;
 /* PHYS_OFFSET - the physical address of the start of memory. */
@@ -90,6 +91,12 @@ extern u64			kimage_vaddr;
 
 /* the offset between the kernel virtual and physical mappings */
 extern u64			kimage_voffset;
+
+/*
+ * Allow all memory at the discovery stage. We will clip it later.
+ */
+#define MIN_MEMBLOCK_ADDR	0
+#define MAX_MEMBLOCK_ADDR	U64_MAX
 
 /*
  * The linear kernel range starts in the middle of the virtual adddress

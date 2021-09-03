@@ -463,6 +463,15 @@ void *__init __fixmap_remap_console(phys_addr_t con_phys, pgprot_t prot)
 	return con_virt;
 }
 
+/*
+ * paging_init() sets up the page tables, initialises the zone memory
+ * maps and sets up the zero page.
+ */
+void __init paging_init(void)
+{
+
+}
+
 int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
 {
 	pgprot_t sect_prot = __pgprot(PUD_TYPE_SECT |

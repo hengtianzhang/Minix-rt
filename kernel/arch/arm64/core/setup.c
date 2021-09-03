@@ -114,4 +114,5 @@ void __init setup_arch(char **cmdline_p)
 	cpu_uninstall_idmap();
 
 	arm64_memblock_init();
+	paging_init();
 }

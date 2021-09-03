@@ -7,4 +7,7 @@
 
 extern char boot_command_line[COMMAND_LINE_SIZE];
 
+extern phys_addr_t phys_initrd_start;
+extern phys_addr_t phys_initrd_size;
+
 #endif /* !__SEL4M_OF_FDT_H_ */

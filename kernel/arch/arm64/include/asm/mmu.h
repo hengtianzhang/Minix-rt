@@ -33,6 +33,7 @@ typedef struct {
  */
 #define ASID(mm)	((mm)->context.id.counter & 0xffff)
 
+extern void paging_init(void);
 extern void *fixmap_remap_fdt(phys_addr_t dt_phys);
 
 #define INIT_MM_CONTEXT(name)	\

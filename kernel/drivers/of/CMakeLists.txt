@@ -23,10 +23,17 @@ endif()
 
 if(CONFIG_OF_EARLY_FLATTREE)
 	kernel_library()
+
 	kernel_library_sources(fdt.c)
+
 	kernel_library_sources_ifdef(
 		CONFIG_OF_RESERVED_MEM
 		of_reserved_mem.c
+	)
+
+	kernel_library_sources_ifdef(
+		CONFIG_OF_IRQ
+		irq.c
 	)
 endif()
 

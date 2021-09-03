@@ -7,3 +7,6 @@ config OF_RESERVED_MEM
 	bool
 	help
 	  Helpers to allow for reservation of memory regions
+
+config OF_IRQ
+	def_bool y

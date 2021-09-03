@@ -14,9 +14,4 @@ memalloc_user_import_libraries()
 
 target_link_libraries(hello_world PRIVATE memalloc)
 
-find_package(of REQUIRED)
-of_user_import_libraries()
-
-target_link_libraries(hello_world PRIVATE of)
-
 DeclareRootservices(hello_world)

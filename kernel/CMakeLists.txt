@@ -39,6 +39,10 @@ assert(toolchain_is_ok "The toolchain is unable to build a dummy C file. See CMa
 project(kernel VERSION ${SEL4M_PROJECT_VERSION})
 enable_language(C CXX ASM)
 
+set(VERSION_FILE ${SEL4M_BASE}/VERSION)
+# Re-configure (Re-execute all CMakeLists.txt code) when autoconf.h changes
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${VERSION_FILE})
+
 set(KERNEL_NAME ${CONFIG_KERNEL_BIN_NAME})
 
 set(KERNEL_ELF_NAME   ${KERNEL_NAME}.elf)

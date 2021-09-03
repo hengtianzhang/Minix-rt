@@ -10,8 +10,11 @@
  */
 #include <base/init.h>
 
+#include <sel4m/cpu.h>
 #include <sel4m/irqflags.h>
 #include <sel4m/smp.h>
+
+extern const char linux_banner[];
 
 void __weak __init early_arch_platform_init(void) {}
 
@@ -21,7 +24,9 @@ asmlinkage __visible void __init start_kernel(void)
 
     local_irq_disable();
 
+    boot_cpu_init();
     early_arch_platform_init();
 
+    printf("%s", linux_banner);
     while (1);
 }

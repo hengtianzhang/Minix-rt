@@ -2,7 +2,7 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-    test.c
+    cpumask.c
 )
 
 find_package(memalloc REQUIRED)

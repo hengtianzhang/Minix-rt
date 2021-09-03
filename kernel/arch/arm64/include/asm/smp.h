@@ -36,6 +36,8 @@
 
 #include <base/types.h>
 #include <base/linkage.h>
+#include <base/errno.h>
+
 #include <sel4m/sched.h>
 
 #include <asm/stack_pointer.h>
@@ -85,6 +87,27 @@ extern struct secondary_data secondary_data;
 
 extern s64 __early_cpu_boot_status;
 extern void secondary_entry(void);
+
+/*
+ * Logical CPU mapping.
+ */
+extern u64 __cpu_logical_map[CONFIG_NR_CPUS];
+#define cpu_logical_map(cpu)    __cpu_logical_map[cpu]
+
+/*
+ * Retrieve logical cpu index corresponding to a given MPIDR.Aff*
+ *  - mpidr: MPIDR.Aff* bits to be used for the look-up
+ *
+ * Returns the cpu logical index or -EINVAL on look-up error
+ */
+static inline int get_logical_index(u64 mpidr)
+{
+	int cpu;
+	for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++)
+		if (cpu_logical_map(cpu) == mpidr)
+			return cpu;
+	return -EINVAL;
+}
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_SMP_H_ */

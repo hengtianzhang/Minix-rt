@@ -427,6 +427,37 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys)
 	return dt_virt;
 }
 
+void *__init __fixmap_remap_console(phys_addr_t con_phys, pgprot_t prot)
+{
+	const u64 con_virt_base = __fix_to_virt(FIX_EARLYCON_MEM_BASE);
+	int offset;
+	void *con_virt;
+
+	if (!con_phys || con_phys % MIN_FDT_ALIGN)
+		return NULL;
+
+	/*
+	 * Make sure that the FDT region can be mapped without the need to
+	 * allocate additional translation table pages, so that it is safe
+	 * to call create_mapping_noalloc() this early.
+	 *
+	 * On 64k pages, the FDT will be mapped using PTEs, so we need to
+	 * be in the same PMD as the rest of the fixmap.
+	 * On 4k pages, we'll use section mappings for the FDT so we only
+	 * have to be in the same PUD.
+	 */
+	BUILD_BUG_ON(con_virt_base % PAGE_SIZE);
+
+	offset = con_phys % PAGE_SIZE;
+	con_virt = (void *)con_virt_base + offset;
+
+	/* map the first chunk so we can read the size from the header */
+	create_mapping_noalloc(round_down(con_phys, PAGE_SIZE),
+			con_virt_base, PAGE_SIZE, prot);
+
+	return con_virt;
+}
+
 int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
 {
 	pgprot_t sect_prot = __pgprot(PUD_TYPE_SECT |

@@ -8,20 +8,20 @@
  *  Moan early if gcc is old, avoiding bogus kernels - Paul Gortmaker, May '96
  *  Simplified starting of init:  Michael A. Griffith <grif@acm.org>
  */
-#include <base/linkage.h>
 #include <base/init.h>
-#include <base/compiler.h>
-#include <base/common.h>
-#include <base/list.h>
 
-#include <sel4m/memory.h>
+#include <sel4m/irqflags.h>
+#include <sel4m/smp.h>
 
 void __weak __init early_arch_platform_init(void) {}
 
 asmlinkage __visible void __init start_kernel(void)
 {
+    smp_setup_processor_id();
+
+    local_irq_disable();
+
     early_arch_platform_init();
-    printf("sssss fdd 0x%llx\n", FIXADDR_TOP);
 
     while (1);
 }

@@ -5,4 +5,6 @@ source "kernel/drivers/of/Kconfig"
 
 source "kernel/drivers/irqchip/Kconfig"
 
+source "kernel/drivers/serial/Kconfig"
+
 endmenu

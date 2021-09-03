@@ -1,0 +1,12 @@
+menu "Serial drivers"
+
+config SERIAL_AMBA_PL011
+	tristate "ARM AMBA PL011 serial port support"
+	help
+	  This selects the ARM(R) AMBA(R) PrimeCell PL011 UART.  If you have
+	  an Integrator/PP2, Integrator/CP or Versatile platform, say Y or M
+	  here.
+
+	  If unsure, say N.
+
+endmenu

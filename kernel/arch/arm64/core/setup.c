@@ -27,11 +27,15 @@
 
 #include <asm/base/processor.h>
 
+#include <asm/smp.h>
+#include <asm/cputype.h>
 #include <asm/mmu.h>
 #include <asm/fixmap.h>
 #include <asm/pgtable.h>
 
 phys_addr_t __fdt_pointer __initdata;
+
+u64 __cpu_logical_map[CONFIG_NR_CPUS] = { [0 ... CONFIG_NR_CPUS-1] = INVALID_HWID };
 
 static void __init setup_machine_fdt(phys_addr_t dt_phys)
 {
@@ -56,10 +60,30 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 	printf("Machine model: %s\n", name);
 }
 
+static void __init setup_fixmap_console(void)
+{
+	early_init_dt_scan_chosen_stdout();
+}
+
 /*
  * The recorded values of x0 .. x3 upon kernel entry.
  */
 u64 __cacheline_aligned boot_args[4];
+
+void __init smp_setup_processor_id(void)
+{
+	u64 mpidr = read_cpuid_mpidr() & MPIDR_HWID_BITMASK;
+	cpu_logical_map(0) = mpidr;
+
+	/*
+	 * clear __my_cpu_offset on boot CPU to avoid hang caused by
+	 * using percpu variable early, for example, lockdep will
+	 * access percpu variable inside lock_release
+	 */
+	set_my_cpu_offset(0);
+	printf("Booting Linux on physical CPU 0x%010llx [0x%08x]\n",
+		(u64)mpidr, read_cpuid_id());
+}
 
 void __init early_arch_platform_init(void)
 {
@@ -68,4 +92,6 @@ void __init early_arch_platform_init(void)
     early_fixmap_init();
 
     setup_machine_fdt(__fdt_pointer);
+
+    setup_fixmap_console();
 }

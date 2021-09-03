@@ -15,5 +15,14 @@ extern u8 kernel_stack_alloc[CONFIG_NR_CPUS][THREAD_SIZE];
 
 #define smp_processor_id() raw_smp_processor_id()
 
+void smp_setup_processor_id(void);
+
+extern int __boot_cpu_id;
+
+static inline int get_boot_cpu_id(void)
+{
+	return __boot_cpu_id;
+}
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_SMP_H_ */

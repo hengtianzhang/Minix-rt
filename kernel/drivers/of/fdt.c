@@ -12,6 +12,7 @@
 #include <sel4m/of_fdt.h>
 #include <sel4m/of_reserved_mem.h>
 #include <sel4m/memory.h>
+#include <sel4m/console.h>
 
 #include <of/libfdt.h>
 #include <of/of.h>
@@ -361,13 +362,15 @@ static void __init early_init_dt_check_for_initrd(unsigned long node)
 		 (unsigned long long)start, (unsigned long long)end);
 }
 
+extern const struct of_device_id __console_of_table_start[];
+extern const struct of_device_id __console_of_table_end[];
+
 int __init early_init_dt_scan_chosen_stdout(void)
 {
-#if 0
 	int offset;
 	const char *p, *q, *options = NULL;
 	int l;
-	const struct earlycon_id **p_match;
+	const struct of_device_id *p_match;
 	const void *fdt = initial_boot_params;
 
 	offset = fdt_path_offset(fdt, "/chosen");
@@ -394,9 +397,9 @@ int __init early_init_dt_scan_chosen_stdout(void)
 		return 0;
 	}
 
-	for (p_match = __earlycon_table; p_match < __earlycon_table_end;
+	for (p_match = __console_of_table_start; p_match < __console_of_table_end;
 	     p_match++) {
-		const struct earlycon_id *match = *p_match;
+		const struct of_device_id *match = p_match;
 
 		if (!match->compatible[0])
 			continue;
@@ -404,11 +407,10 @@ int __init early_init_dt_scan_chosen_stdout(void)
 		if (fdt_node_check_compatible(fdt, offset, match->compatible))
 			continue;
 
-		/* TODO */
-		//of_setup_earlycon(match, offset, options);
+		of_setup_console(match, offset, options);
+
 		return 0;
 	}
-#endif
 	return -ENODEV;
 }
 

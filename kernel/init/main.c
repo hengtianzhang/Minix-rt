@@ -14,13 +14,9 @@
 #include <base/common.h>
 #include <base/list.h>
 
-#include <memalloc/memblock.h>
-
-#include <asm/memory.h>
+#include <sel4m/memory.h>
 
 void __weak __init early_arch_platform_init(void) {}
-
-struct memblock memblock_kernel __initdata;
 
 asmlinkage __visible void __init start_kernel(void)
 {

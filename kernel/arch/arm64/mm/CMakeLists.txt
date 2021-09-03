@@ -4,5 +4,5 @@ kernel_library()
 
 kernel_library_sources(
 	cache.S proc.S
-	mmu.c context.c
+	mmu.c context.c init.c
 )

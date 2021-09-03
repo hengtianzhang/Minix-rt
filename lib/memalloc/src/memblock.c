@@ -1137,7 +1137,7 @@ void __init memblock_mem_limit_remove_map(struct memblock *mb, phys_addr_t limit
 	memblock_cap_memory_range(mb, 0, max_addr);
 }
 
-static int __init_memblock memblock_search(struct memblock_type *type, phys_addr_t addr)
+static int memblock_search(struct memblock_type *type, phys_addr_t addr)
 {
 	unsigned int left = 0, right = type->cnt;
 
@@ -1155,17 +1155,17 @@ static int __init_memblock memblock_search(struct memblock_type *type, phys_addr
 	return -1;
 }
 
-bool __init_memblock memblock_is_reserved(struct memblock *mb, phys_addr_t addr)
+bool memblock_is_reserved(struct memblock *mb, phys_addr_t addr)
 {
 	return memblock_search(&mb->reserved, addr) != -1;
 }
 
-bool __init_memblock memblock_is_memory(struct memblock *mb, phys_addr_t addr)
+bool memblock_is_memory(struct memblock *mb, phys_addr_t addr)
 {
 	return memblock_search(&mb->memory, addr) != -1;
 }
 
-bool __init_memblock memblock_is_map_memory(struct memblock *mb, phys_addr_t addr)
+bool memblock_is_map_memory(struct memblock *mb, phys_addr_t addr)
 {
 	int i = memblock_search(&mb->memory, addr);
 

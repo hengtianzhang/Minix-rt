@@ -24,6 +24,14 @@
 #include <base/sizes.h>
 #include <base/const.h>
 
+#include <sel4m/mm_types.h>
+
+/*
+ * VMEMMAP_SIZE - allows the whole linear region to be covered by
+ *                a struct page array
+ */
+#define VMEMMAP_SIZE (UL(1) << (VA_BITS - PAGE_SHIFT - 1 + STRUCT_PAGE_MAX_SHIFT))
+
 #define VA_BITS			(CONFIG_ARM64_VA_BITS)
 #define VA_START		(ULL(0xffffffffffffffff) - \
 	(ULL(1) << VA_BITS) + 1)
@@ -31,8 +39,10 @@
 	(ULL(1) << (VA_BITS - 1)) + 1)
 #define KIMAGE_VADDR		(VA_START)
 
+#define VMEMMAP_START		(PAGE_OFFSET - VMEMMAP_SIZE)
+
 #define RESERVED_IO_SPACE	SZ_2M
-#define	FIXADDR_TOP		(PAGE_OFFSET - RESERVED_IO_SPACE)
+#define	FIXADDR_TOP		(VMEMMAP_START - RESERVED_IO_SPACE)
 
 #define MAX_USER_VA_BITS	VA_BITS
 
@@ -67,6 +77,14 @@
 
 #ifndef __ASSEMBLY__
 
+#include <base/bug.h>
+#include <base/types.h>
+#include <base/pfn.h>
+
+extern s64			memstart_addr;
+/* PHYS_OFFSET - the physical address of the start of memory. */
+#define PHYS_OFFSET		({ BUILD_BUG_ON_INVALID(memstart_addr & 1); memstart_addr; })
+
 /* the virtual base of the kernel image (minus TEXT_OFFSET) */
 extern u64			kimage_vaddr;
 
@@ -74,22 +92,56 @@ extern u64			kimage_vaddr;
 extern u64			kimage_voffset;
 
 /*
- * TCR.T0SZ value to use when the ID map is active. Usually equals
- * TCR_T0SZ(VA_BITS), unless system RAM is positioned very high in
- * physical memory, in which case it will be smaller.
+ * The linear kernel range starts in the middle of the virtual adddress
+ * space. Testing the top bit for the start of the region is a
+ * sufficient check.
  */
-extern u64 idmap_t0sz;
-extern u64 idmap_ptrs_per_pgd;
+#define __is_lm_address(addr)	(!!((addr) & BIT(VA_BITS - 1)))
 
+#define __lm_to_phys(addr)	(((addr) & ~PAGE_OFFSET) + PHYS_OFFSET)
 #define __kimg_to_phys(addr)	((addr) - kimage_voffset)
+
+#define __virt_to_phys(x) ({			\
+	phys_addr_t __x = (phys_addr_t)(x);			\
+	__is_lm_address(__x) ? __lm_to_phys(__x) :		\
+			       __kimg_to_phys(__x);			\
+})
+
+#define __phys_addr_symbol(x) __kimg_to_phys((phys_addr_t)(x))
+
+#define __phys_to_virt(x)	((unsigned long)((x) - PHYS_OFFSET) | PAGE_OFFSET)
 #define __phys_to_kimg(x)	((u64)((x) + kimage_voffset))
 
-#define __phys_addr_symbol(x)	__kimg_to_phys((phys_addr_t)(x))
+#include <asm-generic/memory_model.h>
 
+/*
+ * Convert a page to/from a physical address
+ */
+#define page_to_phys(page)	(__pfn_to_phys(page_to_pfn(page)))
+#define phys_to_page(phys)	(pfn_to_page(__phys_to_pfn(phys)))
+#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+
+/*
+ * Note: Drivers should NOT use these.  They are the wrong
+ * translation for translating DMA addresses.  Use the driver
+ * DMA support - see dma-mapping.h.
+ */
+#define virt_to_phys virt_to_phys
+static inline phys_addr_t virt_to_phys(const volatile void *x)
+{
+	return __virt_to_phys((unsigned long)(x));
+}
+
+#define phys_to_virt phys_to_virt
+static inline void *phys_to_virt(phys_addr_t x)
+{
+	return (void *)(__phys_to_virt(x));
+}
+
+#define __pa(x)			__virt_to_phys((unsigned long)(x))
 #define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
-#define __pa(x)	(x)
+#define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
+#define virt_to_pfn(x)      __phys_to_pfn(__virt_to_phys((unsigned long)(x)))
 
-#define phys_to_virt(x) ((void *)x)
 #endif /* !__ASSEMBLY__ */
-
 #endif /* !__ASM_MEMORY_H_ */

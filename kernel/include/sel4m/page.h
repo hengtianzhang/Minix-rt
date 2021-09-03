@@ -7,9 +7,6 @@
 
 #include <asm/pgtable.h>
 
-#define __page_aligned_data	__section(.data..page_aligned) __aligned(PAGE_SIZE)
-#define __page_aligned_bss	__section(.bss..page_aligned) __aligned(PAGE_SIZE)
-
 /*
  * For assembly routines.
  *
@@ -25,4 +22,12 @@
 /* test whether an address (unsigned long or pointer) is aligned to PAGE_SIZE */
 #define PAGE_ALIGNED(addr)	IS_ALIGNED((unsigned long)(addr), PAGE_SIZE)
 
+#ifndef __ASSEMBLY__
+
+#define __page_aligned_data	__section(.data..page_aligned) __aligned(PAGE_SIZE)
+#define __page_aligned_bss	__section(.bss..page_aligned) __aligned(PAGE_SIZE)
+
+extern int pfn_valid(unsigned long);
+
+#endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_PAGE_H_ */

@@ -109,5 +109,7 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t ptep,
 	WRITE_ONCE(*pmdp, __pmd(ptep | prot));
 }
 
+#define vmemmap			((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PGTABLE_H_ */

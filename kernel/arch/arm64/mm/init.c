@@ -173,10 +173,11 @@ static void __init vmemmap_init(void)
 	phys_addr_t phys_addr, start_pfn, end_pfn;
 
 	for_each_mem_pfn_range(&memblock_kernel, i, &start_pfn, &end_pfn) {
-		size = round_up(pfn_to_page(end_pfn) - pfn_to_page(start_pfn), PAGE_SIZE);
+		size = round_up(((end_pfn - start_pfn) * sizeof (struct page)), PAGE_SIZE);
 		phys_addr = memblock_alloc(&memblock_kernel, size, PAGE_SIZE);
 
 		vmemmap_populate(phys_addr, (unsigned long)pfn_to_page(start_pfn), size);
+		memset(pfn_to_page(start_pfn), 0, size);
 	}
 }
 

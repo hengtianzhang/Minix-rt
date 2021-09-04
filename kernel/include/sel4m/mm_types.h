@@ -10,6 +10,8 @@
 #include <asm/mmu.h>
 struct page {
 	int a;
+	u64 bb;
+	u64 cc;
 };
 
 struct mm_struct {

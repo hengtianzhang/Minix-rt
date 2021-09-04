@@ -602,6 +602,17 @@ void __init paging_init(void)
 		      __pa_symbol(init_pg_end) - __pa_symbol(init_pg_dir));
 }
 
+void __init vmemmap_populate(phys_addr_t phys, unsigned long virt,
+				      size_t size)
+{
+	BUG_ON(!PAGE_ALIGNED(virt));
+	BUG_ON(!PAGE_ALIGNED(phys));
+	BUG_ON(!PAGE_ALIGNED(size));
+
+	__create_pgd_mapping(kernel_pgd, phys, virt, size, PAGE_KERNEL,
+							early_pgtable_alloc, 0);
+}
+
 int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
 {
 	pgprot_t sect_prot = __pgprot(PUD_TYPE_SECT |

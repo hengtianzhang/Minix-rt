@@ -166,6 +166,20 @@ void __init arm64_memblock_init(void)
 	early_init_fdt_scan_reserved_mem();
 }
 
+static void __init vmemmap_init(void)
+{
+	int i;
+	size_t size;
+	phys_addr_t phys_addr, start_pfn, end_pfn;
+
+	for_each_mem_pfn_range(&memblock_kernel, i, &start_pfn, &end_pfn) {
+		size = round_up(pfn_to_page(end_pfn) - pfn_to_page(start_pfn), PAGE_SIZE);
+		phys_addr = memblock_alloc(&memblock_kernel, size, PAGE_SIZE);
+
+		vmemmap_populate(phys_addr, (unsigned long)pfn_to_page(start_pfn), size);
+	}
+}
+
 void __init bootmem_init(void)
 {
 	unsigned long min, max;
@@ -175,4 +189,7 @@ void __init bootmem_init(void)
 
 	early_memtest(min << PAGE_SHIFT, max << PAGE_SHIFT);
 
+	vmemmap_init();
+
+	memblock_dump_all(&memblock_kernel);
 }

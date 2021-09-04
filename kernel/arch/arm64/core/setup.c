@@ -100,6 +100,8 @@ void __init early_arch_platform_init(void)
 
 void __init setup_arch(char **cmdline_p)
 {
+	int i;
+	phys_addr_t start, end;
 	/*
 	 * Unmask asynchronous aborts and fiq after bringing up possible
 	 * earlycon. (Report possible System Errors once we can report this
@@ -115,4 +117,18 @@ void __init setup_arch(char **cmdline_p)
 
 	arm64_memblock_init();
 	paging_init();
+
+	unflatten_device_tree();
+
+	bootmem_init();
+
+
+
+	__memblock_dump_all(&memblock_kernel);
+
+	for_each_mem_pfn_range(&memblock_kernel, i, &start, &end) {
+		printf("sss 0x%llx\n 0x%llx\n", start, end);
+		printf("sss soze 0x%llx\n", pfn_to_page(end) - pfn_to_page(start));
+		printf("sss soze 0x%llx 0x%llx\n", pfn_to_page(end) , pfn_to_page(start));
+	}
 }

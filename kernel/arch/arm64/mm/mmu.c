@@ -30,6 +30,8 @@
 #include <asm/pgtable.h>
 #include <asm/mmu.h>
 #include <asm/tlbflush.h>
+#include <asm/mmu_context.h>
+#include <asm/sections.h>
 
 #include <generated/gen_dtb.h>
 
@@ -463,13 +465,141 @@ void *__init __fixmap_remap_console(phys_addr_t con_phys, pgprot_t prot)
 	return con_virt;
 }
 
+static phys_addr_t __init early_pgtable_alloc(void)
+{
+	phys_addr_t phys;
+	void *ptr;
+
+	phys = memblock_phys_alloc(&memblock_kernel, PAGE_SIZE, PAGE_SIZE);
+
+	/*
+	 * The FIX_{PGD,PUD,PMD} slots may be in active use, but the FIX_PTE
+	 * slot will be free, so we can (ab)use the FIX_PTE slot to initialise
+	 * any level of table.
+	 */
+	ptr = pte_set_fixmap(phys);
+
+	memset(ptr, 0, PAGE_SIZE);
+
+	/*
+	 * Implicit barriers also ensure the zeroed page is visible to the page
+	 * table walker
+	 */
+	pte_clear_fixmap();
+
+	return phys;
+}
+
+static void __init map_kernel_segment(pgd_t *pgdp, void *va_start, void *va_end,
+				      pgprot_t prot, int flags)
+{
+	phys_addr_t pa_start = __pa_symbol(va_start);
+	unsigned long size = va_end - va_start;
+
+	BUG_ON(!PAGE_ALIGNED(pa_start));
+	BUG_ON(!PAGE_ALIGNED(size));
+
+	__create_pgd_mapping(pgdp, pa_start, (unsigned long)va_start, size, prot,
+			     early_pgtable_alloc, flags);
+}
+
+/*
+ * Create fine-grained mappings for the kernel.
+ */
+static void __init map_kernel(pgd_t *pgdp)
+{
+	pgprot_t text_prot = PAGE_KERNEL_EXEC;
+
+	/*
+	 * Only rodata will be remapped with different permissions later on,
+	 * all other segments are allowed to use contiguous mappings.
+	 */
+	map_kernel_segment(pgdp, _text, _etext, text_prot, 0);
+	map_kernel_segment(pgdp, __start_rodata, __inittext_begin, PAGE_KERNEL, NO_CONT_MAPPINGS);
+	map_kernel_segment(pgdp, __inittext_begin, __inittext_end, text_prot, 0);
+	map_kernel_segment(pgdp, __initdata_begin, __initdata_end, PAGE_KERNEL, 0);
+	map_kernel_segment(pgdp, _data, _end, PAGE_KERNEL, 0);
+
+	if (!READ_ONCE(pgd_val(*pgd_offset(pgdp, FIXADDR_START)))) {
+		/*
+		 * The fixmap falls in a separate pgd to the kernel, and doesn't
+		 * live in the carveout for the swapper_pg_dir. We can simply
+		 * re-use the existing dir for the fixmap.
+		 */
+		set_pgd(pgd_offset(pgdp, FIXADDR_START),
+			READ_ONCE(*pgd_offset_k(FIXADDR_START)));
+	}
+}
+
+static void __init __map_memblock(pgd_t *pgdp, phys_addr_t start,
+				  phys_addr_t end, pgprot_t prot, int flags)
+{
+	__create_pgd_mapping(pgdp, start, __phys_to_virt(start), end - start,
+			     prot, early_pgtable_alloc, flags);
+}
+
+static void __init map_mem(pgd_t *pgdp)
+{
+	phys_addr_t kernel_start = __pa_symbol(_text);
+	phys_addr_t kernel_end = __pa_symbol(__init_begin);
+	struct memblock_region *reg;
+	int flags = 0;
+
+	/*
+	 * Take care not to create a writable alias for the
+	 * read-only text and rodata sections of the kernel image.
+	 * So temporarily mark them as NOMAP to skip mappings in
+	 * the following for-loop
+	 */
+	memblock_mark_nomap(&memblock_kernel, kernel_start,
+							kernel_end - kernel_start);
+
+	/* map all the memory banks */
+	for_each_memblock(&memblock_kernel, memory, reg) {
+		phys_addr_t start = reg->base;
+		phys_addr_t end = start + reg->size;
+
+		if (start >= end)
+			break;
+		if (memblock_is_nomap(reg))
+			continue;
+
+		__map_memblock(pgdp, start, end, PAGE_KERNEL, flags);
+	}
+
+	/*
+	 * Map the linear alias of the [_text, __init_begin) interval
+	 * as non-executable now, and remove the write permission in
+	 * mark_linear_text_alias_ro() below (which will be called after
+	 * alternative patching has completed). This makes the contents
+	 * of the region accessible to subsystems such as hibernate,
+	 * but protects it from inadvertent modification or execution.
+	 * Note that contiguous mappings cannot be remapped in this way,
+	 * so we should avoid them here.
+	 */
+	__map_memblock(pgdp, kernel_start, kernel_end,
+		       PAGE_KERNEL, NO_CONT_MAPPINGS);
+	memblock_clear_nomap(&memblock_kernel, kernel_start, kernel_end - kernel_start);
+}
+
 /*
  * paging_init() sets up the page tables, initialises the zone memory
  * maps and sets up the zero page.
  */
 void __init paging_init(void)
 {
+	pgd_t *pgdp = pgd_set_fixmap(__pa_symbol(swapper_pg_dir));
 
+	map_kernel(pgdp);
+	map_mem(pgdp);
+
+	pgd_clear_fixmap();
+
+	cpu_replace_ttbr1(__va(__pa_symbol(swapper_pg_dir)));
+	kernel_pgd = swapper_pg_dir;
+
+	memblock_free(&memblock_kernel, __pa_symbol(init_pg_dir),
+		      __pa_symbol(init_pg_end) - __pa_symbol(init_pg_dir));
 }
 
 int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)

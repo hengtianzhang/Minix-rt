@@ -233,8 +233,8 @@ void __next_mem_pfn_range(struct memblock *mb,
 	     i >= 0; __next_mem_pfn_range(mb, &i, p_start, p_end))
 
 #define for_each_memblock(mb, memblock_type, region)					\
-	for (region = mb->memblock_type.regions;					\
-	     region < (mb->memblock_type.regions + mb->memblock_type.cnt);	\
+	for (region = (mb)->memblock_type.regions;					\
+	     region < ((mb)->memblock_type.regions + (mb)->memblock_type.cnt);	\
 	     region++)
 
 /*

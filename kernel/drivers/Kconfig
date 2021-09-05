@@ -7,4 +7,6 @@ source "kernel/drivers/irqchip/Kconfig"
 
 source "kernel/drivers/serial/Kconfig"
 
+source "kernel/drivers/firmware/Kconfig"
+
 endmenu

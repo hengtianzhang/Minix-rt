@@ -24,6 +24,7 @@
 
 #include <sel4m/memory.h>
 #include <sel4m/of_fdt.h>
+#include <sel4m/psci.h>
 
 #include <asm/base/processor.h>
 
@@ -119,4 +120,6 @@ void __init setup_arch(char **cmdline_p)
 	unflatten_device_tree();
 
 	bootmem_init();
+
+	psci_dt_init();
 }

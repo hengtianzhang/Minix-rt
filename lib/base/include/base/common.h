@@ -393,6 +393,17 @@ void hang(const char *fmt, ...) __noreturn __cold;
 extern asmlinkage __printf(1, 2) __cold
 int printf(const char *fmt, ...);
 
+#ifdef DEBUG
+#define pr_debug(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#define pr_debug(fmt, ...)	\
+({				\
+	if (0)			\
+		printf(fmt, ##__VA_ARGS__);	\
+	0;			\
+})
+#endif
+
 extern const char hex_asc[];
 #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
 #define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]

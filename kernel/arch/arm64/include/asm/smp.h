@@ -109,5 +109,11 @@ static inline int get_logical_index(u64 mpidr)
 	return -EINVAL;
 }
 
+/*
+ * Discover the set of possible CPUs and determine their
+ * SMP operations.
+ */
+extern void smp_init_cpus(void);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_SMP_H_ */

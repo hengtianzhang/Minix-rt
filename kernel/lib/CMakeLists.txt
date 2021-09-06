@@ -2,7 +2,7 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-    cpumask.c
+    cpumask.c extable.c
 )
 
 kernel_interface_library_sources_ifdef(

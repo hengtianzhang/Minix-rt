@@ -125,4 +125,12 @@ void __init setup_arch(char **cmdline_p)
 	psci_dt_init();
 
 	cpu_read_bootcpu_ops();
+	smp_init_cpus();
+
+	if (boot_args[1] || boot_args[2] || boot_args[3]) {
+		printf("WARNING: x1-x3 nonzero in violation of boot protocol:\n"
+			"\tx1: %016llx\n\tx2: %016llx\n\tx3: %016llx\n"
+			"This indicates a broken bootloader or old kernel\n",
+			boot_args[1], boot_args[2], boot_args[3]);
+	}
 }

@@ -8,6 +8,12 @@
 struct task_struct {
 	/* -1 unrunnable, 0 runnable, >0 stopped: */
 	volatile long			state;
+
+#ifdef CONFIG_STACKPROTECTOR
+	/* Canary value for the -fstack-protector GCC feature: */
+	u64			stack_canary;
+#endif
+
     pid_t				pid;
 
     struct mm_struct *mm;

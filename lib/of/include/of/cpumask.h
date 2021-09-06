@@ -1,9 +1,9 @@
 #ifndef __OF_CPUMASK_H_
 #define __OF_CPUMASK_H_
 
-#ifndef __HAS_CPUMASK__
-
 #include <base/bitmap.h>
+
+#ifndef __KERNEL__
 
 /* Don't assign or return these: may not be this big! */
 typedef struct cpumask { DECLARE_BITMAP(bits, CONFIG_NR_CPUS); } cpumask_t;
@@ -13,5 +13,5 @@ typedef struct cpumask { DECLARE_BITMAP(bits, CONFIG_NR_CPUS); } cpumask_t;
 		(cpu) < CONFIG_NR_CPUS;	\
 		(cpu)++)
 
-#endif /* !__HAS_CPUMASK__ */
+#endif /* !__KERNEL__ */
 #endif /* !__OF_CPUMASK_H_ */

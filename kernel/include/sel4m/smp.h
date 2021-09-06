@@ -24,5 +24,11 @@ static inline int get_boot_cpu_id(void)
 	return __boot_cpu_id;
 }
 
+/*
+ * Mark the boot cpu "online" so that it can call console drivers in
+ * printk() and can access its per-cpu storage.
+ */
+void smp_prepare_boot_cpu(void);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_SMP_H_ */

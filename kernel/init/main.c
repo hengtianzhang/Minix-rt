@@ -13,6 +13,9 @@
 #include <sel4m/cpu.h>
 #include <sel4m/irqflags.h>
 #include <sel4m/smp.h>
+#include <sel4m/stackprotector.h>
+#include <sel4m/of_fdt.h>
+#include <sel4m/extable.h>
 
 extern const char linux_banner[];
 
@@ -30,6 +33,14 @@ asmlinkage __visible void __init start_kernel(void)
 
     printf("%s", linux_banner);
     setup_arch();
+
+	boot_init_stack_canary();
+
+	smp_prepare_boot_cpu();
+
+    printf("Kernel command line: %s\n", boot_command_line);
+
+    sort_main_extable();
 
     hang ("This is Stop!\n");
 }

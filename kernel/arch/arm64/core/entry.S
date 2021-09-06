@@ -298,7 +298,7 @@ el1_irq:
 
 	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
 	cbnz	x24, 1f				// preempt count != 0
-	bl	el1_preempt
+//	bl	el1_preempt // TODO
 1:
 	kernel_exit 1
 ENDPROC(el1_irq)

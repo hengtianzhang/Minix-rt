@@ -2,11 +2,22 @@
 #include <base/compiler.h>
 #include <base/common.h>
 
+#include <sel4m/sched/clock.h>
 #include <sel4m/spinlock.h>
 
 unsigned long long __stack_chk_guard;
 
 static DEFINE_RAW_SPINLOCK(printk_lock);
+
+#define EXT_LINE_MAX	32
+
+static size_t print_time(u64 ts, char *buf)
+{
+	u64 rem_nsec = do_div(ts, 1000000000);
+
+	return sprintf(buf, "[%5llu.%06llu] ",
+		       (u64)ts, rem_nsec / 1000);
+}
 
 extern void puts_q(const char *str);
 asmlinkage int vprintf_emit(int facility, int level,
@@ -14,6 +25,7 @@ asmlinkage int vprintf_emit(int facility, int level,
 			    const char *fmt, va_list args)
 {
 	static char textbuf[1024];
+	char extbuf[EXT_LINE_MAX];
 	char *text = textbuf;
 	size_t text_len = 0;
 	u64 flags;
@@ -26,6 +38,8 @@ asmlinkage int vprintf_emit(int facility, int level,
 	 */
 	text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
 
+	print_time(local_clock(), extbuf);
+	puts_q(extbuf);
     puts_q(textbuf);
 
 	raw_spin_unlock_irqrestore(&printk_lock, flags);

@@ -100,7 +100,7 @@ int __init of_setup_console(const struct of_device_id *match,
 	u64 addr;
 	console_init_cb_t cb;
 
-	printf("console match %s\n", match->compatible);
+	printf("console match %s", match->compatible);
 
 	addr = of_flat_dt_translate_address(node);
 	if (addr == OF_BAD_ADDR) {

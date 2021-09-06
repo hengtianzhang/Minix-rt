@@ -35,6 +35,7 @@
 #include <asm/fixmap.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>
+#include <asm/cpu_ops.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -122,4 +123,6 @@ void __init setup_arch(char **cmdline_p)
 	bootmem_init();
 
 	psci_dt_init();
+
+	cpu_read_bootcpu_ops();
 }

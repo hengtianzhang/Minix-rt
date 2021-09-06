@@ -20,6 +20,7 @@
 #include <sel4m/kbuild.h>
 #include <sel4m/smp.h>
 #include <sel4m/mm_types.h>
+#include <sel4m/arm-smccc.h>
 
 int main(void)
 {
@@ -27,6 +28,11 @@ int main(void)
 	DEFINE(CPU_BOOT_TASK,		offsetof(struct secondary_data, task));
 	BLANK();
 	DEFINE(MM_CONTEXT_ID,		offsetof(struct mm_struct, context.id.counter));
+	BLANK();
+	DEFINE(ARM_SMCCC_RES_X0_OFFS,		offsetof(struct arm_smccc_res, a0));
+	DEFINE(ARM_SMCCC_RES_X2_OFFS,		offsetof(struct arm_smccc_res, a2));
+	DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
+	DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
 	BLANK();
 
 	return 0;

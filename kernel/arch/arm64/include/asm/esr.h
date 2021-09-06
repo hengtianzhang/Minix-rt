@@ -328,7 +328,7 @@
 					 ESR_ELx_CP15_32_ISS_DIR_READ)
 
 #ifndef __ASSEMBLY__
-#include <asm/types.h>
+#include <asm/base/types.h>
 
 static inline bool esr_is_data_abort(u32 esr)
 {

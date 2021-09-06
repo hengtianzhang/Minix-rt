@@ -613,6 +613,21 @@ void __init vmemmap_populate(phys_addr_t phys, unsigned long virt,
 							early_pgtable_alloc, 0);
 }
 
+int __init __create_iomap_remap(phys_addr_t phys_addr, u64 virt,
+					size_t size, pgprot_t prot, int flags)
+{
+	if (virt < VIOMAP_START || (virt + size) > (VIOMAP_START + VIOMAP_SIZE)) {
+		printf("BUG: not creating IO mapping for 0x%016llx at 0x%016llx - outside kernel range\n",
+			phys_addr, virt);
+		return -ENOMEM;
+	}
+	
+	__create_pgd_mapping(init_mm.pgd, phys_addr, virt, size, prot,
+			     early_pgtable_alloc, flags);
+
+	return 0;
+}
+
 int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
 {
 	pgprot_t sect_prot = __pgprot(PUD_TYPE_SECT |

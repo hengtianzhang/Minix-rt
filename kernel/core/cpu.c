@@ -6,6 +6,7 @@
 #include <base/cache.h>
 #include <base/init.h>
 
+#include <sel4m/cpu.h>
 #include <sel4m/smp.h>
 #include <sel4m/cpumask.h>
 
@@ -56,4 +57,29 @@ void __init boot_cpu_init(void)
 	set_cpu_possible(cpu, true);
 
 	__boot_cpu_id = cpu;
+}
+
+int __cpuhp_setup_state(enum cpuhp_state state,
+			const char *name, bool invoke,
+			int (*startup)(unsigned int cpu),
+			int (*teardown)(unsigned int cpu),
+			bool multi_instance)
+{
+#if 0
+	/* (Un)Install the callbacks for further cpu hotplug operations */
+	struct cpuhp_step *sp;
+
+	if (state >= CPUHP_ONLINE)
+		return -1;
+
+	if (!startup)
+		return -1;
+
+	sp = cpuhp_get_step(state);
+
+	sp->startup.single = startup;
+	sp->teardown.single = teardown;
+	sp->multi_instance = multi_instance;
+#endif
+	return 0;
 }

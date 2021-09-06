@@ -15,7 +15,10 @@
 
 #include <asm/base/byteorder.h>
 
+struct device_node;
+
 extern void __iomem *ioremap(phys_addr_t phys_addr, size_t size);
+extern void __iomem *of_iomap(struct device_node *device, int index);
 
 #ifdef DEBUG
 #define of_dbg(fmt, ...) printf(fmt, ##__VA_ARGS__)

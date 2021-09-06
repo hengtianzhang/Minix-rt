@@ -316,7 +316,14 @@ static u64 __of_translate_address(struct device_node *dev,
 			result = of_read_number(addr, na);
 			break;
 		}
+		hang("Current not support parent scan!\n");
 
+		/* Apply bus translation */
+		if (of_translate_one(dev, bus, pbus, addr, na, ns, pna, rprop))
+			break;
+		pns = 0;
+		iorange= NULL;
+#if 0	/* TODO */
 		/*
 		 * For indirectIO device which has no ranges property, get
 		 * the address from reg directly.
@@ -351,6 +358,7 @@ static u64 __of_translate_address(struct device_node *dev,
 		bus = pbus;
 
 		of_dump_addr("one level translation:", addr, na);
+#endif
 	}
  bail:
 
@@ -421,6 +429,7 @@ const __be32 *of_get_address(struct device_node *dev, int index, u64 *size,
 	return NULL;
 }
 
+#if 0
 static u64 of_translate_ioport(struct device_node *dev, const __be32 *in_addr,
 			u64 size)
 {
@@ -442,6 +451,7 @@ static u64 of_translate_ioport(struct device_node *dev, const __be32 *in_addr,
 
 	return port;
 }
+#endif
 
 static int __of_address_to_resource(struct device_node *dev,
 		const __be32 *addrp, u64 size, unsigned int flags,
@@ -451,9 +461,12 @@ static int __of_address_to_resource(struct device_node *dev,
 
 	if (flags & IORESOURCE_MEM)
 		taddr = of_translate_address(dev, addrp);
-	else if (flags & IORESOURCE_IO)
-		taddr = of_translate_ioport(dev, addrp, size);
-	else
+	else if (flags & IORESOURCE_IO) {
+		//taddr = of_translate_ioport(dev, addrp, size);
+		/* TODO */
+		WARN(1, "Current not support ioport!\n");
+		return -EINVAL;
+	} else
 		return -EINVAL;
 
 	if (taddr == OF_BAD_ADDR)

@@ -37,9 +37,12 @@
 #include <base/types.h>
 #include <base/linkage.h>
 #include <base/errno.h>
+#include <base/init.h>
 
+#include <sel4m/cpumask.h>
 #include <sel4m/sched.h>
 
+#include <asm/ptrace.h>
 #include <asm/stack_pointer.h>
 
 static inline void set_my_cpu_offset(u64 off)
@@ -85,6 +88,16 @@ struct secondary_data {
 
 extern struct secondary_data secondary_data;
 
+enum ipi_msg_type {
+	IPI_RESCHEDULE,
+	IPI_CALL_FUNC,
+	IPI_CPU_STOP,
+	IPI_CPU_CRASH_STOP,
+	IPI_TIMER,
+	IPI_IRQ_WORK,
+	IPI_WAKEUP
+};
+
 extern s64 __early_cpu_boot_status;
 extern void secondary_entry(void);
 
@@ -110,10 +123,26 @@ static inline int get_logical_index(u64 mpidr)
 }
 
 /*
+ * Called from C code, this handles an IPI.
+ */
+extern void handle_IPI(int ipinr, struct pt_regs *regs);
+
+/*
  * Discover the set of possible CPUs and determine their
  * SMP operations.
  */
 extern void smp_init_cpus(void);
+
+/*
+ * Provide a function to raise an IPI cross call on CPUs in callmap.
+ */
+extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
+
+extern void __init smp_init(void);
+
+extern void arch_send_call_function_single_ipi(int cpu);
+
+extern void crash_smp_send_stop(void);
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_SMP_H_ */

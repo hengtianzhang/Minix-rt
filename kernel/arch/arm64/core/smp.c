@@ -191,3 +191,34 @@ void __init smp_prepare_boot_cpu(void)
 
 	cpuinfo_store_boot_cpu();
 }
+
+void (*__smp_cross_call)(const struct cpumask *, unsigned int);
+
+void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
+{
+	__smp_cross_call = fn;
+}
+
+static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+{
+	__smp_cross_call(target, ipinr);
+}
+
+void smp_send_reschedule(int cpu)
+{
+	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+}
+
+void arch_send_call_function_single_ipi(int cpu)
+{
+	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC);
+}
+
+#define NR_IPI	7
+
+/*
+ * Main handler for inter-processor interrupts
+ */
+void handle_IPI(int ipinr, struct pt_regs *regs)
+{
+}

@@ -16,6 +16,7 @@
 #include <sel4m/stackprotector.h>
 #include <sel4m/of_fdt.h>
 #include <sel4m/extable.h>
+#include <sel4m/irq.h>
 
 extern const char linux_banner[];
 
@@ -41,6 +42,8 @@ asmlinkage __visible void __init start_kernel(void)
 	printf("Kernel command line: %s\n", boot_command_line);
 
 	sort_main_extable();
+
+	init_IRQ();
 
 	hang ("This is Stop!\n");
 }

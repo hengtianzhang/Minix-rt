@@ -17,6 +17,9 @@
 #include <sel4m/of_fdt.h>
 #include <sel4m/extable.h>
 #include <sel4m/irq.h>
+#include <sel4m/ktime.h>
+#include <sel4m/hrtimer.h>
+#include <sel4m//sched/clock.h>
 
 extern const char linux_banner[];
 
@@ -44,6 +47,14 @@ asmlinkage __visible void __init start_kernel(void)
 	sort_main_extable();
 
 	init_IRQ();
+	time_init();
+	hrtimers_init();
+
+	WARN(!irqs_disabled(), "Interrupts were enabled early\n");
+	local_irq_enable();
+
+	sched_clock_init();
+	system_tick_init();
 
 	hang ("This is Stop!\n");
 }

@@ -2650,7 +2650,7 @@ def _direct_dep_info(sc):
     return "" if sc.direct_dep is _kconf.y else \
         'Direct dependencies (={}):\n{}\n' \
         .format(TRI_TO_STR[expr_value(sc.direct_dep)],
-                _split_expr_info(sc.direct_dep, 2))
+                _split_exprintf(sc.direct_dep, 2))
 
 
 def _defaults_info(sc):
@@ -2685,12 +2685,12 @@ def _defaults_info(sc):
         if cond is not _kconf.y:
             s += "    Condition (={}):\n{}" \
                  .format(TRI_TO_STR[expr_value(cond)],
-                         _split_expr_info(cond, 4))
+                         _split_exprintf(cond, 4))
 
     return s + "\n"
 
 
-def _split_expr_info(expr, indent):
+def _split_exprintf(expr, indent):
     # Returns a string with 'expr' split into its top-level && or || operands,
     # with one operand per line, together with the operand's value. This is
     # usually enough to get something readable for long expressions. A fancier

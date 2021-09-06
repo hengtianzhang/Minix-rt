@@ -9,4 +9,6 @@ source "kernel/drivers/serial/Kconfig"
 
 source "kernel/drivers/firmware/Kconfig"
 
+source "kernel/drivers/clocksource/Kconfig"
+
 endmenu

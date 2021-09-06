@@ -4,7 +4,7 @@ target_sources(
 	PRIVATE
 	string.c ctype.c hexdump.c find_bit.c bitmap.c
 	div64.c vsprintf.c kstrtox.c crc32.c bsearch.c
-	sort.c list_sort.c random.c
+	sort.c list_sort.c random.c time.c timeconv.c rbtree.c
 )
 
 target_sources_ifdef(CONFIG_GENERIC_HWEIGHT

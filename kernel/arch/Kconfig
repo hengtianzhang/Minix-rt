@@ -31,7 +31,7 @@ config STACKPROTECTOR
 	  the value just before actually returning.  Stack based buffer
 	  overflows (that need to overwrite this return address) now also
 	  overwrite the canary, which gets detected and the attack is then
-	  neutralized via a kernel panic.
+	  neutralized via a kernel hang.
 
 	  Functions will have the stack-protector canary logic added if they
 	  have an 8-byte or larger character array on the stack.

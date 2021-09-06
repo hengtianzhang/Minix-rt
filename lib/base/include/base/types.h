@@ -57,6 +57,12 @@ typedef s64		ptrdiff_t;
 
 typedef unsigned long		uintptr_t;
 typedef int         pid_t;
+typedef s64 	suseconds_t;
+typedef s64		timer_t;
+typedef s32		clockid_t;
+
+typedef s64		time_t;
+typedef s64		clock_t;
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_TYPES_H_ */

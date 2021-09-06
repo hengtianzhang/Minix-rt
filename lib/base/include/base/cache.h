@@ -19,6 +19,10 @@
 		 __section__(".data..cacheline_aligned")))
 #endif /* !__cacheline_aligned */
 
+#ifndef __cacheline_aligned_in_smp
+#define __cacheline_aligned_in_smp __cacheline_aligned
+#endif
+
 /*
  * __read_mostly is used to keep rarely changing variables out of frequently
  * updated cachelines. If an architecture doesn't support it, ignore the

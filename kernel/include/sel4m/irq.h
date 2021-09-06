@@ -360,7 +360,7 @@ struct irq_data {
 	struct irq_data		*parent_data;
 	struct irq_handler_struct handler;
 	void			*chip_data;
-	void 	__percpu *percpu_dev_id;
+	void 			*percpu_dev_id[CONFIG_NR_CPUS];
 	int					used;
 };
 

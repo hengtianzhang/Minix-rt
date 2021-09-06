@@ -64,6 +64,8 @@ endif()
 services_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,app_warning_base>>)
 services_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,app_warning_base>>)
 
+services_compile_options($<$<COMPILE_LANGUAGE:C>:-fno-strict-aliasing>)
+
 get_property(OPTIMIZE_FOR_NO_OPTIMIZATIONS_FLAG TARGET compiler PROPERTY no_optimization)
 get_property(OPTIMIZE_FOR_DEBUG_FLAG TARGET compiler PROPERTY optimization_debug)
 get_property(OPTIMIZE_FOR_SPEED_FLAG TARGET compiler PROPERTY optimization_speed)

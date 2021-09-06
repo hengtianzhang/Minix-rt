@@ -24,23 +24,23 @@ void __weak __init setup_arch(void) {}
 
 asmlinkage __visible void __init start_kernel(void)
 {
-    smp_setup_processor_id();
+	smp_setup_processor_id();
 
-    local_irq_disable();
+	local_irq_disable();
 
-    boot_cpu_init();
-    early_arch_platform_init();
+	boot_cpu_init();
+	early_arch_platform_init();
 
-    printf("%s", linux_banner);
-    setup_arch();
+	printf("%s", linux_banner);
+	setup_arch();
 
 	boot_init_stack_canary();
 
 	smp_prepare_boot_cpu();
 
-    printf("Kernel command line: %s\n", boot_command_line);
+	printf("Kernel command line: %s\n", boot_command_line);
 
-    sort_main_extable();
+	sort_main_extable();
 
-    hang ("This is Stop!\n");
+	hang ("This is Stop!\n");
 }

@@ -5,3 +5,4 @@ kernel_sources(
 )
 
 add_subdirectory(locking)
+add_subdirectory(irq)

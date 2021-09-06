@@ -2,6 +2,7 @@
 
 #include <sel4m/reboot.h>
 #include <sel4m/irqflags.h>
+#include <sel4m/sched.h>
 
 /*
  * Function pointers to optional machine specific functions
@@ -47,3 +48,5 @@ void machine_power_off(void)
 	if (pm_power_off)
 		pm_power_off();
 }
+
+struct task_struct *__entry_task[CONFIG_NR_CPUS];

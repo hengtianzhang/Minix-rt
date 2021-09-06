@@ -59,6 +59,15 @@
 #define CurrentEL_EL1		(1 << 2)
 #define CurrentEL_EL2		(2 << 2)
 
+/*
+ * If pt_regs.syscallno == NO_SYSCALL, then the thread is not executing
+ * a syscall -- i.e., its most recent entry into the kernel from
+ * userspace was not via SVC, or otherwise a tracer cancelled the syscall.
+ *
+ * This must have the value -1, for ABI compatibility with ptrace etc.
+ */
+#define NO_SYSCALL (-1)
+
 #ifndef __ASSEMBLY__
 
 #include <asm/base/types.h>

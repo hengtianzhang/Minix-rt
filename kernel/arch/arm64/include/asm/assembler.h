@@ -28,6 +28,8 @@
 #include <asm/base/assembler.h>
 
 #include <asm/kernel-pgtable.h>
+#include <asm/deubg-monitors.h>
+#include <asm/thread_info.h>
 
 #include <generated/asm-offsets.h>
 
@@ -83,6 +85,24 @@
 	msr	daifclr, #8
 	.endm
 
+	.macro	disable_step_tsk, flgs, tmp
+	tbz	\flgs, #TIF_SINGLESTEP, 9990f
+	mrs	\tmp, mdscr_el1
+	bic	\tmp, \tmp, #DBG_MDSCR_SS
+	msr	mdscr_el1, \tmp
+	isb	// Synchronise with enable_dbg
+9990:
+	.endm
+
+	/* call with daif masked */
+	.macro	enable_step_tsk, flgs, tmp
+	tbz	\flgs, #TIF_SINGLESTEP, 9990f
+	mrs	\tmp, mdscr_el1
+	orr	\tmp, \tmp, #DBG_MDSCR_SS
+	msr	mdscr_el1, \tmp
+9990:
+	.endm
+
 /*
  * SMP data memory barrier
  */
@@ -102,6 +122,14 @@
  */
 	.macro	csdb
 	hint	#20
+	.endm
+
+/*
+ * Speculation barrier
+ */
+	.macro	sb
+	dsb	nsh
+	isb
 	.endm
 
 	/*
@@ -196,6 +224,13 @@
 	ubfm		\tmp, \tmp, #16, #19	// cache line size encoding
 	mov		\reg, #4		// bytes per word
 	lsl		\reg, \reg, \tmp	// actual cache line size
+	.endm
+
+/*
+ * Return the current thread_info.
+ */
+	.macro	get_thread_info, rd
+	mrs	\rd, sp_el0
 	.endm
 
 /*

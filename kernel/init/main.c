@@ -19,7 +19,7 @@
 #include <sel4m/irq.h>
 #include <sel4m/ktime.h>
 #include <sel4m/hrtimer.h>
-#include <sel4m//sched/clock.h>
+#include <sel4m/sched/clock.h>
 
 extern const char linux_banner[];
 

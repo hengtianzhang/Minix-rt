@@ -21,7 +21,7 @@ static inline int rt_task(struct task_struct *p)
  * default timeslice is 100 msecs (used only for SCHED_RR tasks).
  * Timeslices get refilled after they expire.
  */
-#define DEF_TIMESLICE		(100 * HZ / 1000)
+#define RR_TIMESLICE		(100 * HZ / 1000)
 
 static inline int rt_policy(int policy)
 {

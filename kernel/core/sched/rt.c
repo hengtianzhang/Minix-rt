@@ -217,7 +217,7 @@ static void task_tick_rt(struct rq *rq, struct task_struct *p)
 	if (--p->time_slice)
 		return;
 
-	p->time_slice = DEF_TIMESLICE;
+	p->time_slice = RR_TIMESLICE;
 
 	/*
 	 * Requeue to the end of queue if we are not the only element

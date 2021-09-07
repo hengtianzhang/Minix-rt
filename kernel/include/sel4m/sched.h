@@ -46,7 +46,8 @@ struct task_struct {
 	cpumask_t cpus_allowed;
 	unsigned int time_slice;
 
-	int cpu;
+	int				oncpu;
+	int 			cpu;
 
     struct mm_struct *mm;
 

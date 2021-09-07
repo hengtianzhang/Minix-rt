@@ -351,4 +351,20 @@ extern struct rq runqueues[CONFIG_NR_CPUS];
 #define task_rq(p) 		(cpu_rq(task_cpu(p)))
 #define cpu_curr(cpu) 	(cpu_rq(cpu)->curr)
 
+#define sched_dereference(p)	({	\
+				typedef(p) _________p1 = (*(volatile typeof(p) *)&(p));	\
+				smp_read_barrier_depends(); \
+				(_________p1); \
+})
+
+/*
+ * The domain tree (rq->sd) is protected by RCU's quiescent state transition.
+ * See detach_destroy_domains: synchronize_sched for details.
+ *
+ * The domain tree of any CPU may only be accessed from within
+ * preempt-disabled sections.
+ */
+#define for_each_domain(cpu, __sd) \
+	for (__sd = sched_dereference(cpu_rq(cpu)->sd); __sd; __sd = __sd->parent)
+
 #endif /* !__SEL4M_SCHED_SCHED_H_ */

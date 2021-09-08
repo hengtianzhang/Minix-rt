@@ -44,7 +44,7 @@ noinline void rest_init(void)
 
 	system_state = SYSTEM_RUNNING;
 
-	while (1); 
+	while (1);
 }
 
 asmlinkage __visible void __init start_kernel(void)

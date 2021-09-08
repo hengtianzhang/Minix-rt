@@ -5,7 +5,8 @@ kernel_sources(
     smp.c
 )
 
-add_subdirectory(locking)
 add_subdirectory(irq)
-add_subdirectory(time)
+add_subdirectory(locking)
+add_subdirectory(object)
 add_subdirectory(sched)
+add_subdirectory(time)

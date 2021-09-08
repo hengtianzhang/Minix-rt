@@ -21,6 +21,8 @@
 #include <sel4m/hrtimer.h>
 #include <sel4m/sched.h>
 
+enum system_states system_state __read_mostly;
+
 extern const char linux_banner[];
 
 void __weak __init early_arch_platform_init(void) {}
@@ -28,6 +30,8 @@ void __weak __init setup_arch(void) {}
 
 asmlinkage __visible void __init start_kernel(void)
 {
+	system_state = SYSTEM_BOOTING;
+
 	smp_setup_processor_id();
 
 	local_irq_disable();
@@ -45,6 +49,22 @@ asmlinkage __visible void __init start_kernel(void)
 	printf("Kernel command line: %s\n", boot_command_line);
 
 	sort_main_extable();
+
+	/*
+	 * Set up the scheduler prior starting any interrupts (such as the
+	 * timer interrupt). Full topology setup happens at smp_init()
+	 * time - but meanwhile we still have a functioning scheduler.
+	 */
+	sched_init();
+
+	/*
+	 * Disable preemption - early bootup scheduling is extremely
+	 * fragile until we cpu_idle() for the first time.
+	 */
+	preempt_disable();
+	if (WARN(!irqs_disabled(),
+		 "Interrupts were enabled *very* early, fixing it\n"))
+		local_irq_disable();
 
 	init_IRQ();
 	time_init();

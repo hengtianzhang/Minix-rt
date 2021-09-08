@@ -59,6 +59,13 @@ struct thread_info {
 	};
 };
 
+#define thread_saved_pc(tsk)	\
+	((u64)(tsk->thread.cpu_context.pc))
+#define thread_saved_sp(tsk)	\
+	((u64)(tsk->thread.cpu_context.sp))
+#define thread_saved_fp(tsk)	\
+	((u64)(tsk->thread.cpu_context.fp))
+
 #define current_thread_info() 	((struct thread_info *)current)
 #define task_thread_info(p)		(&(p->thread_info))
 

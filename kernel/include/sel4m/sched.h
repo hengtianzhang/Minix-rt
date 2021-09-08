@@ -16,6 +16,18 @@
 /* Linker adds these: start and end of __sched functions */
 extern char __sched_text_start[], __sched_text_end[];
 
+#define	MAX_SCHEDULE_TIMEOUT	LONG_MAX
+extern s64 schedule_timeout(s64 timeout);
+extern s64 schedule_timeout_interruptible(s64 timeout);
+extern s64 schedule_timeout_uninterruptible(s64 timeout);
+asmlinkage void schedule(void);
+
+extern int wake_up_state(struct task_struct * tsk, unsigned int state);
+extern int wake_up_process(struct task_struct * tsk);
+extern void wake_up_new_task(struct task_struct * tsk,
+						unsigned long clone_flags);
+extern void kick_process(struct task_struct *tsk);
+
 /*
  * Scheduling policies
  */
@@ -25,6 +37,12 @@ extern char __sched_text_start[], __sched_text_end[];
 #define SCHED_BATCH		3
 /* SCHED_ISO: reserved but not implemented yet */
 #define SCHED_IDLE		5
+
+struct sched_param {
+	int sched_priority;
+};
+
+extern rwlock_t tasklist_lock;
 
 /*
  * Task state bitmask. NOTE! These bits are also
@@ -115,6 +133,15 @@ struct task_struct {
 	int exit_code, exit_signal;
 	int pdeath_signal;  /*  The signal sent when the parent dies  */
 
+	/* Protection of the PI data structures: */
+	spinlock_t pi_lock;
+
+	/* Real parent process: */
+	struct task_struct		*real_parent;
+
+	/* Recipient of SIGCHLD, wait4() reports: */
+	struct task_struct		*parent;
+
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;
 };
@@ -184,12 +211,38 @@ static inline int idle_cpu(int cpu)
 	return cpu_curr(cpu) == cpu_rq(cpu)->idle;
 }
 
+static inline struct task_struct *idle_task(int cpu)
+{
+	return cpu_rq(cpu)->idle;
+}
+
 #define get_task_struct(tsk) do { atomic_inc(&(tsk)->usage); } while(0)
 
 static inline void put_task_struct(struct task_struct *t)
 {
 	/* TODO */
 }
+
+static inline cpumask_t cpuset_cpus_allowed(struct task_struct *p)
+{
+	return __cpu_possible_mask;
+}
+extern int set_cpus_allowed(struct task_struct *p, cpumask_t new_mask);
+
+/*
+ * Values used for system_state. Ordering of the states must not be changed
+ * as code checks for <, <=, >, >= STATE.
+ */
+extern enum system_states {
+	SYSTEM_BOOTING,
+	SYSTEM_SCHEDULING,
+	SYSTEM_RUNNING,
+	SYSTEM_HALT,
+	SYSTEM_POWER_OFF,
+	SYSTEM_RESTART,
+	SYSTEM_SUSPEND,
+} system_state;
+extern enum system_states system_state;
 
 extern void resched_task(struct task_struct *p);
 extern unsigned long
@@ -206,5 +259,10 @@ extern void update_rq_clock(struct rq *rq);
 extern void __update_rq_clock(struct rq *rq);
 
 extern void scheduler_tick(void);
+
+extern void sched_init(void);
+extern void sched_init_smp(void);
+extern void init_idle(struct task_struct *idle, int cpu);
+extern void init_idle_task(struct task_struct *idle);
 
 #endif /* !__SEL4M_SCHED_H_ */

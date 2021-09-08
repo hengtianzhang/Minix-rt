@@ -86,3 +86,14 @@ again:
 
 	return next;
 }
+
+int cpumask_any_online(const cpumask_t *mask)
+{
+	int cpu;
+
+	for_each_cpu(cpu, mask) {
+		if (cpu_online(cpu))
+			break;
+	}
+	return cpu;
+}

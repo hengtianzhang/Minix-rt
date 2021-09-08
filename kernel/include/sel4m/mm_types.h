@@ -18,6 +18,15 @@ struct mm_struct {
 	pgd_t * pgd;
 	/* Architecture-specific MM context */
 	mm_context_t context;
+
+	/**
+	 * @mm_count: The number of references to &struct mm_struct
+	 * (@mm_users count as 1).
+	 *
+	 * Use mmgrab()/mmdrop() to modify. When this drops to 0, the
+	 * &struct mm_struct is freed.
+	 */
+	atomic_t mm_count;
 };
 
 extern struct mm_struct init_mm;

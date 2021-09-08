@@ -971,7 +971,7 @@ void __init hrtimers_init(void)
 {
 	hrtimers_prepare_cpu(smp_processor_id());
 }
-#if 0
+
 /*
  * Sleep related functions:
  */
@@ -1146,25 +1146,9 @@ s64 __sched schedule_timeout_interruptible(s64 timeout)
 	return schedule_timeout(timeout);
 }
 
-s64 __sched schedule_timeout_killable(s64 timeout)
-{
-	__set_current_state(TASK_KILLABLE);
-	return schedule_timeout(timeout);
-}
-
 s64 __sched schedule_timeout_uninterruptible(s64 timeout)
 {
 	__set_current_state(TASK_UNINTERRUPTIBLE);
-	return schedule_timeout(timeout);
-}
-
-/*
- * Like schedule_timeout_uninterruptible(), except this task will not contribute
- * to load average.
- */
-s64 __sched schedule_timeout_idle(s64 timeout)
-{
-	__set_current_state(TASK_IDLE);
 	return schedule_timeout(timeout);
 }
 
@@ -1216,4 +1200,3 @@ void __sched usleep_range(u64 min, u64 max)
 			break;
 	}
 }
-#endif

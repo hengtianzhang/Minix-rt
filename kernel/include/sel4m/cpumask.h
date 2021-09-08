@@ -122,6 +122,8 @@ int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
 
 extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool wrap);
 
+extern int cpumask_any_online(const cpumask_t *mask);
+
 /**
  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
  * @cpu: the (optionally unsigned) integer iterator

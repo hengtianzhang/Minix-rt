@@ -20,4 +20,13 @@ struct mutex {
 #define DEFINE_MUTEX(mutexname) \
     struct mutex mutexname = { .count = ATOMIC_INIT(1), }
 
+static inline void mutex_lock(struct mutex *m)
+{
+
+}
+
+static inline void mutex_unlock(struct mutex *m)
+{
+
+}
 #endif /* !__SEL4M_MUTEX_H_ */

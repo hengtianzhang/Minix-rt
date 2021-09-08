@@ -60,10 +60,10 @@ enum
 };
 
 struct softirq_action {
-	void	(*action)(void);
+	void	(*action)(struct softirq_action *);
 };
 
-extern void open_softirq(int nr, void (*action)(void));
+extern void open_softirq(int nr, void (*action)(struct softirq_action *), struct softirq_action *);
 extern void __do_softirq(void);
 extern void raise_softirq(unsigned int nr);
 #endif /* !__SEL4M_INTERRUPT_H_ */

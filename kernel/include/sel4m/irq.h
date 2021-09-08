@@ -360,7 +360,8 @@ struct irq_data {
 	struct irq_data		*parent_data;
 	struct irq_handler_struct handler;
 	void			*chip_data;
-	void 			*percpu_dev_id[CONFIG_NR_CPUS];
+	void 	__percpu 	*percpu_dev_id;
+	int 				percpu_size;
 	int					used;
 };
 
@@ -387,7 +388,7 @@ int irq_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
 			    bool force);
 
 int request_percpu_irq(unsigned int irq, irq_handler_t handler,
-		   const char *devname, void __percpu *percpu_dev_id);
+		   const char *devname, void __percpu *percpu_dev_id, int percpu_size);
 void enable_percpu_irq(unsigned int irq);
 void irq_percpu_disable(struct irq_data *irqd, unsigned int cpu);
 

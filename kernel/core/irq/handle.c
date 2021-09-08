@@ -74,7 +74,7 @@ int handle_domain_irq(struct irq_domain *domain,
 			irqd->chip->irq_ack(irqd);
 		
 		if (irqd->handler.handler) 
-			ret = irqd->handler.handler(hwirq, irqd->percpu_dev_id[smp_processor_id()]);
+			ret = irqd->handler.handler(hwirq, irqd->percpu_dev_id + (irqd->percpu_size * smp_processor_id()));
 		else {
 			irq_none_counter++;
 			goto none;
@@ -209,7 +209,7 @@ unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data)
 }
 
 int request_percpu_irq(unsigned int irq, irq_handler_t handler,
-		   const char *devname, void __percpu *percpu_dev_id)
+		   const char *devname, void __percpu *percpu_dev_id, int percpu_size)
 {
 	struct irq_domain *domain = &domain_0;
 	struct irq_data *irq_data;
@@ -226,7 +226,8 @@ int request_percpu_irq(unsigned int irq, irq_handler_t handler,
 	irq_set_type(irq_data, irq_data->handler.irqflags);
 	irq_set_affinity(irq_data, &irq_data->cpumask, 1);
 	unmask_irq(irq_data);
-	irq_data->percpu_dev_id[smp_processor_id()] = percpu_dev_id;
+	irq_data->percpu_dev_id = percpu_dev_id;
+	irq_data->percpu_size = percpu_size;
 	irq_data->handler.handler = handler;
 
 	return 0;

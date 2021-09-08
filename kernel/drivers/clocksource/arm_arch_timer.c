@@ -390,23 +390,23 @@ static int __init arch_timer_register(void)
 	switch (arch_timer_uses_ppi) {
 	case ARCH_TIMER_VIRT_PPI:
 		err = request_percpu_irq(ppi, arch_timer_handler_virt,
-					 "arch_timer", &arch_timer_evt[smp_processor_id()]);
+					 "arch_timer", &arch_timer_evt, sizeof(arch_timer_evt[0]));
 		break;
 	case ARCH_TIMER_PHYS_SECURE_PPI:
 	case ARCH_TIMER_PHYS_NONSECURE_PPI:
 		err = request_percpu_irq(ppi, arch_timer_handler_phys,
-					 "arch_timer", &arch_timer_evt[smp_processor_id()]);
+					 "arch_timer", &arch_timer_evt, sizeof(arch_timer_evt[0]));
 		if (!err && arch_timer_has_nonsecure_ppi()) {
 			ppi = arch_timer_ppi[ARCH_TIMER_PHYS_NONSECURE_PPI];
 			err = request_percpu_irq(ppi, arch_timer_handler_phys,
-						 "arch_timer", &arch_timer_evt[smp_processor_id()]);
+						 "arch_timer", &arch_timer_evt, sizeof(arch_timer_evt[0]));
 			if (err)
 				hang("Current not support free_percpu!\n");
 		}
 		break;
 	case ARCH_TIMER_HYP_PPI:
 		err = request_percpu_irq(ppi, arch_timer_handler_phys,
-					 "arch_timer", &arch_timer_evt[smp_processor_id()]);
+					 "arch_timer", &arch_timer_evt, sizeof(arch_timer_evt[0]));
 		break;
 	default:
 		BUG();

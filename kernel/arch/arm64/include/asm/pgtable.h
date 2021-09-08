@@ -183,6 +183,15 @@ static inline pgprot_t mk_sect_prot(pgprot_t prot)
 #define pgd_bad(pgd)		(!(pgd_val(pgd) & 2))
 
 /*
+ *	Page present
+ */
+/**************************************************************************/
+#define pte_present(pte)	(!!(pte_val(pte) & (PTE_VALID | PTE_PROT_NONE)))
+#define pmd_present(pmd)	pte_present(pmd_pte(pmd))
+#define pud_present(pud)	pte_present(pud_pte(pud))
+#define pgd_present(pgd)	(pgd_val(pgd))
+
+/*
  *	Sect or table ?
  */
 /**************************************************************************/
@@ -252,10 +261,12 @@ static inline phys_addr_t pgd_page_paddr(pgd_t pgd)
 #define pte_offset_kernel(dir,addr)	((pte_t *)__va(pte_offset_phys((dir), (addr))))
 
 #define pmd_offset_phys(dir, addr)	(pud_page_paddr(READ_ONCE(*(dir))) + pmd_index(addr) * sizeof(pmd_t))
+#define pmd_offset(dir, addr)		((pmd_t *)__va(pmd_offset_phys((dir), (addr))))
 /* use ONLY for statically allocated translation tables */
 #define pmd_offset_kimg(dir,addr)	((pmd_t *)__phys_to_kimg(pmd_offset_phys((dir), (addr))))
 
 #define pud_offset_phys(dir, addr)	(pgd_page_paddr(READ_ONCE(*(dir))) + pud_index(addr) * sizeof(pud_t))
+#define pud_offset(dir, addr)		((pud_t *)__va(pud_offset_phys((dir), (addr))))
 /* use ONLY for statically allocated translation tables */
 #define pud_offset_kimg(dir,addr)	((pud_t *)__phys_to_kimg(pud_offset_phys((dir), (addr))))
 
@@ -312,6 +323,67 @@ static inline phys_addr_t pgd_page_paddr(pgd_t pgd)
 ({	unsigned long __boundary = ((addr) + CONT_PMD_SIZE) & CONT_PMD_MASK;	\
 	(__boundary - 1 < (end) - 1) ? __boundary : (end);			\
 })
+
+/*
+ * unmap kernel addr init-sections
+ */
+/**************************************************************************/
+static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+				       u64 address, pte_t *ptep)
+{
+	return __pte(xchg_relaxed(&pte_val(*ptep), 0));
+}
+
+static inline void pmd_clear_bad(pmd_t *pmd)
+{
+	WARN(1, "Pmd bad!\n");
+	pmd_clear(NULL, NULL, pmd);
+}
+
+static inline int pmd_none_or_clear_bad(pmd_t *pmd)
+{
+	if (pmd_none(*pmd))
+		return 1;
+	if (unlikely(pmd_bad(*pmd))) {
+		pmd_clear_bad(pmd);
+		return 1;
+	}
+	return 0;
+}
+
+static inline void pud_clear_bad(pud_t *pud)
+{
+	WARN(1, "Pud bad!\n");
+	pud_clear(NULL, NULL, pud);
+}
+
+static inline int pud_none_or_clear_bad(pud_t *pud)
+{
+	if (pud_none(*pud))
+		return 1;
+	if (unlikely(pud_bad(*pud))) {
+		pud_clear_bad(pud);
+		return 1;
+	}
+	return 0;
+}
+
+static inline void pgd_clear_bad(pgd_t *pgd)
+{
+	WARN(1, "Pgd bad!\n");
+	pgd_clear(NULL, NULL, pgd);
+}
+
+static inline int pgd_none_or_clear_bad(pgd_t *pgd)
+{
+	if (pgd_none(*pgd))
+		return 1;
+	if (unlikely(pgd_bad(*pgd))) {
+		pgd_clear_bad(pgd);
+		return 1;
+	}
+	return 0;
+}
 
 /*
  *	Define vmemmap 

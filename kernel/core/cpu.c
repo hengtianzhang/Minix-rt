@@ -6,6 +6,7 @@
 #include <base/cache.h>
 #include <base/init.h>
 
+#include <sel4m/hrtimer.h>
 #include <sel4m/cpu.h>
 #include <sel4m/smp.h>
 #include <sel4m/cpumask.h>
@@ -59,13 +60,60 @@ void __init boot_cpu_init(void)
 	__boot_cpu_id = cpu;
 }
 
+struct cpuhp_step {
+	const char		*name;
+	union {
+		int		(*single)(unsigned int cpu);
+		int		(*multi)(unsigned int cpu,
+					 struct hlist_node *node);
+	} startup;
+	union {
+		int		(*single)(unsigned int cpu);
+		int		(*multi)(unsigned int cpu,
+					 struct hlist_node *node);
+	} teardown;
+	struct hlist_head	list;
+	bool			cant_stop;
+	bool			multi_instance;
+};
+
+static struct cpuhp_step cpuhp_hp_states[] = {
+	[CPUHP_OFFLINE] = {
+		.name			= "offline",
+		.startup.single		= NULL,
+		.teardown.single	= NULL,
+	},
+	[CPUHP_AP_IRQ_GIC_STARTING] = {
+		.name 			= "gic-irq",
+		.startup.single 	= NULL,
+	},
+	[CPUHP_AP_ARM_ARCH_TIMER_STARTING] = {
+		.name 			= "arm-timer",
+		.startup.single 	= NULL,
+	},
+	[CPUHP_HRTIMERS_PREPARE] = {
+		.name 			= "hrtimer-pre",
+		.startup.single 	= hrtimers_prepare_cpu,
+	},
+	/* CPU is fully up and running. */
+	[CPUHP_ONLINE] = {
+		.name			= "online",
+		.startup.single		= NULL,
+		.teardown.single	= NULL,
+	},
+};
+
+static struct cpuhp_step *cpuhp_get_step(enum cpuhp_state state)
+{
+	return cpuhp_hp_states + state;
+}
+
 int __cpuhp_setup_state(enum cpuhp_state state,
 			const char *name, bool invoke,
 			int (*startup)(unsigned int cpu),
 			int (*teardown)(unsigned int cpu),
 			bool multi_instance)
 {
-#if 0
 	/* (Un)Install the callbacks for further cpu hotplug operations */
 	struct cpuhp_step *sp;
 
@@ -80,6 +128,26 @@ int __cpuhp_setup_state(enum cpuhp_state state,
 	sp->startup.single = startup;
 	sp->teardown.single = teardown;
 	sp->multi_instance = multi_instance;
-#endif
+
 	return 0;
+}
+
+/**
+ * notify_cpu_starting(cpu) - Invoke the callbacks on the starting CPU
+ * @cpu: cpu that just started
+ *
+ * It must be called by the arch code on the new cpu, before the new cpu
+ * enables interrupts and before the "boot" cpu returns from __cpu_up().
+ */
+void notify_cpu_starting(unsigned int cpu)
+{
+	enum cpuhp_state state;
+
+	for (state = CPUHP_OFFLINE; state < CPUHP_ONLINE; state++) {
+		struct cpuhp_step *cs = cpuhp_get_step(state);
+		if (cs->startup.single) {
+			if (cs->startup.single(cpu))
+				printf("Cpu%d starting %s Failed!\n", cpu, cs->name);
+		}
+	}
 }

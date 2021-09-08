@@ -156,6 +156,16 @@ static inline unsigned int task_cpu(const struct task_struct *tsk)
 	return tsk->cpu;
 }
 
+/*
+ * When accessing the stack of a non-current task that might exit, use
+ * try_get_task_stack() instead.  task_stack_page will return a pointer
+ * that could get freed out from under you.
+ */
+static inline void *task_stack_page(const struct task_struct *tsk)
+{
+	return tsk->stack;
+}
+
 /* set thread flags in other task's structures
  * - see asm/thread_info.h for TIF_xxxx flags available
  */

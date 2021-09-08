@@ -19,6 +19,20 @@
 #include <asm/assembler.h>
 
 /*
+ *	__flush_dcache_area(kaddr, size)
+ *
+ *	Ensure that any D-cache lines for the interval [kaddr, kaddr+size)
+ *	are cleaned and invalidated to the PoC.
+ *
+ *	- kaddr   - kernel address
+ *	- size    - size in question
+ */
+ENTRY(__flush_dcache_area)
+	dcache_by_line_op civac, sy, x0, x1, x2, x3
+	ret
+ENDPIPROC(__flush_dcache_area)
+
+/*
  *	__inval_dcache_area(kaddr, size)
  *
  * 	Ensure that any D-cache lines for the interval [kaddr, kaddr+size)

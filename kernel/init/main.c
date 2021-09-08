@@ -28,6 +28,25 @@ extern const char linux_banner[];
 void __weak __init early_arch_platform_init(void) {}
 void __weak __init setup_arch(void) {}
 
+noinline void rest_init(void)
+{
+	system_state = SYSTEM_SCHEDULING;
+
+	smp_prepare_cpus(CONFIG_NR_CPUS);
+
+	smp_init();
+
+	sched_init_smp();
+
+	free_initmem();
+
+	mark_rodata_ro();
+
+	system_state = SYSTEM_RUNNING;
+
+	while (1); 
+}
+
 asmlinkage __visible void __init start_kernel(void)
 {
 	system_state = SYSTEM_BOOTING;
@@ -76,5 +95,6 @@ asmlinkage __visible void __init start_kernel(void)
 	sched_clock_init();
 	system_tick_init();
 
-	hang ("This is Stop!\n");
+	/* Do the rest non-__init'ed, we're now alive */
+	rest_init();
 }

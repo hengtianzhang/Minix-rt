@@ -19,6 +19,7 @@
 #ifndef __ASM_CACHEFLUSH_H_
 #define __ASM_CACHEFLUSH_H_
 
+extern void __flush_dcache_area(void *addr, size_t len);
 extern void __inval_dcache_area(void *addr, size_t len);
 
 #endif /* !__ASM_CACHEFLUSH_H_ */

@@ -628,6 +628,45 @@ int __init __create_iomap_remap(phys_addr_t phys_addr, u64 virt,
 	return 0;
 }
 
+static void update_mapping_prot(phys_addr_t phys, u64 virt,
+				phys_addr_t size, pgprot_t prot)
+{
+	if (virt < VA_START) {
+		printf("BUG: not updating mapping for 0x%016llx at 0x%016llx - outside kernel range\n",
+			phys, virt);
+		return;
+	}
+
+	__create_pgd_mapping(kernel_pgd, phys, virt, size, prot, NULL,
+			     NO_CONT_MAPPINGS);
+
+	/* flush the TLBs after updating live kernel mappings */
+	flush_tlb_kernel_range(virt, virt + size);
+}
+
+void __init mark_linear_text_alias_ro(void)
+{
+	/*
+	 * Remove the write permissions from the linear alias of .text/.rodata
+	 */
+	update_mapping_prot(__pa_symbol(_text), (u64)__va(__pa_symbol(_text)),
+			    (u64)__init_begin - (u64)_text,
+			    PAGE_KERNEL_RO);
+}
+
+void mark_rodata_ro(void)
+{
+	u64 section_size;
+
+	/*
+	 * mark .rodata as read only. Use __init_begin rather than __end_rodata
+	 * to cover NOTES and EXCEPTION_TABLE.
+	 */
+	section_size = (u64)__init_begin - (u64)__start_rodata;
+	update_mapping_prot(__pa_symbol(__start_rodata), (u64)__start_rodata,
+			    section_size, PAGE_KERNEL_RO);
+}
+
 int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
 {
 	pgprot_t sect_prot = __pgprot(PUD_TYPE_SECT |
@@ -674,4 +713,70 @@ int pmd_clear_huge(pmd_t *pmdp)
 		return 0;
 	pmd_clear(NULL, 0, pmdp);
 	return 1;
+}
+
+static void vunmap_pte_range(pmd_t *pmd, u64 addr, u64 end)
+{
+	pte_t *pte;
+
+	pte = pte_offset_kernel(pmd, addr);
+	do {
+		pte_t ptent = ptep_get_and_clear(&init_mm, addr, pte);
+		WARN_ON(!pte_none(ptent) && !pte_present(ptent));
+	} while (pte++, addr += PAGE_SIZE, addr != end);
+}
+
+static void vunmap_pmd_range(pud_t *pud, u64 addr, u64 end)
+{
+	pmd_t *pmd;
+	u64 next;
+
+	pmd = pmd_offset(pud, addr);
+	do {
+		next = pmd_addr_end(addr, end);
+		if (pmd_clear_huge(pmd))
+			continue;
+		if (pmd_none_or_clear_bad(pmd))
+			continue;
+		vunmap_pte_range(pmd, addr, next);
+	} while (pmd++, addr = next, addr != end);
+}
+
+static void vunmap_pud_range(pgd_t *pgd, u64 addr, u64 end)
+{
+	pud_t *pud;
+	u64 next;
+
+	pud = pud_offset(pgd, addr);
+	do {
+		next = pud_addr_end(addr, end);
+		if (pud_clear_huge(pud))
+			continue;
+		if (pud_none_or_clear_bad(pud))
+			continue;
+		vunmap_pmd_range(pud, addr, next);
+	} while (pud++, addr = next, addr != end);
+}
+
+static void vunmap_page_range(u64 addr, u64 end)
+{
+	pgd_t *pgd;
+	u64 next;
+
+	BUG_ON(addr >= end);
+	pgd = pgd_offset_k(addr);
+	do {
+		next = pgd_addr_end(addr, end);
+		if (pgd_none_or_clear_bad(pgd))
+			continue;
+		vunmap_pud_range(pgd, addr, next);
+	} while (pgd++, addr = next, addr != end);
+}
+
+void unmap_kernel_range(u64 addr, u64 size)
+{
+	u64 end = addr + size;
+
+	vunmap_page_range(addr, end);
+	flush_tlb_kernel_range(addr, end);
 }

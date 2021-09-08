@@ -11,10 +11,18 @@
 
 #include <sel4m/smp.h>
 #include <sel4m/cpumask.h>
+#include <sel4m/ktime.h>
+#include <sel4m/cpu.h>
 
+#include <asm/cache.h>
+#include <asm/cacheflush.h>
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/cpu_ops.h>
+#include <asm/mmu_context.h>
+#include <asm/daifflags.h>
+
+static int cpu_running[CONFIG_NR_CPUS];
 
 /*
  * as from 2.5, kernels no longer have an init_tasks structure
@@ -29,6 +37,57 @@ struct secondary_data secondary_data;
  */
 asmlinkage void secondary_start_kernel(void)
 {
+	u64 mpidr = read_cpuid_mpidr() & MPIDR_HWID_BITMASK;
+	unsigned int cpu;
+
+	cpu = task_cpu(current);
+	set_my_cpu_offset(cpu);
+
+	/*
+	 * TTBR0 is only used for the identity mapping at this stage. Make it
+	 * point to zero page to avoid speculatively fetching new entries.
+	 */
+	cpu_uninstall_idmap();
+
+	preempt_disable();
+
+	/* TODO
+	 * If the system has established the capabilities, make sure
+	 * this CPU ticks all of those. If it doesn't, the CPU will
+	 * fail to come online.
+	 */
+//	verify_cpu_asid_bits();
+
+	if (cpu_ops[cpu]->cpu_postboot)
+		cpu_ops[cpu]->cpu_postboot();
+
+	/*
+	 * Log the CPU info before it is marked online and might get read.
+	 */
+	cpuinfo_store_cpu();
+
+	/*
+	 * Enable GIC and timers.
+	 */
+	notify_cpu_starting(cpu);
+
+	/*
+	 * OK, now it's safe to let the boot CPU continue.  Wait for
+	 * the CPU migration code to notice that the CPU is online
+	 * before we continue.
+	 */
+	printf("CPU%u: Booted secondary processor 0x%010llx [0x%08x]\n",
+					 cpu, (u64)mpidr,
+					 read_cpuid_id());
+	update_cpu_boot_status(CPU_BOOT_SUCCESS);
+	set_cpu_online(cpu, true);
+	cpu_running[cpu] = 1;
+
+	local_daif_restore(DAIF_PROCCTX);
+
+	system_tick_init();
+
+	while (1); // TODO
 }
 
 static bool bootcpu_valid __initdata;
@@ -185,6 +244,58 @@ void __init smp_init_cpus(void)
 	}
 }
 
+void __init smp_prepare_cpus(unsigned int max_cpus)
+{
+	int err;
+	unsigned int cpu;
+	unsigned int this_cpu;
+
+	this_cpu = smp_processor_id();
+
+	/*
+	 * If UP is mandated by "nosmp" (which implies "maxcpus=0"), don't set
+	 * secondary CPUs present.
+	 */
+	if (max_cpus == 0)
+		return;
+
+	/*
+	 * Initialise the present map (which describes the set of CPUs
+	 * actually populated at the present time) and release the
+	 * secondaries from the bootloader.
+	 */
+	for_each_possible_cpu(cpu) {
+		if (cpu == smp_processor_id())
+			continue;
+
+		if (!cpu_ops[cpu])
+			continue;
+
+		err = cpu_ops[cpu]->cpu_prepare(cpu);
+		if (err)
+			continue;
+
+		set_cpu_present(cpu, true);
+	}
+}
+
+void __init smp_cpus_done(unsigned int max_cpus)
+{
+	u32 cwg;
+
+	printf("SMP: Total of %d processors activated.\n", num_online_cpus());
+
+	/*
+	 * Check for sane CTR_EL0.CWG value.
+	 */
+	cwg = cache_type_cwg();
+	if (!cwg)
+		printf("No Cache Writeback Granule information, assuming %d\n",
+			ARCH_DMA_MINALIGN);
+
+	mark_linear_text_alias_ro();
+}
+
 void __init smp_prepare_boot_cpu(void)
 {
 	set_my_cpu_offset(smp_processor_id());
@@ -221,4 +332,105 @@ void arch_send_call_function_single_ipi(int cpu)
  */
 void handle_IPI(int ipinr, struct pt_regs *regs)
 {
+}
+
+/*
+ * Boot a secondary CPU, and assign it the specified idle task.
+ * This also gives us the initial stack to use for this CPU.
+ */
+static int boot_secondary(unsigned int cpu, struct task_struct *idle)
+{
+	if (cpu_ops[cpu]->cpu_boot)
+		return cpu_ops[cpu]->cpu_boot(cpu);
+
+	return -EOPNOTSUPP;
+}
+
+static int op_cpu_kill(unsigned int cpu);
+
+int __cpu_up(unsigned int cpu, struct task_struct *idle)
+{
+	int ret;
+	s64 status;
+
+	/*
+	 * We need to tell the secondary core where to find its stack and the
+	 * page tables.
+	 */
+	secondary_data.task = idle;
+	secondary_data.stack = task_stack_page(idle) + THREAD_SIZE;
+	update_cpu_boot_status(CPU_MMU_OFF);
+	__flush_dcache_area(&secondary_data, sizeof(secondary_data));
+
+	/*
+	 * Now bring the CPU into our world.
+	 */
+	ret = boot_secondary(cpu, idle);
+	if (ret == 0) {
+		ktime_t delta = 1 * NSEC_PER_SEC;
+		ktime_t start_time = ktime_get();
+
+		while (start_time + delta > ktime_get()) {
+			wfi();
+			wfe();
+			if (cpu_running[cpu] == 1) 
+				break;
+		}
+
+		if (!cpu_online(cpu)) {
+			printf("CPU%u: failed to come online\n", cpu);
+			ret = -EIO;
+		}
+	} else {
+		printf("CPU%u: failed to boot: %d\n", cpu, ret);
+		return ret;
+	}
+
+	secondary_data.task = NULL;
+	secondary_data.stack = NULL;
+	status = READ_ONCE(secondary_data.status);
+
+	if (ret && status) {
+
+		if (status == CPU_MMU_OFF)
+			status = READ_ONCE(__early_cpu_boot_status);
+
+		switch (status & CPU_BOOT_STATUS_MASK) {
+		default:
+			printf("CPU%u: failed in unknown state : 0x%llx\n",
+					cpu, status);
+			break;
+		case CPU_KILL_ME:
+			if (!op_cpu_kill(cpu)) {
+				printf("CPU%u: died during early boot\n", cpu);
+				break;
+			}
+			/* Fall through */
+			printf("CPU%u: may not have shut down cleanly\n", cpu);
+		case CPU_STUCK_IN_KERNEL:
+			printf("CPU%u: is stuck in kernel\n", cpu);
+			if (status & CPU_STUCK_REASON_52_BIT_VA)
+				printf("CPU%u: does not support 52-bit VAs\n", cpu);
+			if (status & CPU_STUCK_REASON_NO_GRAN)
+				printf("CPU%u: does not support %luK granule \n", cpu, PAGE_SIZE / SZ_1K);
+			break;
+		case CPU_PANIC_KERNEL:
+			hang("CPU%u detected unsupported configuration\n", cpu);
+		}
+	}
+
+	return ret;
+}
+
+static int op_cpu_kill(unsigned int cpu)
+{
+	/*
+	 * If we have no means of synchronising with the dying CPU, then assume
+	 * that it is really dead. We can only wait for an arbitrary length of
+	 * time and hope that it's dead, so let's skip the wait and just hope.
+	 */
+	if (!cpu_ops[cpu]->cpu_kill)
+		return 0;
+
+	return cpu_ops[cpu]->cpu_kill(cpu);
 }

@@ -2,6 +2,7 @@
 kernel_sources(
     stack.c panic.c printf.c extable.c
     cpu.c reboot.c clock.c softirq.c
+    smp.c
 )
 
 add_subdirectory(locking)

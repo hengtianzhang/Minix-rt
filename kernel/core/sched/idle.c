@@ -6,6 +6,20 @@
  */
 
 #include <sel4m/sched.h>
+#include <sel4m/sched/idle.h>
+
+struct task_struct idle_threads[CONFIG_NR_CPUS];
+
+__visible __attribute__((aligned(THREAD_STACK_ALIGN)))
+u8 idle_stack[CONFIG_NR_CPUS][THREAD_SIZE];
+
+void __init idle_prepare_init(struct task_struct *idle, int cpu)
+{
+	idle->stack = &idle_stack[cpu];
+	idle->cpu = cpu;
+	idle->mm = &init_mm;
+	idle->pid = -cpu;
+}
 
 /*
  * Idle tasks are unconditionally rescheduled:

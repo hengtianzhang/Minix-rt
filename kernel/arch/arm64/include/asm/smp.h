@@ -88,6 +88,13 @@ struct secondary_data {
 
 extern struct secondary_data secondary_data;
 
+static inline void update_cpu_boot_status(int val)
+{
+	WRITE_ONCE(secondary_data.status, val);
+	/* Ensure the visibility of the status update */
+	dsb(ishst);
+}
+
 enum ipi_msg_type {
 	IPI_RESCHEDULE,
 	IPI_CALL_FUNC,
@@ -137,8 +144,6 @@ extern void smp_init_cpus(void);
  * Provide a function to raise an IPI cross call on CPUs in callmap.
  */
 extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
-
-extern void __init smp_init(void);
 
 extern void arch_send_call_function_single_ipi(int cpu);
 

@@ -35,5 +35,19 @@ extern void smp_send_reschedule(int cpu);
  */
 void smp_prepare_boot_cpu(void);
 
+void smp_prepare_cpus(unsigned int max_cpus);
+
+/*
+ * Bring a CPU up
+ */
+extern int __cpu_up(unsigned int cpunum, struct task_struct *tidle);
+
+/*
+ * Final polishing of CPUs
+ */
+extern void smp_cpus_done(unsigned int max_cpus);
+
+extern void smp_init(void);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_SMP_H_ */

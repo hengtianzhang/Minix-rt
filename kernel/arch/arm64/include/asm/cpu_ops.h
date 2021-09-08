@@ -51,6 +51,7 @@ struct cpu_operations {
 	int		(*cpu_prepare)(unsigned int);
 	int		(*cpu_boot)(unsigned int);
 	void		(*cpu_postboot)(void);
+	int		(*cpu_kill)(unsigned int cpu);
 };
 
 extern const struct cpu_operations *cpu_ops[CONFIG_NR_CPUS];

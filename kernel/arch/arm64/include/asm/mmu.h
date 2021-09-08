@@ -36,6 +36,10 @@ extern void paging_init(void);
 extern void bootmem_init(void);
 extern void vmemmap_populate(phys_addr_t phys, unsigned long virt, size_t size);
 extern void *fixmap_remap_fdt(phys_addr_t dt_phys);
+extern void mark_linear_text_alias_ro(void);
+extern void mark_rodata_ro(void);
+extern void unmap_kernel_range(u64 addr, u64 size);
+extern void free_initmem(void);
 
 #define INIT_MM_CONTEXT(name)	\
 	.pgd = init_pg_dir,

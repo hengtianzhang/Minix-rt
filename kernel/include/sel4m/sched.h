@@ -4,10 +4,17 @@
 #include <base/types.h>
 
 #include <sel4m/mm_types.h>
+#include <sel4m/thread.h>
 #include <sel4m/sched/sched.h>
 
 #include <asm/thread_info.h>
 #include <asm/processor.h>
+
+/* Attach to any functions which should be ignored in wchan output. */
+#define __sched		__attribute__((__section__(".sched.text")))
+
+/* Linker adds these: start and end of __sched functions */
+extern char __sched_text_start[], __sched_text_end[];
 
 /*
  * Scheduling policies
@@ -18,6 +25,51 @@
 #define SCHED_BATCH		3
 /* SCHED_ISO: reserved but not implemented yet */
 #define SCHED_IDLE		5
+
+/*
+ * Task state bitmask. NOTE! These bits are also
+ * encoded in fs/proc/array.c: get_task_state().
+ *
+ * We have two separate sets of flags: task->state
+ * is about runnability, while task->exit_state are
+ * about the task exiting. Confusing, but this way
+ * modifying one set can't modify the other one by
+ * mistake.
+ */
+#define TASK_RUNNING		0
+#define TASK_INTERRUPTIBLE	1
+#define TASK_UNINTERRUPTIBLE	2
+#define TASK_STOPPED		4
+#define TASK_TRACED		8
+/* in tsk->exit_state */
+#define EXIT_ZOMBIE		16
+#define EXIT_DEAD		32
+/* in tsk->state again */
+#define TASK_DEAD		64
+
+#define __set_task_state(tsk, state_value)		\
+	do { (tsk)->state = (state_value); } while (0)
+#define set_task_state(tsk, state_value)		\
+	set_mb((tsk)->state, (state_value))
+
+/*
+ * set_current_state() includes a barrier so that the write of current->state
+ * is correctly serialised wrt the caller's subsequent test of whether to
+ * actually sleep:
+ *
+ *	set_current_state(TASK_UNINTERRUPTIBLE);
+ *	if (do_i_need_to_sleep())
+ *		schedule();
+ *
+ * If the caller does not need such serialisation then use __set_current_state()
+ */
+#define __set_current_state(state_value)			\
+	do { current->state = (state_value); } while (0)
+#define set_current_state(state_value)		\
+	set_mb(current->state, (state_value))
+
+/* Task command name length */
+#define TASK_COMM_LEN 16
 
 struct task_struct {
 	/*
@@ -35,6 +87,8 @@ struct task_struct {
 #endif
 	void				*stack;
 
+	atomic_t usage;
+
     pid_t				pid;
 
 	int prio, static_prio, normal_prio;
@@ -46,10 +100,20 @@ struct task_struct {
 	cpumask_t cpus_allowed;
 	unsigned int time_slice;
 
+	unsigned int rt_priority;
+
+	unsigned long nvcsw, nivcsw; /* context switch counts */
+
+	char comm[TASK_COMM_LEN];
+
 	int				oncpu;
 	int 			cpu;
 
     struct mm_struct *mm;
+
+	int exit_state;
+	int exit_code, exit_signal;
+	int pdeath_signal;  /*  The signal sent when the parent dies  */
 
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;
@@ -65,12 +129,67 @@ static inline unsigned int task_cpu(const struct task_struct *tsk)
 	return tsk->cpu;
 }
 
+/* set thread flags in other task's structures
+ * - see asm/thread_info.h for TIF_xxxx flags available
+ */
+static inline void set_tsk_thread_flag(struct task_struct *tsk, int flag)
+{
+	set_ti_thread_flag(task_thread_info(tsk), flag);
+}
+
+static inline void clear_tsk_thread_flag(struct task_struct *tsk, int flag)
+{
+	clear_ti_thread_flag(task_thread_info(tsk), flag);
+}
+
+static inline int test_and_set_tsk_thread_flag(struct task_struct *tsk, int flag)
+{
+	return test_and_set_ti_thread_flag(task_thread_info(tsk), flag);
+}
+
+static inline int test_and_clear_tsk_thread_flag(struct task_struct *tsk, int flag)
+{
+	return test_and_clear_ti_thread_flag(task_thread_info(tsk), flag);
+}
+
+static inline int test_tsk_thread_flag(struct task_struct *tsk, int flag)
+{
+	return test_ti_thread_flag(task_thread_info(tsk), flag);
+}
+
 static inline void set_tsk_need_resched(struct task_struct *tsk)
 {
-	//set_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
+	set_tsk_thread_flag(tsk, TIF_NEED_RESCHED);
+}
+
+static inline void clear_tsk_need_resched(struct task_struct *tsk)
+{
+	clear_tsk_thread_flag(tsk, TIF_NEED_RESCHED);
+}
+
+static inline int signal_pending(struct task_struct *p)
+{
+	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
+}
+
+static inline int need_resched(void)
+{
+	return unlikely(test_thread_flag(TIF_NEED_RESCHED));
 }
 
 extern struct task_struct init_task;
+
+static inline int idle_cpu(int cpu)
+{
+	return cpu_curr(cpu) == cpu_rq(cpu)->idle;
+}
+
+#define get_task_struct(tsk) do { atomic_inc(&(tsk)->usage); } while(0)
+
+static inline void put_task_struct(struct task_struct *t)
+{
+	/* TODO */
+}
 
 extern void resched_task(struct task_struct *p);
 extern unsigned long
@@ -85,4 +204,7 @@ iter_move_one_task(struct rq *this_rq, int this_cpu, struct rq *busiest,
 
 extern void update_rq_clock(struct rq *rq);
 extern void __update_rq_clock(struct rq *rq);
+
+extern void scheduler_tick(void);
+
 #endif /* !__SEL4M_SCHED_H_ */

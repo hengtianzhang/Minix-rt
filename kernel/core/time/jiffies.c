@@ -53,13 +53,12 @@ static enum hrtimer_restart tick_periodic(struct hrtimer *hrt)
 	if (tick_do_timer_cpu == smp_processor_id()) {
 		write_seqlock(&jiffies_lock);
 		jiffies_64++;
-	//	calc_global_load();
 		write_sequnlock(&jiffies_lock);
 
 		update_wall_time();
 	}
 
-//	scheduler_tick();
+	scheduler_tick();
 
 	hrtimer_forward_now(hrt, jiffies_to_nsecs(1));
 

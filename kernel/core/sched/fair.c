@@ -35,6 +35,7 @@
 
 #include <sel4m/sched.h>
 #include <sel4m/sched/rt.h>
+#include <sel4m/sched/fair.h>
 
 /*
  * Targeted preemption latency for CPU-bound tasks:
@@ -87,7 +88,7 @@ unsigned int sysctl_sched_batch_wakeup_granularity = 10000000UL;
  */
 unsigned int sysctl_sched_wakeup_granularity = 10000000UL;
 
-const_debug unsigned int sysctl_sched_migration_cost = 500000UL;
+const unsigned int sysctl_sched_migration_cost = 500000UL;
 
 static inline struct rq *rq_of(struct cfs_rq *cfs_rq)
 {
@@ -505,11 +506,6 @@ static void entity_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
 #define for_each_sched_entity(se) \
 		for (; se; se = NULL)
 
-static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
-{
-	return &task_rq(p)->cfs;
-}
-
 static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
 {
 	struct task_struct *p = task_of(se);
@@ -522,11 +518,6 @@ static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
 static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
 {
 	return NULL;
-}
-
-static inline struct cfs_rq *cpu_cfs_rq(struct cfs_rq *cfs_rq, int this_cpu)
-{
-	return &cpu_rq(this_cpu)->cfs;
 }
 
 #define for_each_leaf_cfs_rq(rq, cfs_rq) \

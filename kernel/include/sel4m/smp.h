@@ -25,6 +25,11 @@ static inline int get_boot_cpu_id(void)
 }
 
 /*
+ * sends a 'reschedule' event to another CPU:
+ */
+extern void smp_send_reschedule(int cpu);
+
+/*
  * Mark the boot cpu "online" so that it can call console drivers in
  * printk() and can access its per-cpu storage.
  */

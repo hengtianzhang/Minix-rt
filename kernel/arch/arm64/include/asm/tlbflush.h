@@ -23,6 +23,8 @@
 
 #include <sel4m/mm_types.h>
 
+#include <asm/kernel-pgtable.h>
+
 #include <asm/base/barrier.h>
 
 /*

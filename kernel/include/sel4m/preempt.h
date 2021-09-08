@@ -4,7 +4,12 @@
 #define preempt_enable()
 #define preempt_disable()
 
+#define preempt_count() 0
 #define in_interrupt() 0
+
+#define in_atomic_preempt_off() 1
+
+#define PREEMPT_ACTIVE		0x10000000
 
 static inline void irq_exit(void)
 {
@@ -16,4 +21,8 @@ static inline void irq_enter(void)
 
 }
 
+# define add_preempt_count(val)	
+# define sub_preempt_count(val)	
+
+#define preempt_enable_no_resched()
 #endif /* !__SEL4M_PREEMPT_H_ */

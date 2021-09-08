@@ -73,6 +73,9 @@ enum cpu_idle_type {
 #define SD_SHARE_PKG_RESOURCES	512	/* Domain members share cpu pkg resources */
 #define SD_SERIALIZE		1024	/* Only a single load balancing instance */
 
+#define test_sd_parent(sd, flag)	((sd->parent &&		\
+					 (sd->parent->flags & flag)) ? 1 : 0)
+
 struct sched_group {
 	struct sched_group *next;	/* Must be a circular list */
 	cpumask_t cpumask;
@@ -212,7 +215,7 @@ struct rq {
 	unsigned long nr_uninterruptible;
 
 	struct task_struct *curr, *idle;
-	unsigned long next_balance;
+	u64 next_balance;
 	struct mm_struct *prev_mm;
 
 	u64 clock, prev_clock_raw;
@@ -351,12 +354,6 @@ extern struct rq runqueues[CONFIG_NR_CPUS];
 #define task_rq(p) 		(cpu_rq(task_cpu(p)))
 #define cpu_curr(cpu) 	(cpu_rq(cpu)->curr)
 
-#define sched_dereference(p)	({	\
-				typedef(p) _________p1 = (*(volatile typeof(p) *)&(p));	\
-				smp_read_barrier_depends(); \
-				(_________p1); \
-})
-
 /*
  * The domain tree (rq->sd) is protected by RCU's quiescent state transition.
  * See detach_destroy_domains: synchronize_sched for details.
@@ -365,6 +362,6 @@ extern struct rq runqueues[CONFIG_NR_CPUS];
  * preempt-disabled sections.
  */
 #define for_each_domain(cpu, __sd) \
-	for (__sd = sched_dereference(cpu_rq(cpu)->sd); __sd; __sd = __sd->parent)
+	for (__sd = READ_ONCE(cpu_rq(cpu)->sd); __sd; __sd = __sd->parent)
 
 #endif /* !__SEL4M_SCHED_SCHED_H_ */

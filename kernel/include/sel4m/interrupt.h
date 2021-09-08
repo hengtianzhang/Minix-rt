@@ -59,8 +59,7 @@ enum
 	NR_SOFTIRQS
 };
 
-struct softirq_action
-{
+struct softirq_action {
 	void	(*action)(void);
 };
 

@@ -23,9 +23,19 @@
 
 #include <base/compiler.h>
 
-#define TIF_SINGLESTEP		21
+#define TIF_SIGPENDING		0
+#define TIF_NEED_RESCHED	1
+#define TIF_POLLING_NRFLAG	2
+#define TIF_SINGLESTEP		3
+
+#define _TIF_SIGPENDING			(1 << TIF_SIGPENDING)
+#define _TIF_NEED_RESCHED		(1 << TIF_NEED_RESCHED)
+#define _TIF_POLLING_NRFLAG		(1 << TIF_POLLING_NRFLAG)
+#define _TIF_SINGLESTEP			(1 << TIF_SINGLESTEP)
 
 #ifndef __ASSEMBLY__
+
+#include <asm/current.h>
 
 struct task_struct;
 
@@ -48,6 +58,9 @@ struct thread_info {
 		} preempt;
 	};
 };
+
+#define current_thread_info() 	((struct thread_info *)current)
+#define task_thread_info(p)		(&(p->thread_info))
 
 #endif /* !__ASSEMBLY__ */
 #endif /* __KERNEL__ */

@@ -50,3 +50,9 @@ void machine_power_off(void)
 }
 
 struct task_struct *__entry_task[CONFIG_NR_CPUS];
+
+struct task_struct *__switch_to(struct task_struct *prev,
+				struct task_struct *next)
+{
+	return NULL;
+}

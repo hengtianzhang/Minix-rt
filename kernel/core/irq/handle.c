@@ -73,7 +73,7 @@ int handle_domain_irq(struct irq_domain *domain,
 		if (irqd->chip->irq_ack)
 			irqd->chip->irq_ack(irqd);
 		
-		if (irqd->handler.handler) 
+		if (irqd->handler.handler)
 			ret = irqd->handler.handler(hwirq, irqd->percpu_dev_id + (irqd->percpu_size * smp_processor_id()));
 		else {
 			irq_none_counter++;

@@ -10,12 +10,9 @@
 
 struct task_struct idle_threads[CONFIG_NR_CPUS];
 
-__visible __attribute__((aligned(THREAD_STACK_ALIGN)))
-u8 idle_stack[CONFIG_NR_CPUS][THREAD_SIZE];
-
 void __init idle_prepare_init(struct task_struct *idle, int cpu)
 {
-	idle->stack = &idle_stack[cpu];
+	idle->stack = &kernel_stack_alloc[cpu];
 	idle->cpu = cpu;
 	idle->mm = &init_mm;
 	idle->pid = -cpu;

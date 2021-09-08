@@ -69,9 +69,6 @@ int main(void)
 	DEFINE(S_STACKFRAME,		offsetof(struct pt_regs, stackframe));
 	DEFINE(S_FRAME_SIZE,		sizeof(struct pt_regs));
 	BLANK();
-	DEFINE(ENTRY_TASK_PTR_SIZE,		sizeof(struct task_struct *));
-	DEFINE(IRQ_STACK_PTR_SIZE,		sizeof(u64 *));
-	BLANK();
 
 	return 0;
 }

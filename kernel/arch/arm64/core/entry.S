@@ -72,11 +72,9 @@
 	.if	\el == 0
 	clear_gp_regs
 	mrs	x21, sp_el0
-	mrs x22, tpidr_el1
-	ldr x20, #ENTRY_TASK_PTR_SIZE
-	mul	x20, x20, x22
-	ldr tsk, =__entry_task
-	add tsk, tsk, x20
+	adr_l tsk, __entry_task
+	mrs  x22, tpidr_el1
+	ldr  tsk, [tsk, x22, lsl 3] 
 	ldr	x19, [tsk, #TSK_TI_FLAGS]	// since we can unmask debug
 	disable_step_tsk x19, x20		// exceptions when scheduling.
 
@@ -168,28 +166,26 @@
 	.endm
 
 	.macro	irq_stack_entry
-	mov	x19, sp			// preserve the original sp
+	mov		x19, sp			// preserve the original sp
 
 	/*
 	 * Compare sp with the base of the task stack.
 	 * If the top ~(THREAD_SIZE - 1) bits match, we are on a task stack,
 	 * and should switch to the irq stack.
 	 */
-	ldr	x25, [tsk, TSK_STACK]
-	eor	x25, x25, x19
-	and	x25, x25, #~(THREAD_SIZE - 1)
+	ldr		x25, [tsk, TSK_STACK]
+	eor		x25, x25, x19
+	and		x25, x25, #~(THREAD_SIZE - 1)
 	cbnz	x25, 9998f
 
-	mrs x26, tpidr_el1
-	ldr x24, #IRQ_STACK_PTR_SIZE
-	mul x26, x26, x24
-	ldr x25, =irq_stack_ptr
-	add x25, x25, x26
-	mov	x26, #IRQ_STACK_SIZE
-	add	x26, x25, x26
+	adr_l	x25, irq_stack_ptr
+	mrs 	x26, tpidr_el1
+	ldr		x25, [x25, x26, lsl 3]
+	mov		x26, #IRQ_STACK_SIZE
+	add		x26, x25, x26
 
 	/* switch to the irq stack */
-	mov	sp, x26
+	mov		sp, x26
 9998:
 	.endm
 

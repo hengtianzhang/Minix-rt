@@ -29,14 +29,16 @@
 #include <sel4m/cpumask.h>
 
 u64 *irq_stack_ptr[CONFIG_NR_CPUS] __page_aligned_bss;
-u64 irq_stack[CONFIG_NR_CPUS][IRQ_STACK_SIZE/sizeof(s64)] __page_aligned_bss;
+
+__visible __attribute__((aligned(THREAD_STACK_ALIGN)))
+u8 irq_stack[CONFIG_NR_CPUS][IRQ_STACK_SIZE] __page_aligned_bss;
 
 static void init_irq_stacks(void)
 {
 	int cpu;
 
 	for_each_possible_cpu(cpu)
-		irq_stack_ptr[cpu] = irq_stack[cpu];
+		irq_stack_ptr[cpu] = (u64 *)irq_stack[cpu];
 }
 
 void __init init_IRQ(void)

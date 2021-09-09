@@ -586,6 +586,197 @@ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags
 		prep_compound_page(page, order);
 }
 
+/*
+ * Go through the free lists for the given migratetype and remove
+ * the smallest available page from the freelists
+ */
+static __always_inline
+struct page *__rmqueue_smallest(struct zone *zone, unsigned int order)
+{
+	unsigned int current_order;
+	struct free_area *area;
+	struct page *page;
+
+	/* Find a page of the appropriate size in the preferred list */
+	for (current_order = order; current_order < MAX_ORDER; ++current_order) {
+		area = &(zone->free_area[current_order]);
+		page = list_first_entry_or_null(&area->free_list,
+							struct page, lru);
+		if (!page)
+			continue;
+		list_del(&page->lru);
+		rmv_page_order(page);
+		area->nr_free--;
+		expand(zone, page, order, current_order, area);
+
+		return page;
+	}
+
+	return NULL;
+}
+
+/*
+ * Do the hard work of removing an element from the buddy allocator.
+ * Call me with the zone->lock already held.
+ */
+static __always_inline struct page *
+__rmqueue(struct zone *zone, unsigned int order,
+						unsigned int alloc_flags)
+{
+	return __rmqueue_smallest(zone, order);
+}
+
+/*
+ * Obtain a specified number of elements from the buddy allocator, all under
+ * a single hold of the lock, for efficiency.  Add them to the supplied list.
+ * Returns the number of new pages which were placed at *list.
+ */
+static int rmqueue_bulk(struct zone *zone, unsigned int order,
+			unsigned long count, struct list_head *list,
+			unsigned int alloc_flags)
+{
+	int i, alloced = 0;
+
+	spin_lock(&zone->lock);
+	for (i = 0; i < count; ++i) {
+		struct page *page = __rmqueue(zone, order, alloc_flags);
+		if (unlikely(page == NULL))
+			break;
+
+		/*
+		 * Split buddy pages returned by expand() are received here in
+		 * physical page order. The page is added to the tail of
+		 * caller's list. From the callers perspective, the linked list
+		 * is ordered by page number under some conditions. This is
+		 * useful for IO devices that can forward direction from the
+		 * head, thus also in the physical page order. This is useful
+		 * for IO devices that can merge IO requests if the physical
+		 * pages are ordered properly.
+		 */
+		list_add_tail(&page->lru, list);
+		alloced++;
+	}
+
+	spin_unlock(&zone->lock);
+	return alloced;
+}
+
+static bool free_unref_page_prepare(struct page *page, unsigned long pfn)
+{
+	if (!free_pcp_prepare(page))
+		return false;
+
+	return true;
+}
+
+static void free_unref_page_commit(struct page *page, unsigned long pfn)
+{
+	struct zone *zone = page_zone(page);
+	struct per_cpu_pages *pcp;
+
+	pcp = &(&zone->pageset[smp_processor_id()])->pcp;
+	list_add(&page->lru, &pcp->lists);
+	pcp->count++;
+	if (pcp->count >= pcp->high) {
+		unsigned long batch = READ_ONCE(pcp->batch);
+		free_pcppages_bulk(zone, batch, pcp);
+	}
+}
+
+/*
+ * Free a 0-order page
+ */
+void free_unref_page(struct page *page)
+{
+	u64 flags;
+	unsigned long pfn = page_to_pfn(page);
+
+	if (!free_unref_page_prepare(page, pfn))
+		return;
+
+	local_irq_save(flags);
+	free_unref_page_commit(page, pfn);
+	local_irq_restore(flags);
+}
+
+/* Remove page from the per-cpu list, caller must protect the list */
+static struct page *__rmqueue_pcplist(struct zone *zone,
+			unsigned int alloc_flags,
+			struct per_cpu_pages *pcp,
+			struct list_head *list)
+{
+	struct page *page;
+
+	do {
+		if (list_empty(list)) {
+			pcp->count += rmqueue_bulk(zone, 0,
+					pcp->batch, list, alloc_flags);
+			if (unlikely(list_empty(list)))
+				return NULL;
+		}
+
+		page = list_first_entry(list, struct page, lru);
+		list_del(&page->lru);
+		pcp->count--;
+	} while (check_new_pcp(page));
+
+	return page;
+}
+
+/* Lock and remove page from the per-cpu list */
+static struct page *rmqueue_pcplist(struct zone *zone,
+			unsigned int order,
+			gfp_t gfp_flags,
+			unsigned int alloc_flags)
+{
+	struct per_cpu_pages *pcp;
+	struct list_head *list;
+	struct page *page;
+	u64 flags;
+
+	local_irq_save(flags);
+	pcp = &(&zone->pageset[smp_processor_id()])->pcp;
+	list = &pcp->lists;
+	page = __rmqueue_pcplist(zone, alloc_flags, pcp, list);
+	local_irq_restore(flags);
+	return page;
+}
+
+/*
+ * Allocate a page from the given zone. Use pcplists for order-0 allocations.
+ */
+static inline
+struct page *rmqueue(struct zone *zone, unsigned int order,
+			gfp_t gfp_flags, unsigned int alloc_flags)
+{
+	u64 flags;
+	struct page *page;
+
+	if (likely(order == 0)) {
+		page = rmqueue_pcplist(zone, order, gfp_flags, alloc_flags);
+		goto out;
+	}
+
+	spin_lock_irqsave(&zone->lock, flags);
+
+	do {
+		page = __rmqueue_smallest(zone, order);
+	} while (page && check_new_pages(page, order));
+	spin_unlock(&zone->lock);
+	if (!page)
+		goto failed;
+
+	local_irq_restore(flags);
+
+out:
+	return page;
+
+failed:
+	local_irq_restore(flags);
+	return NULL;
+}
+
+
 
 
 

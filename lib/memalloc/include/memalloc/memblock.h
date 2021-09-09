@@ -30,7 +30,7 @@ enum memblock_flags {
 	MEMBLOCK_NONE		= 0x0,
 	MEMBLOCK_NOMAP		= 0x1,
 	MEMBLOCK_DMA		= 0x2,
-	MEMBLOCK_MOVABLE	= 0x3,
+	MEMBLOCK_MOVABLE	= 0x4,
 };
 
 struct memblock_region {

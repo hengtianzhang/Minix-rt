@@ -693,8 +693,7 @@ void __init_memblock __next_mem_range(u64 *idx,
 		phys_addr_t m_start = m->base;
 		phys_addr_t m_end = m->base + m->size;
 
-		/* skip nomap memory unless we were asked for it explicitly */
-		if (!(flags & MEMBLOCK_NOMAP) && memblock_is_nomap(m))
+		if (flags != m->flags)
 			continue;
 
 		if (!type_b) {
@@ -788,8 +787,7 @@ void __init_memblock __next_mem_range_rev(u64 *idx,
 		phys_addr_t m_start = m->base;
 		phys_addr_t m_end = m->base + m->size;
 
-		/* skip nomap memory unless we were asked for it explicitly */
-		if (!(flags & MEMBLOCK_NOMAP) && memblock_is_nomap(m))
+		if (flags != m->flags)
 			continue;
 
 		if (!type_b) {

@@ -5,6 +5,7 @@
 
 #include <memalloc/memblock.h>
 
+#include <asm/pgtable.h>
 #include <asm/memory.h>
 
 extern struct memblock memblock_kernel;

@@ -30,8 +30,18 @@ struct page {
 			struct kmem_cache *slub_cache;
 			void *freelist;
 		};
+		struct {	/* Tail pages of compound page */
+			unsigned long compound_head;	/* Bit zero is set */
+			unsigned char compound_order;
+		};
 	};
-	
+
+	union {
+		atomic_t _mapcount;
+
+		unsigned int page_type;
+	};
+
 	/* Usage count. *DO NOT USE DIRECTLY*. See page_ref.h */
 	atomic_t _refcount;
 } _struct_page_alignment;

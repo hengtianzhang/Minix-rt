@@ -87,7 +87,7 @@
 
 extern s64			memstart_addr;
 /* PHYS_OFFSET - the physical address of the start of memory. */
-#define PHYS_OFFSET		({ BUILD_BUG_ON_INVALID(memstart_addr & 1); memstart_addr; })
+#define PHYS_OFFSET		({ BUG_ON(memstart_addr & 1); memstart_addr; })
 
 /* the virtual base of the kernel image (minus TEXT_OFFSET) */
 extern u64			kimage_vaddr;

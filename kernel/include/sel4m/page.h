@@ -29,5 +29,7 @@
 
 extern int pfn_valid(unsigned long);
 
+extern void clear_page(void *to);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_PAGE_H_ */

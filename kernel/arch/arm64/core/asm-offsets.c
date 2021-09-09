@@ -17,9 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#define ASM_OFFSET_GENERATED
+
 #include <sel4m/kbuild.h>
 #include <sel4m/smp.h>
 #include <sel4m/mm_types.h>
+#include <sel4m/mmzone.h>
+#include <sel4m/page-flags.h>
 #include <sel4m/arm-smccc.h>
 
 #include <asm/ptrace.h>
@@ -68,6 +72,13 @@ int main(void)
 	DEFINE(S_ORIG_ADDR_LIMIT,	offsetof(struct pt_regs, orig_addr_limit));
 	DEFINE(S_STACKFRAME,		offsetof(struct pt_regs, stackframe));
 	DEFINE(S_FRAME_SIZE,		sizeof(struct pt_regs));
+	BLANK();
+
+/*
+ * Now, Global data offsets
+ */
+	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
+	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
 	BLANK();
 
 	return 0;

@@ -7,6 +7,17 @@
 
 #include <sel4m/spinlock.h>
 
+enum zone_type {
+	ZONE_DMA,
+	ZONE_NORMAL,
+	ZONE_MOVABLE,
+	__MAX_NR_ZONES,
+};
+
+#ifndef ASM_OFFSET_GENERATED
+
+#include <generated/asm-offsets.h>
+
 /* Free memory management - zoned buddy allocator.  */
 #ifndef CONFIG_FORCE_MAX_ZONEORDER
 #define MAX_ORDER 11
@@ -32,15 +43,6 @@ struct per_cpu_pages {
 struct per_cpu_pageset {
 	struct per_cpu_pages pcp;
 };
-
-enum zone_type {
-	ZONE_DMA,
-	ZONE_NORMAL,
-	ZONE_MOVABLE,
-	__MAX_NR_ZONES,
-};
-
-#define MAX_NR_ZONES	__MAX_NR_ZONES
 
 struct pglist_data;
 
@@ -72,4 +74,13 @@ typedef struct pglist_data {
 	unsigned long		totalreserve_pages;
 } pg_data_t;
 
+extern struct pglist_data node_data;
+#define NODE_DATA()		(&node_data)
+
+static inline bool zone_is_initialized(struct zone *zone)
+{
+	return zone->initialized;
+}
+
+#endif /* ASM_OFFSET_GENERATED */
 #endif /* !__SEL4M_MMZONE_H_ */

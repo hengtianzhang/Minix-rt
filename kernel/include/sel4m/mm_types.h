@@ -5,14 +5,36 @@
 #ifndef __ASSEMBLY__
 
 #include <base/common.h>
+#include <base/list.h>
+
+#include <sel4m/slub_def.h>
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
+
+#ifdef CONFIG_HAVE_ALIGNED_STRUCT_PAGE
+#define _struct_page_alignment	__aligned(2 * sizeof(unsigned long))
+#else
+#define _struct_page_alignment
+#endif
+
 struct page {
-	int a;
-	u64 bb;
-	u64 cc;
-};
+	unsigned long flags;
+
+	union {
+		struct {
+			struct list_head lru;
+			unsigned long private;
+		};
+		struct {
+			struct kmem_cache *slub_cache;
+			void *freelist;
+		};
+	};
+	
+	/* Usage count. *DO NOT USE DIRECTLY*. See page_ref.h */
+	atomic_t _refcount;
+} _struct_page_alignment;
 
 struct mm_struct {
 	pgd_t * pgd;

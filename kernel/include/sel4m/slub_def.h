@@ -130,7 +130,7 @@ static __always_inline int kmalloc_index(size_t size)
 static __always_inline struct kmem_cache *kmalloc_slab(size_t size)
 {
 	int index = kmalloc_index(size);
-	printf("sssss indesx %d\n", index);
+
 	if (index == 0)
 		return NULL;
 

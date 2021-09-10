@@ -55,6 +55,8 @@ struct zone {
 
 	atomic_long_t		managed_pages;
 
+	unsigned long		used_pages;
+
 	const char		*name;
 
 	int initialized;
@@ -81,6 +83,14 @@ static inline bool zone_is_initialized(struct zone *zone)
 {
 	return zone->initialized;
 }
+
+static inline unsigned long zone_managed_pages(struct zone *zone)
+{
+	return (unsigned long)atomic_long_read(&zone->managed_pages);
+}
+
+#define for_each_order(order) \
+	for (order = 0; order < MAX_ORDER; order++)
 
 #endif /* ASM_OFFSET_GENERATED */
 #endif /* !__SEL4M_MMZONE_H_ */

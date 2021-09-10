@@ -20,6 +20,8 @@
 #include <sel4m/ktime.h>
 #include <sel4m/hrtimer.h>
 #include <sel4m/sched.h>
+#include <sel4m/gfp.h>
+#include <sel4m/object/untype.h>
 
 enum system_states system_state __read_mostly;
 
@@ -38,7 +40,9 @@ noinline void rest_init(void)
 
 	sched_init_smp();
 
-	free_initmem();
+	untype_core_init();
+
+	untype_core_init_late();
 
 	mark_rodata_ro();
 

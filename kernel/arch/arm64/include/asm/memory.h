@@ -153,6 +153,11 @@ static inline void *phys_to_virt(phys_addr_t x)
 #define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
 #define virt_to_pfn(x)      __phys_to_pfn(__virt_to_phys((unsigned long)(x)))
 
+#define _virt_addr_is_linear(kaddr)	\
+	((u64)(kaddr) >= PAGE_OFFSET)
+#define virt_addr_valid(kaddr)		\
+	(_virt_addr_is_linear(kaddr) && (pfn_valid(__pa(kaddr) >> PAGE_SHIFT)))
+
 extern void arm64_memblock_init(void);
 
 #endif /* !__ASSEMBLY__ */

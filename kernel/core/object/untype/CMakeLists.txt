@@ -1,4 +1,4 @@
 
 kernel_sources(
-	page_alloc.c
+	untype.c page_alloc.c
 )

@@ -43,4 +43,8 @@ static inline void set_page_refcounted(struct page *page)
 	set_page_count(page, 1);
 }
 
+struct alloc_context {
+	enum zone_type zoneidx;
+};
+
 #endif /* !__CORE_OBJECT_UNTYPE_H_ */

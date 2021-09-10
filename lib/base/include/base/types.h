@@ -64,5 +64,7 @@ typedef s32		clockid_t;
 typedef s64		time_t;
 typedef s64		clock_t;
 
+typedef unsigned __bitwise gfp_t;
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_TYPES_H_ */

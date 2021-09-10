@@ -21,6 +21,7 @@
 #include <base/cache.h>
 #include <base/string.h>
 
+#include <sel4m/mm.h>
 #include <sel4m/of_fdt.h>
 #include <sel4m/memory.h>
 #include <sel4m/page.h>
@@ -193,25 +194,6 @@ void __init bootmem_init(void)
 	vmemmap_init();
 
 	memblock_dump_all(&memblock_kernel);
-}
-
-static void free_reserved_area(void *start, void *end, int poison, const char *s)
-{
-	void *pos;
-	u64 pages = 0;
-
-	start = (void *)PAGE_ALIGN((u64)start);
-	end = (void *)((u64)end & PAGE_MASK);
-	for (pos = start; pos < end; pos += PAGE_SIZE, pages++) {
-		if ((unsigned int)poison <= 0xFF)
-			memset(start, poison, PAGE_SIZE);
-	}
-
-	memblock_free(&memblock_kernel, __pa_symbol(start),
-		    __pa_symbol(end) - __pa_symbol(start));
-	if (pages && s)
-		printf("Freeing %s memory: %lldK\n",
-			s, pages << (PAGE_SHIFT - 10));
 }
 
 void free_initmem(void)

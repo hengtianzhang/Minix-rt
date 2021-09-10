@@ -73,4 +73,62 @@ static inline pg_data_t *page_pgdat(const struct page *page)
 	return NODE_DATA();
 }
 
+extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+extern void memblock_free_pages(struct page *page, unsigned long pfn,
+							unsigned int order);
+extern void free_area_init_nodes(void);
+extern unsigned long memblock_free_all(void);
+extern unsigned long free_reserved_area(void *start, void *end,
+					int poison, const char *s);
+
+extern void free_compound_page(struct page *page);
+extern void free_unref_page(struct page *page);
+extern void __free_pages(struct page *page, unsigned int order);
+extern void free_pages(unsigned long addr, unsigned int order);
+
+extern struct page *__alloc_pages(gfp_t gfp_mask, unsigned int order);
+extern u64 __get_free_pages(gfp_t gfp_mask, unsigned int order);
+
+/*
+ * Drop a ref, return true if the refcount fell to zero (the page has no users)
+ */
+static inline int put_page_testzero(struct page *page)
+{
+	BUG_ON(page_ref_count(page) == 0);
+	return page_ref_dec_and_test(page);
+}
+
+static inline void __put_page(struct page *page)
+{
+	if (unlikely(PageCompound(page)))
+		free_compound_page(page);
+	else
+		free_unref_page(page);
+}
+
+static inline void get_page(struct page *page)
+{
+	page = compound_head(page);
+	/*
+	 * Getting a normal page or the head of a compound page
+	 * requires to already have an elevated page->_refcount.
+	 */
+	BUG_ON(page_ref_count(page) <= 0);
+	page_ref_inc(page);
+}
+
+static inline void put_page(struct page *page)
+{
+	page = compound_head(page);
+
+	if (put_page_testzero(page))
+		__put_page(page);
+}
+
+extern unsigned long total_physpages;
+
+extern unsigned long nr_managed_pages(void);
+extern unsigned long nr_used_pages(void);
+extern unsigned long nr_percpu_cache_pages(int cpu);
+
 #endif /* !__SEL4M_MM_H_ */

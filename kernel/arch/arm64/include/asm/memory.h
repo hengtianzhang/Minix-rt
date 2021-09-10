@@ -123,7 +123,7 @@ extern u64			kimage_voffset;
 #define __phys_to_kimg(x)	((u64)((x) + kimage_voffset))
 
 #include <asm-generic/memory_model.h>
-
+#include <asm-generic/getorder.h>
 /*
  * Convert a page to/from a physical address
  */

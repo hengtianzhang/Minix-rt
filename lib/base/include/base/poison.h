@@ -23,4 +23,9 @@
 #define LIST_POISON1  ((void *) 0x100 + POISON_POINTER_DELTA)
 #define LIST_POISON2  ((void *) 0x200 + POISON_POINTER_DELTA)
 
+/* ...and for poisoning */
+#define	POISON_INUSE	0x5a	/* for use-uninitialised poisoning */
+#define POISON_FREE	0x6b	/* for use-after-free poisoning */
+#define	POISON_END	0xa5	/* end-byte of poisoning */
+
 #endif /* !__BASE_POISON_H_ */

@@ -27,8 +27,9 @@ struct page {
 			unsigned long private;
 		};
 		struct {
-			struct kmem_cache *slub_cache;
+			struct kmem_cache *slab;
 			void *freelist;
+			unsigned inuse:16;
 		};
 		struct {	/* Tail pages of compound page */
 			unsigned long compound_head;	/* Bit zero is set */

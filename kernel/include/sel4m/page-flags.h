@@ -7,9 +7,11 @@
 #include <sel4m/mm_types.h>
 
 enum pageflags {
+	PG_locked,		/* Page is locked. Don't touch. */
 	PG_reserved,
 	PG_head,
 	PG_slub,
+	PG_active,
 	__NR_PAGEFLAGS,
 };
 
@@ -126,6 +128,8 @@ static __always_inline int TestClearPage##uname(struct page *page)	\
 	TESTSETFLAG(uname, lname, policy)				\
 	TESTCLEARFLAG(uname, lname, policy)
 
+__PAGEFLAG(Locked, locked, PF_NO_TAIL)
+
 PAGEFLAG(Reserved, reserved, PF_NO_COMPOUND)
 	__CLEARPAGEFLAG(Reserved, reserved, PF_NO_COMPOUND)
 	__SETPAGEFLAG(Reserved, reserved, PF_NO_COMPOUND)
@@ -133,6 +137,9 @@ PAGEFLAG(Reserved, reserved, PF_NO_COMPOUND)
 __PAGEFLAG(Head, head, PF_ANY) CLEARPAGEFLAG(Head, head, PF_ANY)
 
 __PAGEFLAG(Slub, slub, PF_NO_TAIL)
+
+PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
+	TESTCLEARFLAG(Active, active, PF_HEAD)
 
 static __always_inline void set_compound_head(struct page *page, struct page *head)
 {
@@ -189,7 +196,7 @@ PAGE_TYPE_OPS(Table, table)
  * these flags set.  It they are, there is a problem.
  */
 #define PAGE_FLAGS_CHECK_AT_FREE				\
-	(1UL << PG_slub)
+	(1UL << PG_slub | 1UL << PG_active | 1UL << PG_locked)
 
 #define __PG_HWPOISON 0
 

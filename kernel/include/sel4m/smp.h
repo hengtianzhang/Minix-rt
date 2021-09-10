@@ -49,5 +49,10 @@ extern void smp_cpus_done(unsigned int max_cpus);
 
 extern void smp_init(void);
 
+/*
+ * Call a function on all processors
+ */
+extern int on_each_cpu(void (*func) (void *info), void *info, int retry, int wait);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_SMP_H_ */

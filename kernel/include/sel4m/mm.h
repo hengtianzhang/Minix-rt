@@ -125,6 +125,12 @@ static inline void put_page(struct page *page)
 		__put_page(page);
 }
 
+static inline struct page *virt_to_head_page(const void *x)
+{
+	struct page *page = virt_to_page(x);
+	return compound_head(page);
+}
+
 extern unsigned long total_physpages;
 
 extern unsigned long nr_managed_pages(void);

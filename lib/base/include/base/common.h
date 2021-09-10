@@ -393,6 +393,12 @@ void hang(const char *fmt, ...) __noreturn __cold;
 extern asmlinkage __printf(1, 2) __cold
 int printf(const char *fmt, ...);
 
+#ifdef __KERNEL__
+extern char *kasprintf(gfp_t gfp, const char *fmt, ...)
+	__attribute__ ((format (printf, 2, 3)));
+extern char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);
+#endif
+
 #ifdef DEBUG
 #define pr_debug(fmt, ...) printf(fmt, ##__VA_ARGS__)
 #else

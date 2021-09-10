@@ -1,4 +1,5 @@
 #include <sel4m/gfp.h>
+#include <sel4m/slab.h>
 #include <sel4m/cpumask.h>
 #include <sel4m/object/cap_types.h>
 #include <sel4m/object/untype.h>
@@ -9,6 +10,7 @@
 void untype_core_init(void)
 {
 	free_area_init_nodes();
+	kmem_cache_init();
 }
 
 static void untype_print_memory_info(void)

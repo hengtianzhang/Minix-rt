@@ -22,6 +22,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/gfp.h>
 #include <sel4m/object/untype.h>
+#include <sel4m/object/pid.h>
 
 enum system_states system_state __read_mostly;
 
@@ -79,6 +80,8 @@ asmlinkage __visible void __init start_kernel(void)
 	 * time - but meanwhile we still have a functioning scheduler.
 	 */
 	sched_init();
+
+	process_pid_init();
 
 	/*
 	 * Disable preemption - early bootup scheduling is extremely

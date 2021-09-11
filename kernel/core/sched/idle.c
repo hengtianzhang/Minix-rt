@@ -15,7 +15,6 @@ void __init idle_prepare_init(struct task_struct *idle, int cpu)
 	idle->stack = &kernel_stack_alloc[cpu];
 	idle->cpu = cpu;
 	idle->mm = &init_mm;
-	idle->pid = -cpu;
 }
 
 /*

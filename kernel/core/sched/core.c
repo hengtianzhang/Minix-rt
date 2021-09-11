@@ -38,6 +38,7 @@
 #include <sel4m/jiffies.h>
 #include <sel4m/interrupt.h>
 #include <sel4m/irq.h>
+#include <sel4m/object/pid.h>
 
 #include <asm-generic/switch_to.h>
 
@@ -2473,7 +2474,7 @@ static noinline void __schedule_bug(struct task_struct *prev)
 //	struct pt_regs *regs = get_irq_regs();
 
 	printf("BUG: scheduling while atomic: %s/%d/0x%08x\n",
-		prev->comm, prev->pid, preempt_count());
+		prev->comm, prev->pid.pid, preempt_count());
 
 	if (irqs_disabled())
 		print_irqtrace_events(prev);
@@ -2941,16 +2942,6 @@ int task_prio(const struct task_struct *p)
 int task_nice(const struct task_struct *p)
 {
 	return TASK_NICE(p);
-}
-
-/**
- * find_process_by_pid - find a process with a matching PID value.
- * @pid: the pid in question.
- */
-struct task_struct *find_process_by_pid(pid_t pid)
-{
-	/* TODO */
-	return current;
 }
 
 /* Actually do priority change: must hold rq lock. */

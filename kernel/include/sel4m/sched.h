@@ -6,6 +6,7 @@
 #include <sel4m/mm_types.h>
 #include <sel4m/thread.h>
 #include <sel4m/sched/sched.h>
+#include <sel4m/object/pid.h>
 
 #include <asm/thread_info.h>
 #include <asm/processor.h>
@@ -107,7 +108,7 @@ struct task_struct {
 
 	atomic_t usage;
 
-    pid_t				pid;
+	struct pid_struct	pid;
 
 	int prio, static_prio, normal_prio;
 	struct list_head run_list;
@@ -148,7 +149,7 @@ struct task_struct {
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {
-	return tsk->pid;
+	return tsk->pid.pid;
 }
 
 static inline unsigned int task_cpu(const struct task_struct *tsk)

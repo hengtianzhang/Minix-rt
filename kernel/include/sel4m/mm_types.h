@@ -6,8 +6,10 @@
 
 #include <base/common.h>
 #include <base/list.h>
+#include <base/rbtree.h>
 
 #include <sel4m/slub_def.h>
+#include <sel4m/object/untype.h>
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
@@ -60,6 +62,11 @@ struct mm_struct {
 	 * &struct mm_struct is freed.
 	 */
 	atomic_t mm_count;
+
+	struct untype_struct untype;
+
+	struct rb_root		pud_root;
+	struct rb_root		pmd_root;
 };
 
 extern struct mm_struct init_mm;

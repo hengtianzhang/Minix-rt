@@ -7,6 +7,7 @@
 #include <sel4m/thread.h>
 #include <sel4m/sched/sched.h>
 #include <sel4m/object/pid.h>
+#include <sel4m/object/cap_types.h>
 
 #include <asm/thread_info.h>
 #include <asm/processor.h>
@@ -127,6 +128,8 @@ struct task_struct {
 
 	int				oncpu;
 	int 			cpu;
+
+	cap_table_t cap_table;
 
     struct mm_struct *mm;
 

@@ -13,13 +13,13 @@ struct untype_struct {
 
 struct untype_pud {
 	pud_t		*pud;
-	atomic_t	pud_ref_count;
+	atomic_long_t	pud_ref_count;
 	struct rb_node pud_node;
 };
 
 struct untype_pmd {
 	pud_t		*pmd;
-	atomic_t	pmd_ref_count;
+	atomic_long_t	pmd_ref_count;
 	struct rb_node pmd_node;
 };
 

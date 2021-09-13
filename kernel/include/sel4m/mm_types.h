@@ -63,6 +63,8 @@ struct mm_struct {
 	 */
 	atomic_t mm_count;
 
+	spinlock_t	page_table_lock; /* protect iopgd */
+
 	struct untype_struct untype;
 
 	struct rb_root		pud_root;

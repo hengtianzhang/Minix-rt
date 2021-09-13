@@ -3,9 +3,144 @@
 #include <sel4m/cpumask.h>
 #include <sel4m/object/cap_types.h>
 #include <sel4m/object/untype.h>
+#include <sel4m/spinlock.h>
+#include <sel4m/sched.h>
 
 #include <asm/mmu.h>
+#include <asm/current.h>
 #include <asm/sections.h>
+
+static bool pud_untype_insert(struct untype_pud *upud)
+{
+	struct rb_node **new = &(current->mm->pud_root.rb_node), *parent = NULL;
+
+	/* Figure out where to put new node */
+	while (*new) {
+		struct untype_pud *this = container_of(*new, struct untype_pud, pud_node);
+
+		parent = *new;
+		if (upud->pud_page < this->pud_page)
+			new = &((*new)->rb_left);
+		else if (upud->pud_page > this->pud_page)
+			new = &((*new)->rb_right);
+		else
+			return false;
+	}
+
+	/* Add new node and rebalance tree. */
+	rb_link_node(&upud->pud_node, parent, new);
+	rb_insert_color(&upud->pud_node, &current->mm->pud_root);
+
+	return true;
+}
+
+static struct untype_pud *pud_untype_find(struct page *page)
+{
+	struct rb_node *node = current->mm->pud_root.rb_node;
+
+	while (node) {
+		struct untype_pud *data = container_of(node, struct untype_pud, pud_node);
+	
+		if (page < data->pud_page)
+			node = node->rb_left;
+		else if (page > data->pud_page)
+			node = node->rb_right;
+		else
+			return data;
+	}
+
+	return NULL;
+}
+
+static void mm_pud_ref_inc(struct page *pud_page)
+{
+	struct untype_pud *upud;
+
+	upud = pud_untype_find(pud_page);
+	BUG_ON(!upud);
+
+	spin_lock(&current->mm->page_table_lock);
+	atomic_long_add(1, &upud->pud_ref_count);
+	spin_unlock(&current->mm->page_table_lock);
+}
+
+static void mm_pud_ref_dec(struct page *pud_page)
+{
+	struct untype_pud *upud;
+
+	upud = pud_untype_find(pud_page);
+	BUG_ON(!upud);
+
+	spin_lock(&current->mm->page_table_lock);
+	if (atomic_long_dec_and_test(&upud->pud_ref_count)) {
+		__free_page(upud->pud_page);
+		rb_erase(&upud->pud_node, &current->mm->pud_root);
+		kfree(upud);
+	}
+	spin_unlock(&current->mm->page_table_lock);
+}
+
+int untype_create_pud_map(pgd_t *pgd, unsigned long addr, unsigned long end)
+{
+	unsigned long next = addr;
+	pgd_t *pgdp;
+	pgd_t pud;
+	struct untype_pud *upud; 
+	struct page *pud_page;
+
+	do {
+		pgdp = pgd_offset(pgd, next);
+		pud = READ_ONCE(*pgdp);
+
+		if (pgd_present(pud))
+			mm_pud_ref_inc(phys_to_page(__pgd_to_phys(pud)));
+		else {
+			upud = kmalloc(sizeof (struct untype_pud), GFP_KERNEL);
+			if(!upud)
+				return -ENOMEM;
+			pud_page = alloc_page(GFP_KERNEL | GFP_ZERO);
+			if (!pud_page) {
+				kfree(upud);
+				BUG();
+				return -ENOMEM; 
+			}
+			upud->pud_page = pud_page;
+			atomic_long_set(&upud->pud_ref_count, 1);
+
+			spin_lock(&current->mm->page_table_lock);
+			BUG_ON(!pud_untype_insert(upud));
+			spin_unlock(&current->mm->page_table_lock);
+
+			__pgd_populate(pgdp, page_to_phys(pud_page), PUD_TYPE_TABLE);
+		}
+
+		next = pgd_addr_end(addr, end);
+	} while (addr = next, addr != end);
+
+	return 0;
+}
+
+int untype_remove_pud_map(pgd_t *pgd, unsigned long addr, unsigned long end)
+{
+	unsigned long next = addr;
+	pgd_t *pgdp;
+	pgd_t pud;
+
+	do {
+		pgdp = pgd_offset(pgd, next);
+		pud = READ_ONCE(*pgdp);
+
+		if (pgd_present(pud))
+			mm_pud_ref_dec(phys_to_page(__pgd_to_phys(pud)));
+		else {
+			BUG();
+		}
+
+		next = pgd_addr_end(addr, end);
+	} while (addr = next, addr != end);
+
+	return 0;
+}
 
 void untype_core_init(void)
 {

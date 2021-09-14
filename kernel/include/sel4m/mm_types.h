@@ -55,7 +55,37 @@ struct page {
 	atomic_t _refcount;
 } _struct_page_alignment;
 
+struct vm_area_struct {
+	unsigned long vm_start;
+	unsigned long vm_end;
+
+	struct vm_area_struct *vm_next, *vm_prev;
+
+	struct rb_node vm_rb;
+
+	struct mm_struct *vm_mm;
+	pgprot_t vm_page_prot;
+	unsigned long vm_flags;
+
+	struct page **pud_pages;
+	unsigned int	nr_pud_pages;
+
+	struct page **pmd_pages;
+	unsigned int	nr_pmd_pages;
+
+	struct page **pte_pages;
+	unsigned int	nr_pte_pages;
+
+	struct page **pages;
+	unsigned int	nr_pages;
+
+	phys_addr_t		io_space;
+};
+
 struct mm_struct {
+	struct vm_area_struct *mmap;		/* list of VMAs */
+	struct rb_root mm_rb;
+
 	pgd_t * pgd;
 	/* Architecture-specific MM context */
 	mm_context_t context;

@@ -1300,7 +1300,7 @@ void __init kmem_cache_init(void)
 
 	/* Provide the correct kmalloc names now that the caches are up */
 	for (i = KMALLOC_SHIFT_LOW; i < PAGE_SHIFT; i++)
-		kmalloc_caches[i]. name =
+		kmalloc_caches[i].name =
 			kasprintf(GFP_KERNEL, "kmalloc-%d", 1 << i);
 
 	kmem_size = offsetof(struct kmem_cache, cpu_slab) +

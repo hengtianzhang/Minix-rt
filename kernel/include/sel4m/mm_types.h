@@ -26,16 +26,22 @@ struct page {
 	union {
 		struct {
 			struct list_head lru;
+			void 		*mapping; /* Reserved */
+			unsigned long	index;  /* Reserved */
 			unsigned long private;
 		};
 		struct {
+			struct list_head	slab_list;
+			struct page		*page;	 /* Reserved */
 			struct kmem_cache *slab;
 			void *freelist;
-			unsigned inuse:16;
+			unsigned inuse;
 		};
 		struct {	/* Tail pages of compound page */
 			unsigned long compound_head;	/* Bit zero is set */
+			unsigned long compound_dtor;	 /* Reserved */
 			unsigned char compound_order;
+			unsigned long compound_mapcount; /* Reserved */
 		};
 	};
 

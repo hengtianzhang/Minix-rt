@@ -386,6 +386,13 @@ static inline int pgd_none_or_clear_bad(pgd_t *pgd)
 }
 
 /*
+ *	mk page | prot
+ */
+/**************************************************************************/
+#define mk_pte(page,prot)	pfn_pte(page_to_pfn(page),prot)
+#define mk_pmd(page,prot)	pfn_pmd(page_to_pfn(page),prot)
+
+/*
  *	Define vmemmap 
  */
 /**************************************************************************/

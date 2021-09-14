@@ -72,9 +72,6 @@ struct mm_struct {
 	spinlock_t	page_table_lock; /* protect iopgd */
 
 	struct untype_struct untype;
-
-	struct rb_root		pud_root;
-	struct rb_root		pmd_root;
 };
 
 extern struct mm_struct init_mm;

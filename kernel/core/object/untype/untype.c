@@ -10,136 +10,156 @@
 #include <asm/current.h>
 #include <asm/sections.h>
 
-static bool pud_untype_insert(struct untype_pud *upud)
+static int __pud_alloc(struct mm_struct *mm, pgd_t *pgdp, unsigned long address)
 {
-	struct rb_node **new = &(current->mm->pud_root.rb_node), *parent = NULL;
+	pud_t *new = (pud_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+	if (!new)
+		return -ENOMEM;
 
-	/* Figure out where to put new node */
-	while (*new) {
-		struct untype_pud *this = container_of(*new, struct untype_pud, pud_node);
+	smp_wmb();
 
-		parent = *new;
-		if (upud->pud_page < this->pud_page)
-			new = &((*new)->rb_left);
-		else if (upud->pud_page > this->pud_page)
-			new = &((*new)->rb_right);
-		else
-			return false;
-	}
-
-	/* Add new node and rebalance tree. */
-	rb_link_node(&upud->pud_node, parent, new);
-	rb_insert_color(&upud->pud_node, &current->mm->pud_root);
-
-	return true;
+	spin_lock(&mm->page_table_lock);
+	if (!pgd_present(*pgdp))
+		__pgd_populate(pgdp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
+	else
+		free_page((u64)new);
+	spin_unlock(&mm->page_table_lock);
+	return 0;
 }
 
-static struct untype_pud *pud_untype_find(struct page *page)
+static inline pud_t *pud_alloc(struct mm_struct *mm, pgd_t *pgdp, unsigned long address)
 {
-	struct rb_node *node = current->mm->pud_root.rb_node;
-
-	while (node) {
-		struct untype_pud *data = container_of(node, struct untype_pud, pud_node);
-	
-		if (page < data->pud_page)
-			node = node->rb_left;
-		else if (page > data->pud_page)
-			node = node->rb_right;
-		else
-			return data;
-	}
-
-	return NULL;
+	return (unlikely(pgd_none(*pgdp)) && __pud_alloc(mm, pgdp, address)) ?
+		NULL : pud_offset(pgdp, address);
 }
 
-static void mm_pud_ref_inc(struct page *pud_page)
+static int __pmd_alloc(struct mm_struct *mm, pud_t *pudp, unsigned long address)
 {
-	struct untype_pud *upud;
+	pmd_t *new = (pmd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+	if (!new)
+		return -ENOMEM;
 
-	upud = pud_untype_find(pud_page);
-	BUG_ON(!upud);
+	smp_wmb();
 
-	spin_lock(&current->mm->page_table_lock);
-	atomic_long_add(1, &upud->pud_ref_count);
-	spin_unlock(&current->mm->page_table_lock);
+	spin_lock(&mm->page_table_lock);
+	if (!pud_present(*pudp))
+		__pud_populate(pudp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
+	else
+		free_page((u64)new);
+	spin_unlock(&mm->page_table_lock);
+	return 0;
 }
 
-static void mm_pud_ref_dec(struct page *pud_page)
+static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pudp, unsigned long address)
 {
-	struct untype_pud *upud;
-
-	upud = pud_untype_find(pud_page);
-	BUG_ON(!upud);
-
-	spin_lock(&current->mm->page_table_lock);
-	if (atomic_long_dec_and_test(&upud->pud_ref_count)) {
-		__free_page(upud->pud_page);
-		rb_erase(&upud->pud_node, &current->mm->pud_root);
-		kfree(upud);
-	}
-	spin_unlock(&current->mm->page_table_lock);
+	return (unlikely(pud_none(*pudp)) && __pmd_alloc(mm, pudp, address)) ?
+		NULL : pmd_offset(pudp, address);
 }
 
-int untype_create_pud_map(pgd_t *pgd, unsigned long addr, unsigned long end)
+static int __pte_alloc(struct mm_struct *mm, pmd_t *pmdp, unsigned long address)
 {
-	unsigned long next = addr;
-	pgd_t *pgdp;
-	pgd_t pud;
-	struct untype_pud *upud; 
-	struct page *pud_page;
+	pte_t *new = (pte_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+	if (!new)
+		return -ENOMEM;
 
+	smp_wmb();
+
+	spin_lock(&mm->page_table_lock);
+	if (!pmd_present(*pmdp))
+		__pmd_populate(pmdp, virt_to_phys((void *)new), PMD_TYPE_TABLE);
+	else
+		free_page((u64)new);
+	spin_unlock(&mm->page_table_lock);
+	return 0;
+}
+
+static inline pte_t *pte_alloc(struct mm_struct *mm, pmd_t *pmdp, unsigned long address)
+{
+	return (unlikely(pmd_none(*pmdp)) && __pte_alloc(mm, pmdp, address)) ?
+		NULL : pte_offset_kernel(pmdp, address);
+}
+
+static int vmap_pte_range(struct mm_struct *mm, pmd_t *pmdp,
+					unsigned long addr, unsigned long end, pgprot_t prot, int *nr)
+{
+	pte_t *pte;
+
+	/*
+	 * nr is a running index into the array which helps higher level
+	 * callers keep track of where we're up to.
+	 */
+
+	pte = pte_alloc(mm, pmdp, addr);
+	if (!pte)
+		return -ENOMEM;
 	do {
-		pgdp = pgd_offset(pgd, next);
-		pud = READ_ONCE(*pgdp);
+		struct page *page = alloc_page(GFP_USER | GFP_ZERO);
 
-		if (pgd_present(pud))
-			mm_pud_ref_inc(phys_to_page(__pgd_to_phys(pud)));
-		else {
-			upud = kmalloc(sizeof (struct untype_pud), GFP_KERNEL);
-			if(!upud)
-				return -ENOMEM;
-			pud_page = alloc_page(GFP_KERNEL | GFP_ZERO);
-			if (!pud_page) {
-				kfree(upud);
-				BUG();
-				return -ENOMEM; 
-			}
-			upud->pud_page = pud_page;
-			atomic_long_set(&upud->pud_ref_count, 1);
+		if (WARN_ON(!pte_none(*pte)))
+			return -EBUSY;
+		if (WARN_ON(!page))
+			return -ENOMEM;
 
-			spin_lock(&current->mm->page_table_lock);
-			BUG_ON(!pud_untype_insert(upud));
-			spin_unlock(&current->mm->page_table_lock);
+		set_pte(pte, mk_pte(page, prot));
+		(*nr)++;
+	} while (pte++, addr += PAGE_SIZE, addr != end);
+	return 0;
+}
 
-			__pgd_populate(pgdp, page_to_phys(pud_page), PUD_TYPE_TABLE);
-		}
+static int vmap_pmd_range(struct mm_struct *mm, pud_t *pudp,
+					unsigned long addr, unsigned long end, pgprot_t prot, int *nr)
+{
+	pmd_t *pmd;
+	unsigned long next;
 
-		next = pgd_addr_end(addr, end);
-	} while (addr = next, addr != end);
+	pmd = pmd_alloc(mm, pudp, addr);
+	if (!pmd)
+		return -ENOMEM;
+	do {
+		next = pmd_addr_end(addr, end);
+		if (vmap_pte_range(mm, pmd, addr, next, prot, nr))
+			return -ENOMEM;
+	} while (pmd++, addr = next, addr != end);
 
 	return 0;
 }
 
-int untype_remove_pud_map(pgd_t *pgd, unsigned long addr, unsigned long end)
+static int vmap_pud_range(struct mm_struct *mm, pgd_t *pgdp,
+					unsigned long addr, unsigned long end, pgprot_t prot, int *nr)
 {
-	unsigned long next = addr;
-	pgd_t *pgdp;
-	pgd_t pud;
+	pud_t *pud;
+	unsigned long next;
 
+	pud = pud_alloc(mm, pgdp, addr);
+	if (!pud)
+		return -ENOMEM;
 	do {
-		pgdp = pgd_offset(pgd, next);
-		pud = READ_ONCE(*pgdp);
-
-		if (pgd_present(pud))
-			mm_pud_ref_dec(phys_to_page(__pgd_to_phys(pud)));
-		else {
-			BUG();
-		}
-
-		next = pgd_addr_end(addr, end);
-	} while (addr = next, addr != end);
+		next = pud_addr_end(addr, end);
+		if (vmap_pmd_range(mm, pud, addr, next, prot, nr))
+			return -ENOMEM;
+	} while (pud++, addr = next, addr != end);
 
 	return 0;
+}
+
+int vmap_page_range(struct mm_struct *mm, pgd_t *pgd, unsigned long start, unsigned long end, pgprot_t prot)
+{
+	pgd_t *pgdp;
+	unsigned long next;
+	unsigned long addr = start;
+	int err = 0;
+	int nr = 0;
+
+	WARN_ON(addr >= end);
+	pgdp = pgd_offset(pgd, addr);
+	do {
+		next = pgd_addr_end(addr, end);
+		err = vmap_pud_range(mm, pgdp, addr, next, prot, &nr);
+		if (err)
+			return err;
+	} while (pgdp++, addr = next, addr != end);
+
+	return nr;
 }
 
 void untype_core_init(void)

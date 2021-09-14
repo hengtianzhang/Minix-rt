@@ -96,8 +96,6 @@ void __init early_fixmap_init(void)
 		__pud_populate(pudp, __pa_symbol(bm_pmd), PMD_TYPE_TABLE);
 	pmdp = fixmap_pmd(addr);
 	__pmd_populate(pmdp, __pa_symbol(bm_pte), PMD_TYPE_TABLE);
-	bm_pte[pte_index(addr)] = __pte(dtb_stdout_path.reg.base | pgprot_val(FIXMAP_PAGE_IO));
-	dsb(ishst);
 }
 
 static bool pgattr_change_is_safe(u64 old, u64 new)

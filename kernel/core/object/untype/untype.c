@@ -5,6 +5,7 @@
 #include <sel4m/object/untype.h>
 #include <sel4m/spinlock.h>
 #include <sel4m/sched.h>
+#include <sel4m/preempt.h>
 
 #include <asm/mmu.h>
 #include <asm/current.h>
@@ -41,7 +42,7 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
 				(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]));
 }
 
-static int __pud_alloc(struct mm_struct *mm, pgd_t *pgdp, unsigned long address)
+static int __pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
 {
 	pud_t *new = (pud_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!new)
@@ -49,18 +50,21 @@ static int __pud_alloc(struct mm_struct *mm, pgd_t *pgdp, unsigned long address)
 
 	smp_wmb();
 
-	spin_lock(&mm->page_table_lock);
-	if (!pgd_present(*pgdp))
+	spin_lock(&vma->vm_mm->page_table_lock);
+	if (!pgd_present(*pgdp)) {
 		__pgd_populate(pgdp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
-	else
+		vma->pud_pages[vma->nr_pud_pages++] = virt_to_page((void *)new);
+	} else
 		free_page((u64)new);
-	spin_unlock(&mm->page_table_lock);
+
+	spin_unlock(&vma->vm_mm->page_table_lock);
+
 	return 0;
 }
 
-static inline pud_t *pud_alloc(struct mm_struct *mm, pgd_t *pgdp, unsigned long address)
+static inline pud_t *pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
 {
-	return (unlikely(pgd_none(*pgdp)) && __pud_alloc(mm, pgdp, address)) ?
+	return (unlikely(pgd_none(*pgdp)) && __pud_alloc(vma, pgdp, address)) ?
 		NULL : pud_offset(pgdp, address);
 }
 
@@ -155,42 +159,145 @@ static int vmap_pmd_range(struct mm_struct *mm, pud_t *pudp,
 	return 0;
 }
 
-static int vmap_pud_range(struct mm_struct *mm, pgd_t *pgdp,
-					unsigned long addr, unsigned long end, pgprot_t prot, int *nr)
+static int vmap_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
+					unsigned long addr, unsigned long end)
 {
 	pud_t *pud;
 	unsigned long next;
+	int nr;
 
-	pud = pud_alloc(mm, pgdp, addr);
+	pud = pud_alloc(vma, pgdp, addr);
 	if (!pud)
 		return -ENOMEM;
 	do {
 		next = pud_addr_end(addr, end);
-		if (vmap_pmd_range(mm, pud, addr, next, prot, nr))
+		if (vmap_pmd_range(vma->vm_mm, pud, addr, next, vma->vm_page_prot, &nr))
 			return -ENOMEM;
 	} while (pud++, addr = next, addr != end);
 
 	return 0;
 }
 
-int vmap_page_range(struct mm_struct *mm, pgd_t *pgd, unsigned long start, unsigned long end, pgprot_t prot)
+int vmap_page_range(struct vm_area_struct *vma)
 {
 	pgd_t *pgdp;
 	unsigned long next;
-	unsigned long addr = start;
+	unsigned long addr;
 	int err = 0;
-	int nr = 0;
 
-	WARN_ON(addr >= end);
-	pgdp = pgd_offset(pgd, addr);
+	if (!vma)
+		return -EINVAL;
+
+	addr = vma->vm_start;
+	WARN_ON(addr >= vma->vm_end);
+	pgdp = pgd_offset(vma->vm_mm->pgd, addr);
 	do {
-		next = pgd_addr_end(addr, end);
-		err = vmap_pud_range(mm, pgdp, addr, next, prot, &nr);
+		next = pgd_addr_end(addr, vma->vm_end);
+		err = vmap_pud_range(vma, pgdp, addr, next);
 		if (err)
 			return err;
-	} while (pgdp++, addr = next, addr != end);
+	} while (pgdp++, addr = next, addr != vma->vm_end);
 
-	return nr;
+	return vma->nr_pages;
+}
+
+static bool __insert_vma_area(struct vm_area_struct *vma)
+{
+	struct rb_node **new = &(vma->vm_mm->vma_rb_root.rb_node), *parent = NULL;
+
+	while (*new) {
+		struct vm_area_struct *this = container_of(*new, struct vm_area_struct, vm_rb_node);
+	
+		if (vma->vm_start < this->vm_end)
+			new = &((*new)->rb_left);
+		else if (vma->vm_end > this->vm_start)
+			new = &((*new)->rb_right);
+		else
+			return false;
+	}
+
+	/* Add new vm_rb_node and rebalance tree. */
+	rb_link_node(&vma->vm_rb_node, parent, new);
+	rb_insert_color(&vma->vm_rb_node, &vma->vm_mm->vma_rb_root);
+
+	return true;
+}
+
+static struct vm_area_struct *__find_vma_area(unsigned long addr,
+					struct mm_struct *mm)
+{
+	struct rb_node *node;
+
+	if (!mm)
+		return NULL;
+
+	node = mm->vma_rb_root.rb_node;
+
+	while (node) {
+		struct vm_area_struct *vma = container_of(node, struct vm_area_struct, vm_rb_node);
+
+		if (addr < vma->vm_start)
+			node = node->rb_left;
+		else if (addr >= vma->vm_end)
+			node = node->rb_right;
+		else
+			return vma;
+	}
+
+	return NULL;
+}
+
+struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
+				unsigned long size, unsigned long flags,
+				struct mm_struct *mm, phys_addr_t io_space)
+{
+	struct vm_area_struct *vma;
+
+	BUG_ON(in_interrupt());
+
+	if (!PAGE_ALIGNED(vstart) || !mm ||
+			!PAGE_ALIGNED(size) || !size)
+		return NULL;
+
+	vma = kmalloc(sizeof (*vma), GFP_KERNEL | GFP_ZERO);
+	if (unlikely(!vma))
+		return NULL;
+
+	vma->vm_start = vstart;
+	vma->vm_end	= vstart + size;
+
+	vma->vm_page_prot = vm_get_page_prot(flags);
+	vma->vm_flags = flags;
+
+	vma->vm_mm = mm;
+	spin_lock(&mm->vma_lock);
+	if (!__insert_vma_area(vma)) {
+		kfree(vma);
+		spin_unlock(&mm->vma_lock);
+		return NULL;
+	}
+	spin_unlock(&mm->vma_lock);
+
+	return vma;
+}
+
+void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm)
+{
+	struct vm_area_struct *vma;
+
+	if (!mm)
+		return;
+
+	spin_lock(&mm->vma_lock);
+	vma = __find_vma_area(addr, mm);
+	if (!vma) {
+		spin_unlock(&mm->vma_lock);
+		return;
+	}
+	rb_erase(&vma->vm_rb_node, &mm->vma_rb_root);
+	spin_unlock(&mm->vma_lock);
+
+	kfree(vma);
 }
 
 void untype_core_init(void)

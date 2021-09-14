@@ -59,9 +59,7 @@ struct vm_area_struct {
 	unsigned long vm_start;
 	unsigned long vm_end;
 
-	struct vm_area_struct *vm_next, *vm_prev;
-
-	struct rb_node vm_rb;
+	struct rb_node vm_rb_node;
 
 	struct mm_struct *vm_mm;
 	pgprot_t vm_page_prot;
@@ -83,8 +81,8 @@ struct vm_area_struct {
 };
 
 struct mm_struct {
-	struct vm_area_struct *mmap;		/* list of VMAs */
-	struct rb_root mm_rb;
+	struct rb_root vma_rb_root;
+	spinlock_t		vma_lock;
 
 	pgd_t * pgd;
 	/* Architecture-specific MM context */

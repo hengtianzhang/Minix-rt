@@ -17,6 +17,8 @@
 
 #define page_address(page) page_to_virt(page)
 
+#define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
+
 /*
  * On some architectures it is expensive to call memset() for small sizes.
  * Those architectures should provide their own implementation of "struct page"

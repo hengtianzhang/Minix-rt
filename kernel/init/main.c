@@ -33,8 +33,9 @@ void __weak __init setup_arch(void) {}
 
 noinline void rest_init(void)
 {
-//	struct mm_struct mm;
-//	struct vm_area_struct *vma;
+	struct mm_struct mm;
+	struct vm_area_struct *vma;
+
 	system_state = SYSTEM_SCHEDULING;
 
 	smp_prepare_cpus(CONFIG_NR_CPUS);
@@ -50,13 +51,22 @@ noinline void rest_init(void)
 	mark_rodata_ro();
 
 	system_state = SYSTEM_RUNNING;
-//	mm.vma_rb_root = RB_ROOT;
-//	mm.pgd = (pgd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
-//	spin_lock_init(&mm.page_table_lock);
-//	spin_lock_init(&mm.vma_lock);
-//	vma = untype_get_vmap_area(0x10000, 0x10000, VM_WRITE, &mm, 0);
-	
-//	printf("sssssssssssss %d\n", vmap_page_range(vma));
+
+	mm.vma_rb_root = RB_ROOT;
+	mm.pgd = (pgd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+	mm_pgtables_bytes_init(&mm);
+	spin_lock_init(&mm.page_table_lock);
+	spin_lock_init(&mm.vma_lock);
+	vma = untype_get_vmap_area(0x80000000, 0x11000000, VM_WRITE, &mm, 0);
+
+	printf("sssssssssssss %d\n", vmap_page_range(vma));
+	printf("aaaaaa  0x%llx\n", mm_pgtables_bytes(&mm));
+	vumap_page_range(vma);
+	printf("bbbbbb  0x%llx\n", mm_pgtables_bytes(&mm));
+	untype_free_vmap_area(0x20000000, &mm);
+	printf("sssssssssssss %d\n", vmap_page_range(vma));
+	printf("AAAAAAAAAAAA\n");
+
 	while (1);
 }
 

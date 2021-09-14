@@ -34,5 +34,6 @@ extern struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 extern void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm);
 
 extern int vmap_page_range(struct vm_area_struct *vma);
+extern void vumap_page_range(struct vm_area_struct *vma);
 
 #endif /* !__SEL4M_OBJECT_H_ */

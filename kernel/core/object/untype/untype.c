@@ -42,6 +42,107 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
 				(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]));
 }
 
+static void vunmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
+						unsigned long addr, unsigned long end)
+{
+	pte_t *ptep;
+	pte_t pte;
+	struct page *page;
+	unsigned long start;
+	int nr = 0;
+
+	start = addr;
+	ptep = pte_offset_kernel(pmdp, addr);
+	do {
+		if (pte_none(*ptep))
+			continue;
+		pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
+		page = phys_to_page(__pte_to_phys(pte));
+		pte_clear(NULL, NULL, ptep);
+		__free_page(page);
+		nr++;
+	} while (ptep++, addr += PAGE_SIZE, addr != end);
+
+	page = pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp)));
+	pmd_clear(NULL, NULL, pmdp);
+	put_page(page);
+	mm_dec_nr_ptes(vma->vm_mm);
+}
+
+static void vunmap_pmd_range(struct vm_area_struct *vma, pud_t *pudp,
+						unsigned long addr, unsigned long end)
+{
+	pmd_t *pmdp;
+	unsigned long next;
+	unsigned long start;
+
+	start = addr;
+	pmdp = pmd_offset(pudp, addr);
+	do {
+		next = pmd_addr_end(addr, end);
+		if (pmd_clear_huge(pmdp))
+			continue;
+		if (pmd_none_or_clear_bad(pmdp))
+			continue;
+		vunmap_pte_range(vma, pmdp, addr, next);
+	} while (pmdp++, addr = next, addr != end);
+
+	pmdp = pmd_offset(pudp, start);
+	pud_clear(NULL, NULL, pudp);
+	put_page(virt_to_page(pmdp));
+	mm_dec_nr_pmds(vma->vm_mm);
+}
+
+static void vumap_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
+						unsigned long addr, unsigned long end)
+{
+	pud_t *pudp;
+	unsigned long next;
+	unsigned long start;
+
+	start = addr;
+	pudp = pud_offset(pgdp, addr);
+	do {
+		next = pud_addr_end(addr, end);
+		if (pud_clear_huge(pudp))
+			continue;
+		if (pud_none_or_clear_bad(pudp))
+			continue;
+		vunmap_pmd_range(vma, pudp, addr, next);
+	} while (pudp++, addr = next, addr != end);
+
+	pudp = pud_offset(pgdp, start);
+	pgd_clear(NULL, NULL, pgdp);
+	put_page(virt_to_page(pudp));
+	mm_dec_nr_puds(vma->vm_mm);
+}
+
+void vumap_page_range(struct vm_area_struct *vma)
+{
+	pgd_t *pgdp;
+	unsigned long next;
+	unsigned long addr;
+	unsigned long end;
+
+	if (!vma)
+		return;
+
+	addr = vma->vm_start;
+	end = vma->vm_end;
+	if (addr >= end) {
+		WARN_ON(1);
+		return;
+	}
+
+	pgdp = pgd_offset(vma->vm_mm->pgd, addr);
+	do {
+		next = pgd_addr_end(addr, vma->vm_end);
+		if (pgd_none_or_clear_bad(pgdp))
+			continue;
+		vumap_pud_range(vma, pgdp, addr, next);
+	} while (pgdp++, addr = next, addr != end);
+}
+
 static int __pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
 {
 	pud_t *new = (pud_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
@@ -53,7 +154,7 @@ static int __pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long ad
 	spin_lock(&vma->vm_mm->page_table_lock);
 	if (!pgd_present(*pgdp)) {
 		__pgd_populate(pgdp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
-		vma->pud_pages[vma->nr_pud_pages++] = virt_to_page((void *)new);
+		mm_inc_nr_puds(vma->vm_mm);
 	} else
 		free_page((u64)new);
 
@@ -68,7 +169,7 @@ static inline pud_t *pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned
 		NULL : pud_offset(pgdp, address);
 }
 
-static int __pmd_alloc(struct mm_struct *mm, pud_t *pudp, unsigned long address)
+static int __pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long address)
 {
 	pmd_t *new = (pmd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!new)
@@ -76,22 +177,23 @@ static int __pmd_alloc(struct mm_struct *mm, pud_t *pudp, unsigned long address)
 
 	smp_wmb();
 
-	spin_lock(&mm->page_table_lock);
-	if (!pud_present(*pudp))
+	spin_lock(&vma->vm_mm->page_table_lock);
+	if (!pud_present(*pudp)) {
 		__pud_populate(pudp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
-	else
+		mm_inc_nr_pmds(vma->vm_mm);
+	} else
 		free_page((u64)new);
-	spin_unlock(&mm->page_table_lock);
+	spin_unlock(&vma->vm_mm->page_table_lock);
 	return 0;
 }
 
-static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pudp, unsigned long address)
+static inline pmd_t *pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long address)
 {
-	return (unlikely(pud_none(*pudp)) && __pmd_alloc(mm, pudp, address)) ?
+	return (unlikely(pud_none(*pudp)) && __pmd_alloc(vma, pudp, address)) ?
 		NULL : pmd_offset(pudp, address);
 }
 
-static int __pte_alloc(struct mm_struct *mm, pmd_t *pmdp, unsigned long address)
+static int __pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
 {
 	pte_t *new = (pte_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!new)
@@ -99,23 +201,24 @@ static int __pte_alloc(struct mm_struct *mm, pmd_t *pmdp, unsigned long address)
 
 	smp_wmb();
 
-	spin_lock(&mm->page_table_lock);
-	if (!pmd_present(*pmdp))
+	spin_lock(&vma->vm_mm->page_table_lock);
+	if (!pmd_present(*pmdp)) {
 		__pmd_populate(pmdp, virt_to_phys((void *)new), PMD_TYPE_TABLE);
-	else
+		mm_inc_nr_ptes(vma->vm_mm);
+	} else
 		free_page((u64)new);
-	spin_unlock(&mm->page_table_lock);
+	spin_unlock(&vma->vm_mm->page_table_lock);
 	return 0;
 }
 
-static inline pte_t *pte_alloc(struct mm_struct *mm, pmd_t *pmdp, unsigned long address)
+static inline pte_t *pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
 {
-	return (unlikely(pmd_none(*pmdp)) && __pte_alloc(mm, pmdp, address)) ?
+	return (unlikely(pmd_none(*pmdp)) && __pte_alloc(vma, pmdp, address)) ?
 		NULL : pte_offset_kernel(pmdp, address);
 }
 
-static int vmap_pte_range(struct mm_struct *mm, pmd_t *pmdp,
-					unsigned long addr, unsigned long end, pgprot_t prot, int *nr)
+static int vmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
+					unsigned long addr, unsigned long end, int *nr)
 {
 	pte_t *pte;
 
@@ -123,8 +226,7 @@ static int vmap_pte_range(struct mm_struct *mm, pmd_t *pmdp,
 	 * nr is a running index into the array which helps higher level
 	 * callers keep track of where we're up to.
 	 */
-
-	pte = pte_alloc(mm, pmdp, addr);
+	pte = pte_alloc(vma, pmdp, addr);
 	if (!pte)
 		return -ENOMEM;
 	do {
@@ -135,24 +237,25 @@ static int vmap_pte_range(struct mm_struct *mm, pmd_t *pmdp,
 		if (WARN_ON(!page))
 			return -ENOMEM;
 
-		set_pte(pte, mk_pte(page, prot));
+		set_pte(pte, mk_pte(page, vma->vm_page_prot));
 		(*nr)++;
 	} while (pte++, addr += PAGE_SIZE, addr != end);
+
 	return 0;
 }
 
-static int vmap_pmd_range(struct mm_struct *mm, pud_t *pudp,
-					unsigned long addr, unsigned long end, pgprot_t prot, int *nr)
+static int vmap_pmd_range(struct vm_area_struct *vma, pud_t *pudp,
+					unsigned long addr, unsigned long end, int *nr)
 {
 	pmd_t *pmd;
 	unsigned long next;
 
-	pmd = pmd_alloc(mm, pudp, addr);
+	pmd = pmd_alloc(vma, pudp, addr);
 	if (!pmd)
 		return -ENOMEM;
 	do {
 		next = pmd_addr_end(addr, end);
-		if (vmap_pte_range(mm, pmd, addr, next, prot, nr))
+		if (vmap_pte_range(vma, pmd, addr, next, nr))
 			return -ENOMEM;
 	} while (pmd++, addr = next, addr != end);
 
@@ -160,18 +263,17 @@ static int vmap_pmd_range(struct mm_struct *mm, pud_t *pudp,
 }
 
 static int vmap_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
-					unsigned long addr, unsigned long end)
+					unsigned long addr, unsigned long end, int *nr)
 {
 	pud_t *pud;
 	unsigned long next;
-	int nr;
 
 	pud = pud_alloc(vma, pgdp, addr);
 	if (!pud)
 		return -ENOMEM;
 	do {
 		next = pud_addr_end(addr, end);
-		if (vmap_pmd_range(vma->vm_mm, pud, addr, next, vma->vm_page_prot, &nr))
+		if (vmap_pmd_range(vma, pud, addr, next, nr))
 			return -ENOMEM;
 	} while (pud++, addr = next, addr != end);
 
@@ -184,21 +286,32 @@ int vmap_page_range(struct vm_area_struct *vma)
 	unsigned long next;
 	unsigned long addr;
 	int err = 0;
+	int nr = 0;
 
 	if (!vma)
 		return -EINVAL;
 
 	addr = vma->vm_start;
-	WARN_ON(addr >= vma->vm_end);
+	if (addr >= vma->vm_end) {
+		WARN_ON(1);
+		return -EINVAL;
+	}
+
 	pgdp = pgd_offset(vma->vm_mm->pgd, addr);
 	do {
 		next = pgd_addr_end(addr, vma->vm_end);
-		err = vmap_pud_range(vma, pgdp, addr, next);
+		err = vmap_pud_range(vma, pgdp, addr, next, &nr);
 		if (err)
-			return err;
+			goto err;
 	} while (pgdp++, addr = next, addr != vma->vm_end);
 
-	return vma->nr_pages;
+	if (nr != vma->nr_pages)
+		goto err;
+
+	return nr;
+err:
+	vumap_page_range(vma);
+	return err;
 }
 
 static bool __insert_vma_area(struct vm_area_struct *vma)
@@ -268,6 +381,8 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 
 	vma->vm_page_prot = vm_get_page_prot(flags);
 	vma->vm_flags = flags;
+
+	vma->nr_pages = size >> PAGE_SHIFT;
 
 	vma->vm_mm = mm;
 	spin_lock(&mm->vma_lock);

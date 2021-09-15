@@ -45,9 +45,18 @@ void __init dump_stack_set_arch_desc(const char *fmt, ...)
 
 void hang(const char *fmt, ...)
 {
-    static char buf[1024];
-    s64 len;
+	int this_cpu = smp_processor_id();
+	static char buf[1024];
+	s64 len;
 	va_list args;
+
+	/*
+	 * Disable local interrupts. This will prevent panic_smp_self_stop
+	 * from deadlocking the first cpu that invokes the panic, since
+	 * there is nothing to prevent an interrupt handler (that runs
+	 * after setting panic_cpu) from invoking panic() again.
+	 */
+	local_irq_disable();
 
 	va_start(args, fmt);
 	len = vscnprintf(buf, sizeof(buf), fmt, args);
@@ -56,9 +65,11 @@ void hang(const char *fmt, ...)
 	if (len && buf[len - 1] == '\n')
 		buf[len - 1] = '\0';
 
-    printf("%s\n", buf);
+	smp_send_stop();
 
-    while (1)
+	printf("Kernel panic on CPU%d - not syncing: %s\n", this_cpu, buf);
+	printf("---[ end Kernel panic - not syncing: %s ]---\n", buf);
+	while (1)
 		cpu_relax();
 }
 

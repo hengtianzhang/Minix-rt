@@ -393,6 +393,26 @@ static inline int pgd_none_or_clear_bad(pgd_t *pgd)
 #define mk_pmd(page,prot)	pfn_pmd(page_to_pfn(page),prot)
 
 /*
+ *	pte update
+ */
+/**************************************************************************/
+static inline int pte_same(pte_t pte_a, pte_t pte_b)
+{
+	pteval_t lhs, rhs;
+
+	lhs = pte_val(pte_a);
+	rhs = pte_val(pte_b);
+
+	if (pte_present(pte_a))
+		lhs &= ~PTE_RDONLY;
+
+	if (pte_present(pte_b))
+		rhs &= ~PTE_RDONLY;
+
+	return (lhs == rhs);
+}
+
+/*
  *	Define vmemmap 
  */
 /**************************************************************************/
@@ -403,5 +423,8 @@ int pmd_set_huge(pmd_t *pmdp, phys_addr_t phys, pgprot_t prot);
 int pud_clear_huge(pud_t *pudp);
 int pmd_clear_huge(pmd_t *pmdp);
 
+extern int ptep_set_access_flags(struct vm_area_struct *vma,
+				 unsigned long address, pte_t *ptep,
+				 pte_t entry, int dirty);
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PGTABLE_H_ */

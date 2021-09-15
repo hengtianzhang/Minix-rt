@@ -394,6 +394,12 @@ extern asmlinkage __printf(1, 2) __cold
 int printf(const char *fmt, ...);
 
 #ifdef __KERNEL__
+
+#define KERN_SOH	"\001"		/* ASCII Start Of Header */
+#define KERN_SOH_ASCII	'\001'
+
+#define KERN_CONT	KERN_SOH "c"
+
 extern char *kasprintf(gfp_t gfp, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
 extern char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);

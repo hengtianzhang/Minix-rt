@@ -26,4 +26,6 @@ static inline void irq_enter(void)
 
 #define preempt_enable_no_resched()
 
+#define preemptible()				0
+
 #endif /* !__SEL4M_PREEMPT_H_ */

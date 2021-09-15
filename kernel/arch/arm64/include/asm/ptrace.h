@@ -68,7 +68,11 @@
  */
 #define NO_SYSCALL (-1)
 
+#define AARCH64_INSN_SIZE 4
+
 #ifndef __ASSEMBLY__
+
+#include <base/common.h>
 
 #include <asm/base/types.h>
 /*
@@ -109,6 +113,85 @@ struct pt_regs {
 	u64 unused;	// maintain 16 byte alignment
 	u64 stackframe[2];
 };
+
+#define user_mode(regs)	\
+	(((regs)->pstate & PSR_MODE_MASK) == PSR_MODE_EL0t)
+
+#define processor_mode(regs) \
+	((regs)->pstate & PSR_MODE_MASK)
+
+#define interrupts_enabled(regs) \
+	(!((regs)->pstate & PSR_I_BIT))
+
+#define fast_interrupts_enabled(regs) \
+	(!((regs)->pstate & PSR_F_BIT))
+
+/**
+ * regs_get_register() - get register value from its offset
+ * @regs:	pt_regs from which register value is gotten
+ * @offset:	offset of the register.
+ *
+ * regs_get_register returns the value of a register whose offset from @regs.
+ * The @offset is the offset of the register in struct pt_regs.
+ * If @offset is bigger than MAX_REG_OFFSET, this returns 0.
+ */
+static inline u64 regs_get_register(struct pt_regs *regs, unsigned int offset)
+{
+	u64 val = 0;
+
+	WARN_ON(offset & 7);
+
+	offset >>= 3;
+	switch (offset) {
+	case 0 ... 30:
+		val = regs->regs[offset];
+		break;
+	case offsetof(struct pt_regs, sp) >> 3:
+		val = regs->sp;
+		break;
+	case offsetof(struct pt_regs, pc) >> 3:
+		val = regs->pc;
+		break;
+	case offsetof(struct pt_regs, pstate) >> 3:
+		val = regs->pstate;
+		break;
+	default:
+		val = 0;
+	}
+
+	return val;
+}
+
+/*
+ * Read a register given an architectural register index r.
+ * This handles the common case where 31 means XZR, not SP.
+ */
+static inline unsigned long pt_regs_read_reg(const struct pt_regs *regs, int r)
+{
+	return (r == 31) ? 0 : regs->regs[r];
+}
+
+/*
+ * Write a register given an architectural register index r.
+ * This handles the common case where 31 means XZR, not SP.
+ */
+static inline void pt_regs_write_reg(struct pt_regs *regs, int r,
+				     unsigned long val)
+{
+	if (r != 31)
+		regs->regs[r] = val;
+}
+
+/* Valid only for Kernel mode traps. */
+static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
+{
+	return regs->sp;
+}
+
+static inline unsigned long regs_return_value(struct pt_regs *regs)
+{
+	return regs->regs[0];
+}
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PTRACE_H_ */

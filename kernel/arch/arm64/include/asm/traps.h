@@ -1,4 +1,6 @@
 /*
+ * Based on arch/arm/include/asm/traps.h
+ *
  * Copyright (C) 2012 ARM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,16 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __ASM_DEBUG_MONITORS_H_
-#define __ASM_DEBUG_MONITORS_H_
+#ifndef __ASM_TRAP_H_
+#define __ASM_TRAP_H_
 
-#ifdef __KERNEL__
+#include <base/compiler.h>
 
-/* Low-level stepping controls. */
-#define DBG_MDSCR_SS		(1 << 0)
-#define DBG_SPSR_SS		(1 << 21)
+void arm64_force_sig_fault(int signo, int code, void __user *addr, const char *str);
+void arm64_force_sig_mceerr(int code, void __user *addr, short lsb, const char *str);
+void arm64_skip_faulting_instruction(struct pt_regs *regs, unsigned long size);
 
-#define	DBG_ESR_EVT(x)		(((x) >> 27) & 0x7)
-
-#endif /* __KERNEL__ */
-#endif /* !__ASM_DEBUG_MONITORS_H_ */
+#endif /* !__ASM_TRAP_H_ */

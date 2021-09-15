@@ -6,6 +6,7 @@
 struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	[0 ... CONFIG_NR_CPUS - 1] = {
 		.thread_info	= INIT_THREAD_INFO(idle_threads),
+		.stack_refcount	= ATOMIC_INIT(1),
 		.state 			= 0,
 		.prio			= MAX_PRIO,
 		.static_prio	= MAX_PRIO,
@@ -36,5 +37,5 @@ void __init early_idle_task_init(void)
 
 void __init service_core_init(void)
 {
-	
+
 }

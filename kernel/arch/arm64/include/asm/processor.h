@@ -24,6 +24,20 @@
 
 #include <asm/base/processor.h>
 
+#define KERNEL_DS		UL(-1)
+#define USER_DS			((UL(1) << MAX_USER_VA_BITS) - 1)
+
+#define DEFAULT_MAP_WINDOW_64	(UL(1) << VA_BITS)
+#define TASK_SIZE_64		(UL(1) << vabits_user)
+
+#define DEFAULT_MAP_WINDOW	DEFAULT_MAP_WINDOW_64
+#define TASK_SIZE		TASK_SIZE_64
+
+#define STACK_TOP_MAX		DEFAULT_MAP_WINDOW_64
+#define TASK_UNMAPPED_BASE	(PAGE_ALIGN(DEFAULT_MAP_WINDOW / 4))
+
+#define STACK_TOP		STACK_TOP_MAX
+
 struct cpu_context {
 	unsigned long x19;
 	unsigned long x20;
@@ -42,10 +56,16 @@ struct cpu_context {
 
 struct thread_struct {
 	struct cpu_context	cpu_context;	/* cpu context */
+
+	unsigned long		fault_address;	/* fault info */
+	unsigned long		fault_code;	/* ESR_EL1 value */
 };
 
 extern struct task_struct *cpu_switch_to(struct task_struct *prev,
 					 struct task_struct *next);
+
+#define task_pt_regs(p) \
+	((struct pt_regs *)(THREAD_SIZE + task_stack_page(p)) - 1)
 
 #endif /* __KERNEL__ */
 #endif /* !__ASSEMBLY__*/

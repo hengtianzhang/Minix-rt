@@ -30,6 +30,7 @@
 #include <asm/kernel-pgtable.h>
 #include <asm/deubg-monitors.h>
 #include <asm/thread_info.h>
+#include <asm/ptrace.h>
 
 #include <generated/asm-offsets.h>
 
@@ -347,6 +348,15 @@
 	cmp	\kaddr, \size
 	b.lo	9998b
 	dsb	\domain
+	.endm
+
+/*
+ * Remove the address tag from a virtual address, if present.
+ */
+	.macro	clear_address_tag, dst, addr
+	tst	\addr, #(1 << 55)
+	bic	\dst, \addr, #(0xff << 56)
+	csel	\dst, \dst, \addr, eq
 	.endm
 
 #endif /* !__ASM_ASSEMBLER_H_ */

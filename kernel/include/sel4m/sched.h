@@ -106,6 +106,8 @@ struct task_struct {
 	u64			stack_canary;
 #endif
 	void				*stack;
+	/* A live task holds one reference: */
+	atomic_t			stack_refcount;
 
 	atomic_t usage;
 
@@ -168,6 +170,24 @@ static inline unsigned int task_cpu(const struct task_struct *tsk)
 static inline void *task_stack_page(const struct task_struct *tsk)
 {
 	return tsk->stack;
+}
+
+static inline unsigned long *end_of_stack(const struct task_struct *task)
+{
+	return task->stack;
+}
+
+static inline void *try_get_task_stack(struct task_struct *tsk)
+{
+	return atomic_inc_not_zero(&tsk->stack_refcount) ?
+		task_stack_page(tsk) : NULL;
+}
+
+extern void kfree(const void *);
+static inline void put_task_stack(struct task_struct *tsk)
+{
+	if (atomic_dec_and_test(&tsk->stack_refcount))
+		kfree(tsk->stack);
 }
 
 /* set thread flags in other task's structures

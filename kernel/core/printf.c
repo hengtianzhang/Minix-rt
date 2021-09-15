@@ -11,6 +11,27 @@ static DEFINE_RAW_SPINLOCK(printk_lock);
 
 #define EXT_LINE_MAX	32
 
+static inline int printf_get_level(const char *buffer)
+{
+	if (buffer[0] == KERN_SOH_ASCII && buffer[1]) {
+		switch (buffer[1]) {
+		case '0' ... '7':
+		case 'd':	/* KERN_DEFAULT */
+		case 'c':	/* KERN_CONT */
+			return buffer[1];
+		}
+	}
+	return 0;
+}
+
+static inline const char *printf_skip_level(const char *buffer)
+{
+	if (printf_get_level(buffer))
+		return buffer + 2;
+
+	return buffer;
+}
+
 static size_t print_time(u64 ts, char *buf)
 {
 	u64 rem_nsec = do_div(ts, 1000000000);
@@ -27,6 +48,7 @@ asmlinkage int vprintf_emit(int facility, int level,
 	static char textbuf[1024];
 	char extbuf[EXT_LINE_MAX];
 	char *text = textbuf;
+	int skip_time = 0;
 	size_t text_len = 0;
 	u64 flags;
 
@@ -38,9 +60,34 @@ asmlinkage int vprintf_emit(int facility, int level,
 	 */
 	text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
 
-	print_time(local_clock(), extbuf);
-	puts_q(extbuf);
-    puts_q(textbuf);
+	if (text_len && text[text_len - 1] == '\n')
+		text_len--;
+
+	/* strip kernel syslog prefix and extract log level or control flags */
+	if (facility == 0) {
+		int kern_level = printf_get_level(text);
+
+		if (kern_level) {
+			const char *end_of_header = printf_skip_level(text);
+			switch (kern_level) {
+				case 'c':
+					skip_time = 1;
+			}
+			/*
+			 * No need to check length here because vscnprintf
+			 * put '\0' at the end of the string. Only valid and
+			 * newly printed level is detected.
+			 */
+			text_len -= end_of_header - text;
+			text = (char *)end_of_header;
+		}
+	}
+
+	if (likely(!skip_time)) {
+		print_time(local_clock(), extbuf);
+		puts_q(extbuf);
+	}
+    puts_q(text);
 
 	raw_spin_unlock_irqrestore(&printk_lock, flags);
 

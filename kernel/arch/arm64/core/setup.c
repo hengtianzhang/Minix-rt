@@ -25,6 +25,7 @@
 #include <sel4m/memory.h>
 #include <sel4m/of_fdt.h>
 #include <sel4m/psci.h>
+#include <sel4m/stat.h>
 
 #include <asm/base/processor.h>
 
@@ -62,6 +63,7 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 		return;
 
 	printf("Machine model: %s\n", name);
+	dump_stack_set_arch_desc("%s (DT)", name);
 }
 
 static void __init setup_fixmap_console(void)

@@ -25,17 +25,26 @@
 
 #define TIF_SIGPENDING		0
 #define TIF_NEED_RESCHED	1
-#define TIF_POLLING_NRFLAG	2
+#define TIF_FSCHECK			2	/* Check FS is USER_DS on return */
 #define TIF_SINGLESTEP		3
+#define TIF_POLLING_NRFLAG	4
 
 #define _TIF_SIGPENDING			(1 << TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED		(1 << TIF_NEED_RESCHED)
 #define _TIF_POLLING_NRFLAG		(1 << TIF_POLLING_NRFLAG)
 #define _TIF_SINGLESTEP			(1 << TIF_SINGLESTEP)
+#define _TIF_FSCHECK			(1 << TIF_FSCHECK)
+
+#define _TIF_WORK_MASK		(_TIF_SIGPENDING | _TIF_NEED_RESCHED | _TIF_FSCHECK)
+
+#define _TIF_SYSCALL_WORK	(0)
 
 #ifndef __ASSEMBLY__
 
 #include <asm/current.h>
+#include <asm/processor.h>
+
+typedef unsigned long mm_segment_t;
 
 struct task_struct;
 
@@ -44,7 +53,7 @@ struct task_struct;
  */
 struct thread_info {
 	unsigned long		flags;		/* low level flags */
-
+	mm_segment_t		addr_limit;	/* address limit */
 	u64		preempt_count;	/* 0 => preemptible, <0 => bug */
 };
 
@@ -62,6 +71,7 @@ struct thread_info {
 {								\
 	.flags		= _TIF_POLLING_NRFLAG,		\
 	.preempt_count	= 0,		\
+	.addr_limit	= KERNEL_DS,				\
 }
 
 #endif /* !__ASSEMBLY__ */

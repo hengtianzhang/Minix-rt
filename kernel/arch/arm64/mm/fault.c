@@ -166,9 +166,8 @@ void show_pte(unsigned long addr)
 		ptep = pte_offset_kernel(pmdp, addr);
 		pte = READ_ONCE(*ptep);
 		printf(KERN_CONT ", pte=%016llx", pte_val(pte));
+		printf(KERN_CONT "\n");
 	} while(0);
-
-	printf(KERN_CONT "\n");
 }
 
 /*

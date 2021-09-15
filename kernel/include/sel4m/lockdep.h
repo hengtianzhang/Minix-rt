@@ -71,7 +71,7 @@ struct lock_class_key { };
 #define lockdep_recursing(tsk)			(0)
 
 #define lock_contended(lockdep_map, ip) do {} while (0)
-#define lock_acquired(lockdep_map, ip) do {} while (0)
+#define lock_acquired(lockdep_map) do {} while (0)
 
 #define LOCK_CONTENDED(_lock, try, lock) \
 	lock(_lock)

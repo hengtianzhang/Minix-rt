@@ -456,6 +456,8 @@ void untype_free_mm_struct(struct mm_struct *mm)
 	BUG_ON(mm_pgtables_bytes(mm));
 	BUG_ON(!mm->pgd);
 
+	BUG_ON(!atomic_dec_and_test(&mm->mm_count));
+
 	free_page((u64)mm->pgd);
 	kfree(mm);
 }

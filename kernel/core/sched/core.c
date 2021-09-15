@@ -3776,9 +3776,6 @@ void __init sched_init_smp(void)
 		cpumask_set_cpu(smp_processor_id(), &non_isolated_cpus);
 	mutex_unlock(&sched_hotcpu_mutex);
 
-	/* Move init over to a non-isolated CPU */
-	if (set_cpus_allowed(current, non_isolated_cpus) < 0)
-		BUG();
 	sched_init_granularity();
 }
 

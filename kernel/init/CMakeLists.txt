@@ -1,4 +1,4 @@
 
 kernel_sources(
-	main.c init_idle.c
+	main.c init_task.c
 )

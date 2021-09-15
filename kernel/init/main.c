@@ -42,6 +42,8 @@ noinline void rest_init(void)
 
 	untype_core_init();
 
+	service_core_init();
+
 	untype_core_init_late();
 
 	mark_rodata_ro();

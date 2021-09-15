@@ -16,7 +16,7 @@ struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	},
 };
 
-void early_idle_task_init(void)
+void __init early_idle_task_init(void)
 {
 	int cpu;
 	struct task_struct *idle;
@@ -32,4 +32,9 @@ void early_idle_task_init(void)
 		snprintf(idle->comm, TASK_COMM_LEN, "idle-%d", cpu);
 		spin_lock_init(&idle->pi_lock);
 	}
+}
+
+void __init service_core_init(void)
+{
+	
 }

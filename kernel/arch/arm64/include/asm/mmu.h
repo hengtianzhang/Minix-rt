@@ -40,6 +40,8 @@ extern void mark_linear_text_alias_ro(void);
 extern void mark_rodata_ro(void);
 extern void unmap_kernel_range(u64 addr, u64 size);
 extern void free_initmem(void);
+extern int asids_init(void);
+extern void verify_cpu_asid_bits(void);
 
 #define INIT_MM_CONTEXT(name)	\
 	.pgd = init_pg_dir,

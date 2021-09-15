@@ -88,11 +88,30 @@ struct secondary_data {
 
 extern struct secondary_data secondary_data;
 
+static inline void cpu_park_loop(void)
+{
+	for (;;) {
+		wfe();
+		wfi();
+	}
+}
+
 static inline void update_cpu_boot_status(int val)
 {
 	WRITE_ONCE(secondary_data.status, val);
 	/* Ensure the visibility of the status update */
 	dsb(ishst);
+}
+
+/*
+ * The calling secondary CPU has detected serious configuration mismatch,
+ * which calls for a kernel panic. Update the boot status and park the calling
+ * CPU.
+ */
+static inline void cpu_panic_kernel(void)
+{
+	update_cpu_boot_status(CPU_PANIC_KERNEL);
+	cpu_park_loop();
 }
 
 enum ipi_msg_type {

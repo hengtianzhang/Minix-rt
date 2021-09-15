@@ -7,6 +7,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/preempt.h>
 
+#include <asm/mmu_context.h>
 #include <asm/mmu.h>
 #include <asm/current.h>
 #include <asm/sections.h>
@@ -437,6 +438,7 @@ struct mm_struct *untype_alloc_mm_struct(void)
 	mm_pgtables_bytes_init(mm);
 	spin_lock_init(&mm->page_table_lock);
 	atomic_set(&mm->mm_count, 1);
+	init_new_context(NULL, mm);
 
 	return mm;
 err:

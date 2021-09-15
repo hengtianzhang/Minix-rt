@@ -44,6 +44,9 @@ extern u64 idmap_ptrs_per_pgd;
 
 extern void cpu_do_idle(void);
 extern void cpu_do_switch_mm(unsigned long pgd_phys, struct mm_struct *mm);
+extern void check_and_switch_context(struct mm_struct *mm, unsigned int cpu);
+
+#define init_new_context(tsk,mm)	({ atomic64_set(&(mm)->context.id, 0); 0; })
 
 static inline void contextidr_thread_switch(struct task_struct *next)
 {
@@ -160,7 +163,7 @@ static inline void cpu_replace_ttbr1(pgd_t *pgdp)
 
 static inline void __switch_mm(struct mm_struct *next)
 {
-//	unsigned int cpu = smp_processor_id();
+	unsigned int cpu = smp_processor_id();
 
 	/*
 	 * init_mm.pgd does not contain any user mappings and it is always
@@ -170,8 +173,8 @@ static inline void __switch_mm(struct mm_struct *next)
 		cpu_set_reserved_ttbr0();
 		return;
 	}
-	/* TODO */
-	//check_and_switch_context(next, cpu);
+
+	check_and_switch_context(next, cpu);
 }
 
 static inline void

@@ -2631,7 +2631,7 @@ asmlinkage void __sched preempt_schedule(void)
 asmlinkage void __sched preempt_schedule_irq(void)
 {
 	struct thread_info *ti = current_thread_info();
-
+	return;//TODO
 	/* Catch callers which need to be fixed */
 	BUG_ON(ti->preempt_count || !irqs_disabled());
 

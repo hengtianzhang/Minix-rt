@@ -33,6 +33,7 @@
 #include <asm/exception.h>
 #include <asm/ptrace.h>
 #include <asm/uaccess.h>
+#include <asm/arch_timer.h>
 
 static const char *handler[]= {
 	"Synchronous Abort",
@@ -387,7 +388,77 @@ static void user_cache_maint_handler(unsigned int esr, struct pt_regs *regs)
 		arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
 }
 
+static void cntvct_read_handler(unsigned int esr, struct pt_regs *regs)
+{
+	int rt = ESR_ELx_SYS64_ISS_RT(esr);
 
+	pt_regs_write_reg(regs, rt, arch_counter_get_cntvct());
+	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+}
+
+static void cntfrq_read_handler(unsigned int esr, struct pt_regs *regs)
+{
+	int rt = ESR_ELx_SYS64_ISS_RT(esr);
+
+	pt_regs_write_reg(regs, rt, arch_timer_get_rate());
+	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+}
+
+static void wfi_handler(unsigned int esr, struct pt_regs *regs)
+{
+	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+}
+
+struct sys64_hook {
+	unsigned int esr_mask;
+	unsigned int esr_val;
+	void (*handler)(unsigned int esr, struct pt_regs *regs);
+};
+
+static struct sys64_hook sys64_hooks[] = {
+	{
+		.esr_mask = ESR_ELx_SYS64_ISS_EL0_CACHE_OP_MASK,
+		.esr_val = ESR_ELx_SYS64_ISS_EL0_CACHE_OP_VAL,
+		.handler = user_cache_maint_handler,
+	},
+	{
+		/* Trap read access to CNTVCT_EL0 */
+		.esr_mask = ESR_ELx_SYS64_ISS_SYS_OP_MASK,
+		.esr_val = ESR_ELx_SYS64_ISS_SYS_CNTVCT,
+		.handler = cntvct_read_handler,
+	},
+	{
+		/* Trap read access to CNTFRQ_EL0 */
+		.esr_mask = ESR_ELx_SYS64_ISS_SYS_OP_MASK,
+		.esr_val = ESR_ELx_SYS64_ISS_SYS_CNTFRQ,
+		.handler = cntfrq_read_handler,
+	},
+	{
+		/* Trap WFI instructions executed in userspace */
+		.esr_mask = ESR_ELx_WFx_MASK,
+		.esr_val = ESR_ELx_WFx_WFI_VAL,
+		.handler = wfi_handler,
+	},
+	{},
+};
+
+asmlinkage void __exception do_sysinstr(unsigned int esr, struct pt_regs *regs)
+{
+	struct sys64_hook *hook;
+
+	for (hook = sys64_hooks; hook->handler; hook++)
+		if ((hook->esr_mask & esr) == hook->esr_val) {
+			hook->handler(esr, regs);
+			return;
+		}
+
+	/*
+	 * New SYS instructions may previously have been undefined at EL0. Fall
+	 * back to our usual undefined instruction handler so that we handle
+	 * these consistently.
+	 */
+	do_undefinstr(regs);
+}
 
 static const char *esr_class_str[] = {
 	[0 ... ESR_ELx_EC_MAX]		= "UNRECOGNIZED EC",
@@ -435,18 +506,6 @@ const char *esr_get_class_string(u32 esr)
 	return esr_class_str[ESR_ELx_EC(esr)];
 }
 
-
-
-/*
- * Initial handler for AArch64 BRK exceptions
- * This handler only used until debug_traps_init().
- */
-int __init early_brk64(unsigned long addr, unsigned int esr,
-		struct pt_regs *regs)
-{
-	return -1;
-}
-
 /*
  * bad_mode handles the impossible case in the exception vector. This is always
  * fatal.
@@ -459,4 +518,56 @@ asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr)
 
 	local_daif_mask();
 	hang("bad mode");
+}
+
+/*
+ * bad_el0_sync handles unexpected, but potentially recoverable synchronous
+ * exceptions taken from EL0. Unlike bad_mode, this returns.
+ */
+asmlinkage void bad_el0_sync(struct pt_regs *regs, int reason, unsigned int esr)
+{
+	void __user *pc = (void __user *)regs->pc;
+
+	current->thread.fault_address = 0;
+	current->thread.fault_code = esr;
+
+	arm64_force_sig_fault(SIGILL, ILL_ILLOPC, pc,
+			      "Bad EL0 synchronous exception");
+}
+
+asmlinkage void do_serror(struct pt_regs *regs, unsigned int esr)
+{
+	nmi_enter();
+
+	nmi_exit();
+}
+
+void __pte_error(const char *file, int line, unsigned long val)
+{
+	printf("%s:%d: bad pte %016lx.\n", file, line, val);
+}
+
+void __pmd_error(const char *file, int line, unsigned long val)
+{
+	printf("%s:%d: bad pmd %016lx.\n", file, line, val);
+}
+
+void __pud_error(const char *file, int line, unsigned long val)
+{
+	printf("%s:%d: bad pud %016lx.\n", file, line, val);
+}
+
+void __pgd_error(const char *file, int line, unsigned long val)
+{
+	printf("%s:%d: bad pgd %016lx.\n", file, line, val);
+}
+
+/*
+ * Initial handler for AArch64 BRK exceptions
+ * This handler only used until debug_traps_init().
+ */
+int __init early_brk64(unsigned long addr, unsigned int esr,
+		struct pt_regs *regs)
+{
+	return -1;
 }

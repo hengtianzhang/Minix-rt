@@ -7,7 +7,7 @@ kernel_library_sources(
 	entry.S smccc-call.S
 	setup.c smp.c process.c cpu_ops.c psci.c cpuinfo.c
 	irq.c ioremap.c time.c
-	traps.c
+	traps.c fpsimd.c signal.c syscall.c
 )
 
 set_property(GLOBAL PROPERTY LINKER_SCRIPT_S "${CMAKE_CURRENT_LIST_DIR}/linker.lds.S")

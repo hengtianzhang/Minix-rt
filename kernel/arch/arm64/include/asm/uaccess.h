@@ -45,6 +45,8 @@ static inline void set_fs(mm_segment_t fs)
 	asm ("nop");
 }
 
+#define segment_eq(a, b)	((a) == (b))
+
 /*
  * Test whether a block of memory is a valid user space address.
  * Returns 1 if the range is valid, 0 otherwise.

@@ -21,6 +21,16 @@
 
 #ifndef __ASSEMBLY__
 
+extern void __pte_error(const char *file, int line, unsigned long val);
+extern void __pmd_error(const char *file, int line, unsigned long val);
+extern void __pud_error(const char *file, int line, unsigned long val);
+extern void __pgd_error(const char *file, int line, unsigned long val);
+
+#define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
+#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
+#define pud_ERROR(pud)		__pud_error(__FILE__, __LINE__, pud_val(pud))
+#define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
+
 extern pgd_t init_pg_dir[PTRS_PER_PGD];
 extern pgd_t init_pg_end[];
 extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
@@ -336,7 +346,7 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
 
 static inline void pmd_clear_bad(pmd_t *pmd)
 {
-	WARN(1, "Pmd bad!\n");
+	pmd_ERROR(*pmd);
 	pmd_clear(NULL, NULL, pmd);
 }
 
@@ -353,7 +363,7 @@ static inline int pmd_none_or_clear_bad(pmd_t *pmd)
 
 static inline void pud_clear_bad(pud_t *pud)
 {
-	WARN(1, "Pud bad!\n");
+	pud_ERROR(*pud);
 	pud_clear(NULL, NULL, pud);
 }
 
@@ -370,7 +380,7 @@ static inline int pud_none_or_clear_bad(pud_t *pud)
 
 static inline void pgd_clear_bad(pgd_t *pgd)
 {
-	WARN(1, "Pgd bad!\n");
+	pgd_ERROR(*pgd);
 	pgd_clear(NULL, NULL, pgd);
 }
 

@@ -21,6 +21,9 @@ static inline void irq_enter(void)
 
 }
 
+#define nmi_enter()
+#define nmi_exit()
+
 # define add_preempt_count(val)	
 # define sub_preempt_count(val)	
 

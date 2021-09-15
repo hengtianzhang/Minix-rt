@@ -22,6 +22,8 @@
 #ifndef __ASSEMBLY__
 #ifdef __KERNEL__
 
+#include <asm/memory.h>
+
 #include <asm/base/processor.h>
 
 #define KERNEL_DS		UL(-1)

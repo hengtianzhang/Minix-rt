@@ -73,6 +73,8 @@ int main(void)
 	DEFINE(S_STACKFRAME,		offsetof(struct pt_regs, stackframe));
 	DEFINE(S_FRAME_SIZE,		sizeof(struct pt_regs));
 	BLANK();
+	DEFINE(THREAD_CPU_CONTEXT,	offsetof(struct task_struct, thread.cpu_context));
+	BLANK();
 
 /*
  * Now, Global data offsets

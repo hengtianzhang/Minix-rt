@@ -117,5 +117,19 @@
 	unlikely(__ret_warn_once);				\
 })
 
+/*
+ * Since detected data corruption should stop operation on the affected
+ * structures. Return value must be checked and sanely acted on by caller.
+ */
+static inline bool check_data_corruption(bool v) { return v; }
+#define CHECK_DATA_CORRUPTION(condition, fmt, ...)			 \
+	check_data_corruption(({					 \
+		bool corruption = unlikely(condition);			 \
+		if (corruption) {					 \
+			WARN(1, fmt, ##__VA_ARGS__);		 \
+		}							 \
+		corruption;						 \
+	}))
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__BASE_BUG_H_ */

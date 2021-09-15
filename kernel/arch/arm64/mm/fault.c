@@ -368,6 +368,8 @@ static int do_page_fault(unsigned long addr, unsigned int esr,
 				   struct pt_regs *regs)
 {
 	int fault;
+
+	is_el0_instruction_abort(esr);
 	/* TODO */
 	fault = __do_page_fault(NULL, addr, 0, 0, NULL);
 	return fault;

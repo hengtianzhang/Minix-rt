@@ -39,6 +39,7 @@
 #include <sel4m/interrupt.h>
 #include <sel4m/irq.h>
 #include <sel4m/object/pid.h>
+#include <sel4m/sched/idle.h>
 
 #include <asm-generic/switch_to.h>
 
@@ -3834,7 +3835,7 @@ void __init sched_init(void)
 		__set_bit(MAX_RT_PRIO, array->bitmap);
 	}
 
-	set_load_weight(&init_task);
+	set_load_weight(idle_threads);
 
 	open_softirq(SCHED_SOFTIRQ, run_rebalance_domains, NULL);
 

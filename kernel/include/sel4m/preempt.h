@@ -25,4 +25,6 @@ static inline void irq_enter(void)
 # define sub_preempt_count(val)	
 
 #define preempt_enable_no_resched()
+
+#define INIT_PREEMPT_COUNT 1
 #endif /* !__SEL4M_PREEMPT_H_ */

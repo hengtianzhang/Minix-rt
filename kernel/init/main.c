@@ -13,7 +13,6 @@
 #include <sel4m/cpu.h>
 #include <sel4m/irqflags.h>
 #include <sel4m/smp.h>
-#include <sel4m/stackprotector.h>
 #include <sel4m/of_fdt.h>
 #include <sel4m/extable.h>
 #include <sel4m/irq.h>
@@ -22,7 +21,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/gfp.h>
 #include <sel4m/object/untype.h>
-#include <sel4m/object/pid.h>
+#include <sel4m/sched/idle.h>
 
 enum system_states system_state __read_mostly;
 
@@ -63,10 +62,10 @@ asmlinkage __visible void __init start_kernel(void)
 	boot_cpu_init();
 	early_arch_platform_init();
 
+	early_idle_task_init();	
+
 	printf("%s", linux_banner);
 	setup_arch();
-
-	boot_init_stack_canary();
 
 	smp_prepare_boot_cpu();
 
@@ -80,8 +79,6 @@ asmlinkage __visible void __init start_kernel(void)
 	 * time - but meanwhile we still have a functioning scheduler.
 	 */
 	sched_init();
-
-	process_pid_init();
 
 	/*
 	 * Disable preemption - early bootup scheduling is extremely

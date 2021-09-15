@@ -44,7 +44,8 @@ extern int asids_init(void);
 extern void verify_cpu_asid_bits(void);
 
 #define INIT_MM_CONTEXT(name)	\
-	.pgd = init_pg_dir,
+	.pgd 		= init_pg_dir,		\
+	.context.id = ATOMIC64_INIT(0), 
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_MMU_H_ */

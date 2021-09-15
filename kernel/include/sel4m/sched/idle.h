@@ -4,6 +4,8 @@
 
 extern struct task_struct idle_threads[CONFIG_NR_CPUS];
 
-void idle_prepare_init(struct task_struct *idle, int cpu);
+extern void idle_prepare_init(struct task_struct *idle, int cpu);
+
+extern void early_idle_task_init(void);
 
 #endif /* !__SEL4M_SCHED_IDLE_H_ */

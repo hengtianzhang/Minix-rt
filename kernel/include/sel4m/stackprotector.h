@@ -7,7 +7,8 @@
 #ifdef CONFIG_STACKPROTECTOR
 # include <asm/stackprotector.h>
 #else
-static inline void boot_init_stack_canary(void)
+struct task_struct;
+static inline void boot_init_stack_canary(struct task_struct *tsk)
 {
 }
 #endif

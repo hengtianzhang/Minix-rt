@@ -29,16 +29,16 @@ extern unsigned long long __stack_chk_guard;
  * NOTE: this must only be called from functions that never return,
  * and it must always be inlined.
  */
-static __always_inline void boot_init_stack_canary(void)
+static __always_inline void boot_init_stack_canary(struct task_struct *tsk)
 {
 	u64 canary = random();
 
 	canary ^= SEL4M_VERSION_CODE;
 	canary &= CANARY_MASK;
 
-	current->stack_canary = canary;
+	tsk->stack_canary = canary;
 
-	__stack_chk_guard = current->stack_canary;
+	__stack_chk_guard = tsk->stack_canary;
 }
 
 #endif	/* !__ASM_STACKPROTECTOR_H_ */

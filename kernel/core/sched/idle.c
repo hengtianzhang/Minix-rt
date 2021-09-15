@@ -8,8 +8,6 @@
 #include <sel4m/sched.h>
 #include <sel4m/sched/idle.h>
 
-struct task_struct idle_threads[CONFIG_NR_CPUS];
-
 void __init idle_prepare_init(struct task_struct *idle, int cpu)
 {
 	idle->stack = &kernel_stack_alloc[cpu];

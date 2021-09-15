@@ -45,18 +45,7 @@ struct task_struct;
 struct thread_info {
 	unsigned long		flags;		/* low level flags */
 
-	union {
-		u64		preempt_count;	/* 0 => preemptible, <0 => bug */
-		struct {
-#ifdef CONFIG_CPU_BIG_ENDIAN
-			u32	need_resched;
-			u32	count;
-#else
-			u32	count;
-			u32	need_resched;
-#endif
-		} preempt;
-	};
+	u64		preempt_count;	/* 0 => preemptible, <0 => bug */
 };
 
 #define thread_saved_pc(tsk)	\
@@ -68,6 +57,12 @@ struct thread_info {
 
 #define current_thread_info() 	((struct thread_info *)current)
 #define task_thread_info(p)		(&(p->thread_info))
+
+#define INIT_THREAD_INFO(tsk)				\
+{								\
+	.flags		= _TIF_POLLING_NRFLAG,		\
+	.preempt_count	= INIT_PREEMPT_COUNT,		\
+}
 
 #endif /* !__ASSEMBLY__ */
 #endif /* __KERNEL__ */

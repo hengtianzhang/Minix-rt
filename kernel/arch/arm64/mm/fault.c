@@ -141,7 +141,7 @@ void show_pte(unsigned long addr)
 		 mm == &init_mm ? VA_BITS : (int) vabits_user, mm->pgd);
 	pgdp = pgd_offset(mm->pgd, addr);
 	pgd = READ_ONCE(*pgdp);
-	printf("[%016lx] pgd=%016llx", addr, pgd_val(pgd));
+	printf("[%016lx] pgd=%016llx\n", addr, pgd_val(pgd));
 
 	do {
 		pud_t *pudp, pud;

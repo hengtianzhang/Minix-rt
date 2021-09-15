@@ -10,12 +10,10 @@
 #include <sel4m/sched.h>
 #include <sel4m/sched/idle.h>
 
-static int bringup_cpu(unsigned int cpu)
+static __init int bringup_cpu(unsigned int cpu)
 {
 	struct task_struct *idle = &idle_threads[cpu];
 	int ret;
-
-	idle_prepare_init(idle, cpu);
 
 	init_idle(idle, cpu);
 
@@ -25,7 +23,7 @@ static int bringup_cpu(unsigned int cpu)
 	return ret;
 }
 
-static int do_cpu_up(unsigned int cpu)
+static __init int do_cpu_up(unsigned int cpu)
 {
 	int err;
 
@@ -46,10 +44,6 @@ void __init smp_init(void)
 {
 	int num_cpus;
 	unsigned int cpu = smp_processor_id();
-
-	idle_prepare_init(&idle_threads[cpu], cpu);
-
-	init_idle(&idle_threads[cpu], cpu);
 
 	printf("Bringing up secondary CPUs ...\n");
 

@@ -22,7 +22,7 @@
 #include <asm/mmu_context.h>
 #include <asm/daifflags.h>
 
-static int cpu_running[CONFIG_NR_CPUS];
+static int __initdata cpu_running[CONFIG_NR_CPUS];
 
 /*
  * as from 2.5, kernels no longer have an init_tasks structure
@@ -348,7 +348,7 @@ static int boot_secondary(unsigned int cpu, struct task_struct *idle)
 
 static int op_cpu_kill(unsigned int cpu);
 
-int __cpu_up(unsigned int cpu, struct task_struct *idle)
+int __init __cpu_up(unsigned int cpu, struct task_struct *idle)
 {
 	int ret;
 	s64 status;

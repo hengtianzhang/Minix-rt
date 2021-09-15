@@ -30,7 +30,6 @@ void early_idle_task_init(void)
 		idle->oncpu = 0;
 		idle->stack = &kernel_stack_alloc[cpu];
 		snprintf(idle->comm, TASK_COMM_LEN, "idle-%d", cpu);
-		cpumask_set_cpu(cpu, &idle->cpus_allowed);
 		spin_lock_init(&idle->pi_lock);
 	}
 }

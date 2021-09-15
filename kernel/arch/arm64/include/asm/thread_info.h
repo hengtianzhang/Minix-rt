@@ -61,7 +61,7 @@ struct thread_info {
 #define INIT_THREAD_INFO(tsk)				\
 {								\
 	.flags		= _TIF_POLLING_NRFLAG,		\
-	.preempt_count	= INIT_PREEMPT_COUNT,		\
+	.preempt_count	= 0,		\
 }
 
 #endif /* !__ASSEMBLY__ */

@@ -102,8 +102,8 @@ void __show_regs(struct pt_regs *regs)
 	print_pstate(regs);
 
 	if (!user_mode(regs)) {
-		printf("pc : %pS\n", (void *)regs->pc);
-		printf("lr : %pS\n", (void *)lr);
+		printf("pc : %p\n", (void *)regs->pc);
+		printf("lr : %p\n", (void *)lr);
 	} else {
 		printf("pc : %016llx\n", regs->pc);
 		printf("lr : %016llx\n", lr);

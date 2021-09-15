@@ -123,7 +123,7 @@ void show_pte(unsigned long addr)
 		/* TTBR0 */
 		mm = current->mm;
 		if (mm == &init_mm) {
-			printf(KERN_CONT "[%016lx] user address but active_mm is swapper\n",
+			printf("[%016lx] user address but mm is kernel\n",
 				 addr);
 			return;
 		}
@@ -131,17 +131,17 @@ void show_pte(unsigned long addr)
 		/* TTBR1 */
 		mm = &init_mm;
 	} else {
-		printf(KERN_CONT "[%016lx] address between user and kernel address ranges\n",
+		printf("[%016lx] address between user and kernel address ranges\n",
 			 addr);
 		return;
 	}
 
-	printf(KERN_CONT "%s pgtable: %luk pages, %u-bit VAs, pgdp = %p\n",
+	printf("%s pgtable: %luk pages, %u-bit VAs, pgdp = %p\n",
 		 mm == &init_mm ? "kernel" : "user", PAGE_SIZE / SZ_1K,
 		 mm == &init_mm ? VA_BITS : (int) vabits_user, mm->pgd);
 	pgdp = pgd_offset(mm->pgd, addr);
 	pgd = READ_ONCE(*pgdp);
-	printf(KERN_CONT "[%016lx] pgd=%016llx", addr, pgd_val(pgd));
+	printf("[%016lx] pgd=%016llx", addr, pgd_val(pgd));
 
 	do {
 		pud_t *pudp, pud;

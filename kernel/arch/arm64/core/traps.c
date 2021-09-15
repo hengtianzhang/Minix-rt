@@ -46,7 +46,7 @@ int show_unhandled_signals = 0;
 
 static void dump_backtrace_entry(unsigned long where)
 {
-	printf(" %pS\n", (void *)where);
+	printf(" %p\n", (void *)where);
 }
 
 static void __dump_instr(const char *lvl, struct pt_regs *regs)

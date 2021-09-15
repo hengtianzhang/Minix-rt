@@ -320,7 +320,7 @@ kernel_cc_option(-fno-asynchronous-unwind-tables)
 kernel_cc_option(-fno-PIE)
 
 get_property(CSTD GLOBAL PROPERTY CSTD)
-set_ifndef(CSTD gnu89)
+set_ifndef(CSTD gnu11)
 
 # @Intent: Obtain compiler specific flag for specifying the c standard
 kernel_compile_options(

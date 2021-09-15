@@ -50,7 +50,7 @@ noinline void rest_init(void)
 
 	system_state = SYSTEM_RUNNING;
 
-	while (1);
+	cpu_idle();
 }
 
 asmlinkage __visible void __init start_kernel(void)

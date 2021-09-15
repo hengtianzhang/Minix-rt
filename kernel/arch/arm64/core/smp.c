@@ -87,7 +87,7 @@ asmlinkage void secondary_start_kernel(void)
 
 	system_tick_init();
 
-	while (1); // TODO
+	cpu_idle();
 }
 
 static bool bootcpu_valid __initdata;
@@ -433,4 +433,8 @@ static int op_cpu_kill(unsigned int cpu)
 		return 0;
 
 	return cpu_ops[cpu]->cpu_kill(cpu);
+}
+
+void smp_send_stop(void)
+{
 }

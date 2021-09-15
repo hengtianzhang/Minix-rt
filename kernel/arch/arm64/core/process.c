@@ -4,6 +4,8 @@
 #include <sel4m/irqflags.h>
 #include <sel4m/sched.h>
 
+#include <asm/mmu_context.h>
+
 /*
  * Function pointers to optional machine specific functions
  */
@@ -24,7 +26,7 @@ void machine_restart(char *cmd)
 {
 	/* Disable interrupts first */
 	local_irq_disable();
-	//smp_send_stop();
+	smp_send_stop();
 
 	/* Now call the architecture specific reboot code. */
 	if (arm_pm_restart)
@@ -44,9 +46,18 @@ void machine_restart(char *cmd)
 void machine_power_off(void)
 {
 	local_irq_disable();
-	//smp_send_stop();
+	smp_send_stop();
 	if (pm_power_off)
 		pm_power_off();
+}
+
+/*
+ * This is our default idle handler.
+ */
+void arch_cpu_idle(void)
+{
+	cpu_do_idle();
+	local_irq_enable();
 }
 
 struct task_struct *__entry_task[CONFIG_NR_CPUS];

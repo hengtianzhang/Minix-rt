@@ -322,10 +322,6 @@ void sched_clock_idle_wakeup_event(u64 delta_ns)
 	spin_unlock(&rq->lock);
 }
 
-#ifndef tsk_is_polling
-#define tsk_is_polling(t) test_tsk_thread_flag(t, TIF_POLLING_NRFLAG)
-#endif
-
 void resched_task(struct task_struct *p)
 {
 	int cpu;

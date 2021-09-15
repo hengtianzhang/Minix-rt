@@ -7,6 +7,85 @@
 
 #include <sel4m/sched.h>
 #include <sel4m/sched/idle.h>
+#include <sel4m/thread.h>
+
+/* Linker adds these: start and end of __cpuidle functions */
+extern char __cpuidle_text_start[], __cpuidle_text_end[];
+
+void __weak arch_cpu_idle_enter(void) { }
+void __weak arch_cpu_idle_exit(void) { }
+void __weak arch_cpu_idle(void)
+{
+	local_irq_enable();
+	cpu_relax();
+}
+
+/**
+ * default_idle_call - Default CPU idle routine.
+ *
+ * To use when the cpuidle framework cannot be used.
+ */
+void __cpuidle default_idle_call(void)
+{
+	if (current_clr_polling_and_test()) {
+		local_irq_enable();
+	} else {
+		arch_cpu_idle();
+	}
+}
+
+/**
+ * cpuidle_idle_call - the main idle function
+ *
+ * NOTE: no locks or semaphores should be used here
+ *
+ * On archs that support TIF_POLLING_NRFLAG, is called with polling
+ * set, and it returns with polling set.  If it ever stops polling, it
+ * must clear the polling bit.
+ */
+static void cpuidle_idle_call(void)
+{
+	local_irq_disable();
+
+	/*
+	 * Check if the idle task must be rescheduled. If it is the
+	 * case, exit the function after re-enabling the local irq.
+	 */
+	if (need_resched()) {
+		local_irq_enable();
+		return;
+	}
+
+	default_idle_call();
+
+	__current_set_polling();
+
+	/*
+	 * It is up to the idle functions to reenable local interrupts
+	 */
+	if (WARN_ON_ONCE(irqs_disabled()))
+		local_irq_enable();
+}
+
+void cpu_idle(void)
+{
+	__current_set_polling();
+
+	while (1) {
+		rmb();
+
+		arch_cpu_idle_enter();
+
+		while (!need_resched())
+			cpuidle_idle_call();
+
+		arch_cpu_idle_exit();
+
+		preempt_enable_no_resched();
+		schedule();
+		preempt_disable();
+	}
+}
 
 /*
  * Idle tasks are unconditionally rescheduled:

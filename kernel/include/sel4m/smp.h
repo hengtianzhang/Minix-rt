@@ -47,6 +47,11 @@ extern int __cpu_up(unsigned int cpunum, struct task_struct *tidle);
  */
 extern void smp_cpus_done(unsigned int max_cpus);
 
+/*
+ * stops all CPUs but the current one:
+ */
+extern void smp_send_stop(void);
+
 extern void smp_init(void);
 
 /*

@@ -6,9 +6,6 @@
 
 #include <asm/cpu.h>
 
-/* Attach to any functions which should be considered cpuidle. */
-#define __cpuidle	__attribute__((__section__(".cpuidle.text")))
-
 #define CPU_ONLINE		0x0002 /* CPU (unsigned)v is up */
 #define CPU_UP_PREPARE		0x0003 /* CPU (unsigned)v coming up */
 #define CPU_UP_CANCELED		0x0004 /* CPU (unsigned)v NOT coming up */

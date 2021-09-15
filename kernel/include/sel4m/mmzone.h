@@ -55,8 +55,6 @@ struct zone {
 
 	atomic_long_t		managed_pages;
 
-	unsigned long		used_pages;
-
 	const char		*name;
 
 	int initialized;

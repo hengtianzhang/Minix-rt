@@ -19,6 +19,8 @@
 
 #define VM_IOREMAP	0x00000010
 
+extern pgprot_t vm_get_page_prot(unsigned long vm_flags);
+
 struct untype_struct {
 	unsigned long nr_pages;
 	unsigned long nr_used_pages;
@@ -35,5 +37,8 @@ extern void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm);
 
 extern int vmap_page_range(struct vm_area_struct *vma);
 extern void vumap_page_range(struct vm_area_struct *vma);
+
+extern struct mm_struct *untype_alloc_mm_struct(void);
+extern void untype_free_mm_struct(struct mm_struct *mm);
 
 #endif /* !__SEL4M_OBJECT_H_ */

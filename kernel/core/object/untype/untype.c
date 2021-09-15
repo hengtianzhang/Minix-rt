@@ -124,8 +124,10 @@ void vumap_page_range(struct vm_area_struct *vma)
 	unsigned long addr;
 	unsigned long end;
 
-	if (!vma)
+	if (!vma) {
+		WARN_ON(1);
 		return;
+	}
 
 	addr = vma->vm_start;
 	end = vma->vm_end;
@@ -400,12 +402,15 @@ void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 {
 	struct vm_area_struct *vma;
 
-	if (!mm)
+	if (!mm) {
+		WARN_ON(1);
 		return;
+	}
 
 	spin_lock(&mm->vma_lock);
 	vma = __find_vma_area(addr, mm);
 	if (!vma) {
+		WARN_ON(1);
 		spin_unlock(&mm->vma_lock);
 		return;
 	}
@@ -413,6 +418,44 @@ void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 	spin_unlock(&mm->vma_lock);
 
 	kfree(vma);
+}
+
+struct mm_struct *untype_alloc_mm_struct(void)
+{
+	struct mm_struct *mm;
+
+	mm = kmalloc(sizeof (*mm), GFP_KERNEL | GFP_ZERO);
+	if (!mm)
+		return NULL;
+
+	mm->pgd = (pgd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+	if (!mm->pgd)
+		goto err;
+
+	mm->vma_rb_root = RB_ROOT;
+	spin_lock_init(&mm->vma_lock);
+	mm_pgtables_bytes_init(mm);
+	spin_lock_init(&mm->page_table_lock);
+	atomic_set(&mm->mm_count, 1);
+
+	return mm;
+err:
+	kfree(mm);
+	return NULL;
+}
+
+void untype_free_mm_struct(struct mm_struct *mm)
+{
+	if (!mm) {
+		WARN_ON(1);
+		return;
+	}
+
+	BUG_ON(mm_pgtables_bytes(mm));
+	BUG_ON(!mm->pgd);
+
+	free_page((u64)mm->pgd);
+	kfree(mm);
 }
 
 void untype_core_init(void)
@@ -461,7 +504,7 @@ static void untype_print_memory_info(void)
 
 	printf("Services memory info:\n");
 	printf("  Memory: %luK/%luK used\n",
-		nr_used_pages() << (PAGE_SHIFT - 10),
+		(nr_managed_pages() - nr_free_pages()) << (PAGE_SHIFT - 10),
 		nr_managed_pages() << (PAGE_SHIFT - 10));
 
 	for_each_possible_cpu(cpu)

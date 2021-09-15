@@ -200,7 +200,6 @@ done_merging:
 	list_add(&page->lru, &zone->free_area[order].free_list);
 out:
 	zone->free_area[order].nr_free++;
-	zone->used_pages -= 1 << order;
 }
 
 /*
@@ -471,7 +470,6 @@ static void __init __free_pages_boot_core(struct page *page, unsigned int order)
 	set_page_count(p, 0);
 
 	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
-	page_zone(page)->used_pages += nr_pages;
 	set_page_refcounted(page);
 	__free_pages(page, order);
 }
@@ -675,7 +673,6 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order)
 		rmv_page_order(page);
 		area->nr_free--;
 		expand(zone, page, order, current_order, area);
-		zone->used_pages += 1 << order;
 
 		return page;
 	}
@@ -1047,7 +1044,6 @@ static void __init free_area_init_node(phys_addr_t node_start_pfn)
 			zone_pageset_init(zone, cpu);
 
 		zone->zone_start_pfn = 0;
-		zone->used_pages = 0;
 		zone->zone_pgdat = pgdat;
 		zone->name = zone_names[j];
 		atomic_long_set(&zone->managed_pages, 0);
@@ -1221,7 +1217,6 @@ static inline void free_reserved_page(struct page *page)
 	ClearPageReserved(page);
 	init_page_count(page);
 	atomic_long_add(1, &page_zone(page)->managed_pages);
-	page_zone(page)->used_pages += 1;
 	__free_page(page);
 }
 
@@ -1271,18 +1266,21 @@ unsigned long nr_managed_pages(void)
 	return total_pages;
 }
 
-unsigned long nr_used_pages(void)
+unsigned long nr_free_pages(void)
 {
 	enum zone_type i;
-	unsigned long total_pages = 0;
+	unsigned long nr_free = 0;
 	struct zone *zone;
 
 	for (i = 0; i < MAX_NR_ZONES; i++) {
+		int order;
 		zone = NODE_DATA()->node_zones + i;
-		total_pages += zone->used_pages;
+
+		for_each_order(order)
+			nr_free += zone->free_area[order].nr_free * (1 << order);
 	}
 
-	return total_pages;
+	return nr_free;
 }
 
 unsigned long nr_percpu_cache_pages(int cpu)

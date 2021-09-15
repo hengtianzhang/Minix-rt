@@ -136,7 +136,7 @@ static inline struct page *virt_to_head_page(const void *x)
 extern unsigned long total_physpages;
 
 extern unsigned long nr_managed_pages(void);
-extern unsigned long nr_used_pages(void);
+extern unsigned long nr_free_pages(void);
 extern unsigned long nr_percpu_cache_pages(int cpu);
 
 static inline void mm_pgtables_bytes_init(struct mm_struct *mm)

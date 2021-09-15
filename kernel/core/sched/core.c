@@ -40,6 +40,8 @@
 #include <sel4m/irq.h>
 #include <sel4m/object/pid.h>
 #include <sel4m/sched/idle.h>
+#include <sel4m/irq.h>
+#include <sel4m/stat.h>
 
 #include <asm-generic/switch_to.h>
 
@@ -288,40 +290,6 @@ static struct rq *this_rq_lock(void)
 	return rq;
 }
 
-/*
- * We are going deep-idle (irqs are disabled):
- */
-void sched_clock_idle_sleep_event(void)
-{
-	struct rq *rq = cpu_rq(smp_processor_id());
-
-	spin_lock(&rq->lock);
-	__update_rq_clock(rq);
-	spin_unlock(&rq->lock);
-	rq->clock_deep_idle_events++;
-}
-
-/*
- * We just idled delta nanoseconds (called with irqs disabled):
- */
-void sched_clock_idle_wakeup_event(u64 delta_ns)
-{
-	struct rq *rq = cpu_rq(smp_processor_id());
-	u64 now = sched_clock();
-
-	rq->idle_clock += delta_ns;
-	/*
-	 * Override the previous timestamp and ignore all
-	 * sched_clock() deltas that occured while we idled,
-	 * and use the PM-provided delta_ns to advance the
-	 * rq clock:
-	 */
-	spin_lock(&rq->lock);
-	rq->prev_clock_raw = now;
-	rq->clock += delta_ns;
-	spin_unlock(&rq->lock);
-}
-
 void resched_task(struct task_struct *p)
 {
 	int cpu;
@@ -344,7 +312,7 @@ void resched_task(struct task_struct *p)
 		smp_send_reschedule(cpu);
 }
 
-void resched_cpu(int cpu)
+static void resched_cpu(int cpu)
 {
 	struct rq *rq = cpu_rq(cpu);
 	u64 flags;
@@ -2468,7 +2436,7 @@ void scheduler_tick(void)
  */
 static noinline void __schedule_bug(struct task_struct *prev)
 {
-//	struct pt_regs *regs = get_irq_regs();
+	struct pt_regs *regs = get_irq_regs();
 
 	printf("BUG: scheduling while atomic: %s/%d/0x%08x\n",
 		prev->comm, prev->pid.pid, preempt_count());
@@ -2476,11 +2444,10 @@ static noinline void __schedule_bug(struct task_struct *prev)
 	if (irqs_disabled())
 		print_irqtrace_events(prev);
 
-/* TODO */
-//	if (regs)
-//		show_regs(regs);
-//	else
-//		dump_stack();
+	if (regs)
+		show_regs(regs);
+	else
+		dump_stack();
 }
 
 /*
@@ -3267,11 +3234,6 @@ void show_task(struct task_struct *p)
 		;/* TODO *///show_stack(p, NULL);
 }
 
-void init_idle_task(struct task_struct *idle)
-{
-	idle->sched_class = &idle_sched_class;
-}
-
 /**
  * init_idle - set up an idle thread for a given CPU
  * @idle: task in question
@@ -3533,8 +3495,6 @@ init_sched_build_groups(cpumask_t span, const cpumask_t *cpu_map,
 	}
 	last->next = first;
 }
-
-int sched_smt_power_savings = 0, sched_mc_power_savings = 0;
 
 static struct sched_domain phys_domains[CONFIG_NR_CPUS];
 static struct sched_group sched_group_phys[CONFIG_NR_CPUS];

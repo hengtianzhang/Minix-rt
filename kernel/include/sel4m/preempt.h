@@ -1,6 +1,10 @@
 #ifndef __SEL4M_PREEMPT_H_
 #define __SEL4M_PREEMPT_H_
 
+#include <base/linkage.h>
+
+asmlinkage void preempt_schedule(void);
+
 #define preempt_enable()
 #define preempt_disable()
 

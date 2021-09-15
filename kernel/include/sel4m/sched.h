@@ -18,17 +18,23 @@
 /* Linker adds these: start and end of __sched functions */
 extern char __sched_text_start[], __sched_text_end[];
 
+/* Is this address in the __sched functions? */
+extern int in_sched_functions(unsigned long addr);
+
 #define	MAX_SCHEDULE_TIMEOUT	LONG_MAX
 extern s64 schedule_timeout(s64 timeout);
 extern s64 schedule_timeout_interruptible(s64 timeout);
 extern s64 schedule_timeout_uninterruptible(s64 timeout);
 asmlinkage void schedule(void);
+asmlinkage void preempt_schedule(void);
 
 extern int wake_up_state(struct task_struct * tsk, unsigned int state);
 extern int wake_up_process(struct task_struct * tsk);
 extern void wake_up_new_task(struct task_struct * tsk,
 						unsigned long clone_flags);
 extern void kick_process(struct task_struct *tsk);
+
+extern void sched_fork(struct task_struct *p, int clone_flags);
 
 /*
  * Scheduling policies
@@ -322,6 +328,52 @@ extern void scheduler_tick(void);
 extern void sched_init(void);
 extern void sched_init_smp(void);
 extern void init_idle(struct task_struct *idle, int cpu);
-extern void init_idle_task(struct task_struct *idle);
+
+extern cpumask_t nohz_cpu_mask;
+
+/*
+ * For kernel-internal use: high-speed (but slightly incorrect) per-cpu
+ * clock constructed from sched_clock():
+ */
+extern unsigned long long cpu_clock(int cpu);
+extern unsigned long long
+task_sched_runtime(struct task_struct *task);
+
+extern unsigned long weighted_cpuload(const int cpu);
+
+extern void set_task_cpu(struct task_struct *p, unsigned int cpu);
+
+extern void wait_task_inactive(struct task_struct * p);
+
+extern unsigned long nr_running(void);
+extern unsigned long nr_uninterruptible(void);
+extern unsigned long long nr_context_switches(void);
+extern unsigned long nr_iowait(void);
+extern unsigned long nr_active(void);
+
+extern void sched_exec(void);
+
+extern int select_nohz_load_balancer(int cpu);
+extern void partition_sched_domains(int ndoms_new, cpumask_t *doms_new);
+
+extern long sched_setaffinity(pid_t pid, cpumask_t new_mask);
+extern long sched_getaffinity(pid_t pid, cpumask_t *mask);
+
+extern void set_user_nice(struct task_struct *p, long nice);
+extern int task_prio(const struct task_struct *p);
+extern int task_nice(const struct task_struct *p);
+extern int task_curr(const struct task_struct *p);
+extern int sched_setscheduler(struct task_struct *, int, struct sched_param *);
+
+asmlinkage long sys_sched_yield(void);
+asmlinkage long sys_sched_get_priority_max(int policy);
+asmlinkage long sys_sched_get_priority_min(int policy);
+
+extern void yield(void);
+
+extern void io_schedule(void);
+extern long io_schedule_timeout(long timeout);
+
+extern void show_task(struct task_struct *p);
 
 #endif /* !__SEL4M_SCHED_H_ */

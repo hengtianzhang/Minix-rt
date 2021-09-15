@@ -26,6 +26,8 @@
 
 #include <sel4m/jiffies.h>
 
+typedef unsigned long cycles_t;
+
 /* Nanosecond scalar representation for kernel time values */
 typedef s64	ktime_t;
 

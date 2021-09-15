@@ -3,5 +3,5 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-	clear_page.S
+	clear_page.S delay.c
 )

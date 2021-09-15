@@ -13,6 +13,8 @@
 #include <sel4m/cpumask.h>
 #include <sel4m/ktime.h>
 #include <sel4m/cpu.h>
+#include <sel4m/irq.h>
+#include <sel4m/delay.h>
 
 #include <asm/cache.h>
 #include <asm/cacheflush.h>
@@ -22,6 +24,8 @@
 #include <asm/mmu_context.h>
 #include <asm/daifflags.h>
 
+#define NR_IPI	7
+
 static int __initdata cpu_running[CONFIG_NR_CPUS];
 
 /*
@@ -30,6 +34,109 @@ static int __initdata cpu_running[CONFIG_NR_CPUS];
  * where to place its SVC stack
  */
 struct secondary_data secondary_data;
+/* Number of CPUs which aren't online, but looping in kernel text. */
+int cpus_stuck_in_kernel;
+
+enum ipi_msg_type {
+	IPI_RESCHEDULE,
+	IPI_CALL_FUNC,
+	IPI_CPU_STOP,
+	IPI_CPU_CRASH_STOP,
+	IPI_TIMER,
+	IPI_IRQ_WORK,
+	IPI_WAKEUP
+};
+
+static inline int op_cpu_kill(unsigned int cpu)
+{
+	return -ENOSYS;
+}
+
+/*
+ * Boot a secondary CPU, and assign it the specified idle task.
+ * This also gives us the initial stack to use for this CPU.
+ */
+static int boot_secondary(unsigned int cpu, struct task_struct *idle)
+{
+	if (cpu_ops[cpu]->cpu_boot)
+		return cpu_ops[cpu]->cpu_boot(cpu);
+
+	return -EOPNOTSUPP;
+}
+
+int __init __cpu_up(unsigned int cpu, struct task_struct *idle)
+{
+	int ret;
+	s64 status;
+
+	/*
+	 * We need to tell the secondary core where to find its stack and the
+	 * page tables.
+	 */
+	secondary_data.task = idle;
+	secondary_data.stack = task_stack_page(idle) + THREAD_SIZE;
+	update_cpu_boot_status(CPU_MMU_OFF);
+	__flush_dcache_area(&secondary_data, sizeof(secondary_data));
+
+	/*
+	 * Now bring the CPU into our world.
+	 */
+	ret = boot_secondary(cpu, idle);
+	if (ret == 0) {
+		ktime_t delta = 1 * NSEC_PER_SEC;
+		ktime_t start_time = ktime_get();
+
+		while (start_time + delta > ktime_get()) {
+			wfi();
+			wfe();
+			if (cpu_running[cpu] == 1) 
+				break;
+		}
+
+		if (!cpu_online(cpu)) {
+			printf("CPU%u: failed to come online\n", cpu);
+			ret = -EIO;
+		}
+	} else {
+		printf("CPU%u: failed to boot: %d\n", cpu, ret);
+		return ret;
+	}
+
+	secondary_data.task = NULL;
+	secondary_data.stack = NULL;
+	status = READ_ONCE(secondary_data.status);
+
+	if (ret && status) {
+
+		if (status == CPU_MMU_OFF)
+			status = READ_ONCE(__early_cpu_boot_status);
+
+		switch (status & CPU_BOOT_STATUS_MASK) {
+		default:
+			printf("CPU%u: failed in unknown state : 0x%llx\n",
+					cpu, status);
+			break;
+		case CPU_KILL_ME:
+			if (!op_cpu_kill(cpu)) {
+				printf("CPU%u: died during early boot\n", cpu);
+				break;
+			}
+			/* Fall through */
+			printf("CPU%u: may not have shut down cleanly\n", cpu);
+		case CPU_STUCK_IN_KERNEL:
+			printf("CPU%u: is stuck in kernel\n", cpu);
+			if (status & CPU_STUCK_REASON_52_BIT_VA)
+				printf("CPU%u: does not support 52-bit VAs\n", cpu);
+			if (status & CPU_STUCK_REASON_NO_GRAN)
+				printf("CPU%u: does not support %luK granule \n", cpu, PAGE_SIZE / SZ_1K);
+			break;
+		case CPU_PANIC_KERNEL:
+			hang("CPU%u detected unsupported configuration\n", cpu);
+		}
+	}
+
+	return ret;
+}
 
 /*
  * This is the secondary CPU boot entry.  We're using this CPUs
@@ -90,24 +197,28 @@ asmlinkage void secondary_start_kernel(void)
 	cpu_idle();
 }
 
-static bool bootcpu_valid __initdata;
-static unsigned int cpu_count = 1;
-
-/*
- * Initialize cpu operations for a logical cpu and
- * set it in the possible mask on success
- */
-static int __init smp_cpu_setup(int cpu)
+void __init smp_cpus_done(unsigned int max_cpus)
 {
-	if (cpu_read_ops(cpu))
-		return -ENODEV;
+	u32 cwg;
 
-	if (cpu_ops[cpu]->cpu_init(cpu))
-		return -ENODEV;
+	printf("SMP: Total of %d processors activated.\n", num_online_cpus());
 
-	set_cpu_possible(cpu, true);
+	/*
+	 * Check for sane CTR_EL0.CWG value.
+	 */
+	cwg = cache_type_cwg();
+	if (!cwg)
+		printf("No Cache Writeback Granule information, assuming %d\n",
+			ARCH_DMA_MINALIGN);
 
-	return 0;
+	mark_linear_text_alias_ro();
+}
+
+void __init smp_prepare_boot_cpu(void)
+{
+	set_my_cpu_offset(smp_processor_id());
+
+	cpuinfo_store_boot_cpu();
 }
 
 static u64 __init of_get_cpu_mpidr(struct device_node *dn)
@@ -152,6 +263,26 @@ static bool __init is_mpidr_duplicate(unsigned int cpu, u64 hwid)
 			return true;
 	return false;
 }
+
+/*
+ * Initialize cpu operations for a logical cpu and
+ * set it in the possible mask on success
+ */
+static int __init smp_cpu_setup(int cpu)
+{
+	if (cpu_read_ops(cpu))
+		return -ENODEV;
+
+	if (cpu_ops[cpu]->cpu_init(cpu))
+		return -ENODEV;
+
+	set_cpu_possible(cpu, true);
+
+	return 0;
+}
+
+static bool bootcpu_valid __initdata;
+static unsigned int cpu_count = 1;
 
 /*
  * Enumerate the possible CPU set from the device tree and build the
@@ -279,30 +410,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	}
 }
 
-void __init smp_cpus_done(unsigned int max_cpus)
-{
-	u32 cwg;
-
-	printf("SMP: Total of %d processors activated.\n", num_online_cpus());
-
-	/*
-	 * Check for sane CTR_EL0.CWG value.
-	 */
-	cwg = cache_type_cwg();
-	if (!cwg)
-		printf("No Cache Writeback Granule information, assuming %d\n",
-			ARCH_DMA_MINALIGN);
-
-	mark_linear_text_alias_ro();
-}
-
-void __init smp_prepare_boot_cpu(void)
-{
-	set_my_cpu_offset(smp_processor_id());
-
-	cpuinfo_store_boot_cpu();
-}
-
 void (*__smp_cross_call)(const struct cpumask *, unsigned int);
 
 void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
@@ -315,9 +422,9 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
 	__smp_cross_call(target, ipinr);
 }
 
-void smp_send_reschedule(int cpu)
+void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 {
-	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+	smp_cross_call(mask, IPI_CALL_FUNC);
 }
 
 void arch_send_call_function_single_ipi(int cpu)
@@ -325,116 +432,81 @@ void arch_send_call_function_single_ipi(int cpu)
 	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC);
 }
 
-#define NR_IPI	7
+/*
+ * ipi_cpu_stop - handle IPI from smp_send_stop()
+ */
+static void ipi_cpu_stop(unsigned int cpu)
+{
+	set_cpu_online(cpu, false);
+
+	local_daif_mask();
+
+	while (1)
+		cpu_relax();
+}
 
 /*
  * Main handler for inter-processor interrupts
  */
 void handle_IPI(int ipinr, struct pt_regs *regs)
 {
-}
+	unsigned int cpu = smp_processor_id();
+	struct pt_regs *old_regs = set_irq_regs(regs);
 
-/*
- * Boot a secondary CPU, and assign it the specified idle task.
- * This also gives us the initial stack to use for this CPU.
- */
-static int boot_secondary(unsigned int cpu, struct task_struct *idle)
-{
-	if (cpu_ops[cpu]->cpu_boot)
-		return cpu_ops[cpu]->cpu_boot(cpu);
+	switch (ipinr) {
+	case IPI_RESCHEDULE:
+		//scheduler_ipi();
+		break;
 
-	return -EOPNOTSUPP;
-}
+	case IPI_CALL_FUNC:
+		irq_enter();
+		//generic_smp_call_function_interrupt();
+		irq_exit();
+		break;
 
-static int op_cpu_kill(unsigned int cpu);
+	case IPI_CPU_STOP:
+		irq_enter();
+		ipi_cpu_stop(cpu);
+		irq_exit();
+		break;
 
-int __init __cpu_up(unsigned int cpu, struct task_struct *idle)
-{
-	int ret;
-	s64 status;
+	case IPI_CPU_CRASH_STOP:
+		break;
 
-	/*
-	 * We need to tell the secondary core where to find its stack and the
-	 * page tables.
-	 */
-	secondary_data.task = idle;
-	secondary_data.stack = task_stack_page(idle) + THREAD_SIZE;
-	update_cpu_boot_status(CPU_MMU_OFF);
-	__flush_dcache_area(&secondary_data, sizeof(secondary_data));
-
-	/*
-	 * Now bring the CPU into our world.
-	 */
-	ret = boot_secondary(cpu, idle);
-	if (ret == 0) {
-		ktime_t delta = 1 * NSEC_PER_SEC;
-		ktime_t start_time = ktime_get();
-
-		while (start_time + delta > ktime_get()) {
-			wfi();
-			wfe();
-			if (cpu_running[cpu] == 1) 
-				break;
-		}
-
-		if (!cpu_online(cpu)) {
-			printf("CPU%u: failed to come online\n", cpu);
-			ret = -EIO;
-		}
-	} else {
-		printf("CPU%u: failed to boot: %d\n", cpu, ret);
-		return ret;
+	default:
+		printf("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
+		break;
 	}
 
-	secondary_data.task = NULL;
-	secondary_data.stack = NULL;
-	status = READ_ONCE(secondary_data.status);
-
-	if (ret && status) {
-
-		if (status == CPU_MMU_OFF)
-			status = READ_ONCE(__early_cpu_boot_status);
-
-		switch (status & CPU_BOOT_STATUS_MASK) {
-		default:
-			printf("CPU%u: failed in unknown state : 0x%llx\n",
-					cpu, status);
-			break;
-		case CPU_KILL_ME:
-			if (!op_cpu_kill(cpu)) {
-				printf("CPU%u: died during early boot\n", cpu);
-				break;
-			}
-			/* Fall through */
-			printf("CPU%u: may not have shut down cleanly\n", cpu);
-		case CPU_STUCK_IN_KERNEL:
-			printf("CPU%u: is stuck in kernel\n", cpu);
-			if (status & CPU_STUCK_REASON_52_BIT_VA)
-				printf("CPU%u: does not support 52-bit VAs\n", cpu);
-			if (status & CPU_STUCK_REASON_NO_GRAN)
-				printf("CPU%u: does not support %luK granule \n", cpu, PAGE_SIZE / SZ_1K);
-			break;
-		case CPU_PANIC_KERNEL:
-			hang("CPU%u detected unsupported configuration\n", cpu);
-		}
-	}
-
-	return ret;
+	set_irq_regs(old_regs);
 }
 
-static int op_cpu_kill(unsigned int cpu)
+void smp_send_reschedule(int cpu)
 {
-	/*
-	 * If we have no means of synchronising with the dying CPU, then assume
-	 * that it is really dead. We can only wait for an arbitrary length of
-	 * time and hope that it's dead, so let's skip the wait and just hope.
-	 */
-	if (!cpu_ops[cpu]->cpu_kill)
-		return 0;
-
-	return cpu_ops[cpu]->cpu_kill(cpu);
+	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
 }
 
 void smp_send_stop(void)
 {
+	unsigned long timeout;
+
+	if (num_online_cpus() > 1) {
+		cpumask_t mask;
+
+		cpumask_copy(&mask, cpu_online_mask);
+		cpumask_clear_cpu(smp_processor_id(), &mask);
+
+		if (system_state <= SYSTEM_RUNNING)
+			printf("SMP: stopping secondary CPUs\n");
+		smp_cross_call(&mask, IPI_CPU_STOP);
+	}
+
+	/* Wait up to one second for other CPUs to stop */
+	timeout = USEC_PER_SEC;
+	while (num_online_cpus() > 1 && timeout--)
+		udelay(1);
+
+	if (num_online_cpus() > 1)
+		printf("SMP: failed to stop secondary CPUs %ld %p\n",
+			   cpumask_pr_args(cpu_online_mask));
 }

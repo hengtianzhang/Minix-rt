@@ -114,18 +114,11 @@ static inline void cpu_panic_kernel(void)
 	cpu_park_loop();
 }
 
-enum ipi_msg_type {
-	IPI_RESCHEDULE,
-	IPI_CALL_FUNC,
-	IPI_CPU_STOP,
-	IPI_CPU_CRASH_STOP,
-	IPI_TIMER,
-	IPI_IRQ_WORK,
-	IPI_WAKEUP
-};
-
 extern s64 __early_cpu_boot_status;
 extern void secondary_entry(void);
+
+extern void arch_send_call_function_single_ipi(int cpu);
+extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
 
 /*
  * Logical CPU mapping.
@@ -163,8 +156,6 @@ extern void smp_init_cpus(void);
  * Provide a function to raise an IPI cross call on CPUs in callmap.
  */
 extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
-
-extern void arch_send_call_function_single_ipi(int cpu);
 
 extern void crash_smp_send_stop(void);
 

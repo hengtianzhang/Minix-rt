@@ -2570,7 +2570,7 @@ asmlinkage void __sched preempt_schedule(void)
 		return;
 
 	do {
-		add_preempt_count(PREEMPT_ACTIVE);
+		__preempt_count_add(PREEMPT_ACTIVE);
 
 		/*
 		 * We keep the big kernel semaphore locked, but we
@@ -2579,14 +2579,14 @@ asmlinkage void __sched preempt_schedule(void)
 		 */
 		schedule();
 
-		sub_preempt_count(PREEMPT_ACTIVE);
+		__preempt_count_sub(PREEMPT_ACTIVE);
 
 		/*
 		 * Check again in case we missed a preemption opportunity
 		 * between schedule and now.
 		 */
 		barrier();
-	} while (unlikely(test_thread_flag(TIF_NEED_RESCHED)));
+	} while (need_resched());
 }
 
 /*
@@ -2597,13 +2597,11 @@ asmlinkage void __sched preempt_schedule(void)
  */
 asmlinkage void __sched preempt_schedule_irq(void)
 {
-	struct thread_info *ti = current_thread_info();
-	return;//TODO
 	/* Catch callers which need to be fixed */
-	BUG_ON(ti->preempt_count || !irqs_disabled());
+	BUG_ON(preempt_count() || !irqs_disabled());
 
 	do {
-		add_preempt_count(PREEMPT_ACTIVE);
+		__preempt_count_add(PREEMPT_ACTIVE);
 
 		/*
 		 * We keep the big kernel semaphore locked, but we
@@ -2614,14 +2612,14 @@ asmlinkage void __sched preempt_schedule_irq(void)
 		schedule();
 		local_irq_disable();
 
-		sub_preempt_count(PREEMPT_ACTIVE);
+		__preempt_count_sub(PREEMPT_ACTIVE);
 
 		/*
 		 * Check again in case we missed a preemption opportunity
 		 * between schedule and now.
 		 */
 		barrier();
-	} while (unlikely(test_thread_flag(TIF_NEED_RESCHED)));
+	} while (need_resched());
 }
 
 int default_wake_function(wait_queue_t *curr, unsigned mode, int sync,

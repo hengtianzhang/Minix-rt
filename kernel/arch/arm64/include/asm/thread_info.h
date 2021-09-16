@@ -42,7 +42,6 @@
 #ifndef __ASSEMBLY__
 
 #include <asm/current.h>
-#include <asm/processor.h>
 
 typedef unsigned long mm_segment_t;
 
@@ -54,7 +53,7 @@ struct task_struct;
 struct thread_info {
 	unsigned long		flags;		/* low level flags */
 	mm_segment_t		addr_limit;	/* address limit */
-	u64		preempt_count;	/* 0 => preemptible, <0 => bug */
+	int			preempt_count;	/* 0 => preemptible, <0 => bug */
 };
 
 #define thread_saved_pc(tsk)	\

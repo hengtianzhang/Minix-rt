@@ -5,8 +5,8 @@
 #ifndef __ASSEMBLY__
 
 #include <base/compiler.h>
-
 #include <base/types.h>
+#include <base/llist.h>
 
 #include <asm/smp.h>
 #include <asm/memory.h>
@@ -57,7 +57,36 @@ extern void smp_init(void);
 /*
  * Call a function on all processors
  */
-extern int on_each_cpu(void (*func) (void *info), void *info, int retry, int wait);
+extern int on_each_cpu(void (*func) (void *info), void *info, int wait);
+
+typedef void (*smp_call_func_t)(void *info);
+struct call_single_data {
+	union {
+		struct list_head list;
+		struct llist_node llist;
+	};
+	smp_call_func_t func;
+	void *info;
+	u16 flags;
+};
+
+#define get_cpu()		({ preempt_disable(); smp_processor_id(); })
+#define put_cpu()		preempt_enable()
+
+void call_function_init(void);
+void generic_smp_call_function_single_interrupt(void);
+#define generic_smp_call_function_interrupt \
+	generic_smp_call_function_single_interrupt
+
+/*
+ * Call a function on all other processors
+ */
+int smp_call_function(smp_call_func_t func, void *info, int wait);
+void smp_call_function_many(const struct cpumask *mask,
+			    smp_call_func_t func, void *info, bool wait);
+
+int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
+			     int wait);
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__SEL4M_SMP_H_ */

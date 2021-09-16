@@ -82,6 +82,8 @@ asmlinkage __visible void __init start_kernel(void)
 	 */
 	sched_init();
 
+	call_function_init();
+
 	/*
 	 * Disable preemption - early bootup scheduling is extremely
 	 * fragile until we cpu_idle() for the first time.

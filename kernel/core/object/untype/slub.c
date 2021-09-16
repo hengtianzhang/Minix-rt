@@ -425,7 +425,7 @@ static void flush_cpu_slab(void *d)
 
 static void flush_all(struct kmem_cache *s)
 {
-	on_each_cpu(flush_cpu_slab, s, 1, 1);
+	on_each_cpu(flush_cpu_slab, s, 1);
 }
 
 /*

@@ -15,6 +15,8 @@
 #include <sel4m/syscalls.h>
 #include <sel4m/uaccess.h>
 
+#include <asm/processor.h>
+
 /*
  * Called before coming back to user-mode. Returning to user-mode with an
  * address limit different than USER_DS can allow to overwrite kernel memory.

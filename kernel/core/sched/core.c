@@ -45,6 +45,7 @@
 
 #include <asm-generic/switch_to.h>
 
+#include <asm/system_misc.h>
 #include <asm/mmu_context.h>
 
 __cacheline_aligned DEFINE_RWLOCK(tasklist_lock);  /* outer */
@@ -3214,20 +3215,20 @@ void show_task(struct task_struct *p)
 		state < sizeof(stat_nam) - 1 ? stat_nam[state] : '?');
 #if BITS_PER_LONG == 32
 	if (state == TASK_RUNNING)
-		printf(" running  ");
+		printf(KERN_CONT " running  ");
 	else
-		printf(" %08lx ", thread_saved_pc(p));
+		printf(KERN_CONT " %08lx ", thread_saved_pc(p));
 #else
 	if (state == TASK_RUNNING)
-		printf("  running task    ");
+		printf(KERN_CONT "  running task    ");
 	else
-		printf(" %016llx ", thread_saved_pc(p));
+		printf(KERN_CONT " %016llx ", thread_saved_pc(p));
 #endif
-	printf("%5lu %5d %6d\n", free,
-		task_pid_nr(p), task_pid_nr(p->real_parent));
+	printf(KERN_CONT "%5lu %5d %6d\n", free,
+		task_pid_nr(p), p->real_parent ? task_pid_nr(p->real_parent) : 0);
 
 	if (state != TASK_RUNNING)
-		;/* TODO *///show_stack(p, NULL);
+		show_stack(p, NULL);
 }
 
 /**

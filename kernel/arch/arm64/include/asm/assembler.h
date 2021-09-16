@@ -133,6 +133,20 @@
 	isb
 	.endm
 
+/*
+ * Emit an entry into the exception table
+ */
+	.macro		_asm_extable, from, to
+	.pushsection	__ex_table, "a"
+	.align		3
+	.long		(\from - .), (\to - .)
+	.popsection
+	.endm
+
+#define USER(l, x...)				\
+9999:	x;					\
+	_asm_extable	9999b, l
+
 	/*
 	 * Emit a 64-bit absolute little endian symbol reference in a way that
 	 * ensures that it will be resolved at build time, even when building a
@@ -357,6 +371,22 @@
 	tst	\addr, #(1 << 55)
 	bic	\dst, \addr, #(0xff << 56)
 	csel	\dst, \dst, \addr, eq
+	.endm
+
+/*
+ * Now. User data opt
+ */
+
+	.macro uao_ldp l, reg1, reg2, addr, post_inc
+		USER(\l, ldp \reg1, \reg2, [\addr], \post_inc)
+	.endm
+
+	.macro uao_stp l, reg1, reg2, addr, post_inc
+		USER(\l, stp \reg1, \reg2, [\addr], \post_inc)
+	.endm
+
+	.macro uao_user_alternative l, inst, alt_inst, reg, addr, post_inc
+		USER(\l, \inst \reg, [\addr], \post_inc)
 	.endm
 
 #endif /* !__ASM_ASSEMBLER_H_ */

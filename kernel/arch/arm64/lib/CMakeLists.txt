@@ -3,5 +3,6 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-	clear_page.S delay.c
+	clear_page.S delay.c copy_from_user.S
+	copy_to_user.S clear_user.S
 )

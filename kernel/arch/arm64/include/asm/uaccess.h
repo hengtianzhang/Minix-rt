@@ -168,6 +168,12 @@ do {									\
 	}								\
 })
 
+#define __get_user_error(x, ptr, err)					\
+({									\
+	__get_user_check((x), (ptr), (err));				\
+	(void)0;							\
+})
+
 #define __get_user(x, ptr)						\
 ({									\
 	int __gu_err = 0;						\
@@ -176,5 +182,94 @@ do {									\
 })
 
 #define get_user	__get_user
+
+#define __put_user_asm(instr, alt_instr, reg, x, addr, err, feature)	\
+	asm volatile(							\
+	"1:"instr "     " reg "1, [%2]\n"		\
+	"2:\n"								\
+	"	.section .fixup,\"ax\"\n"				\
+	"	.align	2\n"						\
+	"3:	mov	%w0, %3\n"					\
+	"	b	2b\n"						\
+	"	.previous\n"						\
+	_ASM_EXTABLE(1b, 3b)						\
+	: "+r" (err)							\
+	: "r" (x), "r" (addr), "i" (-EFAULT))
+
+#define __put_user_err(x, ptr, err)					\
+do {									\
+	__typeof__(*(ptr)) __pu_val = (x);				\
+	__chk_user_ptr(ptr);						\
+	switch (sizeof(*(ptr))) {					\
+	case 1:								\
+		__put_user_asm("strb", "sttrb", "%w", __pu_val, (ptr),	\
+			       (err), ARM64_HAS_UAO);			\
+		break;							\
+	case 2:								\
+		__put_user_asm("strh", "sttrh", "%w", __pu_val, (ptr),	\
+			       (err), ARM64_HAS_UAO);			\
+		break;							\
+	case 4:								\
+		__put_user_asm("str", "sttr", "%w", __pu_val, (ptr),	\
+			       (err), ARM64_HAS_UAO);			\
+		break;							\
+	case 8:								\
+		__put_user_asm("str", "sttr", "%x", __pu_val, (ptr),	\
+			       (err), ARM64_HAS_UAO);			\
+		break;							\
+	default:							\
+		BUILD_BUG();						\
+	}								\
+} while (0)
+
+#define __put_user_check(x, ptr, err)					\
+({									\
+	__typeof__(*(ptr)) __user *__p = (ptr);				\
+	if (access_ok(__p, sizeof(*__p))) {				\
+		__p = uaccess_mask_ptr(__p);				\
+		__put_user_err((x), __p, (err));			\
+	} else	{							\
+		(err) = -EFAULT;					\
+	}								\
+})
+
+#define __put_user_error(x, ptr, err)					\
+({									\
+	__put_user_check((x), (ptr), (err));				\
+	(void)0;							\
+})
+
+#define __put_user(x, ptr)						\
+({									\
+	int __pu_err = 0;						\
+	__put_user_check((x), (ptr), __pu_err);				\
+	__pu_err;							\
+})
+
+#define put_user	__put_user
+
+extern unsigned long __arch_copy_from_user(void *to, const void __user *from, unsigned long n);
+#define raw_copy_from_user(to, from, n)					\
+({									\
+	__arch_copy_from_user((to), __uaccess_mask_ptr(from), (n));	\
+})
+
+extern unsigned long __arch_copy_to_user(void __user *to, const void *from, unsigned long n);
+#define raw_copy_to_user(to, from, n)					\
+({									\
+	__arch_copy_to_user(__uaccess_mask_ptr(to), (from), (n));	\
+})
+
+#define INLINE_COPY_TO_USER
+#define INLINE_COPY_FROM_USER
+
+extern unsigned long __arch_clear_user(void __user *to, unsigned long n);
+static inline unsigned long __clear_user(void __user *to, unsigned long n)
+{
+	if (access_ok(to, n))
+		n = __arch_clear_user(__uaccess_mask_ptr(to), n);
+	return n;
+}
+#define clear_user	__clear_user
 
 #endif /* !__ASM_UACCESS_H_ */

@@ -127,6 +127,13 @@ static inline void put_page(struct page *page)
 		__put_page(page);
 }
 
+static inline int put_pagetable_testzero(struct page *page)
+{
+	page = compound_head(page);
+
+	return put_page_testzero(page);
+}
+
 static inline struct page *virt_to_head_page(const void *x)
 {
 	struct page *page = virt_to_page(x);

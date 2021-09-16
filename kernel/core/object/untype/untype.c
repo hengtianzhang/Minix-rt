@@ -43,14 +43,33 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
 				(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]));
 }
 
+static struct untyp_ref_pte_talbe *
+vma_find_pte_table(struct vm_area_struct *vma, struct page *pte_page)
+{
+	struct rb_node *node = vma->pte_root.rb_node;
+
+	while (node) {
+		struct untyp_ref_pte_talbe *data = container_of(node, struct untyp_ref_pte_talbe, node);
+	
+		if (pte_page < data->pte_page)
+			node = node->rb_left;
+		else if (pte_page > data->pte_page)
+			node = node->rb_right;
+		else
+			return data;
+	}
+
+	return NULL;
+}
+
 static void vunmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
 						unsigned long addr, unsigned long end)
 {
+	struct untyp_ref_pte_talbe *ur_pte;
 	pte_t *ptep;
 	pte_t pte;
 	struct page *page;
 	unsigned long start;
-	int nr = 0;
 
 	start = addr;
 	ptep = pte_offset_kernel(pmdp, addr);
@@ -61,18 +80,45 @@ static void vunmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
 		page = phys_to_page(__pte_to_phys(pte));
 		pte_clear(NULL, NULL, ptep);
 		__free_page(page);
-		nr++;
 	} while (ptep++, addr += PAGE_SIZE, addr != end);
 
 	page = pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp)));
-	pmd_clear(NULL, NULL, pmdp);
-	put_page(page);
-	mm_dec_nr_ptes(vma->vm_mm);
+	ur_pte = vma_find_pte_table(vma, page);
+	BUG_ON(!ur_pte);
+	rb_erase(&ur_pte->node, &vma->pte_root);
+	kfree(ur_pte);
+
+	if (put_pagetable_testzero(page)) {
+		pmd_clear(NULL, NULL, pmdp);
+		__put_page(page);
+		mm_dec_nr_ptes(vma->vm_mm);
+	}
+}
+
+static struct untyp_ref_pmd_talbe *
+vma_find_pmd_table(struct vm_area_struct *vma, struct page *pmd_page)
+{
+	struct rb_node *node = vma->pmd_root.rb_node;
+
+	while (node) {
+		struct untyp_ref_pmd_talbe *data = container_of(node, struct untyp_ref_pmd_talbe, node);
+	
+		if (pmd_page < data->pmd_page)
+			node = node->rb_left;
+		else if (pmd_page > data->pmd_page)
+			node = node->rb_right;
+		else
+			return data;
+	}
+
+	return NULL;
 }
 
 static void vunmap_pmd_range(struct vm_area_struct *vma, pud_t *pudp,
 						unsigned long addr, unsigned long end)
 {
+	struct untyp_ref_pmd_talbe *ur_pmd;
+	struct page *pmd_page;
 	pmd_t *pmdp;
 	unsigned long next;
 	unsigned long start;
@@ -89,14 +135,43 @@ static void vunmap_pmd_range(struct vm_area_struct *vma, pud_t *pudp,
 	} while (pmdp++, addr = next, addr != end);
 
 	pmdp = pmd_offset(pudp, start);
-	pud_clear(NULL, NULL, pudp);
-	put_page(virt_to_page(pmdp));
-	mm_dec_nr_pmds(vma->vm_mm);
+	pmd_page = virt_to_page(pmdp);
+	ur_pmd = vma_find_pmd_table(vma, pmd_page);
+	BUG_ON(!ur_pmd);
+	rb_erase(&ur_pmd->node, &vma->pmd_root);
+	kfree(ur_pmd);
+
+	if (put_pagetable_testzero(pmd_page)) {
+		pud_clear(NULL, NULL, pudp);
+		__put_page(pmd_page);
+		mm_dec_nr_pmds(vma->vm_mm);
+	}
+}
+
+static struct untyp_ref_pud_talbe *
+vma_find_pud_table(struct vm_area_struct *vma, struct page *pud_page)
+{
+	struct rb_node *node = vma->pud_root.rb_node;
+
+	while (node) {
+		struct untyp_ref_pud_talbe *data = container_of(node, struct untyp_ref_pud_talbe, node);
+	
+		if (pud_page < data->pud_page)
+			node = node->rb_left;
+		else if (pud_page > data->pud_page)
+			node = node->rb_right;
+		else
+			return data;
+	}
+
+	return NULL;
 }
 
 static void vumap_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
 						unsigned long addr, unsigned long end)
 {
+	struct untyp_ref_pud_talbe *ur_pud;
+	struct page *pud_page;
 	pud_t *pudp;
 	unsigned long next;
 	unsigned long start;
@@ -113,9 +188,17 @@ static void vumap_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
 	} while (pudp++, addr = next, addr != end);
 
 	pudp = pud_offset(pgdp, start);
-	pgd_clear(NULL, NULL, pgdp);
-	put_page(virt_to_page(pudp));
-	mm_dec_nr_puds(vma->vm_mm);
+	pud_page = virt_to_page(pudp);
+	ur_pud = vma_find_pud_table(vma, pud_page);
+	BUG_ON(!ur_pud);
+	rb_erase(&ur_pud->node, &vma->pud_root);
+	kfree(ur_pud);
+
+	if (put_pagetable_testzero(pud_page)) {
+		pgd_clear(NULL, NULL, pgdp);
+		__put_page(pud_page);
+		mm_dec_nr_puds(vma->vm_mm);
+	}
 }
 
 void vumap_page_range(struct vm_area_struct *vma)
@@ -146,11 +229,176 @@ void vumap_page_range(struct vm_area_struct *vma)
 	} while (pgdp++, addr = next, addr != end);
 }
 
+static void vunmap_bad_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
+						unsigned long addr, unsigned long end)
+{
+	pte_t *ptep;
+	pte_t pte;
+	struct page *page;
+	unsigned long start;
+
+	start = addr;
+	ptep = pte_offset_kernel(pmdp, addr);
+	do {
+		if (pte_none(*ptep))
+			continue;
+		pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
+		page = phys_to_page(__pte_to_phys(pte));
+		pte_clear(NULL, NULL, ptep);
+		__free_page(page);
+	} while (ptep++, addr += PAGE_SIZE, addr != end);
+}
+
+static void vunmap_bad_pmd_range(struct vm_area_struct *vma, pud_t *pudp,
+						unsigned long addr, unsigned long end)
+{
+	struct untyp_ref_pte_talbe *ur_pte;
+	struct page *pte_page;
+	pmd_t *pmdp;
+	unsigned long next;
+	unsigned long start;
+
+	start = addr;
+	pmdp = pmd_offset(pudp, addr);
+	do {
+		next = pmd_addr_end(addr, end);
+		if (pmd_clear_huge(pmdp))
+			continue;
+		if (pmd_none_or_clear_bad(pmdp))
+			continue;
+		vunmap_bad_pte_range(vma, pmdp, addr, next);
+		pte_page = pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp)));
+		ur_pte = vma_find_pte_table(vma, pte_page);
+		if (ur_pte) {
+			if (put_pagetable_testzero(pte_page)) {
+				pmd_clear(NULL, NULL, pmdp);
+				__put_page(pte_page);
+				mm_dec_nr_ptes(vma->vm_mm);
+			}
+			rb_erase(&ur_pte->node, &vma->pte_root);
+			kfree(ur_pte);
+		}
+	} while (pmdp++, addr = next, addr != end);
+}
+
+static void vumap_bad_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
+						unsigned long addr, unsigned long end)
+{
+	struct untyp_ref_pmd_talbe *ur_pmd;
+	struct page *pmd_page;
+	pud_t *pudp;
+	unsigned long next;
+	unsigned long start;
+
+	start = addr;
+	pudp = pud_offset(pgdp, addr);
+	do {
+		next = pud_addr_end(addr, end);
+		if (pud_clear_huge(pudp))
+			continue;
+		if (pud_none_or_clear_bad(pudp))
+			continue;
+		vunmap_bad_pmd_range(vma, pudp, addr, next);
+		pmd_page = pfn_to_page(__phys_to_pfn(__pud_to_phys(*pudp)));
+		ur_pmd = vma_find_pmd_table(vma, pmd_page);
+		if (ur_pmd) {
+			if (put_pagetable_testzero(pmd_page)) {
+				pud_clear(NULL, NULL, pudp);
+				__put_page(pmd_page);
+				mm_dec_nr_pmds(vma->vm_mm);
+			}
+			rb_erase(&ur_pmd->node, &vma->pmd_root);
+			kfree(ur_pmd);
+		}
+	} while (pudp++, addr = next, addr != end);
+}
+
+static void vmap_free_bad_area(struct vm_area_struct *vma)
+{
+	struct untyp_ref_pud_talbe *ur_pud;
+	struct page *page;
+	pgd_t *pgdp;
+	unsigned long next;
+	unsigned long addr;
+	unsigned long end;
+
+	if (!vma) {
+		WARN_ON(1);
+		return;
+	}
+
+	addr = vma->vm_start;
+	end = vma->vm_end;
+	if (addr >= end) {
+		WARN_ON(1);
+		return;
+	}
+
+	pgdp = pgd_offset(vma->vm_mm->pgd, addr);
+	do {
+		next = pgd_addr_end(addr, vma->vm_end);
+		if (pgd_none_or_clear_bad(pgdp))
+			continue;
+		vumap_bad_pud_range(vma, pgdp, addr, next);
+		page = pfn_to_page(__phys_to_pfn(__pgd_to_phys(*pgdp)));
+		ur_pud = vma_find_pud_table(vma, page);
+		if (ur_pud) {
+			if (put_pagetable_testzero(page)) {
+				pgd_clear(NULL, NULL, pgdp);
+				__put_page(page);
+				mm_dec_nr_puds(vma->vm_mm);
+			}
+			rb_erase(&ur_pud->node, &vma->pud_root);
+			kfree(ur_pud);
+		}
+	} while (pgdp++, addr = next, addr != end);
+}
+
+static bool vma_insert_pud_table(struct vm_area_struct *vma,
+			struct untyp_ref_pud_talbe *ur_pud)
+{
+	struct rb_node **new = &(vma->pud_root.rb_node), *parent = NULL;
+
+	/* Figure out where to put new node */
+	while (*new) {
+		struct untyp_ref_pud_talbe *this = container_of(*new, struct untyp_ref_pud_talbe, node);
+
+		parent = *new;
+		if (ur_pud->pud_page < this->pud_page)
+			new = &((*new)->rb_left);
+		else if (ur_pud->pud_page > this->pud_page)
+			new = &((*new)->rb_right);
+		else
+			return false;
+	}
+
+	/* Add new node and rebalance tree. */
+	rb_link_node(&ur_pud->node, parent, new);
+	rb_insert_color(&ur_pud->node, &vma->pud_root);
+
+	return true;
+}
+
 static int __pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
 {
+	int ret = 0;
+	struct untyp_ref_pud_talbe *ur_pud;
+
 	pud_t *new = (pud_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!new)
 		return -ENOMEM;
+
+	ur_pud = kmalloc(sizeof (*ur_pud), GFP_KERNEL);
+	if (!ur_pud) {
+		ret = -ENOMEM;
+		goto fail_table;
+	}
+
+	ur_pud->pud_page = virt_to_page(new);
+	if (!vma_insert_pud_table(vma, ur_pud)) {
+		ret = -EINVAL;
+		goto fail_insert;
+	}
 
 	smp_wmb();
 
@@ -158,12 +406,21 @@ static int __pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long ad
 	if (!pgd_present(*pgdp)) {
 		__pgd_populate(pgdp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
 		mm_inc_nr_puds(vma->vm_mm);
-	} else
+	} else {
+		get_page(pfn_to_page(__phys_to_pfn(__pgd_to_phys(*pgdp))));
 		free_page((u64)new);
+	}
 
 	spin_unlock(&vma->vm_mm->page_table_lock);
 
 	return 0;
+
+fail_insert:
+	kfree(ur_pud);
+fail_table:
+	free_page((u64)new);
+
+	return ret;
 }
 
 static inline pud_t *pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
@@ -172,11 +429,51 @@ static inline pud_t *pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned
 		NULL : pud_offset(pgdp, address);
 }
 
+static bool vma_insert_pmd_table(struct vm_area_struct *vma,
+			struct untyp_ref_pmd_talbe *ur_pmd)
+{
+	struct rb_node **new = &(vma->pmd_root.rb_node), *parent = NULL;
+
+	/* Figure out where to put new node */
+	while (*new) {
+		struct untyp_ref_pmd_talbe *this = container_of(*new, struct untyp_ref_pmd_talbe, node);
+
+		parent = *new;
+		if (ur_pmd->pmd_page < this->pmd_page)
+			new = &((*new)->rb_left);
+		else if (ur_pmd->pmd_page > this->pmd_page)
+			new = &((*new)->rb_right);
+		else
+			return false;
+	}
+
+	/* Add new node and rebalance tree. */
+	rb_link_node(&ur_pmd->node, parent, new);
+	rb_insert_color(&ur_pmd->node, &vma->pmd_root);
+
+	return true;
+}
+
 static int __pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long address)
 {
+	int ret = 0;
+	struct untyp_ref_pmd_talbe *ur_pmd;
+
 	pmd_t *new = (pmd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!new)
 		return -ENOMEM;
+
+	ur_pmd = kmalloc(sizeof (*ur_pmd), GFP_KERNEL);
+	if (!ur_pmd) {
+		ret = -ENOMEM;
+		goto fail_table;
+	}
+
+	ur_pmd->pmd_page = virt_to_page(new);
+	if (!vma_insert_pmd_table(vma, ur_pmd)) {
+		ret = -EINVAL;
+		goto fail_insert;
+	}
 
 	smp_wmb();
 
@@ -184,9 +481,18 @@ static int __pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long ad
 	if (!pud_present(*pudp)) {
 		__pud_populate(pudp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
 		mm_inc_nr_pmds(vma->vm_mm);
-	} else
+	} else {
+		get_page(pfn_to_page(__phys_to_pfn(__pud_to_phys(*pudp))));
 		free_page((u64)new);
+	}
+
 	spin_unlock(&vma->vm_mm->page_table_lock);
+
+fail_insert:
+	kfree(ur_pmd);
+fail_table:
+	free_page((u64)new);
+
 	return 0;
 }
 
@@ -196,11 +502,51 @@ static inline pmd_t *pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned
 		NULL : pmd_offset(pudp, address);
 }
 
+static bool vma_insert_pte_table(struct vm_area_struct *vma,
+			struct untyp_ref_pte_talbe *ur_pte)
+{
+	struct rb_node **new = &(vma->pte_root.rb_node), *parent = NULL;
+
+	/* Figure out where to put new node */
+	while (*new) {
+		struct untyp_ref_pte_talbe *this = container_of(*new, struct untyp_ref_pte_talbe, node);
+
+		parent = *new;
+		if (ur_pte->pte_page < this->pte_page)
+			new = &((*new)->rb_left);
+		else if (ur_pte->pte_page > this->pte_page)
+			new = &((*new)->rb_right);
+		else
+			return false;
+	}
+
+	/* Add new node and rebalance tree. */
+	rb_link_node(&ur_pte->node, parent, new);
+	rb_insert_color(&ur_pte->node, &vma->pte_root);
+
+	return true;
+}
+
 static int __pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
 {
+	int ret = 0;
+	struct untyp_ref_pte_talbe *ur_pte;
+
 	pte_t *new = (pte_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!new)
 		return -ENOMEM;
+
+	ur_pte = kmalloc(sizeof (*ur_pte), GFP_KERNEL);
+	if (!ur_pte) {
+		ret = -ENOMEM;
+		goto fail_table;
+	}
+
+	ur_pte->pte_page = virt_to_page(new);
+	if (!vma_insert_pte_table(vma, ur_pte)) {
+		ret = -EINVAL;
+		goto fail_insert;
+	}
 
 	smp_wmb();
 
@@ -208,10 +554,21 @@ static int __pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long ad
 	if (!pmd_present(*pmdp)) {
 		__pmd_populate(pmdp, virt_to_phys((void *)new), PMD_TYPE_TABLE);
 		mm_inc_nr_ptes(vma->vm_mm);
-	} else
+	} else {
+		get_page(pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp))));
 		free_page((u64)new);
+	}
+
 	spin_unlock(&vma->vm_mm->page_table_lock);
+
 	return 0;
+
+fail_insert:
+	kfree(ur_pte);
+fail_table:
+	free_page((u64)new);
+
+	return ret;
 }
 
 static inline pte_t *pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
@@ -313,7 +670,7 @@ int vmap_page_range(struct vm_area_struct *vma)
 
 	return nr;
 err:
-	vumap_page_range(vma);
+	vmap_free_bad_area(vma);
 	return err;
 }
 
@@ -387,6 +744,10 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 
 	vma->nr_pages = size >> PAGE_SHIFT;
 
+	vma->pud_root = RB_ROOT;
+	vma->pmd_root = RB_ROOT;
+	vma->pte_root = RB_ROOT;
+
 	vma->vm_mm = mm;
 	spin_lock(&mm->vma_lock);
 	if (!__insert_vma_area(vma)) {
@@ -415,6 +776,9 @@ void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 		spin_unlock(&mm->vma_lock);
 		return;
 	}
+	BUG_ON(rb_first(&vma->pud_root));
+	BUG_ON(rb_first(&vma->pmd_root));
+	BUG_ON(rb_first(&vma->pte_root));
 	rb_erase(&vma->vm_rb_node, &mm->vma_rb_root);
 	spin_unlock(&mm->vma_lock);
 

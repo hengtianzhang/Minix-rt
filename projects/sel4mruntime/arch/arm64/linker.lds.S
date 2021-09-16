@@ -12,6 +12,14 @@ ENTRY(_text)
 
 SECTIONS
 {
+	/DISCARD/ : {
+		*(.discard)
+		*(.discard.*)
+		*(.interp .dynamic)
+		*(.dynsym .dynstr .hash .gnu.hash)
+		*(.eh_frame)
+	}
+
 	. = 0x400000;
 
 	.text : {
@@ -37,7 +45,7 @@ SECTIONS
 	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE)
 	_edata = .;
 
-	BSS_SECTION(0, 0, 0)
+	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE)
 
 	_end = .;
 

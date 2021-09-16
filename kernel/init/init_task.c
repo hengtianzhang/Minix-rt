@@ -36,8 +36,3 @@ void __init early_idle_task_init(void)
 		spin_lock_init(&idle->pi_lock);
 	}
 }
-
-void __init service_core_init(void)
-{
-
-}

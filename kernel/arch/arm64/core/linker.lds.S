@@ -90,7 +90,6 @@ SECTIONS
 	INIT_TEXT_SECTION(8)
 
 	. = ALIGN(4);
-	. = ALIGN(4);
 	.altinstructions : {
 		__alt_instructions = .;
 		*(.altinstructions)

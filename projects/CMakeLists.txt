@@ -123,35 +123,42 @@ services_ld_options(-nostdlib -static)
 
 add_subdirectory(sel4mruntime)
 
-get_property(SERVICES_LINKER_SCRIPT GLOBAL PROPERTY SERVICES_LINKER_SCRIPT_S)
-if(NOT EXISTS ${SERVICES_LINKER_SCRIPT})
-	message(FATAL_ERROR "Could not find sel4m linker script: '${CMAKE_CURRENT_SOURCE_DIR}'. ${CMAKE_CURRENT_LIST_FILE} Corrupted configuration?")
-endif()
-
-services_get_include_directories_for_lang(C SERVICES_INCLUDE_DIRS STRIP_PREFIX)
-
-configure_services_linker_script(
-	${SERVICES_BINARY_DIR}/linker.lds
-	"-D__ASSEMBLY__ -DLINKER_SCRIPT -U${ARCH}"
-)
-
-add_custom_target(
-	linker_services_prebuilt_script_target
-	DEPENDS
-	${SERVICES_BINARY_DIR}/linker.lds
-)
-
-set_property(TARGET
-	linker_services_prebuilt_script_target
-	PROPERTY INCLUDE_DIRECTORIES
-	${SERVICES_INCLUDE_DIRS}
-)
-
 set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/archive.S")
+
+function(sel4mruntime_configure rootservicesname)
+	get_property(SERVICES_LINKER_SCRIPT GLOBAL PROPERTY SERVICES_LINKER_SCRIPT_S)
+	if(NOT EXISTS ${SERVICES_LINKER_SCRIPT})
+		message(FATAL_ERROR "Could not find sel4m linker script: '${CMAKE_CURRENT_SOURCE_DIR}'. ${CMAKE_CURRENT_LIST_FILE} Corrupted configuration?")
+	endif()
+
+	find_package(base REQUIRED)
+	base_user_import_libraries()
+
+	services_get_raw_include_directories_for_lang(base C SERVICES_IMPORTED_INCLUDE_DIRS)
+	services_get_include_directories_for_lang(C SERVICES_INCLUDE_DIRS STRIP_PREFIX)
+
+	configure_services_linker_script(
+		${SERVICES_BINARY_DIR}/linker.lds
+		"-D__ASSEMBLY__;-DLINKER_SCRIPT;-DAPP_LINKER_SCRIPT;-U${ARCH};${SERVICES_IMPORTED_INCLUDE_DIRS}"
+	)
+
+	add_custom_target(
+		linker_services_prebuilt_script_target
+		DEPENDS
+		${SERVICES_BINARY_DIR}/linker.lds
+	)
+
+	set_property(TARGET
+		linker_services_prebuilt_script_target
+		PROPERTY INCLUDE_DIRECTORIES
+		${SERVICES_INCLUDE_DIRS}
+	)
+endfunction()
 
 function(DeclareRootservices rootservicesname)
 	target_link_libraries(${rootservicesname} PRIVATE sel4mruntime_crt_obj)
 
+	sel4mruntime_configure(${rootservicesname})
     set_property(
         TARGET ${rootservicesname}
         APPEND_STRING

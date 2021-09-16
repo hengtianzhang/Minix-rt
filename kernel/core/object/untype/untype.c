@@ -488,6 +488,8 @@ static int __pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long ad
 
 	spin_unlock(&vma->vm_mm->page_table_lock);
 
+	return 0;
+
 fail_insert:
 	kfree(ur_pmd);
 fail_table:
@@ -680,10 +682,11 @@ static bool __insert_vma_area(struct vm_area_struct *vma)
 
 	while (*new) {
 		struct vm_area_struct *this = container_of(*new, struct vm_area_struct, vm_rb_node);
-	
-		if (vma->vm_start < this->vm_end)
+
+		parent = *new;
+		if (vma->vm_end <= this->vm_start)
 			new = &((*new)->rb_left);
-		else if (vma->vm_end > this->vm_start)
+		else if (vma->vm_start >= this->vm_end)
 			new = &((*new)->rb_right);
 		else
 			return false;
@@ -819,6 +822,7 @@ void untype_free_mm_struct(struct mm_struct *mm)
 
 	BUG_ON(mm_pgtables_bytes(mm));
 	BUG_ON(!mm->pgd);
+	BUG_ON(rb_first(&mm->vma_rb_root));
 
 	BUG_ON(!atomic_dec_and_test(&mm->mm_count));
 

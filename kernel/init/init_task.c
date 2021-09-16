@@ -2,12 +2,14 @@
 #include <sel4m/mm_types.h>
 #include <sel4m/sched.h>
 #include <sel4m/stackprotector.h>
+#include <sel4m/object/cap_types.h>
 
 struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	[0 ... CONFIG_NR_CPUS - 1] = {
 		.thread_info	= INIT_THREAD_INFO(idle_threads),
 		.stack_refcount	= ATOMIC_INIT(1),
 		.state 			= 0,
+		.cap_table		= CAP_TABLE_MASK_NONE,
 		.prio			= MAX_PRIO,
 		.static_prio	= MAX_PRIO,
 		.normal_prio	= MAX_PRIO,

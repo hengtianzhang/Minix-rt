@@ -377,7 +377,6 @@ static inline unsigned int cap_table_size(void)
 	return BITS_TO_LONGS(cap_nr_max) * sizeof(long);
 }
 
-
 /**
  * for_each_cap_table - iterate over every cap in a mask
  * @cap: the (optionally unsigned) integer iterator
@@ -403,13 +402,13 @@ static inline unsigned int cap_table_size(void)
 		(cap) < cap_nr_max;)
 
 #define CAP_TABLE_MASK_NONE						\
-{								\
+(cap_table_t) {{								\
 	[0 ... BITS_TO_LONGS(CAP_NR_MAX)-1] = 0UL			\
-}
+}}
 
 #define CAP_TABLE_MASK_CAP0						\
-{								\
+(cap_table_t) {{								\
 	[0] =  1UL						\
-}
+}}
 
 #endif /* !__SEL4M_OBJECT_CAP_TYPES_H_ */

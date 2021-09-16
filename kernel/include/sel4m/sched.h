@@ -285,7 +285,9 @@ static inline struct task_struct *idle_task(int cpu)
 
 static inline void put_task_struct(struct task_struct *t)
 {
-	/* TODO */
+// TODO
+//	if (atomic_dec_and_test(&t->usage))
+//		__put_task_struct(t);
 }
 
 static inline cpumask_t cpuset_cpus_allowed(struct task_struct *p)

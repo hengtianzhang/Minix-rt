@@ -22,7 +22,10 @@
 #ifndef __ASSEMBLY__
 #ifdef __KERNEL__
 
+#include <base/string.h>
+
 #include <asm/memory.h>
+#include <asm/ptrace.h>
 
 #include <asm/base/processor.h>
 
@@ -59,6 +62,10 @@ struct cpu_context {
 struct thread_struct {
 	struct cpu_context	cpu_context;	/* cpu context */
 
+	struct {
+		unsigned long	tp_value;	/* TLS register */
+	} uw;
+
 	unsigned long		fault_address;	/* fault info */
 	unsigned long		fault_code;	/* ESR_EL1 value */
 };
@@ -66,8 +73,28 @@ struct thread_struct {
 extern struct task_struct *cpu_switch_to(struct task_struct *prev,
 					 struct task_struct *next);
 
+#define task_user_tls(t)	(&(t)->thread.uw.tp_value)
+
 #define task_pt_regs(p) \
 	((struct pt_regs *)(THREAD_SIZE + task_stack_page(p)) - 1)
+
+void tls_preserve_current_state(void);
+
+static inline void start_thread_common(struct pt_regs *regs, unsigned long pc)
+{
+	memset(regs, 0, sizeof(*regs));
+	forget_syscall(regs);
+	regs->pc = pc;
+}
+
+static inline void start_thread(struct pt_regs *regs, unsigned long pc,
+				unsigned long sp)
+{
+	start_thread_common(regs, pc);
+	regs->pstate = PSR_MODE_EL0t;
+	regs->pstate |= PSR_SSBS_BIT;
+	regs->sp = sp;
+}
 
 #endif /* __KERNEL__ */
 #endif /* !__ASSEMBLY__*/

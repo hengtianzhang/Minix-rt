@@ -65,10 +65,50 @@ void arch_cpu_idle(void)
 
 struct task_struct *__entry_task[CONFIG_NR_CPUS];
 
+static void entry_task_switch(struct task_struct *next)
+{
+	WRITE_ONCE(__entry_task[smp_processor_id()], next);
+}
+
+void tls_preserve_current_state(void)
+{
+	*task_user_tls(current) = read_sysreg(tpidr_el0);
+}
+
+static void tls_thread_switch(struct task_struct *next)
+{
+	tls_preserve_current_state();
+
+	write_sysreg(0, tpidrro_el0);
+	write_sysreg(*task_user_tls(next), tpidr_el0);
+}
+
 struct task_struct *__switch_to(struct task_struct *prev,
 				struct task_struct *next)
 {
-	return NULL;
+	struct task_struct *last;
+
+	/*
+	 * Here, May be some resources that need to be switched.
+	 */
+	/* fpsimd_thread_switch */
+	tls_thread_switch(next);
+	/* hw_breakpoint_thread_switch(next); */
+	contextidr_thread_switch(next);
+	entry_task_switch(next);
+
+	/*
+	 * Complete any pending TLB or cache maintenance on this CPU in case
+	 * the thread migrates to a different CPU.
+	 * This full barrier is also required by the membarrier system
+	 * call.
+	 */
+	dsb(ish);
+
+	/* the actual thread switch */
+	last = cpu_switch_to(prev, next);
+
+	return last;
 }
 
 static void print_pstate(struct pt_regs *regs)

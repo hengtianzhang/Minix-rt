@@ -114,6 +114,16 @@ struct pt_regs {
 	u64 stackframe[2];
 };
 
+static inline bool in_syscall(struct pt_regs const *regs)
+{
+	return regs->syscallno != NO_SYSCALL;
+}
+
+static inline void forget_syscall(struct pt_regs *regs)
+{
+	regs->syscallno = NO_SYSCALL;
+}
+
 #define user_mode(regs)	\
 	(((regs)->pstate & PSR_MODE_MASK) == PSR_MODE_EL0t)
 

@@ -1161,8 +1161,8 @@ static void finish_task_switch(struct rq *rq, struct task_struct *prev)
 	prev_state = prev->state;
 	finish_arch_switch(prev);
 	finish_lock_switch(rq, prev);
-	if (mm)
-		; /* TODO */
+	if (unlikely(mm))
+		BUG();
 	if (unlikely(prev_state == TASK_DEAD)) {
 		put_task_struct(prev);
 	}
@@ -2550,7 +2550,7 @@ need_resched:
 		spin_unlock_irq(&rq->lock);
 
 	preempt_enable_no_resched();
-	if (unlikely(test_thread_flag(TIF_NEED_RESCHED)))
+	if (need_resched())
 		goto need_resched;
 }
 

@@ -14,14 +14,11 @@ SECTIONS
 {
 	. = 0x400000;
 
-	.head.text : {
-		_text = .;
-		HEAD_TEXT
-	}
-
 	.text : {
+		_text = .;
 		_stext = .;
 		. = ALIGN(8);
+			HEAD_TEXT
 			TEXT_TEXT
 			*(.fixup)
 			*(.gnu.warning)
@@ -39,9 +36,10 @@ SECTIONS
 	_sdata = .;
 	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE)
 	_edata = .;
-	_end = .;
 
 	BSS_SECTION(0, 0, 0)
+
+	_end = .;
 
 	STABS_DEBUG
 	DWARF_DEBUG

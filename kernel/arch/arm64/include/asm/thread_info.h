@@ -64,7 +64,7 @@ struct thread_info {
 	((u64)(tsk->thread.cpu_context.fp))
 
 #define current_thread_info() 	((struct thread_info *)current)
-#define task_thread_info(p)		(&(p->thread_info))
+#define task_thread_info(p)		(&((p)->thread_info))
 
 #define INIT_THREAD_INFO(tsk)				\
 {								\

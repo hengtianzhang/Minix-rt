@@ -65,6 +65,7 @@ struct vm_area_struct {
 	pgprot_t vm_page_prot;
 	unsigned long vm_flags;
 
+	struct page		**pages;
 	unsigned int	nr_pages;
 
 	phys_addr_t		io_space;

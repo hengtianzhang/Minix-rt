@@ -77,9 +77,7 @@ static void vunmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
 		if (pte_none(*ptep))
 			continue;
 		pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
-		page = phys_to_page(__pte_to_phys(pte));
-		pte_clear(NULL, NULL, ptep);
-		__free_page(page);
+		WARN_ON(!pte_none(pte) && !pte_present(pte));
 	} while (ptep++, addr += PAGE_SIZE, addr != end);
 
 	page = pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp)));
@@ -234,18 +232,13 @@ static void vunmap_bad_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
 {
 	pte_t *ptep;
 	pte_t pte;
-	struct page *page;
-	unsigned long start;
 
-	start = addr;
 	ptep = pte_offset_kernel(pmdp, addr);
 	do {
 		if (pte_none(*ptep))
 			continue;
 		pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
-		page = phys_to_page(__pte_to_phys(pte));
-		pte_clear(NULL, NULL, ptep);
-		__free_page(page);
+		WARN_ON(!pte_none(pte) && !pte_present(pte));
 	} while (ptep++, addr += PAGE_SIZE, addr != end);
 }
 
@@ -592,7 +585,7 @@ static int vmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
 	if (!pte)
 		return -ENOMEM;
 	do {
-		struct page *page = alloc_page(GFP_USER | GFP_ZERO);
+		struct page *page = vma->pages[*nr];
 
 		if (WARN_ON(!pte_none(*pte)))
 			return -EBUSY;
@@ -728,6 +721,7 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 				struct mm_struct *mm, phys_addr_t io_space)
 {
 	struct vm_area_struct *vma;
+	unsigned long array_size, i;
 
 	BUG_ON(in_interrupt());
 
@@ -746,6 +740,21 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 	vma->vm_flags = flags;
 
 	vma->nr_pages = size >> PAGE_SHIFT;
+	array_size = (vma->nr_pages * sizeof (struct page *));
+	vma->pages = kmalloc(array_size, GFP_KERNEL | GFP_ZERO);
+	if (!vma->pages)
+		goto fail_pages;
+
+	for (i = 0; i < vma->nr_pages; i++) {
+		struct page *page;
+
+		page = alloc_page(GFP_USER | GFP_ZERO);
+		if (unlikely(!page)) {
+			vma->nr_pages = i;
+			goto fail_page;
+		}
+		vma->pages[i] = page;
+	}
 
 	vma->pud_root = RB_ROOT;
 	vma->pmd_root = RB_ROOT;
@@ -761,10 +770,23 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 	spin_unlock(&mm->vma_lock);
 
 	return vma;
+
+fail_page:
+	for (i = 0; i < vma->nr_pages; i++) {
+		struct page *page = vma->pages[i];
+
+		BUG_ON(!page);
+		__free_page(page);
+	}
+
+fail_pages:
+	kfree(vma);
+	return NULL;
 }
 
 void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 {
+	unsigned long i;
 	struct vm_area_struct *vma;
 
 	if (!mm) {
@@ -785,6 +807,14 @@ void untype_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 	rb_erase(&vma->vm_rb_node, &mm->vma_rb_root);
 	spin_unlock(&mm->vma_lock);
 
+	for (i = 0; i < vma->nr_pages; i++) {
+		struct page *page = vma->pages[i];
+
+		BUG_ON(unlikely(!page));
+		put_page(page);
+	}
+
+	kfree(vma->pages);
 	kfree(vma);
 }
 

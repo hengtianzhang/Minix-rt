@@ -32,6 +32,8 @@ void __weak __init setup_arch(void) {}
 
 noinline void rest_init(void)
 {
+	struct task_struct *tsk;
+
 	system_state = SYSTEM_SCHEDULING;
 
 	smp_prepare_cpus(CONFIG_NR_CPUS);
@@ -42,13 +44,21 @@ noinline void rest_init(void)
 
 	untype_core_init();
 
-	service_core_init();
+	tsk = service_core_init();
+	BUG_ON(!tsk);
 
 	untype_core_init_late();
 
 	mark_rodata_ro();
 
 	system_state = SYSTEM_RUNNING;
+
+	printf("Booting all finished, dropped to user space\n");
+
+	wake_up_new_task(tsk, 0);
+	preempt_enable_no_resched();
+	schedule();
+	preempt_disable();
 
 	cpu_idle();
 }

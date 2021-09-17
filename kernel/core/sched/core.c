@@ -1056,11 +1056,10 @@ void sched_fork(struct task_struct *p, int clone_flags)
 
 	/*
 	 * Make sure we do not leak PI boosting priority to the child:
+	 * 	p->prio = current->normal_prio;
 	 */
-	p->prio = current->normal_prio;
 	if (!rt_prio(p->prio))
 		p->sched_class = &fair_sched_class;
-
 
 #if defined(__ARCH_WANT_UNLOCKED_CTXSW)
 	p->oncpu = 0;

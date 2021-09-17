@@ -5,5 +5,6 @@
 
 asmlinkage void el0_svc_handler(struct pt_regs *regs)
 {
-    BUG_ON(1);
+    printf("Come in Syscall, nr %lld\n", regs->regs[0]);
+    WARN_ON(1);
 }

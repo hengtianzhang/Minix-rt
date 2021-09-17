@@ -21,6 +21,13 @@ int main(void)
 	bbb[45] = 3;
 	aaa += bbb[45];
 
+	asm volatile (
+		"mov x0, 3\n\t"
+		"svc #0x0\n\t"
+		);
+
 	a = test(aaa);
+	while(1);
+
 	return a;
 }

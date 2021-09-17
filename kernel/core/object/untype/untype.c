@@ -11,6 +11,7 @@
 #include <asm/mmu.h>
 #include <asm/current.h>
 #include <asm/sections.h>
+#include <asm/processor.h>
 
 /* description of effects of mapping type and prot in current implementation.
  * this is due to the limited x86 page protection hardware.  The expected
@@ -736,7 +737,7 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 	vma->vm_start = vstart;
 	vma->vm_end	= vstart + size;
 
-	vma->vm_page_prot = vm_get_page_prot(flags);
+	vma->vm_page_prot = vm_get_page_prot(flags | VM_SHARED);
 	vma->vm_flags = flags;
 
 	vma->nr_pages = size >> PAGE_SHIFT;
@@ -830,6 +831,7 @@ struct mm_struct *untype_alloc_mm_struct(void)
 	if (!mm->pgd)
 		goto err;
 
+	mm->task_size = TASK_SIZE;
 	mm->vma_rb_root = RB_ROOT;
 	spin_lock_init(&mm->vma_lock);
 	mm_pgtables_bytes_init(mm);

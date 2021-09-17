@@ -1,5 +1,5 @@
+#include <base/linkage.h>
 
-.section	".head.text","ax"
-
-_sel4m_start:
+ENTRY(_start)
 	bl main
+ENDPROC(_start)

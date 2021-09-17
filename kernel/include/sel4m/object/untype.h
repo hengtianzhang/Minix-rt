@@ -2,6 +2,7 @@
 #define __SEL4M_OBJECT_H_
 
 #include <base/atomic.h>
+#include <base/rbtree.h>
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>

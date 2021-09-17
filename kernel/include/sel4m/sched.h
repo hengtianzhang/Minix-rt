@@ -73,6 +73,8 @@ extern rwlock_t tasklist_lock;
 /* in tsk->state again */
 #define TASK_DEAD		64
 
+#define TASK_NEW		128
+
 #define __set_task_state(tsk, state_value)		\
 	do { (tsk)->state = (state_value); } while (0)
 #define set_task_state(tsk, state_value)		\
@@ -148,11 +150,11 @@ struct task_struct {
 	/* Protection of the PI data structures: */
 	spinlock_t pi_lock;
 
-	/* Real parent process: */
-	struct task_struct		*real_parent;
-
 	/* Recipient of SIGCHLD, wait4() reports: */
 	struct task_struct		*parent;
+
+	struct list_head		children;
+	struct list_head		sibling;
 
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;

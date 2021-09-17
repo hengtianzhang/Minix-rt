@@ -3225,7 +3225,7 @@ void show_task(struct task_struct *p)
 		printf(KERN_CONT " %016llx ", thread_saved_pc(p));
 #endif
 	printf(KERN_CONT "%5lu %5d %6d\n", free,
-		task_pid_nr(p), p->real_parent ? task_pid_nr(p->real_parent) : 0);
+		task_pid_nr(p), p->parent ? task_pid_nr(p->parent) : 0);
 
 	if (state != TASK_RUNNING)
 		show_stack(p, NULL);

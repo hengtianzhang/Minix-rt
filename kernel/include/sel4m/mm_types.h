@@ -79,6 +79,8 @@ struct mm_struct {
 	struct rb_root vma_rb_root;
 	spinlock_t		vma_lock;
 
+	unsigned long task_size;	/* size of task vm space */
+
 	pgd_t * pgd;
 	/* Architecture-specific MM context */
 	mm_context_t context;

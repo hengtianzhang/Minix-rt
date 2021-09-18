@@ -15,8 +15,7 @@
 #include <sel4m/uaccess.h>
 
 #include <asm/processor.h>
-
-#include <uapi/asm/unistd.h>
+#include <asm/syscalls.h>
 
 /*
  * __MAP - apply a macro to syscall arguments
@@ -111,7 +110,5 @@ static inline void addr_limit_user_check(void)
 	clear_thread_flag(TIF_FSCHECK);
 #endif
 }
-
-asmlinkage long sys_debug_printf(const char __user *ptr, int len);
 
 #endif /* !__SEL4M_SYSCALLS_H_ */

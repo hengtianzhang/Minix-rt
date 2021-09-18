@@ -14,8 +14,9 @@ asmlinkage __visible int printf(const char *fmt, ...)
 
 	va_start(args, fmt);
    text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
-   if (text_len)
-      r = debug_printf(text, text_len);
+   if (text_len) {
+      r = __syscall(__NR_debug_printf, text, text_len);
+   }
 	va_end(args);
 
     return r;

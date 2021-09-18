@@ -114,6 +114,9 @@ endif()
 
 services_compile_options("SHELL: $<TARGET_PROPERTY:compiler,imacros> ${KCONFIG_H}")
 
+# @Intent: Set compiler specific flag for bare metal freestanding option
+services_compile_options($<TARGET_PROPERTY:compiler,freestanding>)
+
 services_compile_options($<TARGET_PROPERTY:compiler,diagnostic>)
 
 services_compile_options($<TARGET_PROPERTY:compiler,nostdinc>)
@@ -185,6 +188,7 @@ endfunction(DeclareRootservices)
 function(DeclareServicesApp servicesappname)
 	target_link_libraries(${servicesappname} PRIVATE sel4mruntime_crt_obj)
 
+	sel4mruntime_configure(${servicesappname})
     set_property(
         TARGET ${servicesappname}
         APPEND_STRING

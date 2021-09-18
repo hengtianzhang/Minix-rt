@@ -60,7 +60,7 @@ out:
 	return NULL;
 }
 
-static __init unsigned long setup_services_stack(struct task_struct *tsk)
+static __init unsigned long setup_services_stack(struct task_struct *tsk, unsigned long *top)
 {
 	int ret;
 	unsigned long vm_flags = 0;
@@ -80,6 +80,9 @@ static __init unsigned long setup_services_stack(struct task_struct *tsk)
 	ret = vmap_page_range(vma);
 	if (ret <= 0)
 		goto fail_map_vma;
+
+	if (top)
+		*top = stack_top;
 
 	return stack_base;
 
@@ -134,7 +137,7 @@ __init struct task_struct *service_core_init(void)
 	struct task_struct *tsk;
 	int i, ret;
 	unsigned long ipcptr;
-	unsigned long stack_base = 0;
+	unsigned long stack_base = 0, stack_top;
 	unsigned long load_addr = 0, load_bias = 0;
 	int load_addr_set = 0;
 	struct elf_phdr *elf_ppnt, *elf_phdata;
@@ -181,7 +184,7 @@ __init struct task_struct *service_core_init(void)
 
 	tcb_set_task_stack_end_magic(tsk);
 
-	stack_base = setup_services_stack(tsk);
+	stack_base = setup_services_stack(tsk, &stack_top);
 	if (!stack_base)
 		goto fail_service_stack;
 
@@ -284,7 +287,7 @@ __init struct task_struct *service_core_init(void)
 	set_cpus_allowed(tsk, mask);
 
 	regs = task_pt_regs(tsk);
-	start_thread(regs, elf_entry, stack_base);
+	start_thread(regs, elf_entry, stack_top);
 
 	memset(&tsk->thread.cpu_context, 0, sizeof(struct cpu_context));
 

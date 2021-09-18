@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 extern int test(int aa);
 int test(int aa)
@@ -24,7 +25,7 @@ int main(void)
 		"mov x0, 3\n\t"
 		"svc #0x0\n\t"
 		);
-
+	printf("ssssdsadsads\n");
 	a = test(aaa);
 	while(1);
 

@@ -253,6 +253,7 @@ void arm64_force_sig_fault(int signo, int code, void __user *addr,
 	arm64_show_signal(signo, str);
 // TODO
 //	force_sig_fault(signo, code, addr, current);
+	BUG_ON(1);
 }
 
 void arm64_force_sig_mceerr(int code, void __user *addr, short lsb,

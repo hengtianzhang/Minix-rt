@@ -12,6 +12,7 @@
 #include <sel4m/object/tcb.h>
 #include <sel4m/object/untype.h>
 #include <sel4m/object/ipc.h>
+#include <sel4m/uaccess.h>
 
 #include <asm/processor.h>
 
@@ -269,6 +270,8 @@ __init struct task_struct *service_core_init(void)
 		ret = -EINVAL;
 		goto fail_service_stack;
 	}
+
+	task_thread_info(tsk)->addr_limit = USER_DS;
 
 	tsk->state = TASK_RUNNING;
 	tsk->pid.pid = 1;

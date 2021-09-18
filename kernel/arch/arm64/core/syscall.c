@@ -39,7 +39,7 @@ static void invoke_syscall(struct pt_regs *regs, int scno,
 {
 	long ret;
 
-	if ((sc_nr < scno) && (sc_nr < 0)) {
+	if ((sc_nr < scno) && (scno < 0)) {
 		syscall_fn_t syscall_fn;
 		syscall_fn = syscall_table[(-scno) - 1];
 		ret = __invoke_syscall(regs, syscall_fn);

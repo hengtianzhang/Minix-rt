@@ -1,9 +1,12 @@
 #include <base/linkage.h>
 #include <base/compiler.h>
 #include <base/common.h>
+#include <base/errno.h>
 
 #include <sel4m/sched/clock.h>
 #include <sel4m/spinlock.h>
+#include <sel4m/syscalls.h>
+#include <sel4m/uaccess.h>
 
 unsigned long long __stack_chk_guard;
 
@@ -104,4 +107,23 @@ asmlinkage __visible int printf(const char *fmt, ...)
 	va_end(args);
 
     return r;
+}
+
+SYSCALL_DEFINE2(debug_printf, const char __user *, ptr, int, len)
+{
+	u64 flags;
+	char put_buffer[1024];
+
+	if (len > 1024)
+		return -EMSGSIZE;
+
+	if(copy_from_user(put_buffer, ptr, len))
+		return -EFAULT;
+
+	/* This stops the holder of console_sem just where we want him */
+	raw_spin_lock_irqsave(&printk_lock, flags);
+	puts_q(put_buffer);
+	raw_spin_unlock_irqrestore(&printk_lock, flags);
+
+	return 0;
 }

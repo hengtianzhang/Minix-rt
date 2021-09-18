@@ -112,7 +112,7 @@ asmlinkage __visible int printf(const char *fmt, ...)
 SYSCALL_DEFINE2(debug_printf, const char __user *, ptr, int, len)
 {
 	u64 flags;
-	char put_buffer[1024];
+	char put_buffer[1024] = {0};
 
 	if (len > 1024)
 		return -EMSGSIZE;

@@ -8,6 +8,8 @@ source "kernel/drivers/Kconfig"
 
 source "kernel/lib/Kconfig"
 
+source "kernel/libsel4m/Kconfig"
+
 source "kernel/lib/Kconfig.debug"
 
 endmenu

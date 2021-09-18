@@ -1,0 +1,7 @@
+#
+# Library sel4m configuration
+#
+
+menu "libsel4m routines"
+
+endmenu

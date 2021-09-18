@@ -28,3 +28,7 @@ target_link_libraries(sel4mruntime_crt_obj PUBLIC services_interface)
 find_package(base REQUIRED)
 base_user_import_libraries()
 target_link_libraries(sel4mruntime_crt_obj PRIVATE base)
+
+find_package(libsel4m REQUIRED)
+libsel4m_user_import_libraries()
+target_link_libraries(sel4mruntime_crt_obj PRIVATE libsel4m)

@@ -193,6 +193,7 @@ include(${SEL4M_BASE}/cmake/kconfig.cmake)
 include(${SEL4M_BASE}/cmake/dts.cmake)
 
 set(CMAKE_PREFIX_PATH ${SEL4M_BASE} CACHE PATH "")
+list(APPEND CMAKE_PREFIX_PATH ${SEL4M_BASE}/kernel/libsel4m)
 
 configure_file(${SEL4M_BASE}/version.h.in ${APPLICATION_BINARY_DIR}/include/generated/version.h)
 

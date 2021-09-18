@@ -143,6 +143,8 @@ struct task_struct {
 
     struct mm_struct *mm;
 
+	void __user *cap_ipcptr;
+
 	int exit_state;
 	int exit_code, exit_signal;
 	int pdeath_signal;  /*  The signal sent when the parent dies  */

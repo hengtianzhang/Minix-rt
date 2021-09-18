@@ -42,3 +42,11 @@ void tcb_destroy_task(struct task_struct *tsk)
 	untype_free_mm_struct(tsk->mm);
 	kfree(tsk);
 }
+
+void tcb_set_task_stack_end_magic(struct task_struct *tsk)
+{
+	unsigned long *stackend;
+
+	stackend = end_of_stack(tsk);
+	*stackend = STACK_END_MAGIC;	/* for overflow detection */
+}

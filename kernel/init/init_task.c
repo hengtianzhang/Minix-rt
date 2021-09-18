@@ -3,6 +3,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/stackprotector.h>
 #include <sel4m/object/cap_types.h>
+#include <sel4m/object/tcb.h>
 
 struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	[0 ... CONFIG_NR_CPUS - 1] = {
@@ -33,6 +34,7 @@ void __init early_idle_task_init(void)
 		idle->cpu = cpu;
 		idle->oncpu = 0;
 		idle->stack = &kernel_stack_alloc[cpu];
+		tcb_set_task_stack_end_magic(idle);
 		snprintf(idle->comm, TASK_COMM_LEN, "idle-%d", cpu);
 		spin_lock_init(&idle->pi_lock);
 		INIT_LIST_HEAD(&idle->children);

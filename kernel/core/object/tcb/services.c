@@ -11,6 +11,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/object/tcb.h>
 #include <sel4m/object/untype.h>
+#include <sel4m/object/ipc.h>
 
 #include <asm/processor.h>
 
@@ -132,6 +133,7 @@ __init struct task_struct *service_core_init(void)
 	struct pt_regs *regs;
 	struct task_struct *tsk;
 	int i, ret;
+	unsigned long ipcptr;
 	unsigned long stack_base = 0;
 	unsigned long load_addr = 0, load_bias = 0;
 	int load_addr_set = 0;
@@ -176,6 +178,8 @@ __init struct task_struct *service_core_init(void)
 	tsk->stack = kmalloc(THREAD_SIZE, GFP_KERNEL | GFP_ZERO);
 	if (!tsk->stack)
 		goto fail_stack;
+
+	tcb_set_task_stack_end_magic(tsk);
 
 	stack_base = setup_services_stack(tsk);
 	if (!stack_base)
@@ -251,6 +255,11 @@ __init struct task_struct *service_core_init(void)
 	end_code += load_bias;
 	start_data += load_bias;
 	end_data += load_bias;
+
+	ipcptr = PAGE_ALIGN(elf_brk);
+	ret = ipc_create_task_ipcptr(tsk, ipcptr);
+	if (ret)
+		goto fail_service_stack;
 
 	elf_entry = loc->elf_ex.e_entry;
 	if (BAD_ADDR(elf_entry)) {

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 list(APPEND crt_files arch/${ARCH}/crt0.S)
+list(APPEND crt_files arch/${ARCH}/start.c)
 
 add_library(sel4mruntime_crt_obj OBJECT ${crt_files})
 
@@ -24,6 +25,10 @@ services_ld_options(${LINKERFLAGPREFIX},-EL ${LINKERFLAGPREFIX},-maarch64elf)
 endif()
 
 target_link_libraries(sel4mruntime_crt_obj PUBLIC services_interface)
+target_include_directories(sel4mruntime_crt_obj
+	PUBLIC
+	arch/${ARCH}/include
+)
 
 find_package(base REQUIRED)
 base_user_import_libraries()

@@ -7,7 +7,8 @@
 #include <sel4m/thread.h>
 #include <sel4m/sched/sched.h>
 #include <sel4m/object/pid.h>
-#include <sel4m/object/cap_types.h>
+
+#include <uapi/sel4m/object/cap_types.h>
 
 #include <asm/thread_info.h>
 #include <asm/processor.h>

@@ -1,11 +1,12 @@
 #include <sel4m/gfp.h>
 #include <sel4m/slab.h>
 #include <sel4m/cpumask.h>
-#include <sel4m/object/cap_types.h>
 #include <sel4m/object/untype.h>
 #include <sel4m/spinlock.h>
 #include <sel4m/sched.h>
 #include <sel4m/preempt.h>
+
+#include <uapi/sel4m/object/cap_types.h>
 
 #include <asm/mmu_context.h>
 #include <asm/mmu.h>

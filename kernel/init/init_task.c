@@ -2,8 +2,9 @@
 #include <sel4m/mm_types.h>
 #include <sel4m/sched.h>
 #include <sel4m/stackprotector.h>
-#include <sel4m/object/cap_types.h>
 #include <sel4m/object/tcb.h>
+
+#include <uapi/sel4m/object/cap_types.h>
 
 struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	[0 ... CONFIG_NR_CPUS - 1] = {

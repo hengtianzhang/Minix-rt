@@ -4,7 +4,7 @@
 
 #include <libsel4m/syscalls.h>
 
-asmlinkage __visible int printf(const char *fmt, ...)
+asmlinkage __visible __weak int printf(const char *fmt, ...)
 {
 	va_list args;
    char textbuf[1024];

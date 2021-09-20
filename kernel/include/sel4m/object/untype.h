@@ -6,6 +6,7 @@
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
+#include <asm/current.h>
 
 /*
  * vm_flags in vm_area_struct, see mm_types.h.
@@ -28,7 +29,7 @@ struct untype_struct {
 };
 
 extern void untype_core_init(void);
-extern void untype_core_init_late(void);
+extern void untype_core_init_late(struct task_struct *tsk);
 
 struct mm_struct;
 extern struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,

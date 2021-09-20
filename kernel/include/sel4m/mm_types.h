@@ -97,7 +97,7 @@ struct mm_struct {
 
 	spinlock_t	page_table_lock; /* protect iopgd */
 
-	struct untype_struct untype;
+	struct untype_struct *untype;
 };
 
 extern struct mm_struct init_mm;

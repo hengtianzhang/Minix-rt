@@ -47,7 +47,7 @@ noinline void rest_init(void)
 	tsk = service_core_init();
 	BUG_ON(!tsk);
 
-	untype_core_init_late();
+	untype_core_init_late(tsk);
 
 	mark_rodata_ro();
 

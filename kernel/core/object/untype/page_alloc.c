@@ -20,6 +20,7 @@
 #include <sel4m/jiffies.h>
 #include <sel4m/ktime.h>
 #include <sel4m/sched.h>
+#include <sel4m/stat.h>
 
 #include <asm/current.h>
 
@@ -28,6 +29,23 @@
 #include "internal.h"
 
 struct pglist_data node_data;
+
+static bool untype_prepare_check(int order, enum zone_type index)
+{
+	if (system_running()) {
+		unsigned long nr_used_pages;
+		unsigned long nr_pages;
+
+		BUG_ON(current->pid.pid <= 0);
+		nr_used_pages = current->mm->untype[index].nr_used_pages;
+		nr_pages = current->mm->untype[index].nr_pages;
+		if (likely((nr_used_pages + (1 << order)) < nr_pages))
+			return true;
+		else
+			return false;
+	} else
+		return true;
+}
 
 static char * const zone_names[MAX_NR_ZONES] = {
 	"DMA",
@@ -311,6 +329,12 @@ static __always_inline bool free_pages_prepare(struct page *page,
 	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
 
 	arch_free_page(page, order);
+
+	if (system_running()) {
+		BUG_ON(current->pid.pid <= 0);
+		current->mm->untype[page_zone_id(page)].nr_used_pages
+				-= 1 << order;
+	}
 
 	return true;
 }
@@ -649,6 +673,12 @@ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_mask)
 
 	if (order)
 		prep_compound_page(page, order);
+
+	if (system_running()) {
+		BUG_ON(current->pid.pid <= 0);
+		current->mm->untype[page_zone_id(page)].nr_used_pages
+				+= 1 << order;
+	}
 }
 
 /*
@@ -745,6 +775,26 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
 		unsigned long batch = READ_ONCE(pcp->batch);
 		free_pcppages_bulk(zone, batch, pcp);
 	}
+}
+
+static int drain_pages_zone(int cpu, struct zone *zone)
+{
+	int has_page = 0;
+	u64 flags;
+	struct per_cpu_pageset *pset;
+	struct per_cpu_pages *pcp;
+
+	local_irq_save(flags);
+	pset = &zone->pageset[cpu];
+
+	pcp = &pset->pcp;
+	if (pcp->count) {
+		has_page = 1;
+		free_pcppages_bulk(zone, pcp->count, pcp);
+	}
+	local_irq_restore(flags);
+
+	return has_page;
 }
 
 /*
@@ -844,15 +894,26 @@ failed:
 static struct page *
 get_page_from_freelist(gfp_t gfp_mask, unsigned int order, const struct alloc_context *ac)
 {
+	int cpu, train = 0;
 	struct page *page;
 	struct zone *zone = NODE_DATA()->node_zones + ac->zoneidx;
 
+retry:
 	page = rmqueue(zone, order, gfp_mask);
-	if (page) {
+	if (likely(page)) {
 		prep_new_page(page, order, gfp_mask);
 
 		return page;
 	}
+
+	for_each_online_cpu(cpu) {
+		if (cpu == smp_processor_id())
+			continue;
+
+		train = drain_pages_zone(cpu, zone);
+	}
+	if (likely(train))
+		goto retry;
 
 	return NULL;
 }
@@ -862,7 +923,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
 {
 	ac->zoneidx = gfp_zone(gfp_mask);
 
-	return true;
+	return untype_prepare_check(order, ac->zoneidx);
 }
 
 /*
@@ -1266,6 +1327,17 @@ unsigned long nr_managed_pages(void)
 	return total_pages;
 }
 
+unsigned long nr_zone_free_pages(struct zone *zone)
+{
+	int order;
+	unsigned long nr_free = 0;
+
+	for_each_order(order)
+		nr_free += zone->free_area[order].nr_free * (1 << order);
+
+	return nr_free;
+}
+
 unsigned long nr_free_pages(void)
 {
 	enum zone_type i;
@@ -1273,14 +1345,23 @@ unsigned long nr_free_pages(void)
 	struct zone *zone;
 
 	for (i = 0; i < MAX_NR_ZONES; i++) {
-		int order;
 		zone = NODE_DATA()->node_zones + i;
 
-		for_each_order(order)
-			nr_free += zone->free_area[order].nr_free * (1 << order);
+		nr_free += nr_zone_free_pages(zone);
 	}
 
 	return nr_free;
+}
+
+unsigned long nr_zone_percpu_cache_pages(struct zone *zone)
+{
+	int cpu;
+	unsigned long total_pages = 0;
+
+	for_each_possible_cpu(cpu)
+		total_pages += zone->pageset[cpu].pcp.count;
+
+	return total_pages;
 }
 
 unsigned long nr_percpu_cache_pages(int cpu)

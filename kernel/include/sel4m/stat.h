@@ -14,4 +14,7 @@ struct pt_regs;
 void show_regs(struct pt_regs * regs);
 
 void show_regs_print_info(void);
+
+#define system_running() (likely(system_state == SYSTEM_RUNNING))
+
 #endif /* !__SEL4M_STAT_H_ */

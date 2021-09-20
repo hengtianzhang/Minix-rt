@@ -830,7 +830,11 @@ struct mm_struct *untype_alloc_mm_struct(void)
 
 	mm->pgd = (pgd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
 	if (!mm->pgd)
-		goto err;
+		goto fail_pgd;
+
+	mm->untype = kmalloc((sizeof (struct untype_struct)) * MAX_NR_ZONES, GFP_KERNEL | GFP_ZERO);
+	if (!mm->untype)
+		goto fail_untype;
 
 	mm->task_size = TASK_SIZE;
 	mm->vma_rb_root = RB_ROOT;
@@ -841,8 +845,12 @@ struct mm_struct *untype_alloc_mm_struct(void)
 	init_new_context(NULL, mm);
 
 	return mm;
-err:
+
+fail_untype:
+	free_page((u64)mm->pgd);
+fail_pgd:
 	kfree(mm);
+
 	return NULL;
 }
 
@@ -860,6 +868,7 @@ void untype_free_mm_struct(struct mm_struct *mm)
 	BUG_ON(!atomic_dec_and_test(&mm->mm_count));
 
 	free_page((u64)mm->pgd);
+	free_page((u64)mm->untype);
 	kfree(mm);
 }
 
@@ -869,7 +878,21 @@ void untype_core_init(void)
 	kmem_cache_init();
 }
 
-static void untype_print_memory_info(void)
+static void untype_print_untype_info(struct task_struct *tsk)
+{
+	enum zone_type i;
+	struct zone *zone;
+
+	for (i = 0; i < MAX_NR_ZONES; i++) {
+		zone = NODE_DATA()->node_zones + i;
+
+		printf("  %s: %luK/%luK used\n", zone->name,
+				tsk->mm->untype[i].nr_used_pages << (PAGE_SHIFT - 10),
+				tsk->mm->untype[i].nr_pages << (PAGE_SHIFT - 10));
+	}
+}
+
+static void untype_print_memory_info(struct task_struct *tsk)
 {
 	int cpu;
 	unsigned long percpu_cache_pages = 0;
@@ -917,11 +940,24 @@ static void untype_print_memory_info(void)
 
 	printf("  Cpu cache memory: %luK available\n",
 		percpu_cache_pages << (PAGE_SHIFT - 10));
+
+	untype_print_untype_info(tsk);
 }
 
-void untype_core_init_late(void)
+void untype_core_init_late(struct task_struct *tsk)
 {
+	enum zone_type i;
+	struct zone *zone;
+
 	free_initmem();
 
-	untype_print_memory_info();
+	for (i = 0; i < MAX_NR_ZONES; i++) {
+		zone = NODE_DATA()->node_zones + i;
+
+		tsk->mm->untype[i].nr_pages = zone_managed_pages(zone);
+		tsk->mm->untype[i].nr_used_pages = zone_managed_pages(zone)
+			- nr_zone_free_pages(zone) - nr_zone_percpu_cache_pages(zone);
+	}
+
+	untype_print_memory_info(tsk);
 }

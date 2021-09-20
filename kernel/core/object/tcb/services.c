@@ -291,6 +291,7 @@ __init struct task_struct *service_core_init(void)
 
 	regs = task_pt_regs(tsk);
 	start_thread(regs, elf_entry, stack_top);
+	regs->regs[0] = ipcptr;
 
 	memset(&tsk->thread.cpu_context, 0, sizeof(struct cpu_context));
 

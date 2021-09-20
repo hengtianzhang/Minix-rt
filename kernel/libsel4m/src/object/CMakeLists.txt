@@ -2,7 +2,5 @@
 target_sources(
 	${libsel4m_VAR}libsel4m
 	PRIVATE
-	printf.c
+	ipc.c
 )
-
-add_subdirectory(object)

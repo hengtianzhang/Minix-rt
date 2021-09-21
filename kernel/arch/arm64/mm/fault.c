@@ -540,6 +540,16 @@ asmlinkage int __exception do_debug_exception(unsigned long addr,
 					      unsigned int esr,
 					      struct pt_regs *regs)
 {
-	BUG();
-	return 0;
+	const struct fault_info *inf = esr_to_debug_fault_info(esr);
+	int rv;
+
+	if (!inf->fn(addr, esr, regs)) {
+		rv = 1;
+	} else {
+		arm64_notify_die(inf->name, regs,
+				 inf->sig, inf->code, (void __user *)addr, esr);
+		rv = 0;
+	}
+
+	return rv;
 }

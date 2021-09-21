@@ -5,7 +5,10 @@
 #include <sel4m/spinlock.h>
 #include <sel4m/sched.h>
 #include <sel4m/preempt.h>
+#include <sel4m/syscalls.h>
+#include <sel4m/uaccess.h>
 
+#include <uapi/sel4m/object/untype.h>
 #include <uapi/sel4m/object/cap_types.h>
 
 #include <asm/mmu_context.h>
@@ -960,4 +963,52 @@ void untype_core_init_late(struct task_struct *tsk)
 	}
 
 	untype_print_memory_info(tsk);
+}
+
+SYSCALL_DEFINE4(untype, enum untype_table, table,
+		unsigned long, vstart, unsigned long, size,
+		unsigned long, vm_flags)
+{
+	int ret;
+	struct vm_area_struct *vma;
+
+	switch (table) {
+		case untype_alloc:
+			if (vstart + size >= USER_DS)
+				return -EINVAL;
+
+			vma = untype_get_vmap_area(vstart, size, vm_flags, current->mm, 0);
+			if (!vma)
+				return -ENOMEM;
+			break;
+		case untype_free:
+			untype_free_vmap_area(vstart, current->mm);
+			break;
+		case untype_vmap:
+			spin_lock(&current->mm->vma_lock);
+			vma = __find_vma_area(vstart, current->mm);
+			if (!vma) {
+				spin_unlock(&current->mm->vma_lock);
+				return -EFAULT;
+			}
+			spin_unlock(&current->mm->vma_lock);
+
+			ret = vmap_page_range(vma);
+			if (ret <= 0)
+				return -ENOMEM;
+			break;
+		case untype_vunmap:
+			spin_lock(&current->mm->vma_lock);
+			vma = __find_vma_area(vstart, current->mm);
+			if (!vma) {
+				spin_unlock(&current->mm->vma_lock);
+				return -EFAULT;
+			}
+			spin_unlock(&current->mm->vma_lock);
+
+			vumap_page_range(vma);
+			break;
+	}
+
+	return 0;
 }

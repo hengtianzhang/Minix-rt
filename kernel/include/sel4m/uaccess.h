@@ -96,4 +96,6 @@ copy_to_user(void __user *to, const void *from, unsigned long n)
 	return n;
 }
 
+#define BAD_ADDR(x) ((unsigned long)(x) >= TASK_SIZE)
+
 #endif /* !__SEL4M_UACCESS_H_ */

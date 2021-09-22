@@ -31,8 +31,6 @@ extern char __end_archive[];
 #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
 #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
 
-#define BAD_ADDR(x) ((unsigned long)(x) >= TASK_SIZE)
-
 static __init struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex)
 {
 	int size;
@@ -72,7 +70,7 @@ static __init unsigned long setup_services_stack(struct task_struct *tsk, unsign
 	stack_top = PAGE_ALIGN(stack_top);
 	stack_base = PAGE_ALIGN(stack_top - THREAD_SIZE);
 
-	vm_flags |= VM_READ | VM_WRITE | VM_EXEC;
+	vm_flags |= VM_READ | VM_WRITE | VM_EXEC | VM_USER_STACK;
 	vma = untype_get_vmap_area(stack_base, THREAD_SIZE,
 							vm_flags, tsk->mm, 0);
 	if (!vma)
@@ -282,8 +280,7 @@ __init struct task_struct *service_core_init(void)
 	cap_table_set_cap(cap_untyped_cap, &tsk->cap_table);
 	cap_table_set_cap(cap_thread_cap, &tsk->cap_table);
 
-	sched_fork(tsk, 0);
-
+	tsk->policy = SCHED_FIFO;
 	tsk->prio = 0;
 	tsk->static_prio = 0;
 	tsk->normal_prio = 0;
@@ -291,6 +288,8 @@ __init struct task_struct *service_core_init(void)
 
 	mask = CPU_MASK_ALL;
 	set_cpus_allowed(tsk, mask);
+
+	sched_fork(tsk, 0);
 
 	regs = task_pt_regs(tsk);
 	start_thread(regs, elf_entry, stack_top);

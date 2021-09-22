@@ -732,15 +732,17 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 	if (!vma->pages)
 		goto fail_pages;
 
-	for (i = 0; i < vma->nr_pages; i++) {
-		struct page *page;
+	if (!(flags & VM_PRIVATE_SHARE)) {
+		for (i = 0; i < vma->nr_pages; i++) {
+			struct page *page;
 
-		page = alloc_page(GFP_USER | GFP_ZERO);
-		if (unlikely(!page)) {
-			vma->nr_pages = i;
-			goto fail_page;
+			page = alloc_page(GFP_USER | GFP_ZERO);
+			if (unlikely(!page)) {
+				vma->nr_pages = i;
+				goto fail_page;
+			}
+			vma->pages[i] = page;
 		}
-		vma->pages[i] = page;
 	}
 
 	vma->pud_root = RB_ROOT;
@@ -839,6 +841,34 @@ fail_pgd:
 	return NULL;
 }
 
+struct vm_area_struct *untype_first_vma(struct task_struct *tsk)
+{
+	struct rb_node *node;
+	struct vm_area_struct *vma;
+
+	node = rb_first(&tsk->mm->vma_rb_root);
+	if (!node)
+		return NULL;
+
+	vma = rb_entry(node, struct vm_area_struct, vm_rb_node);
+
+	return vma;
+}
+
+struct vm_area_struct *untype_next_vma(struct vm_area_struct *vma)
+{
+	struct rb_node *node;
+	struct vm_area_struct *next;
+
+	node = rb_next(&vma->vm_rb_node);
+	if (!node)
+		return NULL;
+
+	next = rb_entry(node, struct vm_area_struct, vm_rb_node);
+
+	return next;
+}
+
 void untype_free_mm_struct(struct mm_struct *mm)
 {
 	if (!mm) {
@@ -855,6 +885,63 @@ void untype_free_mm_struct(struct mm_struct *mm)
 	free_page((u64)mm->pgd);
 	kfree(mm->untype);
 	kfree(mm);
+}
+
+int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
+			unsigned long *stack_top, unsigned long *ipcptr)
+{
+	int i = 0, j, ret;
+	unsigned long vstart, size, flags;
+	struct vm_area_struct *vma, *new_vma;
+
+	for_each_vm_area(vma, orgi_tsk) {
+		vstart = vma->vm_start;
+		size = vma->vm_end - vma->vm_start;
+		flags = vma->vm_flags;
+
+		if (!(vma->vm_flags & (VM_USER_STACK | VM_USER_IPCPTR)))
+			flags |= VM_PRIVATE_SHARE;
+
+		new_vma = untype_get_vmap_area(vstart, size, flags, tsk->mm, 0);
+		if (!new_vma)
+			goto fail_out;
+
+		if (!(new_vma->vm_flags & (VM_USER_STACK | VM_USER_IPCPTR))) {
+			BUG_ON(new_vma->nr_pages != vma->nr_pages);
+			for (j = 0; j < new_vma->nr_pages; j++) {
+				new_vma->pages[j] = vma->pages[j];
+				BUG_ON(!new_vma->pages[j]);
+				get_page(new_vma->pages[j]);
+			}
+		}
+		ret = vmap_page_range(new_vma);
+		if (ret <= 0)
+			goto fail_vma;
+
+		if (new_vma->vm_flags & VM_USER_STACK)
+			if (stack_top)
+				*stack_top = new_vma->vm_end;
+		if (new_vma->vm_flags & VM_USER_IPCPTR)
+			if (ipcptr)
+				*ipcptr = new_vma->vm_start;
+
+		i++;
+	}
+
+	return 0;
+
+fail_vma:
+	untype_free_vmap_area(vstart, tsk->mm);
+fail_out:
+	j = 0;
+	for_each_vm_area(vma, tsk) {
+		vumap_page_range(vma);
+		untype_free_vmap_area(vma->vm_start, tsk->mm);
+		j++;
+	}
+	BUG_ON(j != i);
+
+	return -ENOMEM;
 }
 
 void untype_core_init(void)

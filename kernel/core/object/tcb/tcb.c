@@ -8,6 +8,8 @@
 
 #include <uapi/sel4m/object/tcb.h>
 
+asmlinkage void ret_from_fork(void) asm("ret_from_fork");
+
 struct task_struct *tcb_create_task(unsigned int flags)
 {
 	struct task_struct *tsk;
@@ -60,7 +62,15 @@ void tcb_set_task_stack_end_magic(struct task_struct *tsk)
 static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg)
 {
 	int ret;
+	struct pt_regs *regs;
 	struct task_struct *tsk;
+	unsigned long stack_top, ipcptr;
+
+	if (BAD_ADDR(ventry))
+		goto fail_ventry;
+
+	if (BAD_ADDR(varg))
+		goto fail_ventry;
 
 	tsk = tcb_create_task(0);
 	if (!tsk)
@@ -78,13 +88,47 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg)
 
 	tcb_set_task_stack_end_magic(tsk);
 
+	ret = untype_copy_mm(tsk, current, &stack_top, &ipcptr);
+	if (ret)
+		goto fail_copy_mm;
+
+	tsk->flags = current->flags;
+	tsk->cap_ipcptr = (void *)ipcptr;
+
+	task_thread_info(tsk)->addr_limit = USER_DS;
+
+	tsk->state = TASK_RUNNING;
+
+	tsk->policy = current->policy;
+	tsk->prio = current->prio;
+	tsk->static_prio = current->static_prio;
+	tsk->normal_prio = current->normal_prio;
+	tsk->sched_class = current->sched_class;
+	set_cpus_allowed(tsk, current->cpus_allowed);
+
+	sched_fork(tsk, 0);
+
+	regs = task_pt_regs(tsk);
+	start_thread(regs, ventry, stack_top);
+	regs->regs[0] = varg;
+
+	memset(&tsk->thread.cpu_context, 0, sizeof(struct cpu_context));
+
+	tsk->thread.cpu_context.pc = (unsigned long)ret_from_fork;
+	tsk->thread.cpu_context.sp = (unsigned long)regs;
+
+	wake_up_new_task(tsk, 0);
+
 	return 0;
 
+fail_copy_mm:
+	kfree(tsk->stack);
 fail_stack:
 	ret = remove_pid_by_process(tsk);
 	BUG_ON(!ret);
 fail_inster_pid:
 	tcb_destroy_task(tsk);
+fail_ventry:
 
 	return -EINVAL;
 }

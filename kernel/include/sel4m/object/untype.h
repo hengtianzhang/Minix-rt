@@ -47,4 +47,13 @@ struct untyp_ref_pte_talbe {
 	struct rb_node	node;
 };
 
+extern struct vm_area_struct *untype_first_vma(struct task_struct *tsk);
+extern struct vm_area_struct *untype_next_vma(struct vm_area_struct *vma);
+
+#define for_each_vm_area(vma, tsk)	\
+	for (vma = untype_first_vma(tsk); vma != NULL; vma = untype_next_vma(vma))
+
+extern int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
+							unsigned long *stack_top, unsigned long *ipcptr);
+
 #endif /* !__SEL4M_OBJECT_H_ */

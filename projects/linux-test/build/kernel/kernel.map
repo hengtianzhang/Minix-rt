@@ -1,0 +1,2835 @@
+Archive member included to satisfy reference by file (symbol)
+
+kernel/libkernel.a(main.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(init_task.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(stack.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(panic.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(printf.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(extable.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(cpu.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(reboot.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(clock.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(softirq.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(smp.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(exit.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(syscall.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(handle.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(qspinlock.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(qrwlock.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(spinlock.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(mutex.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(ipc.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(services.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(pid.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(tcb.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(untype.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(page_alloc.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(slub.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(core.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(rt.c.obj)  (--whole-archive)
+kernel/libkernel.a(fair.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(idle.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(wait.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(clocksource.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(clockevents.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(tick-oneshot.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(tick-common.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(timekeeping.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(hrtimer.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(sched_clock.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(jiffies.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(time.c.obj)
+                              (--whole-archive)
+kernel/libkernel.a(archive.S.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(entry.S.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(smccc-call.S.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(cache.S.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(proc.S.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+                              (--whole-archive)
+kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+                              (--whole-archive)
+kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+                              (--whole-archive)
+kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+                              (--whole-archive)
+kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+                              (--whole-archive)
+kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+                              (--whole-archive)
+kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+                              (--whole-archive)
+kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+                              (--whole-archive)
+kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+                              (--whole-archive)
+kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+                              (--whole-archive)
+kernel/drivers/clocksource/libdrivers__clocksource.a(timer-of.c.obj)
+                              (--whole-archive)
+kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+                              (--whole-archive)
+kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+                              (--whole-archive)
+kernel/mm/libmm.a(init-mm.c.obj)
+                              (--whole-archive)
+kernel/libversion.a(version.c.obj)
+                              (--whole-archive)
+kernel/arch/arm64/lib/libarch__arm64__lib.a(clear_page.S.obj)
+                              kernel/libkernel.a(page_alloc.c.obj) (clear_page)
+kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+                              kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj) (__ndelay)
+kernel/arch/arm64/lib/libarch__arm64__lib.a(copy_from_user.S.obj)
+                              kernel/libkernel.a(printf.c.obj) (__arch_copy_from_user)
+kernel/lib/liblib.a(cpumask.c.obj)
+                              kernel/libkernel.a(init_task.c.obj) (cpumask_next)
+kernel/lib/liblib.a(extable.c.obj)
+                              kernel/libkernel.a(extable.c.obj) (sort_extable)
+kernel/lib/liblib.a(timerqueue.c.obj)
+                              kernel/libkernel.a(hrtimer.c.obj) (timerqueue_add)
+kernel/lib/liblib.a(reciprocal_div.c.obj)
+                              kernel/libkernel.a(core.c.obj) (reciprocal_value)
+kernel/lib/liblib.a(kasprintf.c.obj)
+                              kernel/libkernel.a(slub.c.obj) (kasprintf)
+kernel/drivers/of/kof/libkof.a(base.c.obj)
+                              kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj) (of_n_addr_cells)
+kernel/drivers/of/kof/libkof.a(property.c.obj)
+                              kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj) (of_property_read_variable_u32_array)
+kernel/drivers/of/kof/libkof.a(address.c.obj)
+                              kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj) (of_iomap)
+kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                              kernel/drivers/of/libdrivers__of.a(fdt.c.obj) (of_fdt_is_compatible)
+kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+                              kernel/drivers/serial/libdrivers__serial.a(uart.c.obj) (of_flat_dt_translate_address)
+kernel/drivers/of/kof/libkof.a(irq.c.obj)
+                              kernel/drivers/of/libdrivers__of.a(irq.c.obj) (of_irq_find_parent)
+kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                              kernel/drivers/of/kof/libkof.a(fdt.c.obj) (fdt_check_header)
+kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+                              kernel/drivers/of/libdrivers__of.a(fdt.c.obj) (fdt_get_mem_rsv)
+kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+                              kernel/drivers/of/kof/libkof.a(fdt.c.obj) (fdt_setprop)
+kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+                              kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj) (fdt_node_end_offset_)
+kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+                              kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj) (memblock_init)
+kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+                              kernel/drivers/of/kof/libkof.a(base.c.obj) (strcasecmp)
+kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+                              kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj) (_ctype)
+kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+                              kernel/libkernel.a(core.c.obj) (find_next_bit)
+kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+                              kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj) (__bitmap_clear)
+kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+                              kernel/libkernel.a(panic.c.obj) (vsnprintf)
+kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+                              kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj) (_parse_integer_fixup_radix)
+kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+                              kernel/drivers/of/kof/libkof.a(fdt.c.obj) (crc32_be)
+kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+                              kernel/lib/liblib.a(extable.c.obj) (bsearch)
+kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+                              kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj) (sort)
+kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+                              kernel/libkernel.a(init_task.c.obj) (random)
+kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+                              kernel/libkernel.a(timekeeping.c.obj) (set_normalized_timespec64)
+kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+                              kernel/libkernel.a(pid.c.obj) (rb_insert_color)
+kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+                              kernel/libkernel.a(smp.c.obj) (llist_add_batch)
+kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+                              kernel/libkernel.a(smp.c.obj) (__sw_hweight64)
+kernel/drivers/of/kof/kbase/libkbase.a(memchr.S.obj)
+                              kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj) (memchr)
+kernel/drivers/of/kof/kbase/libkbase.a(memcmp.S.obj)
+                              kernel/libkernel.a(services.c.obj) (memcmp)
+kernel/drivers/of/kof/kbase/libkbase.a(memcpy.S.obj)
+                              kernel/libkernel.a(services.c.obj) (memcpy)
+kernel/drivers/of/kof/kbase/libkbase.a(memmove.S.obj)
+                              kernel/drivers/of/kof/libkof.a(fdt.c.obj) (memmove)
+kernel/drivers/of/kof/kbase/libkbase.a(memset.S.obj)
+                              kernel/libkernel.a(printf.c.obj) (memset)
+kernel/drivers/of/kof/kbase/libkbase.a(strchr.S.obj)
+                              kernel/drivers/of/kof/libkof.a(base.c.obj) (strchr)
+kernel/drivers/of/kof/kbase/libkbase.a(strcmp.S.obj)
+                              kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj) (strcmp)
+kernel/drivers/of/kof/kbase/libkbase.a(strlen.S.obj)
+                              kernel/drivers/of/libdrivers__of.a(fdt.c.obj) (strlen)
+kernel/drivers/of/kof/kbase/libkbase.a(strncmp.S.obj)
+                              kernel/drivers/of/kof/libkof.a(base.c.obj) (strncmp)
+kernel/drivers/of/kof/kbase/libkbase.a(strnlen.S.obj)
+                              kernel/drivers/of/kof/libkof.a(property.c.obj) (strnlen)
+kernel/drivers/of/kof/kbase/libkbase.a(strrchr.S.obj)
+                              kernel/drivers/of/libdrivers__of.a(fdt.c.obj) (strrchr)
+kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+                              kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj) (hex_to_bin)
+
+Discarded input sections
+
+ .eh_frame      0x0000000000000000       0x88 kernel/libkernel.a(main.c.obj)
+ .eh_frame      0x0000000000000000       0x48 kernel/libkernel.a(init_task.c.obj)
+ .eh_frame      0x0000000000000000       0xd8 kernel/libkernel.a(panic.c.obj)
+ .eh_frame      0x0000000000000000       0xc8 kernel/libkernel.a(printf.c.obj)
+ .eh_frame      0x0000000000000000       0x58 kernel/libkernel.a(extable.c.obj)
+ .eh_frame      0x0000000000000000       0x70 kernel/libkernel.a(cpu.c.obj)
+ .eh_frame      0x0000000000000000       0x58 kernel/libkernel.a(clock.c.obj)
+ .eh_frame      0x0000000000000000       0xe8 kernel/libkernel.a(softirq.c.obj)
+ .eh_frame      0x0000000000000000      0x180 kernel/libkernel.a(smp.c.obj)
+ .eh_frame      0x0000000000000000       0x28 kernel/libkernel.a(exit.c.obj)
+ .eh_frame      0x0000000000000000       0x28 kernel/libkernel.a(syscall.c.obj)
+ .eh_frame      0x0000000000000000      0x2d0 kernel/libkernel.a(handle.c.obj)
+ .eh_frame      0x0000000000000000       0x28 kernel/libkernel.a(qspinlock.c.obj)
+ .eh_frame      0x0000000000000000       0x68 kernel/libkernel.a(qrwlock.c.obj)
+ .eh_frame      0x0000000000000000      0x2f0 kernel/libkernel.a(spinlock.c.obj)
+ .eh_frame      0x0000000000000000      0x150 kernel/libkernel.a(mutex.c.obj)
+ .eh_frame      0x0000000000000000       0x48 kernel/libkernel.a(ipc.c.obj)
+ .eh_frame      0x0000000000000000       0x58 kernel/libkernel.a(services.c.obj)
+ .eh_frame      0x0000000000000000      0x108 kernel/libkernel.a(pid.c.obj)
+ .eh_frame      0x0000000000000000       0x70 kernel/libkernel.a(tcb.c.obj)
+ .eh_frame      0x0000000000000000      0x370 kernel/libkernel.a(untype.c.obj)
+ .eh_frame      0x0000000000000000      0x550 kernel/libkernel.a(page_alloc.c.obj)
+ .eh_frame      0x0000000000000000      0x4d8 kernel/libkernel.a(slub.c.obj)
+ .eh_frame      0x0000000000000000      0xf50 kernel/libkernel.a(core.c.obj)
+ .eh_frame      0x0000000000000000      0x148 kernel/libkernel.a(rt.c.obj)
+ .eh_frame      0x0000000000000000      0x310 kernel/libkernel.a(fair.c.obj)
+ .eh_frame      0x0000000000000000      0x158 kernel/libkernel.a(idle.c.obj)
+ .eh_frame      0x0000000000000000      0x150 kernel/libkernel.a(wait.c.obj)
+ .eh_frame      0x0000000000000000      0x1a8 kernel/libkernel.a(clocksource.c.obj)
+ .eh_frame      0x0000000000000000      0x2e0 kernel/libkernel.a(clockevents.c.obj)
+ .eh_frame      0x0000000000000000       0xa0 kernel/libkernel.a(tick-oneshot.c.obj)
+ .eh_frame      0x0000000000000000       0x28 kernel/libkernel.a(tick-common.c.obj)
+ .eh_frame      0x0000000000000000      0x2d8 kernel/libkernel.a(timekeeping.c.obj)
+ .eh_frame      0x0000000000000000      0x510 kernel/libkernel.a(hrtimer.c.obj)
+ .eh_frame      0x0000000000000000      0x170 kernel/libkernel.a(sched_clock.c.obj)
+ .eh_frame      0x0000000000000000       0x80 kernel/libkernel.a(jiffies.c.obj)
+ .eh_frame      0x0000000000000000      0x140 kernel/libkernel.a(time.c.obj)
+ .eh_frame      0x0000000000000000       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(smccc-call.S.obj)
+ .eh_frame      0x0000000000000000       0x78 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+ .eh_frame      0x0000000000000000      0x200 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+ .eh_frame      0x0000000000000000      0x100 kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+ .eh_frame      0x0000000000000000       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ .eh_frame      0x0000000000000000       0x70 kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ .eh_frame      0x0000000000000000       0x78 kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+ .eh_frame      0x0000000000000000       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ .eh_frame      0x0000000000000000       0xa0 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+ .eh_frame      0x0000000000000000       0x38 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ .eh_frame      0x0000000000000000      0x368 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ .eh_frame      0x0000000000000000       0x68 kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+ .eh_frame      0x0000000000000000       0x48 kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+ .eh_frame      0x0000000000000000       0x38 kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+ .eh_frame      0x0000000000000000      0x368 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+ .eh_frame      0x0000000000000000       0xe0 kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+ .eh_frame      0x0000000000000000       0xf0 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+ .eh_frame      0x0000000000000000       0x38 kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+ .eh_frame      0x0000000000000000      0x228 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+ .eh_frame      0x0000000000000000      0x360 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+ .eh_frame      0x0000000000000000       0xb8 kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+ .eh_frame      0x0000000000000000       0x58 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ .eh_frame      0x0000000000000000      0x178 kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+ .eh_frame      0x0000000000000000       0xa8 kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+ .eh_frame      0x0000000000000000      0x260 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .eh_frame      0x0000000000000000       0x38 kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+ .eh_frame      0x0000000000000000      0x220 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .eh_frame      0x0000000000000000      0x140 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+ .eh_frame      0x0000000000000000       0x48 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ .eh_frame      0x0000000000000000      0x188 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ .eh_frame      0x0000000000000000       0x78 kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+ .eh_frame      0x0000000000000000       0xd8 kernel/lib/liblib.a(cpumask.c.obj)
+ .eh_frame      0x0000000000000000       0x90 kernel/lib/liblib.a(extable.c.obj)
+ .eh_frame      0x0000000000000000       0xa8 kernel/lib/liblib.a(timerqueue.c.obj)
+ .eh_frame      0x0000000000000000       0x28 kernel/lib/liblib.a(reciprocal_div.c.obj)
+ .eh_frame      0x0000000000000000       0x70 kernel/lib/liblib.a(kasprintf.c.obj)
+ .eh_frame      0x0000000000000000      0xa98 kernel/drivers/of/kof/libkof.a(base.c.obj)
+ .eh_frame      0x0000000000000000      0x6f8 kernel/drivers/of/kof/libkof.a(property.c.obj)
+ .eh_frame      0x0000000000000000      0x368 kernel/drivers/of/kof/libkof.a(address.c.obj)
+ .eh_frame      0x0000000000000000      0x2a0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .eh_frame      0x0000000000000000       0xc0 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+ .eh_frame      0x0000000000000000      0x128 kernel/drivers/of/kof/libkof.a(irq.c.obj)
+ .eh_frame      0x0000000000000000      0x198 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .eh_frame      0x0000000000000000      0x7c0 kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+ .eh_frame      0x0000000000000000      0x418 kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+ .eh_frame      0x0000000000000000       0xf8 kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+ .eh_frame      0x0000000000000000      0x6a8 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+ .eh_frame      0x0000000000000000      0x2e0 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+ .eh_frame      0x0000000000000000       0x68 kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+ .eh_frame      0x0000000000000000      0x408 kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+ .eh_frame      0x0000000000000000      0x388 kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+ .eh_frame      0x0000000000000000      0x1f8 kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+ .eh_frame      0x0000000000000000       0xe0 kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+ .eh_frame      0x0000000000000000       0x78 kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+ .eh_frame      0x0000000000000000       0x98 kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+ .eh_frame      0x0000000000000000       0x50 kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+ .eh_frame      0x0000000000000000       0xa0 kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+ .eh_frame      0x0000000000000000      0x1b0 kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+ .eh_frame      0x0000000000000000       0x50 kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+ .eh_frame      0x0000000000000000       0x68 kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+ .eh_frame      0x0000000000000000       0xe0 kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+                0xffff0000000746c0                jiffies = jiffies_64
+
+/DISCARD/
+ *(.discard)
+ *(.discard.*)
+ *(.interp .dynamic)
+ *(.dynsym .dynstr .hash .gnu.hash)
+ *(.eh_frame)
+                0xffff000000000000                . = 0xffff000000000000
+
+.head.text      0xffff000000000000       0x40
+                0xffff000000000000                _text = .
+ *(.head.text)
+ .head.text     0xffff000000000000       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+
+.text           0xffff000000000800    0x28a60
+                0xffff000000000800                _stext = .
+                0xffff000000000800                __exception_text_start = .
+ *(.exception.text)
+ .exception.text
+                0xffff000000000800       0xac kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                0xffff000000000800                do_undefinstr
+                0xffff000000000860                do_sysinstr
+ *fill*         0xffff0000000008ac        0x4 
+ .exception.text
+                0xffff0000000008b0      0x180 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+                0xffff0000000008b0                do_mem_abort
+                0xffff000000000948                do_el0_irq_bp_hardening
+                0xffff000000000950                do_el0_ia_bp_hardening
+                0xffff000000000970                do_sp_pc_abort
+                0xffff0000000009b0                do_debug_exception
+ .exception.text
+                0xffff000000000a30       0xb4 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+                0xffff000000000ae4                __exception_text_end = .
+                0xffff000000000ae8                . = ALIGN (0x8)
+ *fill*         0xffff000000000ae4        0x4 
+                0xffff000000000ae8                __irqentry_text_start = .
+ *(.irqentry.text)
+                0xffff000000000ae8                __irqentry_text_end = .
+                0xffff000000000ae8                . = ALIGN (0x8)
+                0xffff000000000ae8                __entry_text_start = .
+ *(.entry.text)
+ *fill*         0xffff000000000ae8      0x518 
+ .entry.text    0xffff000000001000     0x17cc kernel/arch/arm64/core/libarch__arm64__core.a(entry.S.obj)
+                0xffff000000001000                vectors
+                0xffff0000000027cc                __entry_text_end = .
+                0xffff0000000027d0                . = ALIGN (0x8)
+ *fill*         0xffff0000000027cc        0x4 
+ *(.text.hot .text .text.fixup .text.unlikely)
+ .text          0xffff0000000027d0        0x0 kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+ .text          0xffff0000000027d0       0xbc kernel/libkernel.a(main.c.obj)
+                0xffff0000000027d0                rest_init
+ .text          0xffff00000000288c        0x0 kernel/libkernel.a(init_task.c.obj)
+ .text          0xffff00000000288c        0x0 kernel/libkernel.a(stack.c.obj)
+ *fill*         0xffff00000000288c        0x4 
+ .text          0xffff000000002890       0xf4 kernel/libkernel.a(panic.c.obj)
+                0xffff000000002890                __stack_chk_fail
+                0xffff0000000028b0                dump_stack
+ .text.unlikely
+                0xffff000000002984      0x130 kernel/libkernel.a(panic.c.obj)
+                0xffff000000002984                hang
+                0xffff000000002a58                dump_stack_print_info
+                0xffff000000002aa0                show_regs_print_info
+ *fill*         0xffff000000002ab4        0x4 
+ .text          0xffff000000002ab8      0x310 kernel/libkernel.a(printf.c.obj)
+                0xffff000000002ab8                vprintf_emit
+                0xffff000000002db0                __arm64_sys_debug_printf
+ .text.unlikely
+                0xffff000000002dc8       0xa0 kernel/libkernel.a(printf.c.obj)
+                0xffff000000002dc8                printf
+ .text          0xffff000000002e68       0x34 kernel/libkernel.a(extable.c.obj)
+                0xffff000000002e68                search_exception_tables
+ *fill*         0xffff000000002e9c        0x4 
+ .text          0xffff000000002ea0       0xac kernel/libkernel.a(cpu.c.obj)
+                0xffff000000002ea0                __cpuhp_setup_state
+                0xffff000000002ee0                notify_cpu_starting
+ .text          0xffff000000002f4c        0x0 kernel/libkernel.a(reboot.c.obj)
+ *fill*         0xffff000000002f4c        0x4 
+ .text          0xffff000000002f50       0x14 kernel/libkernel.a(clock.c.obj)
+                0xffff000000002f50                sched_clock_cpu
+ *fill*         0xffff000000002f64        0x4 
+ .text          0xffff000000002f68      0x2c0 kernel/libkernel.a(softirq.c.obj)
+                0xffff000000002f68                raise_softirq
+                0xffff000000002f98                open_softirq
+                0xffff000000002fa8                __local_bh_enable
+                0xffff000000003030                __local_bh_disable
+                0xffff000000003048                __do_softirq
+ .text          0xffff000000003228      0x6c8 kernel/libkernel.a(smp.c.obj)
+                0xffff000000003228                generic_smp_call_function_single_interrupt
+                0xffff000000003350                smp_call_function_single
+                0xffff000000003570                smp_call_function_many
+                0xffff0000000037f0                smp_call_function
+                0xffff000000003868                on_each_cpu
+ .text          0xffff0000000038f0        0x4 kernel/libkernel.a(exit.c.obj)
+                0xffff0000000038f0                do_exit
+ *fill*         0xffff0000000038f4        0x4 
+ .text          0xffff0000000038f8        0x8 kernel/libkernel.a(syscall.c.obj)
+                0xffff0000000038f8                __arm64_sys_ni_syscall
+ .text          0xffff000000003900      0x874 kernel/libkernel.a(handle.c.obj)
+                0xffff000000003900                get_irq_regs
+                0xffff000000003918                set_irq_regs
+                0xffff000000003938                handle_domain_irq
+                0xffff000000003b98                handle_get_irq_data
+                0xffff000000003bc0                handle_get_irq_domain
+                0xffff000000003bd0                irq_create_fwspec_mapping
+                0xffff000000003d28                irq_create_of_mapping
+                0xffff000000003db0                request_percpu_irq
+                0xffff000000003ee0                enable_percpu_irq
+                0xffff000000003fb8                irq_percpu_disable
+                0xffff000000003fe8                mask_irq
+                0xffff000000004010                unmask_irq
+                0xffff000000004038                irq_eoi
+                0xffff000000004060                irq_set_type
+                0xffff000000004088                irq_set_irq_type
+                0xffff0000000040f0                irq_get_irqchip_state
+                0xffff000000004118                irq_set_irqchip_state
+                0xffff000000004148                irq_set_affinity
+ *fill*         0xffff000000004174        0x4 
+ .text          0xffff000000004178      0x200 kernel/libkernel.a(qspinlock.c.obj)
+                0xffff000000004178                queued_spin_lock_slowpath
+ .text          0xffff000000004378      0x1bc kernel/libkernel.a(qrwlock.c.obj)
+                0xffff000000004378                queued_read_lock_slowpath
+                0xffff000000004450                queued_write_lock_slowpath
+ *fill*         0xffff000000004534        0x4 
+ .text          0xffff000000004538       0x2c kernel/libkernel.a(spinlock.c.obj)
+                0xffff000000004538                in_lock_functions
+ *fill*         0xffff000000004564        0x4 
+ .text          0xffff000000004568       0x1c kernel/libkernel.a(mutex.c.obj)
+                0xffff000000004568                __mutex_init
+ *fill*         0xffff000000004584        0x4 
+ .text          0xffff000000004588       0x64 kernel/libkernel.a(ipc.c.obj)
+                0xffff000000004588                ipc_create_task_ipcptr
+ .text          0xffff0000000045ec        0x0 kernel/libkernel.a(services.c.obj)
+ *fill*         0xffff0000000045ec        0x4 
+ .text          0xffff0000000045f0      0x1fc kernel/libkernel.a(pid.c.obj)
+                0xffff000000004668                find_process_by_pid
+                0xffff0000000046b8                insert_process_by_pid
+                0xffff0000000046e0                remove_pid_by_process
+                0xffff000000004750                pid_first
+                0xffff000000004780                pid_next
+ *fill*         0xffff0000000047ec        0x4 
+ .text          0xffff0000000047f0       0xe4 kernel/libkernel.a(tcb.c.obj)
+                0xffff0000000047f0                tcb_create_task
+                0xffff000000004888                tcb_destroy_task
+                0xffff0000000048c0                tcb_set_task_stack_end_magic
+ *fill*         0xffff0000000048d4        0x4 
+ .text          0xffff0000000048d8     0x239c kernel/libkernel.a(untype.c.obj)
+                0xffff000000004a58                vm_get_page_prot
+                0xffff000000004a70                vumap_page_range
+                0xffff0000000051c8                vmap_page_range
+                0xffff000000006148                untype_get_vmap_area
+                0xffff0000000063a8                untype_free_vmap_area
+                0xffff000000006610                untype_alloc_mm_struct
+                0xffff0000000066e0                untype_free_mm_struct
+                0xffff000000006820                untype_core_init
+                0xffff000000006838                untype_core_init_late
+                0xffff000000006ae0                __arm64_sys_untype
+ *fill*         0xffff000000006c74        0x4 
+ .text          0xffff000000006c78     0x1d1c kernel/libkernel.a(page_alloc.c.obj)
+                0xffff000000007248                arch_free_page
+                0xffff000000007938                free_compound_page
+                0xffff0000000079a0                reserve_bootmem_region
+                0xffff000000007a68                free_unref_page
+                0xffff000000007bf0                __alloc_pages
+                0xffff000000008408                __get_free_pages
+                0xffff000000008490                __free_pages
+                0xffff000000008510                free_pages
+                0xffff000000008620                free_reserved_area
+                0xffff000000008850                nr_managed_pages
+                0xffff000000008878                nr_zone_free_pages
+                0xffff0000000088b0                nr_free_pages
+                0xffff000000008908                nr_zone_percpu_cache_pages
+                0xffff000000008968                nr_percpu_cache_pages
+ *fill*         0xffff000000008994        0x4 
+ .text          0xffff000000008998     0x1cb8 kernel/libkernel.a(slub.c.obj)
+                0xffff000000009608                slab_is_available
+                0xffff000000009620                kmem_cache_alloc
+                0xffff0000000096a8                kmem_cache_free
+                0xffff000000009790                kmem_ptr_validate
+                0xffff000000009930                kmem_cache_size
+                0xffff000000009938                kmem_cache_name
+                0xffff000000009940                __kmalloc
+                0xffff000000009a78                ksize
+                0xffff000000009c58                kfree
+                0xffff000000009f10                kmem_cache_destroy
+                0xffff00000000a430                kmem_cache_create
+ .text.unlikely
+                0xffff00000000a650       0xa0 kernel/libkernel.a(slub.c.obj)
+ .text          0xffff00000000a6f0     0x40f4 kernel/libkernel.a(core.c.obj)
+                0xffff00000000bb10                __update_rq_clock
+                0xffff00000000bfd0                default_wake_function
+                0xffff00000000bfe8                update_rq_clock
+                0xffff00000000c010                cpu_clock
+                0xffff00000000c098                resched_task
+                0xffff00000000c888                task_curr
+                0xffff00000000c8b8                weighted_cpuload
+                0xffff00000000c8e0                set_task_cpu
+                0xffff00000000c940                wait_task_inactive
+                0xffff00000000ca10                wake_up_process
+                0xffff00000000ca30                wake_up_state
+                0xffff00000000ca48                wake_up_new_task
+                0xffff00000000cbd0                schedule_tail
+                0xffff00000000cc28                nr_running
+                0xffff00000000cc98                nr_uninterruptible
+                0xffff00000000cd10                nr_context_switches
+                0xffff00000000cd80                nr_iowait
+                0xffff00000000cdf8                nr_active
+                0xffff00000000ce80                balance_tasks
+                0xffff00000000d058                iter_move_one_task
+                0xffff00000000d160                select_nohz_load_balancer
+                0xffff00000000d3e8                task_sched_runtime
+                0xffff00000000d498                scheduler_tick
+                0xffff00000000d768                kick_process
+                0xffff00000000d800                sched_fork
+                0xffff00000000d900                sched_exec
+                0xffff00000000da60                __wake_up
+                0xffff00000000dac0                __wake_up_locked
+                0xffff00000000dae0                __wake_up_sync
+                0xffff00000000db48                complete
+                0xffff00000000dba8                complete_all
+                0xffff00000000dc08                set_user_nice
+                0xffff00000000dde8                task_prio
+                0xffff00000000ddf8                task_nice
+                0xffff00000000de08                sched_setscheduler
+                0xffff00000000e1d0                sched_getaffinity
+                0xffff00000000e250                sys_sched_yield
+                0xffff00000000e2c8                sys_sched_get_priority_max
+                0xffff00000000e300                sys_sched_get_priority_min
+                0xffff00000000e338                init_idle
+                0xffff00000000e410                set_cpus_allowed
+                0xffff00000000e520                sched_setaffinity
+                0xffff00000000e610                partition_sched_domains
+                0xffff00000000e790                in_sched_functions
+ .text.unlikely
+                0xffff00000000e7e4      0x100 kernel/libkernel.a(core.c.obj)
+                0xffff00000000e81c                show_task
+ *fill*         0xffff00000000e8e4        0x4 
+ .text          0xffff00000000e8e8      0x4bc kernel/libkernel.a(rt.c.obj)
+ *fill*         0xffff00000000eda4        0x4 
+ .text          0xffff00000000eda8      0xa80 kernel/libkernel.a(fair.c.obj)
+ .text          0xffff00000000f828      0x1a0 kernel/libkernel.a(idle.c.obj)
+                0xffff00000000f8a8                arch_cpu_idle_enter
+                0xffff00000000f8b0                arch_cpu_idle_exit
+                0xffff00000000f8c8                cpu_idle
+ .text          0xffff00000000f9c8      0x2fc kernel/libkernel.a(wait.c.obj)
+                0xffff00000000f9c8                init_waitqueue_head
+                0xffff00000000f9e0                add_wait_queue
+                0xffff00000000fa40                add_wait_queue_exclusive
+                0xffff00000000faa0                remove_wait_queue
+                0xffff00000000faf0                prepare_to_wait
+                0xffff00000000fb80                prepare_to_wait_exclusive
+                0xffff00000000fc10                finish_wait
+                0xffff00000000fc88                autoremove_wake_function
+ *fill*         0xffff00000000fcc4        0x4 
+ .text          0xffff00000000fcc8      0x69c kernel/libkernel.a(clocksource.c.obj)
+                0xffff00000000fdf8                clocks_calc_mult_shift
+                0xffff00000000fe58                clocksource_suspend
+                0xffff00000000feb0                clocksource_resume
+                0xffff00000000ff08                clocks_calc_max_nsecs
+                0xffff00000000ff38                __clocksource_update_freq_scale
+                0xffff000000010150                clocksource_arch_init
+                0xffff000000010158                __clocksource_register_scale
+                0xffff000000010220                clocksource_unregister
+                0xffff0000000102b0                clocksource_change_rating
+                0xffff000000010358                clocksource_curr_clock
+ *fill*         0xffff000000010364        0x4 
+ .text          0xffff000000010368      0x934 kernel/libkernel.a(clockevents.c.obj)
+                0xffff000000010598                clockevent_delta2ns
+                0xffff0000000105b8                clockevents_switch_state
+                0xffff000000010700                clockevents_shutdown
+                0xffff000000010730                clockevents_tick_resume
+                0xffff000000010758                clockevents_program_event
+                0xffff0000000108e0                clockevents_register_device
+                0xffff000000010a50                clockevents_config_and_register
+                0xffff000000010a88                __clockevents_update_freq
+                0xffff000000010b10                clockevents_update_freq
+                0xffff000000010b38                clockevents_exchange_device
+                0xffff000000010be0                clockevents_suspend
+                0xffff000000010c40                clockevents_resume
+ *fill*         0xffff000000010c9c        0x4 
+ .text          0xffff000000010ca0      0x15c kernel/libkernel.a(tick-oneshot.c.obj)
+                0xffff000000010ca0                tick_program_event
+                0xffff000000010d40                tick_switch_to_oneshot
+                0xffff000000010d88                tick_init_highres
+                0xffff000000010dd0                tick_oneshot_mode_active
+ *fill*         0xffff000000010dfc        0x4 
+ .text          0xffff000000010e00       0x60 kernel/libkernel.a(tick-common.c.obj)
+                0xffff000000010e00                tick_check_new_device
+ .text          0xffff000000010e60      0x794 kernel/libkernel.a(timekeeping.c.obj)
+                0xffff000000010ee8                ktime_get_resolution_ns
+                0xffff000000010f20                timekeeping_max_deferment
+                0xffff000000010f58                ktime_get_ts64
+                0xffff000000011038                ktime_get
+                0xffff0000000110c0                ktime_get_seconds
+                0xffff0000000110d0                ktime_get_real_ts64
+                0xffff0000000111b8                ktime_get_real
+                0xffff000000011248                ktime_get_real_seconds
+                0xffff000000011278                ktime_get_cycles
+                0xffff0000000112a0                read_persistent_clock64
+                0xffff0000000112a8                do_settimeofday64
+                0xffff000000011388                timekeeping_valid_for_hres
+                0xffff0000000113c8                update_wall_time
+                0xffff000000011430                ktime_get_coarse
+                0xffff000000011480                ktime_get_coarse_ts64
+                0xffff0000000114c8                ktime_get_coarse_real
+                0xffff000000011518                ktime_get_coarse_real_ts64
+                0xffff000000011598                ktime_get_update_offsets_now
+ *fill*         0xffff0000000115f4        0x4 
+ .text          0xffff0000000115f8      0xe44 kernel/libkernel.a(hrtimer.c.obj)
+                0xffff0000000118c0                ktime_add_safe
+                0xffff0000000118e8                hrtimers_resume
+                0xffff000000011950                hrtimer_forward
+                0xffff000000011a38                hrtimer_start_range_ns
+                0xffff000000011c48                __hrtimer_get_remaining
+                0xffff000000011cc0                hrtimer_next_event_without
+                0xffff000000011d28                hrtimer_init
+                0xffff000000011d40                hrtimer_active
+                0xffff000000011da0                hrtimer_try_to_cancel
+                0xffff000000011e70                hrtimer_cancel
+                0xffff000000011ea0                hrtimer_interrupt
+                0xffff000000012290                hrtimers_prepare_cpu
+                0xffff0000000122f0                hrtimer_init_sleeper
+                0xffff000000012308                msleep
+                0xffff000000012390                msleep_interruptible
+ .text.unlikely
+                0xffff00000001243c       0x38 kernel/libkernel.a(hrtimer.c.obj)
+ *fill*         0xffff000000012474        0x4 
+ .text          0xffff000000012478      0x2a0 kernel/libkernel.a(sched_clock.c.obj)
+                0xffff000000012608                sched_clock
+                0xffff000000012690                sched_clock_suspend
+                0xffff0000000126c8                sched_clock_resume
+ .text          0xffff000000012718       0xf4 kernel/libkernel.a(jiffies.c.obj)
+                0xffff0000000127d8                get_jiffies_64
+ *fill*         0xffff00000001280c        0x4 
+ .text          0xffff000000012810      0x284 kernel/libkernel.a(time.c.obj)
+                0xffff000000012810                jiffies_to_msecs
+                0xffff000000012818                jiffies_to_usecs
+                0xffff000000012828                __msecs_to_jiffies
+                0xffff000000012840                __usecs_to_jiffies
+                0xffff000000012878                timespec64_to_jiffies
+                0xffff0000000128c8                jiffies_to_timespec64
+                0xffff000000012908                timeval_to_jiffies
+                0xffff000000012968                jiffies_to_timeval
+                0xffff0000000129b8                jiffies_to_clock_t
+                0xffff0000000129e0                clock_t_to_jiffies
+                0xffff000000012a00                jiffies_64_to_clock_t
+                0xffff000000012a28                nsec_to_clock_t
+                0xffff000000012a48                jiffies64_to_nsecs
+                0xffff000000012a58                nsecs_to_jiffies64
+                0xffff000000012a78                nsecs_to_jiffies
+ .text          0xffff000000012a94        0x0 kernel/libkernel.a(archive.S.obj)
+ .text          0xffff000000012a94        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+ .text          0xffff000000012a94       0x6c kernel/arch/arm64/core/libarch__arm64__core.a(entry.S.obj)
+                0xffff000000012a94                cpu_switch_to
+                0xffff000000012ae8                ret_from_fork
+ .text          0xffff000000012b00       0x58 kernel/arch/arm64/core/libarch__arm64__core.a(smccc-call.S.obj)
+                0xffff000000012b00                __arm_smccc_smc
+                0xffff000000012b2c                __arm_smccc_hvc
+ .text          0xffff000000012b58        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+ .text          0xffff000000012b58      0x4c4 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+                0xffff000000012b58                secondary_start_kernel
+                0xffff000000012d50                arch_send_call_function_ipi_mask
+                0xffff000000012d70                arch_send_call_function_single_ipi
+                0xffff000000012db0                handle_IPI
+                0xffff000000012eb0                smp_send_reschedule
+                0xffff000000012ef0                smp_send_stop
+ *fill*         0xffff00000001301c        0x4 
+ .text          0xffff000000013020      0x114 kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+                0xffff000000013020                machine_restart
+                0xffff000000013068                machine_power_off
+                0xffff000000013090                arch_cpu_idle
+                0xffff0000000130a8                tls_preserve_current_state
+                0xffff0000000130b8                __switch_to
+                0xffff000000013108                show_regs
+ .text.unlikely
+                0xffff000000013134      0x1a0 kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+                0xffff000000013134                __show_regs
+ .text          0xffff0000000132d4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ *fill*         0xffff0000000132d4        0x4 
+ .text          0xffff0000000132d8       0x6c kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ *fill*         0xffff000000013344        0x4 
+ .text          0xffff000000013348      0x15c kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+                0xffff000000013470                cpuinfo_store_cpu
+ .text          0xffff0000000134a4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ *fill*         0xffff0000000134a4        0x4 
+ .text          0xffff0000000134a8       0xe4 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+                0xffff0000000134a8                __ioremap
+                0xffff000000013570                ioremap
+ .text.unlikely
+                0xffff00000001358c       0x84 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+                0xffff00000001358c                __iounmap
+                0xffff0000000135cc                ioremap_cache
+ .text          0xffff000000013610        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ .text          0xffff000000013610      0x568 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                0xffff000000013688                unwind_frame
+                0xffff000000013728                dump_backtrace
+                0xffff000000013898                show_stack
+                0xffff0000000138b8                arm64_notify_die
+                0xffff000000013958                arm64_skip_faulting_instruction
+                0xffff000000013968                force_signal_inject
+                0xffff000000013ad8                arm64_notify_segfault
+                0xffff000000013ae0                esr_get_class_string
+                0xffff000000013af8                do_serror
+ .text.unlikely
+                0xffff000000013b78      0x450 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                0xffff000000013d18                die
+                0xffff000000013e4c                arm64_force_sig_fault
+                0xffff000000013e8c                arm64_force_sig_mceerr
+                0xffff000000013ea4                bad_mode
+                0xffff000000013ee8                bad_el0_sync
+                0xffff000000013f18                __pte_error
+                0xffff000000013f44                __pmd_error
+                0xffff000000013f70                __pud_error
+                0xffff000000013f9c                __pgd_error
+ .text          0xffff000000013fc8        0x4 kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+                0xffff000000013fc8                do_fpsimd_exc
+ .text.unlikely
+                0xffff000000013fcc       0x64 kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+                0xffff000000013fcc                do_fpsimd_acc
+                0xffff000000013ffc                do_sve_acc
+ .text          0xffff000000014030       0xd4 kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+                0xffff000000014030                do_notify_resume
+ *fill*         0xffff000000014104        0x4 
+ .text          0xffff000000014108       0x6c kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+                0xffff000000014108                el0_svc_handler
+ .text          0xffff000000014174       0x90 kernel/arch/arm64/mm/libarch__arm64__mm.a(cache.S.obj)
+                0xffff000000014174                __pi___flush_dcache_area
+                0xffff000000014174                __flush_dcache_area
+                0xffff0000000141ac                __inval_dcache_area
+                0xffff0000000141ac                __pi___inval_dcache_area
+ .text          0xffff000000014204       0x30 kernel/arch/arm64/mm/libarch__arm64__mm.a(proc.S.obj)
+                0xffff000000014204                cpu_do_idle
+                0xffff000000014210                cpu_do_switch_mm
+ *fill*         0xffff000000014234        0x4 
+ .text          0xffff000000014238      0xe8c kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                0xffff000000014288                __set_fixmap
+                0xffff000000014378                pud_set_huge
+                0xffff000000014408                pmd_set_huge
+                0xffff000000014c78                mark_rodata_ro
+                0xffff000000014cb8                pud_clear_huge
+                0xffff000000014ce0                pmd_clear_huge
+                0xffff000000014d08                unmap_kernel_range
+ *fill*         0xffff0000000150c4        0x4 
+ .text          0xffff0000000150c8      0x670 kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+                0xffff000000015110                verify_cpu_asid_bits
+                0xffff000000015168                check_and_switch_context
+                0xffff0000000155f0                post_ttbr_update_workaround
+                0xffff000000015600                asids_init
+ .text          0xffff000000015738       0xdc kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+                0xffff000000015738                pfn_valid
+                0xffff000000015770                free_initmem
+ *fill*         0xffff000000015814        0x4 
+ .text          0xffff000000015818       0x40 kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+                0xffff000000015818                fixup_exception
+ .text          0xffff000000015858      0x32c kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+                0xffff000000015ae0                ptep_set_access_flags
+ .text.unlikely
+                0xffff000000015b84      0x33c kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+                0xffff000000015c94                show_pte
+ .text          0xffff000000015ec0       0x24 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+                0xffff000000015ec0                of_get_flat_dt_subnode_by_name
+ .text          0xffff000000015ee4        0x0 kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+ .text          0xffff000000015ee4        0x0 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ *fill*         0xffff000000015ee4        0x4 
+ .text          0xffff000000015ee8      0x20c kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+                0xffff000000015ee8                uart_init
+                0xffff000000015f18                uart_setbrg
+                0xffff000000015f48                uart_pending
+                0xffff000000015f70                getc
+                0xffff000000015f90                tstc
+                0xffff000000015fb8                putc_q
+                0xffff000000015fe0                puts_q
+                0xffff0000000160d8                uart_get_baudrate
+                0xffff0000000160e8                uart_get_port
+ .text.unlikely
+                0xffff0000000160f4       0x44 kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+                0xffff0000000160f4                early_uart
+ .text          0xffff000000016138      0x2c0 kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+ .text          0xffff0000000163f8      0x33c kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+                0xffff000000016720                psci_tos_resident_on
+ .text.unlikely
+                0xffff000000016734       0xfc kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .text          0xffff000000016830        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+ .text          0xffff000000016830      0x59c kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .text.unlikely
+                0xffff000000016dcc       0x34 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .text          0xffff000000016e00      0x39c kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+                0xffff000000016e00                gic_get_kvm_info
+                0xffff000000016e10                gic_set_kvm_info
+                0xffff000000016e58                gic_enable_of_quirks
+                0xffff000000016ed8                gic_enable_quirks
+                0xffff000000016f58                gic_configure_irq
+                0xffff000000017088                gic_dist_config
+                0xffff000000017130                gic_cpu_config
+ .text          0xffff00000001719c        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-of.c.obj)
+ .text          0xffff00000001719c        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ *fill*         0xffff00000001719c        0x4 
+ .text          0xffff0000000171a0      0x3cc kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+                0xffff000000017528                arch_timer_evtstrm_available
+                0xffff000000017560                arch_timer_get_rate
+ .text          0xffff00000001756c        0x0 kernel/mm/libmm.a(init-mm.c.obj)
+ .text          0xffff00000001756c        0x0 kernel/libversion.a(version.c.obj)
+ .text          0xffff00000001756c       0x24 kernel/arch/arm64/lib/libarch__arm64__lib.a(clear_page.S.obj)
+                0xffff00000001756c                clear_page
+ .text          0xffff000000017590       0xf0 kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+                0xffff000000017590                __delay
+                0xffff000000017608                __ndelay
+ .text          0xffff000000017680      0x158 kernel/arch/arm64/lib/libarch__arm64__lib.a(copy_from_user.S.obj)
+                0xffff000000017680                __arch_copy_from_user
+ .text          0xffff0000000177d8      0x198 kernel/lib/liblib.a(cpumask.c.obj)
+                0xffff0000000177d8                cpumask_next
+                0xffff000000017800                cpumask_next_and
+                0xffff000000017830                cpumask_any_but
+                0xffff000000017878                cpumask_next_wrap
+                0xffff000000017900                cpumask_any_online
+ .text          0xffff000000017970       0xe4 kernel/lib/liblib.a(extable.c.obj)
+                0xffff0000000179f0                sort_extable
+                0xffff000000017a20                search_extable
+ *fill*         0xffff000000017a54        0x4 
+ .text          0xffff000000017a58      0x1d0 kernel/lib/liblib.a(timerqueue.c.obj)
+                0xffff000000017a58                timerqueue_add
+                0xffff000000017b50                timerqueue_del
+                0xffff000000017c08                timerqueue_iterate_next
+ .text          0xffff000000017c28       0x18 kernel/lib/liblib.a(reciprocal_div.c.obj)
+                0xffff000000017c28                reciprocal_value
+ .text          0xffff000000017c40      0x148 kernel/lib/liblib.a(kasprintf.c.obj)
+                0xffff000000017c40                kvasprintf
+                0xffff000000017d08                kasprintf
+ .text          0xffff000000017d88     0x1e6c kernel/drivers/of/kof/libkof.a(base.c.obj)
+                0xffff000000018190                of_node_name_eq
+                0xffff0000000181b8                of_node_name_prefix
+                0xffff000000018220                of_n_addr_cells
+                0xffff0000000182d8                of_n_size_cells
+                0xffff000000018390                of_find_property
+                0xffff0000000183a8                __of_find_all_nodes
+                0xffff0000000183e0                of_find_all_nodes
+                0xffff000000018418                of_get_property
+                0xffff000000018438                __of_get_property
+                0xffff000000018440                arch_match_cpu_phys_id
+                0xffff000000018450                arch_find_n_match_cpu_physical_id
+                0xffff0000000185b8                of_device_is_compatible
+                0xffff0000000185d8                of_device_compatible_match
+                0xffff000000018648                of_device_is_available
+                0xffff000000018670                of_device_is_big_endian
+                0xffff000000018698                of_get_parent
+                0xffff0000000186b0                of_get_next_parent
+                0xffff0000000186c8                of_get_next_child
+                0xffff0000000186e8                of_get_next_available_child
+                0xffff000000018748                of_get_compatible_child
+                0xffff0000000187b0                of_get_child_by_name
+                0xffff000000018810                __of_find_node_by_path
+                0xffff0000000188c8                __of_find_node_by_full_path
+                0xffff000000018948                of_find_node_opts_by_path
+                0xffff000000018a60                of_machine_is_compatible
+                0xffff000000018ab0                of_get_next_cpu_node
+                0xffff000000018b40                of_get_cpu_node
+                0xffff000000018bc8                of_find_node_by_name
+                0xffff000000018c50                of_find_node_by_type
+                0xffff000000018cd8                of_find_compatible_node
+                0xffff000000018d70                of_find_node_with_property
+                0xffff000000018e20                of_match_node
+                0xffff000000018e40                of_find_matching_node_and_match
+                0xffff000000018ef8                of_modalias_node
+                0xffff000000018fb0                of_find_node_by_phandle
+                0xffff000000019040                of_phandle_iterator_init
+                0xffff0000000190f8                of_phandle_iterator_next
+                0xffff000000019240                of_phandle_iterator_args
+                0xffff0000000193d8                of_parse_phandle
+                0xffff000000019448                of_parse_phandle_with_args
+                0xffff000000019478                of_parse_phandle_with_fixed_args
+                0xffff0000000194b0                of_count_phandle_with_args
+                0xffff000000019538                __of_add_property
+                0xffff0000000195a0                of_add_property
+                0xffff0000000195b8                __of_remove_property
+                0xffff000000019618                of_remove_property
+                0xffff000000019678                __of_update_property
+                0xffff000000019720                of_update_property
+                0xffff000000019780                of_alias_scan
+                0xffff0000000199b8                of_alias_get_id
+                0xffff000000019a38                of_alias_get_alias_list
+                0xffff000000019b70                of_alias_get_highest_id
+ .text.unlikely
+                0xffff000000019bf4       0x8c kernel/drivers/of/kof/libkof.a(base.c.obj)
+                0xffff000000019bf4                of_print_phandle_args
+ .text          0xffff000000019c80     0x1458 kernel/drivers/of/kof/libkof.a(property.c.obj)
+                0xffff00000001a1e0                of_property_count_elems_of_size
+                0xffff00000001a260                of_property_read_u32_index
+                0xffff00000001a2e8                of_property_read_u64_index
+                0xffff00000001a370                of_property_read_variable_u8_array
+                0xffff00000001a410                of_property_read_variable_u16_array
+                0xffff00000001a4c0                of_property_read_variable_u32_array
+                0xffff00000001a600                of_property_read_u64
+                0xffff00000001a688                of_property_read_variable_u64_array
+                0xffff00000001a828                of_property_read_string
+                0xffff00000001a898                of_property_match_string
+                0xffff00000001a960                of_property_read_string_helper
+                0xffff00000001aad0                of_prop_next_u32
+                0xffff00000001ab10                of_prop_next_string
+                0xffff00000001ab88                of_graph_parse_endpoint
+                0xffff00000001ac68                of_graph_get_port_by_id
+                0xffff00000001ad58                of_graph_get_next_endpoint
+                0xffff00000001af08                of_graph_get_endpoint_by_regs
+                0xffff00000001afd0                of_graph_get_remote_endpoint
+                0xffff00000001aff0                of_graph_get_port_parent
+                0xffff00000001b010                of_graph_get_remote_port_parent
+                0xffff00000001b048                of_graph_get_remote_port
+                0xffff00000001b088                of_graph_get_remote_node
+ .text          0xffff00000001b0d8      0xc00 kernel/drivers/of/kof/libkof.a(address.c.obj)
+                0xffff00000001b618                of_translate_address
+                0xffff00000001b670                of_translate_dma_address
+                0xffff00000001b678                of_get_address
+                0xffff00000001b7e8                of_address_to_resource
+                0xffff00000001b940                of_find_matching_node_by_address
+                0xffff00000001b9e0                of_iomap
+                0xffff00000001ba48                of_dma_get_range
+                0xffff00000001bc68                of_dma_is_coherent
+ .text          0xffff00000001bcd8      0x968 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                0xffff00000001bd38                of_fdt_limit_memory
+                0xffff00000001be80                of_fdt_is_compatible
+                0xffff00000001bf48                of_fdt_is_big_endian
+                0xffff00000001bf70                of_fdt_device_is_available
+                0xffff00000001c478                of_fdt_match
+                0xffff00000001c4f0                __unflatten_device_tree
+ .text          0xffff00000001c640        0x0 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+ .text          0xffff00000001c640      0x69c kernel/drivers/of/kof/libkof.a(irq.c.obj)
+                0xffff00000001c6f8                of_irq_find_parent
+                0xffff00000001c718                of_irq_parse_raw
+                0xffff00000001cb90                of_irq_parse_one
+                0xffff00000001ccc8                irq_of_parse_and_map
+ *fill*         0xffff00000001ccdc        0x4 
+ .text          0xffff00000001cce0      0x6a0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                0xffff00000001cce0                fdt_ro_probe_
+                0xffff00000001cd58                fdt_header_size_
+                0xffff00000001cd88                fdt_check_header
+                0xffff00000001ceb8                fdt_offset_ptr
+                0xffff00000001cf20                fdt_next_tag
+                0xffff00000001d040                fdt_check_node_offset_
+                0xffff00000001d080                fdt_check_prop_offset_
+                0xffff00000001d0c0                fdt_next_node
+                0xffff00000001d1b8                fdt_first_subnode
+                0xffff00000001d220                fdt_next_subnode
+                0xffff00000001d2a0                fdt_find_string_
+                0xffff00000001d328                fdt_move
+ .text          0xffff00000001d380     0x18e4 kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+                0xffff00000001d4c8                fdt_get_string
+                0xffff00000001d5f8                fdt_string
+                0xffff00000001d610                fdt_get_mem_rsv
+                0xffff00000001d680                fdt_num_mem_rsv
+                0xffff00000001d6c0                fdt_get_name
+                0xffff00000001d780                fdt_subnode_offset_namelen
+                0xffff00000001d8a0                fdt_subnode_offset
+                0xffff00000001d8e8                fdt_first_property_offset
+                0xffff00000001d918                fdt_next_property_offset
+                0xffff00000001da68                fdt_get_property_by_offset
+                0xffff00000001daa8                fdt_get_property_namelen
+                0xffff00000001dae8                fdt_get_property
+                0xffff00000001db38                fdt_getprop_namelen
+                0xffff00000001dbc8                fdt_getprop_by_offset
+                0xffff00000001dcb0                fdt_getprop
+                0xffff00000001dd00                fdt_get_phandle
+                0xffff00000001dde8                fdt_get_max_phandle
+                0xffff00000001de90                fdt_get_alias_namelen
+                0xffff00000001def8                fdt_path_offset_namelen
+                0xffff00000001e010                fdt_path_offset
+                0xffff00000001e048                fdt_get_alias
+                0xffff00000001e080                fdt_get_path
+                0xffff00000001e250                fdt_supernode_atdepth_offset
+                0xffff00000001e348                fdt_node_depth
+                0xffff00000001e3a8                fdt_parent_offset
+                0xffff00000001e438                fdt_node_offset_by_prop_value
+                0xffff00000001e538                fdt_node_offset_by_phandle
+                0xffff00000001e5d8                fdt_stringlist_contains
+                0xffff00000001e690                fdt_stringlist_count
+                0xffff00000001e760                fdt_stringlist_search
+                0xffff00000001e890                fdt_stringlist_get
+                0xffff00000001e9b8                fdt_node_check_compatible
+                0xffff00000001ea60                fdt_node_offset_by_compatible
+                0xffff00000001eb00                fdt_check_full
+ *fill*         0xffff00000001ec64        0x4 
+ .text          0xffff00000001ec68      0xe44 kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+                0xffff00000001f0e8                fdt_add_mem_rsv
+                0xffff00000001f190                fdt_del_mem_rsv
+                0xffff00000001f208                fdt_set_name
+                0xffff00000001f2e8                fdt_setprop_placeholder
+                0xffff00000001f408                fdt_setprop
+                0xffff00000001f490                fdt_appendprop
+                0xffff00000001f5c0                fdt_delprop
+                0xffff00000001f668                fdt_add_subnode_namelen
+                0xffff00000001f7c8                fdt_add_subnode
+                0xffff00000001f810                fdt_del_node
+                0xffff00000001f878                fdt_open_into
+                0xffff00000001fa40                fdt_pack
+ *fill*         0xffff00000001faac        0x4 
+ .text          0xffff00000001fab0      0x2c4 kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+                0xffff00000001fab0                fdt_setprop_inplace_namelen_partial
+                0xffff00000001fb48                fdt_setprop_inplace
+                0xffff00000001fc08                fdt_nop_property
+                0xffff00000001fc90                fdt_node_end_offset_
+                0xffff00000001fd08                fdt_nop_node
+ *fill*         0xffff00000001fd74        0x4 
+ .text          0xffff00000001fd78      0x158 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+                0xffff00000001fd78                memblock_is_reserved
+                0xffff00000001fde8                memblock_is_memory
+                0xffff00000001fe50                memblock_is_map_memory
+ .text          0xffff00000001fed0      0x860 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+                0xffff00000001fed0                strncasecmp
+                0xffff00000001ff50                strcasecmp
+                0xffff00000001ffb8                strcpy
+                0xffff00000001ffd8                strncpy
+                0xffff000000020008                strlcpy
+                0xffff000000020068                strcat
+                0xffff0000000200a0                strncat
+                0xffff0000000200e8                strlcat
+                0xffff000000020190                strchrnul
+                0xffff0000000201b8                strnchr
+                0xffff0000000201f0                skip_spaces
+                0xffff000000020218                strim
+                0xffff000000020290                strspn
+                0xffff0000000202d8                strcspn
+                0xffff000000020328                strpbrk
+                0xffff000000020368                strsep
+                0xffff0000000203d0                match_string
+                0xffff000000020450                memzero_explicit
+                0xffff000000020478                bcmp
+                0xffff000000020490                memscan
+                0xffff0000000204b8                strstr
+                0xffff000000020548                strnstr
+                0xffff0000000205d8                memchr_inv
+                0xffff000000020708                strreplace
+ .text          0xffff000000020730        0x0 kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+ .text          0xffff000000020730      0x194 kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+                0xffff000000020730                find_next_bit
+                0xffff000000020798                find_next_zero_bit
+                0xffff000000020800                find_next_and_bit
+                0xffff000000020870                find_last_bit
+ *fill*         0xffff0000000208c4        0x4 
+ .text          0xffff0000000208c8     0x1244 kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+                0xffff0000000209a8                __bitmap_equal
+                0xffff000000020a20                __bitmap_complement
+                0xffff000000020a58                __bitmap_shift_right
+                0xffff000000020b38                __bitmap_shift_left
+                0xffff000000020bf8                __bitmap_and
+                0xffff000000020c70                __bitmap_or
+                0xffff000000020ca8                __bitmap_xor
+                0xffff000000020ce0                __bitmap_andnot
+                0xffff000000020d58                __bitmap_intersects
+                0xffff000000020dd0                __bitmap_subset
+                0xffff000000020e48                __bitmap_weight
+                0xffff000000020f20                __bitmap_set
+                0xffff000000020fa0                __bitmap_clear
+                0xffff000000021020                bitmap_find_next_zero_area_off
+                0xffff0000000210d8                __bitmap_parse
+                0xffff000000021298                bitmap_parselist
+                0xffff0000000214d8                bitmap_ord_to_pos
+                0xffff000000021540                bitmap_remap
+                0xffff000000021698                bitmap_bitremap
+                0xffff000000021738                bitmap_onto
+                0xffff000000021818                bitmap_fold
+                0xffff0000000218d0                bitmap_find_free_region
+                0xffff000000021958                bitmap_release_region
+                0xffff000000021970                bitmap_allocate_region
+                0xffff000000021a08                bitmap_from_arr32
+                0xffff000000021a90                bitmap_to_arr32
+ *fill*         0xffff000000021b0c        0x4 
+ .text          0xffff000000021b10     0x1cd0 kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+                0xffff0000000220b8                simple_strtoull
+                0xffff000000022138                simple_strtoul
+                0xffff000000022150                simple_strtol
+                0xffff000000022188                simple_strtoll
+                0xffff0000000221c0                vsnprintf
+                0xffff000000022bf0                vscnprintf
+                0xffff000000022c38                snprintf
+                0xffff000000022cb8                scnprintf
+                0xffff000000022d48                vsprintf
+                0xffff000000022d80                sprintf
+                0xffff000000022e18                vsscanf
+                0xffff000000023760                sscanf
+ .text          0xffff0000000237e0      0x6c0 kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+                0xffff0000000237e0                _parse_integer_fixup_radix
+                0xffff000000023870                _parse_integer
+                0xffff000000023988                kstrtoull
+                0xffff0000000239a8                kstrtoll
+                0xffff000000023a48                _kstrtoul
+                0xffff000000023ab8                _kstrtol
+                0xffff000000023b18                kstrtouint
+                0xffff000000023b98                kstrtoint
+                0xffff000000023c08                kstrtou16
+                0xffff000000023c88                kstrtos16
+                0xffff000000023d00                kstrtou8
+                0xffff000000023d80                kstrtos8
+                0xffff000000023df8                kstrtobool
+ .text          0xffff000000023ea0      0x600 kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+                0xffff000000023f70                crc32_le_base
+                0xffff000000023f70                crc32_le
+                0xffff000000024110                __crc32c_le_base
+                0xffff000000024110                __crc32c_le
+                0xffff0000000242b0                crc32_le_shift
+                0xffff0000000242d0                __crc32c_le_shift
+                0xffff0000000242f0                crc32_be
+ .text          0xffff0000000244a0       0xa8 kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+                0xffff0000000244a0                bsearch
+ .text          0xffff000000024548      0x2a0 kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+                0xffff0000000245a8                sort
+ .text          0xffff0000000247e8       0x74 kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+                0xffff0000000247e8                random
+                0xffff000000024808                random_range
+                0xffff000000024850                srand
+ *fill*         0xffff00000002485c        0x4 
+ .text          0xffff000000024860      0x300 kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+                0xffff000000024860                mktime64
+                0xffff0000000248f8                ns_to_timespec
+                0xffff000000024958                ns_to_timeval
+                0xffff0000000249c8                ns_to_common_old_timeval
+                0xffff000000024a38                set_normalized_timespec64
+                0xffff000000024a88                timespec64_add_safe
+                0xffff000000024b00                ns_to_timespec64
+ .text          0xffff000000024b60     0x1098 kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+                0xffff000000024b60                __rb_erase_color
+                0xffff000000024dd8                rb_insert_color
+                0xffff000000024f20                rb_erase
+                0xffff0000000252c8                rb_insert_color_cached
+                0xffff000000025420                __rb_insert_augmented
+                0xffff000000025610                rb_first
+                0xffff000000025630                rb_last
+                0xffff000000025650                rb_next
+                0xffff0000000256a0                rb_erase_cached
+                0xffff000000025a88                rb_prev
+                0xffff000000025ad8                rb_replace_node
+                0xffff000000025b48                rb_replace_node_cached
+                0xffff000000025b80                rb_next_postorder
+                0xffff000000025bd0                rb_first_postorder
+ .text          0xffff000000025bf8       0xa4 kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+                0xffff000000025bf8                llist_add_batch
+                0xffff000000025c30                llist_del_first
+                0xffff000000025c78                llist_reverse_order
+ *fill*         0xffff000000025c9c        0x4 
+ .text          0xffff000000025ca0       0xcc kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+                0xffff000000025ca0                __sw_hweight32
+                0xffff000000025cd8                __sw_hweight16
+                0xffff000000025d10                __sw_hweight8
+                0xffff000000025d38                __sw_hweight64
+ .text          0xffff000000025d6c       0x28 kernel/drivers/of/kof/kbase/libkbase.a(memchr.S.obj)
+                0xffff000000025d6c                __pi_memchr
+                0xffff000000025d6c                memchr
+ .text          0xffff000000025d94      0x1b8 kernel/drivers/of/kof/kbase/libkbase.a(memcmp.S.obj)
+                0xffff000000025d94                __pi_memcmp
+                0xffff000000025d94                memcmp
+ *fill*         0xffff000000025f4c       0x34 
+ .text          0xffff000000025f80      0x154 kernel/drivers/of/kof/kbase/libkbase.a(memcpy.S.obj)
+                0xffff000000025f80                memcpy
+                0xffff000000025f80                __memcpy
+                0xffff000000025f80                __pi_memcpy
+ *fill*         0xffff0000000260d4       0x2c 
+ .text          0xffff000000026100      0x154 kernel/drivers/of/kof/kbase/libkbase.a(memmove.S.obj)
+                0xffff000000026100                memmove
+                0xffff000000026100                __memmove
+                0xffff000000026100                __pi_memmove
+ *fill*         0xffff000000026254       0x2c 
+ .text          0xffff000000026280      0x188 kernel/drivers/of/kof/kbase/libkbase.a(memset.S.obj)
+                0xffff000000026280                __memset
+                0xffff000000026280                memset
+                0xffff000000026280                __pi_memset
+ .text          0xffff000000026408       0x24 kernel/drivers/of/kof/kbase/libkbase.a(strchr.S.obj)
+                0xffff000000026408                strchr
+ .text          0xffff00000002642c      0x154 kernel/drivers/of/kof/kbase/libkbase.a(strcmp.S.obj)
+                0xffff00000002642c                __pi_strcmp
+                0xffff00000002642c                strcmp
+ .text          0xffff000000026580       0x84 kernel/drivers/of/kof/kbase/libkbase.a(strlen.S.obj)
+                0xffff000000026580                __pi_strlen
+                0xffff000000026580                strlen
+ .text          0xffff000000026604      0x208 kernel/drivers/of/kof/kbase/libkbase.a(strncmp.S.obj)
+                0xffff000000026604                strncmp
+                0xffff000000026604                __pi_strncmp
+ .text          0xffff00000002680c       0xc0 kernel/drivers/of/kof/kbase/libkbase.a(strnlen.S.obj)
+                0xffff00000002680c                strnlen
+                0xffff00000002680c                __pi_strnlen
+ .text          0xffff0000000268cc       0x28 kernel/drivers/of/kof/kbase/libkbase.a(strrchr.S.obj)
+                0xffff0000000268cc                __pi_strrchr
+                0xffff0000000268cc                strrchr
+ *fill*         0xffff0000000268f4        0x4 
+ .text          0xffff0000000268f8      0x60c kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+                0xffff000000026930                hex_to_bin
+                0xffff000000026960                hex2bin
+                0xffff000000026a10                bin2hex
+                0xffff000000026a58                hex_dump_to_buffer
+                0xffff000000026f08                . = ALIGN (0x8)
+ *fill*         0xffff000000026f04        0x4 
+                0xffff000000026f08                __sched_text_start = .
+ *(.sched.text)
+ .sched.text    0xffff000000026f08      0x3f8 kernel/libkernel.a(mutex.c.obj)
+                0xffff0000000271d8                mutex_lock
+                0xffff000000027210                mutex_unlock
+                0xffff000000027250                mutex_lock_interruptible
+                0xffff000000027290                mutex_trylock
+ .sched.text    0xffff000000027300      0xb3c kernel/libkernel.a(core.c.obj)
+                0xffff000000027530                schedule
+                0xffff000000027b68                preempt_schedule
+                0xffff000000027bc0                preempt_schedule_irq
+                0xffff000000027c48                wait_for_completion
+                0xffff000000027c68                wait_for_completion_timeout
+                0xffff000000027c80                wait_for_completion_interruptible
+                0xffff000000027ca8                wait_for_completion_interruptible_timeout
+                0xffff000000027cc0                interruptible_sleep_on
+                0xffff000000027ce0                interruptible_sleep_on_timeout
+                0xffff000000027d00                sleep_on
+                0xffff000000027d20                sleep_on_timeout
+                0xffff000000027d40                yield
+                0xffff000000027d60                io_schedule
+                0xffff000000027dd0                io_schedule_timeout
+ *fill*         0xffff000000027e3c        0x4 
+ .sched.text    0xffff000000027e40      0x3dc kernel/libkernel.a(hrtimer.c.obj)
+                0xffff000000027e40                schedule_hrtimeout_range_clock
+                0xffff000000028000                schedule_hrtimeout_range
+                0xffff000000028018                schedule_hrtimeout
+                0xffff000000028038                schedule_timeout
+                0xffff000000028098                schedule_timeout_interruptible
+                0xffff000000028108                schedule_timeout_uninterruptible
+                0xffff000000028178                usleep_range
+                0xffff00000002821c                __sched_text_end = .
+                0xffff000000028220                . = ALIGN (0x8)
+ *fill*         0xffff00000002821c        0x4 
+                0xffff000000028220                __cpuidle_text_start = .
+ *(.cpuidle.text)
+ .cpuidle.text  0xffff000000028220       0x40 kernel/libkernel.a(idle.c.obj)
+                0xffff000000028220                default_idle_call
+                0xffff000000028260                __cpuidle_text_end = .
+                0xffff000000028260                . = ALIGN (0x8)
+                0xffff000000028260                __lock_text_start = .
+ *(.spinlock.text)
+ .spinlock.text
+                0xffff000000028260      0x74c kernel/libkernel.a(spinlock.c.obj)
+                0xffff000000028260                _raw_spin_lock
+                0xffff0000000282b0                _raw_spin_lock_irq
+                0xffff000000028300                _raw_spin_lock_irqsave
+                0xffff000000028370                _raw_spin_trylock
+                0xffff0000000283f8                _raw_spin_unlock
+                0xffff000000028438                _raw_spin_unlock_irq
+                0xffff000000028480                _raw_spin_unlock_irqrestore
+                0xffff0000000284c8                _raw_read_lock
+                0xffff000000028510                _raw_write_lock
+                0xffff000000028560                _raw_read_lock_irq
+                0xffff0000000285a8                _raw_write_lock_irq
+                0xffff0000000285f8                _raw_read_lock_irqsave
+                0xffff000000028660                _raw_write_lock_irqsave
+                0xffff0000000286d0                _raw_read_trylock
+                0xffff000000028768                _raw_write_trylock
+                0xffff0000000287f0                _raw_read_unlock
+                0xffff000000028840                _raw_write_unlock
+                0xffff000000028880                _raw_read_unlock_irq
+                0xffff0000000288d0                _raw_write_unlock_irq
+                0xffff000000028918                _raw_read_unlock_irqrestore
+                0xffff000000028968                _raw_write_unlock_irqrestore
+                0xffff0000000289ac                __lock_text_end = .
+                0xffff000000029000                . = ALIGN (0x1000)
+ *fill*         0xffff0000000289ac      0x654 
+                0xffff000000029000                __idmap_text_start = .
+ *(.idmap.text)
+ .idmap.text    0xffff000000029000      0x178 kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+                0xffff000000029000                kimage_vaddr
+                0xffff000000029008                el2_setup
+                0xffff000000029080                secondary_entry
+                0xffff0000000290d4                __enable_mmu
+ .idmap.text    0xffff000000029178       0xb8 kernel/arch/arm64/mm/libarch__arm64__mm.a(proc.S.obj)
+                0xffff000000029178                idmap_cpu_replace_ttbr1
+                0xffff0000000291ac                __cpu_setup
+                0xffff000000029230                __idmap_text_end = .
+ *(.fixup)
+ .fixup         0xffff000000029230       0x24 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ .fixup         0xffff000000029254        0x8 kernel/arch/arm64/lib/libarch__arm64__lib.a(copy_from_user.S.obj)
+ *(.gnu.warning)
+                0xffff000000029260                . = ALIGN (0x10)
+ *fill*         0xffff00000002925c        0x4 
+ *(.got)
+                0xffff000000030000                . = ALIGN (0x10000)
+                0xffff000000030000                _etext = .
+                0xffff000000030000                . = ALIGN (0x1000)
+
+.rodata         0xffff000000030000     0xbae0
+                0xffff000000030000                __start_rodata = .
+ *(.rodata)
+ .rodata        0xffff000000030000       0x1d kernel/libkernel.a(main.c.obj)
+ *fill*         0xffff00000003001d        0x3 
+ .rodata        0xffff000000030020        0xe kernel/libkernel.a(printf.c.obj)
+ *fill*         0xffff00000003002e        0x2 
+ .rodata        0xffff000000030030      0x210 kernel/libkernel.a(cpu.c.obj)
+                0xffff000000030030                cpu_all_bits
+                0xffff000000030038                cpu_bit_bitmap
+ .rodata        0xffff000000030240       0x25 kernel/libkernel.a(softirq.c.obj)
+ *fill*         0xffff000000030265        0x3 
+ .rodata        0xffff000000030268       0x77 kernel/libkernel.a(smp.c.obj)
+ *fill*         0xffff0000000302df        0x1 
+ .rodata        0xffff0000000302e0       0x32 kernel/libkernel.a(handle.c.obj)
+ *fill*         0xffff000000030312        0x6 
+ .rodata        0xffff000000030318       0x20 kernel/libkernel.a(services.c.obj)
+ .rodata        0xffff000000030338       0x11 kernel/libkernel.a(pid.c.obj)
+ *fill*         0xffff000000030349        0x7 
+ .rodata        0xffff000000030350      0x186 kernel/libkernel.a(untype.c.obj)
+ *fill*         0xffff0000000304d6        0x2 
+ .rodata        0xffff0000000304d8      0x182 kernel/libkernel.a(page_alloc.c.obj)
+ *fill*         0xffff00000003065a        0x6 
+ .rodata        0xffff000000030660       0xd3 kernel/libkernel.a(slub.c.obj)
+ *fill*         0xffff000000030733        0x5 
+ .rodata        0xffff000000030738      0x250 kernel/libkernel.a(core.c.obj)
+ .rodata        0xffff000000030988       0x60 kernel/libkernel.a(rt.c.obj)
+                0xffff000000030988                rt_sched_class
+ .rodata        0xffff0000000309e8       0x64 kernel/libkernel.a(fair.c.obj)
+                0xffff0000000309e8                fair_sched_class
+                0xffff000000030a48                sysctl_sched_migration_cost
+ *fill*         0xffff000000030a4c        0x4 
+ .rodata        0xffff000000030a50       0x78 kernel/libkernel.a(idle.c.obj)
+                0xffff000000030a68                idle_sched_class
+ .rodata        0xffff000000030ac8       0x20 kernel/libkernel.a(clocksource.c.obj)
+ .rodata        0xffff000000030ae8       0xac kernel/libkernel.a(clockevents.c.obj)
+ *fill*         0xffff000000030b94        0x4 
+ .rodata        0xffff000000030b98       0x8a kernel/libkernel.a(hrtimer.c.obj)
+ *fill*         0xffff000000030c22        0x6 
+ .rodata        0xffff000000030c28       0x15 kernel/libkernel.a(sched_clock.c.obj)
+ *fill*         0xffff000000030c3d        0x3 
+ .rodata        0xffff000000030c40       0x1d kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+ *fill*         0xffff000000030c5d        0x3 
+ .rodata        0xffff000000030c60       0x1d kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+ *fill*         0xffff000000030c7d        0x3 
+ .rodata        0xffff000000030c80       0x30 kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+                0xffff000000030c80                cpu_psci_ops
+ .rodata        0xffff000000030cb0       0x20 kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+ .rodata        0xffff000000030cd0       0x2a kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+ *fill*         0xffff000000030cfa        0x6 
+ .rodata        0xffff000000030d00      0x282 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ *fill*         0xffff000000030f82        0x6 
+ .rodata        0xffff000000030f88       0x1b kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+ *fill*         0xffff000000030fa3        0x5 
+ .rodata        0xffff000000030fa8       0x16 kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+ *fill*         0xffff000000030fbe        0x2 
+ .rodata        0xffff000000030fc0       0x18 kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+                0xffff000000030fc0                sys_call_table
+ .rodata        0xffff000000030fd8      0x1c9 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+ *fill*         0xffff0000000311a1        0x7 
+ .rodata        0xffff0000000311a8       0x3d kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+ *fill*         0xffff0000000311e5        0x3 
+ .rodata        0xffff0000000311e8       0x25 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+ *fill*         0xffff00000003120d        0x3 
+ .rodata        0xffff000000031210      0x619 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+ *fill*         0xffff000000031829        0x7 
+ .rodata        0xffff000000031830        0xd kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+ *fill*         0xffff00000003183d        0x3 
+ .rodata        0xffff000000031840       0x1d kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ *fill*         0xffff00000003185d        0x3 
+ .rodata        0xffff000000031860       0x28 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .rodata        0xffff000000031888       0xb8 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .rodata        0xffff000000031940       0x2a kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+ *fill*         0xffff00000003196a        0x6 
+ .rodata        0xffff000000031970        0xc kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ *fill*         0xffff00000003197c        0x4 
+ .rodata        0xffff000000031980       0x2c kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ *fill*         0xffff0000000319ac        0x4 
+ .rodata        0xffff0000000319b0       0x8e kernel/libversion.a(version.c.obj)
+                0xffff0000000319b0                linux_banner
+ *fill*         0xffff000000031a3e        0x2 
+ .rodata        0xffff000000031a40       0x1f kernel/lib/liblib.a(timerqueue.c.obj)
+ *fill*         0xffff000000031a5f        0x1 
+ .rodata        0xffff000000031a60       0x38 kernel/drivers/of/kof/libkof.a(base.c.obj)
+ .rodata        0xffff000000031a98       0xa3 kernel/drivers/of/kof/libkof.a(property.c.obj)
+                0xffff000000031a98                of_fwnode_ops
+ *fill*         0xffff000000031b3b        0x5 
+ .rodata        0xffff000000031b40       0x29 kernel/drivers/of/kof/libkof.a(address.c.obj)
+ *fill*         0xffff000000031b69        0x7 
+ .rodata        0xffff000000031b70       0x13 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ *fill*         0xffff000000031b83        0x5 
+ .rodata        0xffff000000031b88       0x59 kernel/drivers/of/kof/libkof.a(irq.c.obj)
+ *fill*         0xffff000000031be1        0x7 
+ .rodata        0xffff000000031be8       0xa8 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+ .rodata        0xffff000000031c90        0x8 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+ .rodata        0xffff000000031c98      0x100 kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+                0xffff000000031c98                _ctype
+ .rodata        0xffff000000031d98       0x3a kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+ *fill*         0xffff000000031dd2       0x2e 
+ .rodata        0xffff000000031e00     0x6000 kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+ .rodata        0xffff000000037e00       0x29 kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+                0xffff000000037e00                hex_asc
+                0xffff000000037e18                hex_asc_upper
+ *(.rodata.*)
+ *fill*         0xffff000000037e29        0x7 
+ .rodata.str1.8
+                0xffff000000037e30      0x117 kernel/libkernel.a(main.c.obj)
+ *fill*         0xffff000000037f47        0x1 
+ .rodata.str1.8
+                0xffff000000037f48        0x8 kernel/libkernel.a(init_task.c.obj)
+ .rodata.str1.8
+                0xffff000000037f50       0xcb kernel/libkernel.a(panic.c.obj)
+ *fill*         0xffff00000003801b        0x5 
+ .rodata.str1.8
+                0xffff000000038020       0x62 kernel/libkernel.a(printf.c.obj)
+                                         0x86 (size before relaxing)
+ *fill*         0xffff000000038082        0x6 
+ .rodata.str1.8
+                0xffff000000038088       0x17 kernel/libkernel.a(extable.c.obj)
+ *fill*         0xffff00000003809f        0x1 
+ .rodata.str1.8
+                0xffff0000000380a0       0x57 kernel/libkernel.a(cpu.c.obj)
+ *fill*         0xffff0000000380f7        0x1 
+ .rodata.str1.8
+                0xffff0000000380f8       0x69 kernel/libkernel.a(softirq.c.obj)
+                                         0xb1 (size before relaxing)
+ *fill*         0xffff000000038161        0x7 
+ .rodata.str1.8
+                0xffff000000038168       0xa5 kernel/libkernel.a(smp.c.obj)
+                                         0xd6 (size before relaxing)
+ *fill*         0xffff00000003820d        0x3 
+ .rodata.str1.8
+                0xffff000000038210       0x4c kernel/libkernel.a(handle.c.obj)
+                                         0x94 (size before relaxing)
+ *fill*         0xffff00000003825c        0x4 
+ .rodata.str1.8
+                0xffff000000038260       0x71 kernel/libkernel.a(services.c.obj)
+                                         0x99 (size before relaxing)
+ *fill*         0xffff0000000382d1        0x7 
+ .rodata.str1.8
+                0xffff0000000382d8       0x28 kernel/libkernel.a(pid.c.obj)
+                                         0x4d (size before relaxing)
+ .rodata.str1.8
+                0xffff000000038300      0x1c6 kernel/libkernel.a(untype.c.obj)
+                                        0x20e (size before relaxing)
+ *fill*         0xffff0000000384c6        0x2 
+ .rodata.str1.8
+                0xffff0000000384c8      0x1f9 kernel/libkernel.a(page_alloc.c.obj)
+                                        0x269 (size before relaxing)
+ *fill*         0xffff0000000386c1        0x7 
+ .rodata.str1.8
+                0xffff0000000386c8      0x13c kernel/libkernel.a(slub.c.obj)
+                                        0x1dc (size before relaxing)
+ *fill*         0xffff000000038804        0x4 
+ .rodata.str1.8
+                0xffff000000038808       0xa0 kernel/libkernel.a(core.c.obj)
+                                         0xe8 (size before relaxing)
+ .rodata.str1.8
+                0xffff0000000388a8       0x4c kernel/libkernel.a(idle.c.obj)
+                                         0x6e (size before relaxing)
+ *fill*         0xffff0000000388f4        0x4 
+ .rodata.str1.8
+                0xffff0000000388f8      0x17b kernel/libkernel.a(clocksource.c.obj)
+                                        0x19b (size before relaxing)
+ *fill*         0xffff000000038a73        0x5 
+ .rodata.str1.8
+                0xffff000000038a78       0x85 kernel/libkernel.a(clockevents.c.obj)
+                                         0xcd (size before relaxing)
+ *fill*         0xffff000000038afd        0x3 
+ .rodata.str1.8
+                0xffff000000038b00       0x71 kernel/libkernel.a(hrtimer.c.obj)
+                                         0xb9 (size before relaxing)
+ *fill*         0xffff000000038b71        0x7 
+ .rodata.str1.8
+                0xffff000000038b78       0x79 kernel/libkernel.a(sched_clock.c.obj)
+                                         0x99 (size before relaxing)
+ *fill*         0xffff000000038bf1        0x7 
+ .rodata.str1.8
+                0xffff000000038bf8      0x1d7 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+                                        0x237 (size before relaxing)
+ *fill*         0xffff000000038dcf        0x1 
+ .rodata.str1.8
+                0xffff000000038dd0      0x36b kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+                                        0x403 (size before relaxing)
+ *fill*         0xffff00000003913b        0x5 
+ .rodata.str1.8
+                0xffff000000039140       0xcc kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+ *fill*         0xffff00000003920c        0x4 
+ .rodata.str1.8
+                0xffff000000039210       0x87 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ *fill*         0xffff000000039297        0x1 
+ .rodata.str1.8
+                0xffff000000039298       0x4d kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ *fill*         0xffff0000000392e5        0x3 
+ .rodata.str1.8
+                0xffff0000000392e8       0x4d kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+ *fill*         0xffff000000039335        0x3 
+ .rodata.str1.8
+                0xffff000000039338       0x1f kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ *fill*         0xffff000000039357        0x1 
+ .rodata.str1.8
+                0xffff000000039358       0x92 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+                                         0xba (size before relaxing)
+ *fill*         0xffff0000000393ea        0x6 
+ .rodata.str1.8
+                0xffff0000000393f0       0x29 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ *fill*         0xffff000000039419        0x7 
+ .rodata.str1.8
+                0xffff000000039420      0x52e kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                                        0x586 (size before relaxing)
+ *fill*         0xffff00000003994e        0x2 
+ .rodata.str1.8
+                0xffff000000039950       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+                                         0x4e (size before relaxing)
+ *fill*         0xffff00000003997b        0x5 
+ .rodata.str1.8
+                0xffff000000039980       0x5b kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+                                         0x7e (size before relaxing)
+ *fill*         0xffff0000000399db        0x5 
+ .rodata.str1.8
+                0xffff0000000399e0       0x16 kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+ *fill*         0xffff0000000399f6        0x2 
+ .rodata.str1.8
+                0xffff0000000399f8       0xc5 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                                        0x1b3 (size before relaxing)
+ *fill*         0xffff000000039abd        0x3 
+ .rodata.str1.8
+                0xffff000000039ac0       0xfd kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+                                        0x1b5 (size before relaxing)
+ *fill*         0xffff000000039bbd        0x3 
+ .rodata.str1.8
+                0xffff000000039bc0       0xb6 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+                                         0xfe (size before relaxing)
+ *fill*         0xffff000000039c76        0x2 
+ .rodata.str1.8
+                0xffff000000039c78      0xa93 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+                                        0xae3 (size before relaxing)
+ *fill*         0xffff00000003a70b        0x5 
+ .rodata.str1.8
+                0xffff00000003a710      0x2e8 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+                                        0x370 (size before relaxing)
+ .rodata.str1.8
+                0xffff00000003a9f8      0x159 kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+                                        0x169 (size before relaxing)
+ *fill*         0xffff00000003ab51        0x7 
+ .rodata.str1.8
+                0xffff00000003ab58       0x96 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+                                        0x116 (size before relaxing)
+ *fill*         0xffff00000003abee        0x2 
+ .rodata.str1.8
+                0xffff00000003abf0       0x2a kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+                                         0x32 (size before relaxing)
+ *fill*         0xffff00000003ac1a        0x6 
+ .rodata.str1.8
+                0xffff00000003ac20      0x258 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .rodata.str1.8
+                0xffff00000003ae78      0x14b kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+                                        0x16b (size before relaxing)
+ *fill*         0xffff00000003afc3        0x5 
+ .rodata.str1.8
+                0xffff00000003afc8       0x87 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+                                         0xcf (size before relaxing)
+ *fill*         0xffff00000003b04f        0x1 
+ .rodata.str1.8
+                0xffff00000003b050       0x46 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ *fill*         0xffff00000003b096        0x2 
+ .rodata.str1.8
+                0xffff00000003b098      0x1e9 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+                                        0x219 (size before relaxing)
+ *fill*         0xffff00000003b281        0x7 
+ .rodata.str1.8
+                0xffff00000003b288       0x23 kernel/lib/liblib.a(timerqueue.c.obj)
+                                         0x46 (size before relaxing)
+ *fill*         0xffff00000003b2ab        0x5 
+ .rodata.str1.8
+                0xffff00000003b2b0      0x11b kernel/drivers/of/kof/libkof.a(base.c.obj)
+                                        0x1eb (size before relaxing)
+ *fill*         0xffff00000003b3cb        0x5 
+ .rodata.str1.8
+                0xffff00000003b3d0       0xcb kernel/drivers/of/kof/libkof.a(property.c.obj)
+                                         0xf3 (size before relaxing)
+ *fill*         0xffff00000003b49b        0x5 
+ .rodata.str1.8
+                0xffff00000003b4a0       0xf0 kernel/drivers/of/kof/libkof.a(address.c.obj)
+                                        0x140 (size before relaxing)
+ .rodata.str1.8
+                0xffff00000003b590       0xf6 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                                        0x19e (size before relaxing)
+ *fill*         0xffff00000003b686        0x2 
+ .rodata.str1.8
+                0xffff00000003b688       0x47 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+                                         0x77 (size before relaxing)
+ *fill*         0xffff00000003b6cf        0x1 
+ .rodata.str1.8
+                0xffff00000003b6d0       0x9b kernel/drivers/of/kof/libkof.a(irq.c.obj)
+                                         0xeb (size before relaxing)
+ .rodata.str1.8
+                0xffff00000003b76b       0x33 kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+ *fill*         0xffff00000003b76b        0x5 
+ .rodata.str1.8
+                0xffff00000003b770      0x21e kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+                                        0x26e (size before relaxing)
+ *fill*         0xffff00000003b98e        0x2 
+ .rodata.str1.8
+                0xffff00000003b990       0x21 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+                                         0x4d (size before relaxing)
+ *fill*         0xffff00000003b9b1        0x7 
+ .rodata.str1.8
+                0xffff00000003b9b8       0x23 kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+                                         0x4e (size before relaxing)
+ *fill*         0xffff00000003b9db        0x5 
+ .rodata.str1.8
+                0xffff00000003b9e0       0x20 kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+                                         0x30 (size before relaxing)
+                0xffff00000003ba00                __start_ro_after_init = .
+ *(.data..ro_after_init)
+ .data..ro_after_init
+                0xffff00000003ba00        0x8 kernel/libkernel.a(handle.c.obj)
+                0xffff00000003ba00                handle_arch_irq
+ .data..ro_after_init
+                0xffff00000003ba08       0x80 kernel/libkernel.a(untype.c.obj)
+ .data..ro_after_init
+                0xffff00000003ba88       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+                0xffff00000003ba88                cpu_ops
+ .data..ro_after_init
+                0xffff00000003bac8       0x10 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                0xffff00000003bac8                kimage_voffset
+                0xffff00000003bad0                vabits_user
+ .data..ro_after_init
+                0xffff00000003bad8        0x8 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+                0xffff00000003bad8                memstart_addr
+                0xffff00000003bae0                __end_ro_after_init = .
+
+.rodata1        0xffff00000003bae0        0x0
+ *(.rodata1)
+                0xffff00000003bae0                __end_rodata = .
+                0xffff00000003c000                . = ALIGN (0x1000)
+                0xffff00000003c000                . = ALIGN (0x8)
+
+__ex_table      0xffff00000003c000       0xd8
+                0xffff00000003c000                __start___ex_table = .
+ *(__ex_table)
+ __ex_table     0xffff00000003c000       0x20 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ __ex_table     0xffff00000003c020       0xb8 kernel/arch/arm64/lib/libarch__arm64__lib.a(copy_from_user.S.obj)
+                0xffff00000003c0d8                __stop___ex_table = .
+
+.notes          0xffff00000003c0d8       0x3c
+                0xffff00000003c0d8                __start_notes = .
+ *(.note.*)
+ .note.GNU-stack
+                0xffff00000003c0d8        0x0 kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+ .note.gnu.build-id
+                0xffff00000003c0d8       0x24 kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(main.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(init_task.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(stack.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(panic.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(printf.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(extable.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(cpu.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(reboot.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(clock.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(softirq.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(smp.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(exit.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(syscall.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(handle.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(qspinlock.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(qrwlock.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(spinlock.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(mutex.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(ipc.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(services.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(pid.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(tcb.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(untype.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(page_alloc.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(slub.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(core.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(rt.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(fair.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(idle.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(wait.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(clocksource.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(clockevents.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(tick-oneshot.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(tick-common.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(timekeeping.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(hrtimer.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(sched_clock.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(jiffies.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/libkernel.a(time.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-of.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ .note.GNU-stack
+                0xffff00000003c0fc        0x0 kernel/mm/libmm.a(init-mm.c.obj)
+ .note.Sel4m    0xffff00000003c0fc       0x18 kernel/libversion.a(version.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/libversion.a(version.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/lib/liblib.a(cpumask.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/lib/liblib.a(extable.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/lib/liblib.a(timerqueue.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/lib/liblib.a(reciprocal_div.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/lib/liblib.a(kasprintf.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(base.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(property.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(address.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(irq.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+ .note.GNU-stack
+                0xffff00000003c114        0x0 kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+                0xffff00000003c114                __stop_notes = .
+                0xffff00000003d000                . = ALIGN (0x1000)
+                0xffff00000003d000                idmap_pg_dir = .
+                0xffff000000040000                . = (. + 0x3000)
+                0xffff000000040000                swapper_pg_dir = .
+                0xffff000000041000                . = (. + 0x1000)
+                0xffff000000041000                swapper_pg_end = .
+                0xffff000000050000                . = ALIGN (0x10000)
+                0xffff000000050000                __init_begin = .
+                0xffff000000050000                __inittext_begin = .
+                0xffff000000050000                . = ALIGN (0x8)
+
+.init.text      0xffff000000050000     0x7c00
+                0xffff000000050000                _sinittext = .
+ *(.init.text .init.text.*)
+ .init.text     0xffff000000050000      0x110 kernel/libkernel.a(main.c.obj)
+                0xffff000000050008                start_kernel
+ .init.text     0xffff000000050110       0xe4 kernel/libkernel.a(init_task.c.obj)
+                0xffff000000050110                early_idle_task_init
+ .init.text     0xffff0000000501f4       0xa0 kernel/libkernel.a(panic.c.obj)
+                0xffff0000000501f4                dump_stack_set_arch_desc
+ .init.text     0xffff000000050294       0x58 kernel/libkernel.a(extable.c.obj)
+                0xffff000000050294                sort_main_extable
+ .init.text     0xffff0000000502ec       0x94 kernel/libkernel.a(cpu.c.obj)
+                0xffff0000000502ec                boot_cpu_init
+ .init.text     0xffff000000050380       0x1c kernel/libkernel.a(clock.c.obj)
+                0xffff000000050380                sched_clock_init
+ .init.text     0xffff00000005039c      0x148 kernel/libkernel.a(smp.c.obj)
+                0xffff00000005039c                smp_init
+                0xffff0000000504a0                call_function_init
+ .init.text     0xffff0000000504e4       0x20 kernel/libkernel.a(handle.c.obj)
+                0xffff0000000504e4                set_handle_irq
+ .init.text     0xffff000000050504      0x444 kernel/libkernel.a(services.c.obj)
+                0xffff000000050504                service_core_init
+ .init.text     0xffff000000050948       0xb0 kernel/libkernel.a(pid.c.obj)
+                0xffff000000050948                process_pid_init
+ .init.text     0xffff0000000509f8      0xd28 kernel/libkernel.a(page_alloc.c.obj)
+                0xffff000000050b58                memblock_free_pages
+                0xffff000000050bf8                memblock_free_all
+                0xffff000000050e18                free_area_init_nodes
+ .init.text     0xffff000000051720      0x1fc kernel/libkernel.a(slub.c.obj)
+                0xffff000000051720                kmem_cache_init
+ .init.text     0xffff00000005191c      0x298 kernel/libkernel.a(core.c.obj)
+                0xffff00000005191c                sched_init_smp
+                0xffff000000051a58                sched_init
+ .init.text     0xffff000000051bb4       0xfc kernel/libkernel.a(timekeeping.c.obj)
+                0xffff000000051bb4                timekeeping_init
+ .init.text     0xffff000000051cb0       0x18 kernel/libkernel.a(hrtimer.c.obj)
+                0xffff000000051cb0                hrtimers_init
+ .init.text     0xffff000000051cc8      0x25c kernel/libkernel.a(sched_clock.c.obj)
+                0xffff000000051cc8                sched_clock_register
+                0xffff000000051ea8                generic_sched_clock_init
+ .init.text     0xffff000000051f24       0x74 kernel/libkernel.a(jiffies.c.obj)
+                0xffff000000051f24                system_tick_init
+ .init.text     0xffff000000051f98      0x39c kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+                0xffff000000051f98                stext
+ .init.text     0xffff000000052334      0x24c kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+                0xffff000000052334                smp_setup_processor_id
+                0xffff000000052370                early_arch_platform_init
+                0xffff000000052410                setup_arch
+ .init.text     0xffff000000052580      0x538 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+                0xffff000000052580                __cpu_up
+                0xffff000000052758                smp_cpus_done
+                0xffff0000000527a4                smp_prepare_boot_cpu
+                0xffff0000000527c0                smp_init_cpus
+                0xffff000000052a04                smp_prepare_cpus
+                0xffff000000052aac                set_smp_cross_call
+ .init.text     0xffff000000052ab8       0xdc kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+                0xffff000000052ab8                cpu_read_ops
+ .init.text     0xffff000000052b94       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ .init.text     0xffff000000052bd4       0x20 kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+                0xffff000000052bd4                cpuinfo_store_boot_cpu
+ .init.text     0xffff000000052bf4       0x78 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+                0xffff000000052bf4                init_IRQ
+ .init.text     0xffff000000052c6c       0x28 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+                0xffff000000052c6c                time_init
+ .init.text     0xffff000000052c94        0x8 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                0xffff000000052c94                early_brk64
+ .init.text     0xffff000000052c9c      0xad0 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                0xffff000000052c9c                early_fixmap_init
+                0xffff000000052ee0                vmemmap_populate
+                0xffff000000052fb0                __create_iomap_remap
+                0xffff000000053028                mark_linear_text_alias_ro
+                0xffff000000053120                paging_init
+                0xffff000000053590                __fixmap_remap_console
+                0xffff0000000535f8                __fixmap_remap_fdt
+                0xffff0000000536ec                fixmap_remap_fdt
+ .init.text     0xffff00000005376c      0x3f8 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+                0xffff000000053844                arm64_memblock_init
+                0xffff000000053a38                bootmem_init
+ .init.text     0xffff000000053b64      0xd9c kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+                0xffff000000053b64                early_init_dt_scan_chosen
+                0xffff000000053d5c                of_scan_flat_dt
+                0xffff000000053e58                of_scan_flat_dt_subnodes
+                0xffff000000053f04                of_get_flat_dt_root
+                0xffff000000053f0c                of_get_flat_dt_size
+                0xffff000000053f20                of_flat_dt_is_compatible
+                0xffff000000053f44                of_flat_dt_match
+                0xffff000000053f68                of_get_flat_dt_phandle
+                0xffff000000053f88                of_flat_dt_get_machine_name
+                0xffff000000053fd0                of_flat_dt_match_machine
+                0xffff000000054104                early_init_dt_scan_chosen_stdout
+                0xffff00000005429c                early_init_dt_add_memory_arch
+                0xffff000000054300                early_init_dt_scan_memory
+                0xffff000000054438                early_init_dt_reserve_memory_arch
+                0xffff000000054470                early_init_fdt_scan_reserved_mem
+                0xffff0000000547c0                early_init_dt_scan_nodes
+                0xffff000000054818                early_init_dt_scan
+                0xffff000000054848                unflatten_device_tree
+                0xffff000000054890                unflatten_and_copy_device_tree
+ .init.text     0xffff000000054900      0x49c kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+                0xffff00000005491c                early_init_dt_alloc_reserved_memory_arch
+                0xffff0000000549cc                fdt_reserved_mem_save_node
+                0xffff000000054a28                fdt_init_reserved_mem
+ .init.text     0xffff000000054d9c      0x4a0 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+                0xffff000000054d9c                of_irq_init
+ .init.text     0xffff00000005523c       0x84 kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+                0xffff00000005523c                of_setup_console
+ .init.text     0xffff0000000552c0      0x46c kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+                0xffff0000000556ac                psci_dt_init
+ .init.text     0xffff00000005572c       0x1c kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+                0xffff00000005572c                irqchip_init
+ .init.text     0xffff000000055748      0x3b0 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+                0xffff000000055748                gic_of_init
+ .init.text     0xffff000000055af8       0xe8 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+                0xffff000000055af8                timer_probe
+ .init.text     0xffff000000055be0      0x450 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ .init.text     0xffff000000056030      0x164 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                0xffff000000056030                early_init_dt_verify
+                0xffff000000056098                dt_mem_next_cell
+                0xffff0000000560d0                of_get_flat_dt_prop
+                0xffff000000056100                early_init_dt_scan_root
+ .init.text     0xffff000000056194      0x494 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+                0xffff000000056384                of_flat_dt_translate_address
+ .init.text     0xffff000000056628     0x15d8 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+                0xffff000000056bf8                memblock_init
+                0xffff000000056c80                choose_memblock_flags
+                0xffff000000056c88                memblock_overlaps_region
+                0xffff000000056cd8                memblock_add_range
+                0xffff000000056ecc                memblock_add
+                0xffff000000056f34                memblock_remove
+                0xffff000000056f98                memblock_free
+                0xffff000000056ffc                memblock_reserve
+                0xffff000000057064                memblock_mark_nomap
+                0xffff000000057080                memblock_clear_nomap
+                0xffff00000005709c                memblock_mark_dma
+                0xffff0000000570b8                memblock_clear_dma
+                0xffff0000000570d4                memblock_mark_movable
+                0xffff0000000570f0                memblock_clear_movable
+                0xffff00000005710c                __next_reserved_mem_region
+                0xffff000000057160                __next_mem_range
+                0xffff00000005726c                __next_mem_range_rev
+                0xffff0000000573a0                __memblock_find_in_range
+                0xffff000000057558                memblock_find_in_range
+                0xffff000000057618                __next_mem_pfn_range
+                0xffff000000057690                memblock_alloc_range
+                0xffff0000000576a4                memblock_alloc_base
+                0xffff0000000576c4                memblock_phys_alloc
+                0xffff0000000576e0                memblock_alloc_try_raw
+                0xffff0000000577f0                memblock_phys_mem_size
+                0xffff0000000577f8                memblock_reserved_size
+                0xffff000000057800                memblock_mem_size
+                0xffff000000057858                memblock_start_of_DRAM
+                0xffff000000057860                memblock_end_of_DRAM
+                0xffff000000057880                memblock_enforce_memory_limit
+                0xffff0000000578d4                memblock_cap_memory_range
+                0xffff0000000579f8                memblock_mem_limit_remove_map
+                0xffff000000057a30                memblock_is_region_memory
+                0xffff000000057ac0                memblock_is_region_reserved
+                0xffff000000057ae4                memblock_trim_memory
+                0xffff000000057ba4                memblock_set_current_limit
+                0xffff000000057bac                memblock_get_current_limit
+                0xffff000000057bb4                __memblock_dump_all
+ *(.text.startup)
+                0xffff000000057c00                _einittext = .
+                0xffff000000057c00                . = ALIGN (0x4)
+
+.altinstructions
+                0xffff000000057c00        0x0
+                0xffff000000057c00                __alt_instructions = .
+ *(.altinstructions)
+                0xffff000000057c00                __alt_instructions_end = .
+
+.altinstr_replacement
+ *(.altinstr_replacement)
+                0xffff000000058000                . = ALIGN (0x1000)
+                0xffff000000058000                __inittext_end = .
+                0xffff000000058000                __initdata_begin = .
+
+.init.data      0xffff000000058000     0x1a68
+ *(.init.data init.data.*)
+ .init.data     0xffff000000058000        0x4 kernel/libkernel.a(extable.c.obj)
+                0xffff000000058000                main_extable_sort_needed
+ *fill*         0xffff000000058004        0x4 
+ .init.data     0xffff000000058008        0x8 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+                0xffff000000058008                __fdt_pointer
+ .init.data     0xffff000000058010       0x21 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+ *fill*         0xffff000000058031        0x7 
+ .init.data     0xffff000000058038      0x810 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+                0xffff000000058038                phys_initrd_start
+                0xffff000000058040                phys_initrd_size
+                0xffff000000058048                boot_command_line
+ .init.data     0xffff000000058848        0x4 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .init.data     0xffff00000005884c        0x4 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ .init.data     0xffff000000058850        0x8 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                0xffff000000058850                dt_root_size_cells
+                0xffff000000058854                dt_root_addr_cells
+ .init.data     0xffff000000058858        0x4 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+                0xffff000000058858                memblock_debug
+ *(.init.rodata .init.rodata.*)
+ *fill*         0xffff00000005885c        0x4 
+ .init.rodata   0xffff000000058860       0x10 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ .init.rodata   0xffff000000058870      0x320 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .init.rodata   0xffff000000058b90      0x3e8 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+                0xffff000000058f78                . = ALIGN (0x8)
+                0xffff000000058f78                __console_of_table_start = .
+ *(__console_of_table)
+ __console_of_table
+                0xffff000000058f78       0xc8 kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+ *(__console_of_table_end)
+                0xffff000000059040                __console_of_table_end = .
+                0xffff000000059040                . = ALIGN (0x8)
+                0xffff000000059040                __clk_of_table_start = .
+ *(__clk_of_table)
+ *(__clk_of_table_end)
+                0xffff000000059040                __clk_of_table_end = .
+                0xffff000000059040                . = ALIGN (0x8)
+                0xffff000000059040                __timer_of_table_start = .
+ *(__timer_of_table)
+ __timer_of_table
+                0xffff000000059040      0x190 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ *(__timer_of_table_end)
+ __timer_of_table_end
+                0xffff0000000591d0       0xc8 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+                0xffff000000059298                __timer_of_table_end = .
+                0xffff000000059298                . = ALIGN (0x8)
+                0xffff000000059298                __irqchip_of_table_start = .
+ *(__irqchip_of_table)
+ __irqchip_of_table
+                0xffff000000059298      0x708 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ *(__irqchip_of_table_end)
+ __irqchip_of_table_end
+                0xffff0000000599a0       0xc8 kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+                0xffff000000059a68                __irqchip_of_table_end = .
+ *(.init.rodata.* .init.bss)
+                0xffff00000005a000                . = ALIGN (0x1000)
+
+.archive_services
+                0xffff00000005a000    0x11b10
+                0xffff00000005a000                __start_archive = .
+ *(.archive_services)
+ .archive_services
+                0xffff00000005a000    0x11b10 kernel/libkernel.a(archive.S.obj)
+                0xffff00000005a000                __archive_services_start
+                0xffff00000006bb10                __archive_services_end
+                0xffff00000006bb10                __end_archive = .
+
+.rela.dyn       0xffff00000006bb10        0x0
+ *(.rela .rela*)
+ .rela.iplt     0xffff00000006bb10        0x0 kernel/libkernel.a(main.c.obj)
+ .rela.text     0xffff00000006bb10        0x0 kernel/libkernel.a(main.c.obj)
+ .rela.init.text
+                0xffff00000006bb10        0x0 kernel/libkernel.a(main.c.obj)
+ .rela.sched.text
+                0xffff00000006bb10        0x0 kernel/libkernel.a(main.c.obj)
+ .rela.idmap.text
+                0xffff00000006bb10        0x0 kernel/libkernel.a(main.c.obj)
+ .rela.data     0xffff00000006bb10        0x0 kernel/libkernel.a(main.c.obj)
+                0x000000000006bb10                __rela_offset = ABSOLUTE ((ADDR (.rela.dyn) - 0xffff000000000000))
+                0x0000000000000000                __rela_size = SIZEOF (.rela.dyn)
+                0xffff000000070000                . = ALIGN (0x10000)
+                0xffff000000070000                __initdata_end = .
+                0xffff000000070000                __init_end = .
+                0xffff000000070000                _data = .
+                0xffff000000070000                _sdata = .
+                0xffff000000070000                . = ALIGN (0x1000)
+
+.data           0xffff000000070000    0x2851b
+                0xffff000000070000                . = ALIGN (0x1000)
+ *(.data..page_aligned)
+                0xffff000000070000                . = ALIGN (0x40)
+ *(.data..cacheline_aligned)
+ .data..cacheline_aligned
+                0xffff000000070000       0x50 kernel/libkernel.a(softirq.c.obj)
+ *fill*         0xffff000000070050       0x30 
+ .data..cacheline_aligned
+                0xffff000000070080      0x840 kernel/libkernel.a(slub.c.obj)
+                0xffff000000070080                kmalloc_caches
+ .data..cacheline_aligned
+                0xffff0000000708c0     0x3dc0 kernel/libkernel.a(core.c.obj)
+                0xffff0000000708c0                tasklist_lock
+                0xffff000000070900                runqueues
+ .data..cacheline_aligned
+                0xffff000000074680       0x48 kernel/libkernel.a(jiffies.c.obj)
+                0xffff000000074680                jiffies_lock
+                0xffff0000000746c0                jiffies_64
+ *fill*         0xffff0000000746c8       0x38 
+ .data..cacheline_aligned
+                0xffff000000074700       0x20 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+                0xffff000000074700                boot_args
+                0xffff000000074740                . = ALIGN (0x40)
+ *fill*         0xffff000000074720       0x20 
+ *(.data..read_mostly)
+ .data..read_mostly
+                0xffff000000074740        0x4 kernel/libkernel.a(main.c.obj)
+                0xffff000000074740                system_state
+ *fill*         0xffff000000074744        0x4 
+ .data..read_mostly
+                0xffff000000074748       0x20 kernel/libkernel.a(cpu.c.obj)
+                0xffff000000074748                __cpu_online_mask
+                0xffff000000074750                __cpu_active_mask
+                0xffff000000074758                __cpu_present_mask
+                0xffff000000074760                __cpu_possible_mask
+ .data..read_mostly
+                0xffff000000074768       0x40 kernel/libkernel.a(softirq.c.obj)
+ .data..read_mostly
+                0xffff0000000747a8        0x4 kernel/libkernel.a(tick-common.c.obj)
+                0xffff0000000747a8                tick_do_timer_cpu
+ .data..read_mostly
+                0xffff0000000747ac        0x4 kernel/libkernel.a(hrtimer.c.obj)
+                0xffff0000000747ac                hrtimer_resolution
+ .data..read_mostly
+                0xffff0000000747b0      0x130 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+                0xffff000000074900                . = ALIGN (0x40)
+ *fill*         0xffff0000000748e0       0x20 
+                0xffff000000074900                __start_kernel_stack = .
+ *(.data..kernel_stack)
+ .data..kernel_stack
+                0xffff000000074900    0x20000 kernel/libkernel.a(stack.c.obj)
+                0xffff000000074900                kernel_stack_alloc
+                0xffff000000094900                __end_kernel_stack = .
+ *(.data)
+ .data          0xffff000000094900        0x0 kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+ .data          0xffff000000094900        0x0 kernel/libkernel.a(main.c.obj)
+ .data          0xffff000000094900      0xf40 kernel/libkernel.a(init_task.c.obj)
+                0xffff000000094900                idle_threads
+ .data          0xffff000000095840        0x0 kernel/libkernel.a(stack.c.obj)
+ .data          0xffff000000095840        0x4 kernel/libkernel.a(panic.c.obj)
+ .data          0xffff000000095844        0x0 kernel/libkernel.a(printf.c.obj)
+ .data          0xffff000000095844        0x0 kernel/libkernel.a(extable.c.obj)
+ *fill*         0xffff000000095844        0x4 
+ .data          0xffff000000095848       0xc8 kernel/libkernel.a(cpu.c.obj)
+ .data          0xffff000000095910        0x0 kernel/libkernel.a(reboot.c.obj)
+ .data          0xffff000000095910        0x0 kernel/libkernel.a(clock.c.obj)
+ .data          0xffff000000095910        0x0 kernel/libkernel.a(softirq.c.obj)
+ .data          0xffff000000095910        0x0 kernel/libkernel.a(smp.c.obj)
+ .data          0xffff000000095910        0x0 kernel/libkernel.a(exit.c.obj)
+ .data          0xffff000000095910        0x0 kernel/libkernel.a(syscall.c.obj)
+ .data          0xffff000000095910       0x48 kernel/libkernel.a(handle.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(qspinlock.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(qrwlock.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(spinlock.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(mutex.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(ipc.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(services.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(pid.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(tcb.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(untype.c.obj)
+ .data          0xffff000000095958        0x0 kernel/libkernel.a(page_alloc.c.obj)
+ .data          0xffff000000095958       0x48 kernel/libkernel.a(slub.c.obj)
+ *fill*         0xffff0000000959a0       0x20 
+ .data          0xffff0000000959c0       0x28 kernel/libkernel.a(core.c.obj)
+ .data          0xffff0000000959e8        0x0 kernel/libkernel.a(rt.c.obj)
+ .data          0xffff0000000959e8       0x10 kernel/libkernel.a(fair.c.obj)
+                0xffff0000000959e8                sysctl_sched_min_granularity
+                0xffff0000000959ec                sysctl_sched_latency
+                0xffff0000000959f0                sysctl_sched_wakeup_granularity
+                0xffff0000000959f4                sysctl_sched_batch_wakeup_granularity
+ .data          0xffff0000000959f8        0x0 kernel/libkernel.a(idle.c.obj)
+ .data          0xffff0000000959f8        0x0 kernel/libkernel.a(wait.c.obj)
+ .data          0xffff0000000959f8       0x10 kernel/libkernel.a(clocksource.c.obj)
+ .data          0xffff000000095a08       0x20 kernel/libkernel.a(clockevents.c.obj)
+ .data          0xffff000000095a28        0x0 kernel/libkernel.a(tick-oneshot.c.obj)
+ .data          0xffff000000095a28        0x0 kernel/libkernel.a(tick-common.c.obj)
+ .data          0xffff000000095a28        0x0 kernel/libkernel.a(timekeeping.c.obj)
+ *fill*         0xffff000000095a28       0x18 
+ .data          0xffff000000095a40      0x600 kernel/libkernel.a(hrtimer.c.obj)
+                0xffff000000095a40                hrtimer_bases
+ .data          0xffff000000096040       0x70 kernel/libkernel.a(sched_clock.c.obj)
+ .data          0xffff0000000960b0        0x0 kernel/libkernel.a(jiffies.c.obj)
+ .data          0xffff0000000960b0        0x0 kernel/libkernel.a(time.c.obj)
+ .data          0xffff0000000960b0        0x0 kernel/libkernel.a(archive.S.obj)
+ .data          0xffff0000000960b0        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+ .data          0xffff0000000960b0        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(entry.S.obj)
+ .data          0xffff0000000960b0        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(smccc-call.S.obj)
+ .data          0xffff0000000960b0       0x40 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+                0xffff0000000960b0                __cpu_logical_map
+ .data          0xffff0000000960f0        0x4 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+ .data          0xffff0000000960f4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+ .data          0xffff0000000960f4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ .data          0xffff0000000960f4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ .data          0xffff0000000960f4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+ .data          0xffff0000000960f4        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ *fill*         0xffff0000000960f4        0x4 
+ .data          0xffff0000000960f8        0x8 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+                0xffff0000000960f8                current_ioremap_base
+ .data          0xffff000000096100        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ .data          0xffff000000096100       0x50 kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ .data          0xffff000000096150        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+ .data          0xffff000000096150        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+ .data          0xffff000000096150        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+ .data          0xffff000000096150        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(cache.S.obj)
+ .data          0xffff000000096150        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(proc.S.obj)
+ .data          0xffff000000096150       0x18 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                0xffff000000096150                kernel_pgd
+                0xffff000000096158                idmap_t0sz
+                0xffff000000096160                idmap_ptrs_per_pgd
+ .data          0xffff000000096168        0x4 kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+ .data          0xffff00000009616c        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+ .data          0xffff00000009616c        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+ *fill*         0xffff00000009616c        0x4 
+ .data          0xffff000000096170       0xc0 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+ .data          0xffff000000096230        0x0 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+ .data          0xffff000000096230        0x0 kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+ .data          0xffff000000096230        0x0 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ .data          0xffff000000096230     0x200c kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+ *fill*         0xffff00000009823c        0x4 
+ .data          0xffff000000098240       0x5c kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+                0xffff000000098240                plat
+ .data          0xffff00000009829c        0x4 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .data          0xffff0000000982a0        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+ .data          0xffff0000000982a0       0xf0 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .data          0xffff000000098390        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+ .data          0xffff000000098390        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-of.c.obj)
+ .data          0xffff000000098390        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ .data          0xffff000000098390       0x98 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+                0xffff000000098390                arch_timer_read_counter
+ .data          0xffff000000098428       0x50 kernel/mm/libmm.a(init-mm.c.obj)
+                0xffff000000098428                init_mm
+ .data          0xffff000000098478        0x0 kernel/libversion.a(version.c.obj)
+ .data          0xffff000000098478        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(clear_page.S.obj)
+ .data          0xffff000000098478        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+ .data          0xffff000000098478        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(copy_from_user.S.obj)
+ .data          0xffff000000098478        0x0 kernel/lib/liblib.a(cpumask.c.obj)
+ .data          0xffff000000098478        0x0 kernel/lib/liblib.a(extable.c.obj)
+ .data          0xffff000000098478        0x0 kernel/lib/liblib.a(timerqueue.c.obj)
+ .data          0xffff000000098478        0x0 kernel/lib/liblib.a(reciprocal_div.c.obj)
+ .data          0xffff000000098478        0x0 kernel/lib/liblib.a(kasprintf.c.obj)
+ .data          0xffff000000098478       0x10 kernel/drivers/of/kof/libkof.a(base.c.obj)
+                0xffff000000098478                aliases_lookup
+ .data          0xffff000000098488        0x0 kernel/drivers/of/kof/libkof.a(property.c.obj)
+ .data          0xffff000000098488       0x70 kernel/drivers/of/kof/libkof.a(address.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(irq.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+ .data          0xffff0000000984f8        0x0 kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+ .data          0xffff0000000984f8        0x1 kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+ .data          0xffff0000000984f9        0x0 kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+ .data          0xffff0000000984f9        0x0 kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+ .data          0xffff0000000984f9        0x0 kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+ .data          0xffff0000000984f9        0x0 kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+ *fill*         0xffff0000000984f9        0x7 
+ .data          0xffff000000098500        0x8 kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memchr.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memcmp.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memcpy.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memmove.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memset.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strchr.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strcmp.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strlen.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strncmp.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strnlen.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strrchr.S.obj)
+ .data          0xffff000000098508        0x0 kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+                0xffff000000098508                __start_once = .
+ *(.data.once)
+ .data.once     0xffff000000098508        0x2 kernel/libkernel.a(softirq.c.obj)
+ .data.once     0xffff00000009850a        0x3 kernel/libkernel.a(smp.c.obj)
+ .data.once     0xffff00000009850d        0x1 kernel/libkernel.a(page_alloc.c.obj)
+ .data.once     0xffff00000009850e        0x1 kernel/libkernel.a(idle.c.obj)
+ .data.once     0xffff00000009850f        0x1 kernel/libkernel.a(clocksource.c.obj)
+ .data.once     0xffff000000098510        0x3 kernel/libkernel.a(clockevents.c.obj)
+ .data.once     0xffff000000098513        0x3 kernel/libkernel.a(hrtimer.c.obj)
+ .data.once     0xffff000000098516        0x2 kernel/lib/liblib.a(timerqueue.c.obj)
+ .data.once     0xffff000000098518        0x2 kernel/drivers/of/kof/libkof.a(property.c.obj)
+ .data.once     0xffff00000009851a        0x1 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                0xffff00000009851b                __end_once = .
+
+.mmuoff.data.write
+                0xffff000000098800        0xc
+                0xffff000000098800                __mmuoff_data_start = .
+ *(.mmuoff.data.write)
+ .mmuoff.data.write
+                0xffff000000098800        0xc kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+                0xffff000000098800                __boot_cpu_mode
+                0xffff000000098808                __early_cpu_boot_status
+                0xffff000000099000                . = ALIGN (0x800)
+
+.mmuoff.data.read
+                0xffff000000099000        0x0
+ *(.mmuoff.data.read)
+                0xffff000000099000                __mmuoff_data_end = .
+                0xffff000000099000                _edata = .
+                0xffff000000099000                . = ALIGN (0x0)
+                0xffff000000099000                __bss_start = .
+                0xffff000000099000                . = ALIGN (0x0)
+
+.sbss
+ *(.dynsbss)
+ *(.sbss)
+ *(.scommon)
+                0xffff000000099000                . = ALIGN (0x0)
+
+.bss            0xffff000000099000    0x48f64
+ *(.bss..page_aligned)
+ .bss..page_aligned
+                0xffff000000099000    0x21000 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+                0xffff000000099000                irq_stack_ptr
+                0xffff00000009a000                irq_stack
+ .bss..page_aligned
+                0xffff0000000ba000     0x4000 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+                0xffff0000000bd000                empty_zero_page
+ *(.dynbss)
+ *(.bss)
+ .bss           0xffff0000000be000        0x0 kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+ .bss           0xffff0000000be000        0x0 kernel/libkernel.a(main.c.obj)
+ .bss           0xffff0000000be000        0x0 kernel/libkernel.a(init_task.c.obj)
+ .bss           0xffff0000000be000        0x0 kernel/libkernel.a(stack.c.obj)
+ .bss           0xffff0000000be000      0x480 kernel/libkernel.a(panic.c.obj)
+ .bss           0xffff0000000be480      0x410 kernel/libkernel.a(printf.c.obj)
+                0xffff0000000be888                __stack_chk_guard
+ .bss           0xffff0000000be890        0x0 kernel/libkernel.a(extable.c.obj)
+ .bss           0xffff0000000be890        0x4 kernel/libkernel.a(cpu.c.obj)
+                0xffff0000000be890                __boot_cpu_id
+ .bss           0xffff0000000be894        0x4 kernel/libkernel.a(reboot.c.obj)
+                0xffff0000000be894                reboot_mode
+ .bss           0xffff0000000be898        0x0 kernel/libkernel.a(clock.c.obj)
+ .bss           0xffff0000000be898        0x0 kernel/libkernel.a(softirq.c.obj)
+ .bss           0xffff0000000be898      0xbc0 kernel/libkernel.a(smp.c.obj)
+ .bss           0xffff0000000bf458        0x0 kernel/libkernel.a(exit.c.obj)
+ .bss           0xffff0000000bf458        0x0 kernel/libkernel.a(syscall.c.obj)
+ .bss           0xffff0000000bf458    0x1a0b0 kernel/libkernel.a(handle.c.obj)
+                0xffff0000000bf458                __irq_regs
+ .bss           0xffff0000000d9508      0x200 kernel/libkernel.a(qspinlock.c.obj)
+ .bss           0xffff0000000d9708        0x0 kernel/libkernel.a(qrwlock.c.obj)
+ .bss           0xffff0000000d9708        0x0 kernel/libkernel.a(spinlock.c.obj)
+ .bss           0xffff0000000d9708        0x0 kernel/libkernel.a(mutex.c.obj)
+ .bss           0xffff0000000d9708        0x0 kernel/libkernel.a(ipc.c.obj)
+ .bss           0xffff0000000d9708        0x0 kernel/libkernel.a(services.c.obj)
+ .bss           0xffff0000000d9708        0x8 kernel/libkernel.a(pid.c.obj)
+ .bss           0xffff0000000d9710        0x0 kernel/libkernel.a(tcb.c.obj)
+ .bss           0xffff0000000d9710        0x0 kernel/libkernel.a(untype.c.obj)
+ *fill*         0xffff0000000d9710       0x30 
+ .bss           0xffff0000000d9740      0x748 kernel/libkernel.a(page_alloc.c.obj)
+                0xffff0000000d9780                node_data
+                0xffff0000000d9e80                total_physpages
+ .bss           0xffff0000000d9e88     0x4b50 kernel/libkernel.a(slub.c.obj)
+ .bss           0xffff0000000de9d8      0x428 kernel/libkernel.a(core.c.obj)
+                0xffff0000000dedf8                nohz_cpu_mask
+ .bss           0xffff0000000dee00        0x0 kernel/libkernel.a(rt.c.obj)
+ .bss           0xffff0000000dee00        0x0 kernel/libkernel.a(fair.c.obj)
+ .bss           0xffff0000000dee00        0x0 kernel/libkernel.a(idle.c.obj)
+ .bss           0xffff0000000dee00        0x0 kernel/libkernel.a(wait.c.obj)
+ .bss           0xffff0000000dee00        0x8 kernel/libkernel.a(clocksource.c.obj)
+ .bss           0xffff0000000dee08        0x4 kernel/libkernel.a(clockevents.c.obj)
+ .bss           0xffff0000000dee0c        0x0 kernel/libkernel.a(tick-oneshot.c.obj)
+ *fill*         0xffff0000000dee0c        0x4 
+ .bss           0xffff0000000dee10       0x80 kernel/libkernel.a(tick-common.c.obj)
+                0xffff0000000dee10                tick_cpu_device
+ *fill*         0xffff0000000dee90       0x30 
+ .bss           0xffff0000000deec0       0x44 kernel/libkernel.a(timekeeping.c.obj)
+ .bss           0xffff0000000def04        0x0 kernel/libkernel.a(hrtimer.c.obj)
+ *fill*         0xffff0000000def04        0x4 
+ .bss           0xffff0000000def08       0x40 kernel/libkernel.a(sched_clock.c.obj)
+ .bss           0xffff0000000def48      0x200 kernel/libkernel.a(jiffies.c.obj)
+ .bss           0xffff0000000df148        0x0 kernel/libkernel.a(time.c.obj)
+ .bss           0xffff0000000df148        0x0 kernel/libkernel.a(archive.S.obj)
+ .bss           0xffff0000000df148        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(head.S.obj)
+ .bss           0xffff0000000df148        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(entry.S.obj)
+ .bss           0xffff0000000df148        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(smccc-call.S.obj)
+ .bss           0xffff0000000df148        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+ .bss           0xffff0000000df148       0x24 kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+                0xffff0000000df148                secondary_data
+                0xffff0000000df160                __smp_cross_call
+                0xffff0000000df168                cpus_stuck_in_kernel
+ *fill*         0xffff0000000df16c        0x4 
+ .bss           0xffff0000000df170       0x50 kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+                0xffff0000000df170                arm_pm_restart
+                0xffff0000000df178                pm_power_off
+                0xffff0000000df180                __entry_task
+ .bss           0xffff0000000df1c0        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ .bss           0xffff0000000df1c0        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ .bss           0xffff0000000df1c0      0x588 kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+                0xffff0000000df1c0                __icache_flags
+                0xffff0000000df1c8                cpu_data
+ .bss           0xffff0000000df748        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ .bss           0xffff0000000df748        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+ .bss           0xffff0000000df748        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ .bss           0xffff0000000df748        0xc kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+                0xffff0000000df750                show_unhandled_signals
+ .bss           0xffff0000000df754        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+ .bss           0xffff0000000df754        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+ .bss           0xffff0000000df754        0x0 kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+ .bss           0xffff0000000df754        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(cache.S.obj)
+ .bss           0xffff0000000df754        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(proc.S.obj)
+ .bss           0xffff0000000df754        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+ *fill*         0xffff0000000df754        0x4 
+ .bss           0xffff0000000df758       0xa8 kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+ .bss           0xffff0000000df800     0x1860 kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+                0xffff0000000df800                memblock_kernel
+ .bss           0xffff0000000e1060        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+ .bss           0xffff0000000e1060        0x0 kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+ .bss           0xffff0000000e1060        0x4 kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+ *fill*         0xffff0000000e1064        0x4 
+ .bss           0xffff0000000e1068      0x608 kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+ .bss           0xffff0000000e1670        0x0 kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ .bss           0xffff0000000e1670       0x20 kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+                0xffff0000000e1678                port
+                0xffff0000000e1688                uart_virt_base
+ .bss           0xffff0000000e1690        0x0 kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+ .bss           0xffff0000000e1690       0x58 kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+                0xffff0000000e16a8                psci_ops
+ .bss           0xffff0000000e16e8        0x0 kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+ .bss           0xffff0000000e16e8        0x4 kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ *fill*         0xffff0000000e16ec        0x4 
+ .bss           0xffff0000000e16f0        0xc kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+ .bss           0xffff0000000e16fc        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-of.c.obj)
+ .bss           0xffff0000000e16fc        0x0 kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ *fill*         0xffff0000000e16fc        0x4 
+ .bss           0xffff0000000e1700      0x829 kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ .bss           0xffff0000000e1f29        0x0 kernel/mm/libmm.a(init-mm.c.obj)
+ *fill*         0xffff0000000e1f29        0x3 
+ .bss           0xffff0000000e1f2c        0x4 kernel/libversion.a(version.c.obj)
+                0xffff0000000e1f2c                Version_257
+ .bss           0xffff0000000e1f30        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(clear_page.S.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/arch/arm64/lib/libarch__arm64__lib.a(copy_from_user.S.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/lib/liblib.a(cpumask.c.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/lib/liblib.a(extable.c.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/lib/liblib.a(timerqueue.c.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/lib/liblib.a(reciprocal_div.c.obj)
+ .bss           0xffff0000000e1f30        0x0 kernel/lib/liblib.a(kasprintf.c.obj)
+ .bss           0xffff0000000e1f30       0x28 kernel/drivers/of/kof/libkof.a(base.c.obj)
+                0xffff0000000e1f30                of_root
+                0xffff0000000e1f38                of_aliases
+                0xffff0000000e1f40                of_chosen
+                0xffff0000000e1f50                of_stdout
+ .bss           0xffff0000000e1f58        0x0 kernel/drivers/of/kof/libkof.a(property.c.obj)
+ .bss           0xffff0000000e1f58        0x0 kernel/drivers/of/kof/libkof.a(address.c.obj)
+ .bss           0xffff0000000e1f58        0xc kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+                0xffff0000000e1f58                initial_boot_params
+                0xffff0000000e1f60                of_fdt_crc32
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/libkof.a(irq.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memchr.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memcmp.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memcpy.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memmove.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(memset.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strchr.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strcmp.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strlen.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strncmp.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strnlen.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(strrchr.S.obj)
+ .bss           0xffff0000000e1f64        0x0 kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+ *(COMMON)
+                0xffff0000000e1f64                . = ALIGN (0x0)
+                0xffff0000000e1f64                __bss_stop = .
+                0xffff0000000e2000                . = ALIGN (0x1000)
+                0xffff0000000e2000                init_pg_dir = .
+                0xffff0000000e5000                . = (. + (0x1000 * (((0x1 + (((_end >> 0x27) - 0x1fffe00) + 0x1)) + 0x0) + (((_end >> 0x1e) - 0x3fffc0000) + 0x1))))
+                0xffff0000000e5000                init_pg_end = .
+                0xffff0000000e5000                _end = .
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info .gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges
+ *(.debug_ranges)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_gnu_pubnames
+ *(.debug_gnu_pubnames)
+
+.debug_gnu_pubtypes
+ *(.debug_gnu_pubtypes)
+
+.debug_types
+ *(.debug_types)
+
+.debug_macro
+ *(.debug_macro)
+
+.debug_addr
+ *(.debug_addr)
+
+.comment        0x0000000000000000       0x2a
+ *(.comment)
+ .comment       0x0000000000000000       0x2a kernel/CMakeFiles/kernel_final.dir/home/miracle/play/sel4m/misc/empty.c.obj
+                                         0x2b (size before relaxing)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(main.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(init_task.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(stack.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(panic.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(printf.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(extable.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(cpu.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(reboot.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(clock.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(softirq.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(smp.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(exit.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(syscall.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(handle.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(qspinlock.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(qrwlock.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(spinlock.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(mutex.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(ipc.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(services.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(pid.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(tcb.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(untype.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(page_alloc.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(slub.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(core.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(rt.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(fair.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(idle.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(wait.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(clocksource.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(clockevents.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(tick-oneshot.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(tick-common.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(timekeeping.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(hrtimer.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(sched_clock.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(jiffies.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libkernel.a(time.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(setup.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(smp.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(process.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(cpu_ops.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(psci.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(cpuinfo.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(irq.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(ioremap.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(time.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(traps.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(fpsimd.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(signal.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/core/libarch__arm64__core.a(syscall.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/mm/libarch__arm64__mm.a(mmu.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/mm/libarch__arm64__mm.a(context.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/mm/libarch__arm64__mm.a(init.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/mm/libarch__arm64__mm.a(extable.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/mm/libarch__arm64__mm.a(fault.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/libdrivers__of.a(fdt.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/libdrivers__of.a(of_reserved_mem.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/libdrivers__of.a(irq.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/serial/libdrivers__serial.a(uart.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/serial/libdrivers__serial.a(uart_pl011.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/firmware/libdrivers__firmware.a(psci.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/irqchip/libdrivers__irqchip.a(irqchip.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/irqchip/libdrivers__irqchip.a(irq-gic-common.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/clocksource/libdrivers__clocksource.a(timer-of.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/clocksource/libdrivers__clocksource.a(timer-probe.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/clocksource/libdrivers__clocksource.a(arm_arch_timer.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/mm/libmm.a(init-mm.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/libversion.a(version.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/arch/arm64/lib/libarch__arm64__lib.a(delay.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/lib/liblib.a(cpumask.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/lib/liblib.a(extable.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/lib/liblib.a(timerqueue.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/lib/liblib.a(reciprocal_div.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/lib/liblib.a(kasprintf.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(base.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(property.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(address.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(fdt_address.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(irq.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(fdt.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(fdt_ro.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(fdt_rw.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/libkof.a(fdt_wip.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/lib/kmemalloc/libkmemalloc.a(memblock.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(string.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(ctype.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(find_bit.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(bitmap.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(vsprintf.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(kstrtox.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(crc32.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(bsearch.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(sort.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(random.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(time.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(rbtree.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(llist.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(hweight.c.obj)
+ .comment       0x000000000000002a       0x2b kernel/drivers/of/kof/kbase/libkbase.a(hexdump.c.obj)
+
+.symtab
+ *(.symtab)
+
+.strtab
+ *(.strtab)
+
+.shstrtab
+ *(.shstrtab)
+                0x00000000000e5000                _kernel_size_le_lo32 = (((_end - _text) & 0xffffffff) & 0xffffffff)
+                0x0000000000000000                _kernel_size_le_hi32 = (((_end - _text) >> 0x20) & 0xffffffff)
+                0x0000000000000000                _kernel_offset_le_lo32 = 0x0
+                0x0000000000000000                _kernel_offset_le_hi32 = 0x0
+                0x000000000000000a                _kernel_flags_le_lo32 = 0xa
+                0x0000000000000000                _kernel_flags_le_hi32 = 0x0
+
+.plt            0x0000000000000000        0x0
+ *(.plt)
+ *(.plt.*)
+ *(.iplt)
+ .iplt          0x0000000000000000        0x0 kernel/libkernel.a(main.c.obj)
+ *(.igot .igot.plt)
+ .igot.plt      0x0000000000000000        0x0 kernel/libkernel.a(main.c.obj)
+                0x0000000000000001                ASSERT ((SIZEOF (.plt) == 0x0), Unexpected run-time procedure linkages detected!)
+
+.data.rel.ro    0x0000000000000000        0x0
+ *(.data.rel.ro)
+                0x0000000000000001                ASSERT ((SIZEOF (.data.rel.ro) == 0x0), Unexpected RELRO detected!)
+                0x0000000000000001                ASSERT (((__idmap_text_end - (__idmap_text_start & 0xfffffffffffff000)) <= 0x1000), ID map text too big or misaligned)
+                0x0000000000000001                ASSERT ((_text == 0xffff000000000000), HEAD is misaligned)
+LOAD kernel/libkernel.a
+LOAD kernel/arch/arm64/core/libarch__arm64__core.a
+LOAD kernel/arch/arm64/mm/libarch__arm64__mm.a
+LOAD kernel/drivers/of/libdrivers__of.a
+LOAD kernel/drivers/serial/libdrivers__serial.a
+LOAD kernel/drivers/firmware/libdrivers__firmware.a
+LOAD kernel/drivers/irqchip/libdrivers__irqchip.a
+LOAD kernel/drivers/clocksource/libdrivers__clocksource.a
+LOAD kernel/mm/libmm.a
+LOAD kernel/libversion.a
+START GROUP
+LOAD kernel/arch/arm64/lib/libarch__arm64__lib.a
+LOAD kernel/lib/liblib.a
+END GROUP
+LOAD kernel/drivers/of/kof/libkof.a
+LOAD kernel/lib/kmemalloc/libkmemalloc.a
+LOAD kernel/drivers/of/kof/kbase/libkbase.a
+OUTPUT(kernel/kernel.elf elf64-littleaarch64)
+LOAD linker stubs

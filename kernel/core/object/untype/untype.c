@@ -377,54 +377,48 @@ static bool vma_insert_pud_table(struct vm_area_struct *vma,
 	return true;
 }
 
-static int __pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
+static inline pud_t *pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
 {
-	int ret = 0;
 	struct untyp_ref_pud_talbe *ur_pud;
-
-	pud_t *new = (pud_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
-	if (!new)
-		return -ENOMEM;
+	pud_t *new ;
+	struct page *page;
 
 	ur_pud = kmalloc(sizeof (*ur_pud), GFP_KERNEL);
-	if (!ur_pud) {
-		ret = -ENOMEM;
+	if (!ur_pud)
 		goto fail_table;
-	}
 
-	ur_pud->pud_page = virt_to_page(new);
-	if (!vma_insert_pud_table(vma, ur_pud)) {
-		ret = -EINVAL;
-		goto fail_insert;
+	if (!unlikely(pgd_none(*pgdp))) {
+		page = pfn_to_page(__phys_to_pfn(__pgd_to_phys(*pgdp)));
+		get_page(page);
+		ur_pud->pud_page = page;
+		if (!vma_insert_pud_table(vma, ur_pud)) {
+			put_page(page);
+			goto fail_get_page;
+		}
+	} else {
+		new = (pud_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+		if (!new)
+			goto fail_get_page;
+
+		ur_pud->pud_page = virt_to_page(new);
+		if (!vma_insert_pud_table(vma, ur_pud)) {
+			free_page((u64)new);
+			goto fail_get_page;
+		}
+		spin_lock(&vma->vm_mm->page_table_lock);
+		__pgd_populate(pgdp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
+		mm_inc_nr_puds(vma->vm_mm);
+		spin_unlock(&vma->vm_mm->page_table_lock);
 	}
 
 	smp_wmb();
 
-	spin_lock(&vma->vm_mm->page_table_lock);
-	if (!pgd_present(*pgdp)) {
-		__pgd_populate(pgdp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
-		mm_inc_nr_puds(vma->vm_mm);
-	} else {
-		get_page(pfn_to_page(__phys_to_pfn(__pgd_to_phys(*pgdp))));
-		free_page((u64)new);
-	}
+	return pud_offset(pgdp, address);
 
-	spin_unlock(&vma->vm_mm->page_table_lock);
-
-	return 0;
-
-fail_insert:
+fail_get_page:
 	kfree(ur_pud);
 fail_table:
-	free_page((u64)new);
-
-	return ret;
-}
-
-static inline pud_t *pud_alloc(struct vm_area_struct *vma, pgd_t *pgdp, unsigned long address)
-{
-	return (unlikely(pgd_none(*pgdp)) && __pud_alloc(vma, pgdp, address)) ?
-		NULL : pud_offset(pgdp, address);
+	return NULL;
 }
 
 static bool vma_insert_pmd_table(struct vm_area_struct *vma,
@@ -452,54 +446,48 @@ static bool vma_insert_pmd_table(struct vm_area_struct *vma,
 	return true;
 }
 
-static int __pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long address)
+static inline pmd_t *pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long address)
 {
-	int ret = 0;
 	struct untyp_ref_pmd_talbe *ur_pmd;
-
-	pmd_t *new = (pmd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
-	if (!new)
-		return -ENOMEM;
+	pmd_t *new;
+	struct page *page;
 
 	ur_pmd = kmalloc(sizeof (*ur_pmd), GFP_KERNEL);
-	if (!ur_pmd) {
-		ret = -ENOMEM;
+	if (!ur_pmd)
 		goto fail_table;
-	}
 
-	ur_pmd->pmd_page = virt_to_page(new);
-	if (!vma_insert_pmd_table(vma, ur_pmd)) {
-		ret = -EINVAL;
-		goto fail_insert;
+	if (!unlikely(pud_none(*pudp))) {
+		page = pfn_to_page(__phys_to_pfn(__pud_to_phys(*pudp)));
+		get_page(page);
+		ur_pmd->pmd_page = page;
+		if (!vma_insert_pmd_table(vma, ur_pmd)) {
+			put_page(page);
+			goto fail_get_page;
+		}
+	} else {
+		new = (pmd_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+		if (!new)
+			goto fail_get_page;
+
+		ur_pmd->pmd_page = virt_to_page(new);
+		if (!vma_insert_pmd_table(vma, ur_pmd)) {
+			free_page((u64)new);
+			goto fail_get_page;
+		}
+		spin_lock(&vma->vm_mm->page_table_lock);
+		__pud_populate(pudp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
+		mm_inc_nr_pmds(vma->vm_mm);
+		spin_unlock(&vma->vm_mm->page_table_lock);
 	}
 
 	smp_wmb();
 
-	spin_lock(&vma->vm_mm->page_table_lock);
-	if (!pud_present(*pudp)) {
-		__pud_populate(pudp, virt_to_phys((void *)new), PUD_TYPE_TABLE);
-		mm_inc_nr_pmds(vma->vm_mm);
-	} else {
-		get_page(pfn_to_page(__phys_to_pfn(__pud_to_phys(*pudp))));
-		free_page((u64)new);
-	}
+	return pmd_offset(pudp, address);
 
-	spin_unlock(&vma->vm_mm->page_table_lock);
-
-	return 0;
-
-fail_insert:
+fail_get_page:
 	kfree(ur_pmd);
 fail_table:
-	free_page((u64)new);
-
-	return 0;
-}
-
-static inline pmd_t *pmd_alloc(struct vm_area_struct *vma, pud_t *pudp, unsigned long address)
-{
-	return (unlikely(pud_none(*pudp)) && __pmd_alloc(vma, pudp, address)) ?
-		NULL : pmd_offset(pudp, address);
+	return NULL;
 }
 
 static bool vma_insert_pte_table(struct vm_area_struct *vma,
@@ -527,54 +515,48 @@ static bool vma_insert_pte_table(struct vm_area_struct *vma,
 	return true;
 }
 
-static int __pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
+static inline pte_t *pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
 {
-	int ret = 0;
 	struct untyp_ref_pte_talbe *ur_pte;
-
-	pte_t *new = (pte_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
-	if (!new)
-		return -ENOMEM;
+	pte_t *new;
+	struct page *page;
 
 	ur_pte = kmalloc(sizeof (*ur_pte), GFP_KERNEL);
-	if (!ur_pte) {
-		ret = -ENOMEM;
+	if (!ur_pte)
 		goto fail_table;
-	}
 
-	ur_pte->pte_page = virt_to_page(new);
-	if (!vma_insert_pte_table(vma, ur_pte)) {
-		ret = -EINVAL;
-		goto fail_insert;
+	if (!unlikely(pmd_none(*pmdp))) {
+		page = pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp)));
+		get_page(page);
+		ur_pte->pte_page = page;
+		if (!vma_insert_pte_table(vma, ur_pte)) {
+			put_page(page);
+			goto fail_get_page;
+		}
+	} else {
+		new = (pte_t *)get_free_page(GFP_KERNEL | GFP_ZERO);
+		if (!new)
+			goto fail_get_page;
+
+		ur_pte->pte_page = virt_to_page(new);
+		if (!vma_insert_pte_table(vma, ur_pte)) {
+			free_page((u64)new);
+			goto fail_get_page;
+		}
+		spin_lock(&vma->vm_mm->page_table_lock);
+		__pmd_populate(pmdp, virt_to_phys((void *)new), PMD_TYPE_TABLE);
+		mm_inc_nr_ptes(vma->vm_mm);
+		spin_unlock(&vma->vm_mm->page_table_lock);
 	}
 
 	smp_wmb();
 
-	spin_lock(&vma->vm_mm->page_table_lock);
-	if (!pmd_present(*pmdp)) {
-		__pmd_populate(pmdp, virt_to_phys((void *)new), PMD_TYPE_TABLE);
-		mm_inc_nr_ptes(vma->vm_mm);
-	} else {
-		get_page(pfn_to_page(__phys_to_pfn(__pmd_to_phys(*pmdp))));
-		free_page((u64)new);
-	}
+	return pte_offset_kernel(pmdp, address);
 
-	spin_unlock(&vma->vm_mm->page_table_lock);
-
-	return 0;
-
-fail_insert:
+fail_get_page:
 	kfree(ur_pte);
 fail_table:
-	free_page((u64)new);
-
-	return ret;
-}
-
-static inline pte_t *pte_alloc(struct vm_area_struct *vma, pmd_t *pmdp, unsigned long address)
-{
-	return (unlikely(pmd_none(*pmdp)) && __pte_alloc(vma, pmdp, address)) ?
-		NULL : pte_offset_kernel(pmdp, address);
+	return NULL;
 }
 
 static int vmap_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,

@@ -32,6 +32,7 @@ void __init early_idle_task_init(void)
 	for_each_possible_cpu(cpu) {
 		idle = &idle_threads[cpu];
 		boot_init_stack_canary(idle);
+		idle->flags = PF_IDLE;
 		idle->cpu = cpu;
 		idle->oncpu = 0;
 		idle->stack = &kernel_stack_alloc[cpu];

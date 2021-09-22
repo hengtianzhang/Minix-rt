@@ -7,7 +7,7 @@
 
 struct task_struct;
 
-extern struct task_struct *tcb_create_task(void);
+extern struct task_struct *tcb_create_task(unsigned int flags);
 extern void tcb_destroy_task(struct task_struct *tsk);
 
 extern void tcb_set_task_stack_end_magic(struct task_struct *tsk);

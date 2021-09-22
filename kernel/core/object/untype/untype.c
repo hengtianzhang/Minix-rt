@@ -853,7 +853,7 @@ void untype_free_mm_struct(struct mm_struct *mm)
 	BUG_ON(!atomic_dec_and_test(&mm->mm_count));
 
 	free_page((u64)mm->pgd);
-	free_page((u64)mm->untype);
+	kfree(mm->untype);
 	kfree(mm);
 }
 
@@ -993,6 +993,8 @@ SYSCALL_DEFINE4(untype, enum untype_table, table,
 
 			vumap_page_range(vma);
 			break;
+		default:
+			return -EINVAL;
 	}
 
 	return 0;

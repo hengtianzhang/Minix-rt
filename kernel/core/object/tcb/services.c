@@ -172,7 +172,7 @@ __init struct task_struct *service_core_init(void)
 	start_data = 0;
 	end_data = 0;
 
-	tsk = tcb_create_task();
+	tsk = tcb_create_task(PF_ROOTSERVICE);
 	if (!tsk)
 		goto out;
 
@@ -280,6 +280,7 @@ __init struct task_struct *service_core_init(void)
 		goto fail_service_stack;
 
 	cap_table_set_cap(cap_untyped_cap, &tsk->cap_table);
+	cap_table_set_cap(cap_thread_cap, &tsk->cap_table);
 
 	sched_fork(tsk, 0);
 

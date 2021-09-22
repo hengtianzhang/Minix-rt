@@ -120,6 +120,8 @@ struct task_struct {
 
 	atomic_t usage;
 
+	unsigned int	flags; /* Per process flags */
+
 	struct pid_struct	pid;
 
 	int prio, static_prio, normal_prio;
@@ -162,6 +164,12 @@ struct task_struct {
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;
 };
+
+/*
+ * Per process flags
+ */
+#define PF_IDLE				0x00000001
+#define PF_ROOTSERVICE		0x00000002
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {

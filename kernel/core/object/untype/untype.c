@@ -713,7 +713,7 @@ struct vm_area_struct *untype_get_vmap_area(unsigned long vstart,
 	BUG_ON(in_interrupt());
 
 	if (!PAGE_ALIGNED(vstart) || !mm ||
-			!PAGE_ALIGNED(size) || !size)
+			!PAGE_ALIGNED(size) || !size || !vstart)
 		return NULL;
 
 	vma = kmalloc(sizeof (*vma), GFP_KERNEL | GFP_ZERO);

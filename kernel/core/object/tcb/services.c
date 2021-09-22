@@ -279,6 +279,8 @@ __init struct task_struct *service_core_init(void)
 	if (!ret)
 		goto fail_service_stack;
 
+	cap_table_set_cap(cap_untyped_cap, &tsk->cap_table);
+
 	sched_fork(tsk, 0);
 
 	tsk->prio = 0;

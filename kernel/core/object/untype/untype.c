@@ -954,6 +954,9 @@ SYSCALL_DEFINE4(untype, enum untype_table, table,
 	int ret;
 	struct vm_area_struct *vma;
 
+	if (!cap_table_test_cap(cap_untyped_cap, &current->cap_table))
+		return -ENOUNTYPE;
+
 	switch (table) {
 		case untype_alloc:
 			if (vstart + size >= USER_DS)

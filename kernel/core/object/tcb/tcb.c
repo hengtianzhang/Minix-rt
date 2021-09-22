@@ -3,6 +3,9 @@
 #include <sel4m/gfp.h>
 #include <sel4m/object/tcb.h>
 #include <sel4m/object/untype.h>
+#include <sel4m/syscalls.h>
+
+#include <uapi/sel4m/object/tcb.h>
 
 struct task_struct *tcb_create_task(void)
 {
@@ -49,4 +52,12 @@ void tcb_set_task_stack_end_magic(struct task_struct *tsk)
 
 	stackend = end_of_stack(tsk);
 	*stackend = STACK_END_MAGIC;	/* for overflow detection */
+}
+
+SYSCALL_DEFINE1(tcb_thread, enum tcb_table, table)
+{
+	if (cap_table_test_cap(cap_thread_cap, &current->cap_table))
+		return -ENOTCB;
+
+	return 0;
 }

@@ -104,6 +104,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg)
 	tsk->static_prio = current->static_prio;
 	tsk->normal_prio = current->normal_prio;
 	tsk->sched_class = current->sched_class;
+	tsk->time_slice = current->time_slice;
 	set_cpus_allowed(tsk, current->cpus_allowed);
 
 	sched_fork(tsk, 0);

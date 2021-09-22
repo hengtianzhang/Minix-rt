@@ -16,7 +16,6 @@ static int test_thread(void *arg)
 
 int main(void)
 {
-	pid_t pid;
 	int ret;
 
 	printf("This rootServices!\n");
@@ -40,8 +39,8 @@ int main(void)
 
 	test_data = 0xaa55;
 
-	pid = tcb_create_thread(2, test_thread, &test_data);
-	printf("pid is %d\n", pid);
+	ret = tcb_create_thread(2, test_thread, &test_data);
+	printf("ok is %d\n", ret);
 
 	return 0;
 }

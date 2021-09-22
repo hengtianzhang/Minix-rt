@@ -7,6 +7,6 @@
 
 typedef int (*tcb_thread_fn_t)(void *);
 
-extern pid_t tcb_create_thread(pid_t pid, tcb_thread_fn_t fn, void *arg);
+extern int tcb_create_thread(pid_t pid, tcb_thread_fn_t fn, void *arg);
 
 #endif /* !__LIBSEL4M_OBJECT_TCB_H_ */

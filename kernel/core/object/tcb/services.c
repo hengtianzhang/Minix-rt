@@ -9,6 +9,7 @@
 #include <sel4m/gfp.h>
 #include <sel4m/page.h>
 #include <sel4m/sched.h>
+#include <sel4m/sched/rt.h>
 #include <sel4m/object/tcb.h>
 #include <sel4m/object/untype.h>
 #include <sel4m/object/ipc.h>
@@ -285,6 +286,7 @@ __init struct task_struct *service_core_init(void)
 	tsk->static_prio = 0;
 	tsk->normal_prio = 0;
 	tsk->sched_class = &rt_sched_class;
+	tsk->time_slice = RR_TIMESLICE;
 
 	mask = CPU_MASK_ALL;
 	set_cpus_allowed(tsk, mask);

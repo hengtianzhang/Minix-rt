@@ -96,6 +96,7 @@ enum cpu_idle_type {
 	.flags			= SD_LOAD_BALANCE	\
 				| SD_BALANCE_NEWIDLE	\
 				| SD_BALANCE_EXEC	\
+				| SD_BALANCE_FORK	\
 				| SD_WAKE_AFFINE,\
 	.last_balance		= jiffies,		\
 	.balance_interval	= 1,			\

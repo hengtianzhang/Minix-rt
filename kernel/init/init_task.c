@@ -1,6 +1,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/mm_types.h>
 #include <sel4m/sched.h>
+#include <sel4m/sched/rt.h>
 #include <sel4m/stackprotector.h>
 #include <sel4m/object/tcb.h>
 
@@ -16,6 +17,7 @@ struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 		.static_prio	= MAX_PRIO,
 		.normal_prio	= MAX_PRIO,
 		.policy			= SCHED_IDLE,
+		.time_slice 	= RR_TIMESLICE,
 		.mm 			= &init_mm,
 		.usage			= ATOMIC_INIT(2),
 		.parent			= NULL,

@@ -1,4 +1,0 @@
-
-#!/bin/sh
-
-qemu-system-aarch64 -cpu cortex-a57 -machine type=virt,gic-version=2            -append "rdinit=/linuxrc console=ttyAMA0 earlycon=115200 rodata=nofull"         -kernel /home/miracle/play/sel4m/projects/linux-test/build/images/Image         -device virtio-scsi-device          -smp 8          -m 4G           -nographic  

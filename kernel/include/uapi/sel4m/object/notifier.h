@@ -12,7 +12,8 @@
 
 #define NOTIFIER_IRQ		(SIGRTMAX + 1)
 #define NOTIFIER_TASK_EXIT	(NOTIFIER_IRQ + 1)
-#define NOTIFIER_NR_MAX		(NOTIFIER_TASK_EXIT + 1)
+#define NOTIFIER_MESSAGE	(NOTIFIER_TASK_EXIT + 1)
+#define NOTIFIER_NR_MAX		(NOTIFIER_MESSAGE + 1)
 
 #define notifier_nr_max		((unsigned int)NOTIFIER_NR_MAX)
 
@@ -414,5 +415,11 @@ struct k_sigaction {
 #define NOTIFIER_DFL	((__force __sighandler_t)0) /* default signal handling */
 #define NOTIFIER_IGN	((__force __sighandler_t)1)	/* ignore signal */
 #define NOTIFIER_ERR	((__force __sighandler_t)-1) /* error return from signal */
+
+enum notifier_type {
+    notifier_regiser_fn,
+	notifier_remove_fn,
+	notifier_send_signal,
+};
 
 #endif /* !__UAPI_SEL4M_OBJECT_NOTIFIER_H_ */

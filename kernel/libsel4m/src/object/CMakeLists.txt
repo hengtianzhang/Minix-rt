@@ -2,5 +2,5 @@
 target_sources(
 	${libsel4m_VAR}libsel4m
 	PRIVATE
-	ipc.c untype.c tcb.c
+	ipc.c untype.c tcb.c notifier.c
 )

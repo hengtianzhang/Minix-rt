@@ -305,6 +305,7 @@ static inline struct task_struct *idle_task(int cpu)
 
 static inline void put_task_struct(struct task_struct *t)
 {
+	WARN_ON(1);
 // TODO
 //	if (atomic_dec_and_test(&t->usage))
 //		__put_task_struct(t);

@@ -23,7 +23,7 @@
 #include <sel4m/sched.h>
 #include <sel4m/stat.h>
 #include <sel4m/spinlock.h>
-#include <sel4m/signal.h>
+#include <sel4m/object/notifier.h>
 
 #include <asm/current.h>
 #include <asm/esr.h>

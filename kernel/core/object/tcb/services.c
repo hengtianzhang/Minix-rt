@@ -280,6 +280,7 @@ __init struct task_struct *service_core_init(void)
 
 	cap_table_set_cap(cap_untyped_cap, &tsk->cap_table);
 	cap_table_set_cap(cap_thread_cap, &tsk->cap_table);
+	cap_table_set_cap(cap_notification_cap, &tsk->cap_table);
 
 	tsk->policy = SCHED_FIFO;
 	tsk->prio = 0;

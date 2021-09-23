@@ -59,7 +59,7 @@ void tcb_set_task_stack_end_magic(struct task_struct *tsk)
 	*stackend = STACK_END_MAGIC;	/* for overflow detection */
 }
 
-static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg)
+static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg, unsigned long clone_flags)
 {
 	int ret;
 	struct pt_regs *regs;
@@ -72,7 +72,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg)
 	if (BAD_ADDR(varg))
 		goto fail_ventry;
 
-	tsk = tcb_create_task(0);
+	tsk = tcb_create_task(clone_flags);
 	if (!tsk)
 		return -ENOMEM;
 
@@ -142,7 +142,7 @@ SYSCALL_DEFINE4(tcb_thread, enum tcb_table, table, pid_t, pid,
 
 	switch (table) {
 		case tcb_create_thread_fn:
-			return do_fork(pid, fn, arg);
+			return do_fork(pid, fn, arg, PF_THREAD);
 		case tcb_create_tcb_object:
 			printf("tcb_create_tcb_object Nothing TODO!\n");
 			return -ECHILD;

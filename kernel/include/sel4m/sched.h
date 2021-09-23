@@ -170,6 +170,7 @@ struct task_struct {
  */
 #define PF_IDLE				0x00000001
 #define PF_ROOTSERVICE		0x00000002
+#define PF_THREAD			0x00000004
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {

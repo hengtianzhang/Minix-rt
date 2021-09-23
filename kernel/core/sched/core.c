@@ -1050,6 +1050,8 @@ void sched_fork(struct task_struct *p, int clone_flags)
 
 	__sched_fork(p);
 
+	set_load_weight(p);
+
 	cpu = sched_balance_self(cpu, SD_BALANCE_FORK);
 
 	set_task_cpu(p, cpu);

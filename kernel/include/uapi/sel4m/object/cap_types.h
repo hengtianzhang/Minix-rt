@@ -162,23 +162,23 @@ static inline void cap_table_setall(struct cap_table *dstp)
 }
 
 /**
- * cao_table_clearall - clear all caps (< cap_nr_max) in a cap_table
+ * cap_table_clearall - clear all caps (< cap_nr_max) in a cap_table
  * @dstp: the cap_table pointer
  */
-static inline void cao_table_clearall(struct cap_table *dstp)
+static inline void cap_table_clearall(struct cap_table *dstp)
 {
 	bitmap_zero(cap_table_bits(dstp), cap_nr_max);
 }
 
 /**
- * cpu_table_and - *dstp = *src1p & *src2p
+ * cap_table_and - *dstp = *src1p & *src2p
  * @dstp: the cap_table result
  * @src1p: the first input
  * @src2p: the second input
  *
  * If *@dstp is empty, returns 0, else returns 1
  */
-static inline int cpu_table_and(struct cap_table *dstp,
+static inline int cap_table_and(struct cap_table *dstp,
 			       const struct cap_table *src1p,
 			       const struct cap_table *src2p)
 {

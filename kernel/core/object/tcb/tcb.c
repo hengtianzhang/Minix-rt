@@ -33,6 +33,10 @@ struct task_struct *tcb_create_task(unsigned int flags)
 	tsk->parent = NULL;
 	INIT_LIST_HEAD(&tsk->children);
 	INIT_LIST_HEAD(&tsk->sibling);
+	INIT_LIST_HEAD(&tsk->children_list);
+	INIT_LIST_HEAD(&tsk->sibling_list);
+	notifier_table_clearall(&tsk->notifier.notifier_table);
+	memset(tsk->notifier.action, 0, sizeof (struct k_sigaction));
 
 	return tsk;
 
@@ -94,6 +98,9 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg, unsign
 
 	tsk->flags = current->flags;
 	tsk->cap_ipcptr = (void *)ipcptr;
+	tsk->parent = current;
+
+	list_add(&tsk->children_list, &current->children);
 
 	task_thread_info(tsk)->addr_limit = USER_DS;
 

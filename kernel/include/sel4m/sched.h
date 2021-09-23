@@ -7,6 +7,7 @@
 #include <sel4m/thread.h>
 #include <sel4m/sched/sched.h>
 #include <sel4m/object/pid.h>
+#include <sel4m/object/notifier.h>
 
 #include <uapi/sel4m/object/cap_types.h>
 
@@ -144,6 +145,8 @@ struct task_struct {
 
 	cap_table_t cap_table;
 
+	struct notifier_struct notifier;
+
     struct mm_struct *mm;
 
 	void __user *cap_ipcptr;
@@ -160,6 +163,9 @@ struct task_struct {
 
 	struct list_head		children;
 	struct list_head		sibling;
+
+	struct list_head		children_list;
+	struct list_head		sibling_list;
 
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;

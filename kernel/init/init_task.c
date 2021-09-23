@@ -13,6 +13,10 @@ struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 		.stack_refcount	= ATOMIC_INIT(1),
 		.state 			= 0,
 		.cap_table		= CAP_TABLE_MASK_NONE,
+		.notifier 		= {
+			.notifier_table = NOTIFIER_TABLE_MASK_NONE,
+			.action			= { { { .sa_handler = NOTIFIER_DFL, }, }, },
+		},
 		.prio			= MAX_PRIO,
 		.static_prio	= MAX_PRIO,
 		.normal_prio	= MAX_PRIO,
@@ -43,5 +47,7 @@ void __init early_idle_task_init(void)
 		spin_lock_init(&idle->pi_lock);
 		INIT_LIST_HEAD(&idle->children);
 		INIT_LIST_HEAD(&idle->sibling);
+		INIT_LIST_HEAD(&idle->children_list);
+		INIT_LIST_HEAD(&idle->sibling_list);
 	}
 }

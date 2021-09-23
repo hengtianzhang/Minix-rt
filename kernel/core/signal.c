@@ -10,6 +10,9 @@ int do_send_signal(int signal, pid_t pid, int flags)
 		BUG_ON(!current->parent);
 		notifier_table_set_notifier(SIGCHLD, &current->parent->notifier.notifier_table);
 		set_tsk_thread_flag(current->parent, TIF_SIGPENDING);
+		current->exit_code = flags;
+		current->exit_signal = SIGCHLD;
+		current->exit_state = EXIT_ZOMBIE;
 	} else {
 		printf("TODO: signal %d pid %d flags %d\n", signal, pid, flags);
 	}

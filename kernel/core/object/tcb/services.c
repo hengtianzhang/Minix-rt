@@ -98,7 +98,7 @@ static __init unsigned long elf_map(void *archive_base,
 {
 	int i;
 	struct vm_area_struct *vma;
-	unsigned long size = eppnt->p_filesz + ELF_PAGEOFFSET(eppnt->p_vaddr);
+	unsigned long size = eppnt->p_memsz + ELF_PAGEOFFSET(eppnt->p_vaddr);
 	unsigned long off = eppnt->p_offset - ELF_PAGEOFFSET(eppnt->p_vaddr);
 	addr = ELF_PAGESTART(addr);
 	size = ELF_PAGEALIGN(size);

@@ -75,10 +75,11 @@ void cpu_idle(void)
 		rmb();
 
 		arch_cpu_idle_enter();
-
+		select_nohz_load_balancer(1);
 		while (!need_resched())
 			cpuidle_idle_call();
 
+		select_nohz_load_balancer(0);
 		arch_cpu_idle_exit();
 
 		preempt_enable_no_resched();

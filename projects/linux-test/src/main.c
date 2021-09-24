@@ -16,10 +16,9 @@ static int test_thread(void *arg)
 {
 	printf("Hello, This is a test thread pid is %d!\n", *(pid_t *)arg);
 
-//	printf("send notifier sigchld!\n");
-//	notifier_send_child_exit(0);
+	printf("send notifier sigchld!\n");
+	notifier_send_child_exit(0);
 	while (1);
-
 	return 0;
 }
 
@@ -52,7 +51,7 @@ int main(void)
 	if (ret)
 		printf("notifier register failed!\n");
 
-	for (pid = 2; pid < 20; pid++) {
+	for (pid = 2; pid < 3; pid++) {
 		test_data[pid] = pid;
 		ret = tcb_create_thread(pid, test_thread, &test_data[pid]);
 		if (ret)

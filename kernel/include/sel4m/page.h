@@ -29,6 +29,7 @@
 
 extern int pfn_valid(unsigned long);
 
+extern void copy_page(void *to, const void *from);
 extern void clear_page(void *to);
 
 #endif /* !__ASSEMBLY__ */

@@ -906,8 +906,8 @@ int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 		if (!new_vma)
 			goto fail_out;
 
+		BUG_ON(new_vma->nr_pages != vma->nr_pages);
 		if (!(new_vma->vm_flags & (VM_USER_STACK | VM_USER_IPCPTR))) {
-			BUG_ON(new_vma->nr_pages != vma->nr_pages);
 			for (j = 0; j < new_vma->nr_pages; j++) {
 				new_vma->pages[j] = vma->pages[j];
 				BUG_ON(!new_vma->pages[j]);

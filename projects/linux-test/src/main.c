@@ -3,7 +3,7 @@
 #include <libsel4m/object/tcb.h>
 #include <libsel4m/object/notifier.h>
 
-unsigned long test_data;
+unsigned long test_data[20];
 int aaaa = 0;
 
 static void test_notifier(int notifier)
@@ -14,11 +14,10 @@ static void test_notifier(int notifier)
 
 static int test_thread(void *arg)
 {
-	printf("Hello, This is a test thread!\n");
-	printf("arg is 0x%lx\n", *(unsigned long *)arg);
+	printf("Hello, This is a test thread pid is %d!\n", *(pid_t *)arg);
 
-	printf("send notifier sigchld!\n");
-	notifier_send_child_exit(0);
+//	printf("send notifier sigchld!\n");
+//	notifier_send_child_exit(0);
 	while (1);
 
 	return 0;
@@ -26,6 +25,7 @@ static int test_thread(void *arg)
 
 int main(void)
 {
+	pid_t pid = 2;
 	int ret;
 
 	printf("This rootServices!\n");
@@ -52,10 +52,12 @@ int main(void)
 	if (ret)
 		printf("notifier register failed!\n");
 
-	test_data = 0xaa55;
-
-	ret = tcb_create_thread(2, test_thread, &test_data);
-	printf("ok is %d\n", ret);
+	for (pid = 2; pid < 20; pid++) {
+		test_data[pid] = pid;
+		ret = tcb_create_thread(pid, test_thread, &test_data[pid]);
+		if (ret)
+			printf("create thred fail is %d\n", ret);
+	}
 
 	while (1) {
 		if (READ_ONCE(aaaa) == 3)

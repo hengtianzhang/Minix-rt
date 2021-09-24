@@ -327,6 +327,7 @@ void force_signal_inject(int signal, int code, unsigned long address)
 void arm64_notify_segfault(unsigned long addr)
 {
 // TODO
+	BUG();
 }
 
 asmlinkage void __exception do_undefinstr(struct pt_regs *regs)

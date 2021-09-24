@@ -1,7 +1,8 @@
 /*
- * Based on arch/arm/include/asm/traps.h
+ * Sigreturn trampoline for returning from a signal when the SA_RESTORER
+ * flag is not set.
  *
- * Copyright (C) 2012 ARM Ltd.
+ * Copyright (C) 2012 ARM Limited
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -14,15 +15,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Will Deacon <will.deacon@arm.com>
  */
-#ifndef __ASM_TRAP_H_
-#define __ASM_TRAP_H_
+#include <base/linkage.h>
 
-#include <base/compiler.h>
+#include <asm/unistd.h>
 
-void arm64_force_sig_fault(int signo, int code, void __user *addr, const char *str);
-void arm64_force_sig_mceerr(int code, void __user *addr, short lsb, const char *str);
-void arm64_skip_faulting_instruction(struct pt_regs *regs, unsigned long size);
-void arm64_notify_segfault(unsigned long addr);
+	.text
 
-#endif /* !__ASM_TRAP_H_ */
+	nop
+ENTRY(__kernel_rt_sigreturn)
+	.cfi_startproc
+	.cfi_signal_frame
+	.cfi_def_cfa	x29, 0
+	.cfi_offset	x29, 0 * 8
+	.cfi_offset	x30, 1 * 8
+	mov	x8, #__NR_rt_sigreturn
+	svc	#0
+	.cfi_endproc
+ENDPROC(__kernel_rt_sigreturn)

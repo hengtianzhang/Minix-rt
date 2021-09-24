@@ -404,6 +404,9 @@ static inline unsigned int notifier_table_size(void)
 typedef void __signalfn_t(int);
 typedef __signalfn_t __user *__sighandler_t;
 
+typedef void __restorefn_t(void);
+typedef __restorefn_t __user *__sigrestore_t;
+
 struct sigaction {
 	__sighandler_t	sa_handler;
 };

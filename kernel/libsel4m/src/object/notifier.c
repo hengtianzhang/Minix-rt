@@ -6,7 +6,7 @@ int notifier_register_handler(unsigned int notifier, __sighandler_t fn)
 	int ret;
 
 	ret = __syscall(__NR_notifier, notifier_regiser_fn,
-					notifier, (unsigned long)fn, 0, 0);
+					notifier, (unsigned long)fn, 0, 0, __kernel_rt_sigreturn);
 
 	return ret;
 }

@@ -41,9 +41,15 @@ bool get_signal(struct ksignal *ksig)
 				ksig->ka = ka;
 				ksig->sig = notifier;
 			}
+			clear_tsk_thread_flag(current, TIF_SIGPENDING);
 			return true;
 		}
 	}
-
+	/* TODO clear thread sigpending ? */
+	clear_tsk_thread_flag(current, TIF_SIGPENDING);
 	return false;
+}
+
+void signal_setup_done(int failed, struct ksignal *ksig, int stepping)
+{
 }

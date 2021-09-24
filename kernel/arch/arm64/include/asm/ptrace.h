@@ -85,6 +85,13 @@ struct user_pt_regs {
 	__u64		pstate;
 };
 
+struct user_fpsimd_state {
+	__uint128_t	vregs[32];
+	__u32		fpsr;
+	__u32		fpcr;
+	__u32		__reserved[2];
+};
+
 /*
  * This struct defines the way the registers are stored on the stack during an
  * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
@@ -202,6 +209,10 @@ static inline unsigned long regs_return_value(struct pt_regs *regs)
 {
 	return regs->regs[0];
 }
+
+/* We must avoid circular header include via sched.h */
+struct task_struct;
+int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task);
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PTRACE_H_ */

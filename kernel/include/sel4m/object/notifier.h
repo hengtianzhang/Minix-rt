@@ -8,6 +8,7 @@
 struct notifier_struct {
 	notifier_table_t notifier_table;
 	struct k_sigaction action[NOTIFIER_NR_MAX];
+	__sigrestore_t return_fn;
 };
 
 struct ksignal {

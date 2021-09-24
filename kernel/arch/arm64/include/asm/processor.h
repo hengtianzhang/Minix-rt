@@ -64,6 +64,8 @@ struct thread_struct {
 
 	struct {
 		unsigned long	tp_value;	/* TLS register */
+		unsigned long	tp2_value;
+		struct user_fpsimd_state fpsimd_state;
 	} uw;
 
 	unsigned long		fault_address;	/* fault info */

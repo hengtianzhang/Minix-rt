@@ -17,6 +17,7 @@ static int test_thread(void *arg)
 	printf("Hello, This is a test thread!\n");
 	printf("arg is 0x%lx\n", *(unsigned long *)arg);
 
+	printf("send notifier sigchld!\n");
 	notifier_send_child_exit(0);
 	while (1);
 
@@ -56,9 +57,12 @@ int main(void)
 	ret = tcb_create_thread(2, test_thread, &test_data);
 	printf("ok is %d\n", ret);
 
-	while (1)
-		if (aaaa == 3)
-			printf("OK handler signal!\n");
+	while (1) {
+		if (READ_ONCE(aaaa) == 3)
+			break;
+		cpu_relax();
+	}
+	printf("OK handler signal!\n");
 
 	return 0;
 }

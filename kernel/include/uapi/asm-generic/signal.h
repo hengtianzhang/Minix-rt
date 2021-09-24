@@ -49,4 +49,44 @@ typedef unsigned long sigset_t;
 #define SIGRTMIN	32
 #define SIGRTMAX	_NSIG
 
+#ifndef __ASSEMBLY__
+
+#define SI_MAX_SIZE	128
+
+#ifndef __ARCH_SI_ATTRIBUTES
+#define __ARCH_SI_ATTRIBUTES
+#endif
+
+union __sifields {
+	struct {
+		pid_t pid;
+	} _kill;
+};
+
+#ifndef __ARCH_HAS_SWAPPED_SIGINFO
+#define __SIGINFO 			\
+struct {				\
+	int si_signo;			\
+	int si_errno;			\
+	int si_code;			\
+	union __sifields _sifields;	\
+}
+#else
+#define __SIGINFO 			\
+struct {				\
+	int si_signo;			\
+	int si_code;			\
+	int si_errno;			\
+	union __sifields _sifields;	\
+}
+#endif /* __ARCH_HAS_SWAPPED_SIGINFO */
+
+typedef struct siginfo {
+	union {
+		__SIGINFO;
+		int _si_pad[SI_MAX_SIZE/sizeof(int)];
+	};
+} __ARCH_SI_ATTRIBUTES siginfo_t;
+#endif
+
 #endif /* !__UAPI_ASM_GENERIC_SIGNAL_H_ */

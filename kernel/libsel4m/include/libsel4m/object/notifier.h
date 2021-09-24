@@ -3,6 +3,8 @@
 
 #include <sel4m/object/notifier.h>
 
+extern asmlinkage void __kernel_rt_sigreturn(void);
+
 extern int notifier_register_handler(unsigned int notifier, __sighandler_t fn);
 
 extern int notifier_send_child_exit(int flags);

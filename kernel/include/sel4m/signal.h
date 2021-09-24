@@ -12,4 +12,6 @@ extern int do_send_signal(int signal, pid_t pid, int flags);
 
 extern bool get_signal(struct ksignal *ksig);
 
+extern void signal_setup_done(int failed, struct ksignal *ksig, int stepping);
+
 #endif /* !__SEL4M_SIGNAL_H_ */

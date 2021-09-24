@@ -6,9 +6,9 @@
 #include <uapi/sel4m/object/notifier.h>
 #include <uapi/sel4m/object/cap_types.h>
 
-SYSCALL_DEFINE5(notifier, enum notifier_type, table,
+SYSCALL_DEFINE6(notifier, enum notifier_type, table,
 				unsigned int, notifier, unsigned long, fn,
-				pid_t, pid, int, flags)
+				pid_t, pid, int, flags, __sigrestore_t, return_fn)
 {
 	if (notifier == NOTIFIER_MESSAGE) {
 		if (!cap_table_test_cap(cap_notification_cap, &current->cap_table))
@@ -24,6 +24,9 @@ SYSCALL_DEFINE5(notifier, enum notifier_type, table,
 				return -EFAULT;
 
 			current->notifier.action[notifier].sa.sa_handler = (__sighandler_t)fn;
+			if (current->notifier.return_fn)
+				BUG_ON(current->notifier.return_fn != return_fn);
+			current->notifier.return_fn = return_fn;
 			return 0;
 		case notifier_remove_fn:
 			printf("remove notifier!\n");

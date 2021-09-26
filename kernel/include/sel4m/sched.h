@@ -162,10 +162,8 @@ struct task_struct {
 	struct task_struct		*parent;
 
 	struct list_head		children;
-	struct list_head		sibling;
 
 	struct list_head		children_list;
-	struct list_head		sibling_list;
 
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;
@@ -177,6 +175,7 @@ struct task_struct {
 #define PF_IDLE				0x00000001
 #define PF_ROOTSERVICE		0x00000002
 #define PF_THREAD			0x00000004
+#define PF_EXITING			0x00000008
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {
@@ -305,10 +304,8 @@ static inline struct task_struct *idle_task(int cpu)
 
 static inline void put_task_struct(struct task_struct *t)
 {
-	WARN_ON(1);
-// TODO
-//	if (atomic_dec_and_test(&t->usage))
-//		__put_task_struct(t);
+	if (atomic_dec_and_test(&t->usage))
+		BUG();
 }
 
 static inline cpumask_t cpuset_cpus_allowed(struct task_struct *p)

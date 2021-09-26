@@ -4,21 +4,11 @@
 #include <libsel4m/object/notifier.h>
 
 unsigned long test_data[20];
-int aaaa = 0;
-
-static void test_notifier(int notifier)
-{
-	aaaa = 3;
-	printf("This is notifier %d\n", notifier);
-}
 
 static int test_thread(void *arg)
 {
 	printf("Hello, This is a test thread pid is %d!\n", *(pid_t *)arg);
 
-	printf("send notifier sigchld!\n");
-	notifier_send_child_exit(0);
-	while (1);
 	return 0;
 }
 
@@ -46,11 +36,6 @@ int main(void)
 	untype_free_area(0x1000);
 	printf("Finish vmap test!\n");
 
-	ret = notifier_register_handler(SIGCHLD, test_notifier);
-
-	if (ret)
-		printf("notifier register failed!\n");
-
 	for (pid = 2; pid < 3; pid++) {
 		test_data[pid] = pid;
 		ret = tcb_create_thread(pid, test_thread, &test_data[pid]);
@@ -58,12 +43,6 @@ int main(void)
 			printf("create thred fail is %d\n", ret);
 	}
 
-	while (1) {
-		if (READ_ONCE(aaaa) == 3)
-			break;
-		cpu_relax();
-	}
-	printf("OK handler signal!\n");
-
+	while (1);
 	return 0;
 }

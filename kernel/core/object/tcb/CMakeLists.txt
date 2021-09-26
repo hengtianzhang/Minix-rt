@@ -1,5 +1,5 @@
 
 kernel_sources(
 	services.c
-	pid.c tcb.c
+	pid.c tcb.c exit.c
 )

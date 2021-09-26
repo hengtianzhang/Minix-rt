@@ -46,8 +46,6 @@ void __init early_idle_task_init(void)
 		snprintf(idle->comm, TASK_COMM_LEN, "idle-%d", cpu);
 		spin_lock_init(&idle->pi_lock);
 		INIT_LIST_HEAD(&idle->children);
-		INIT_LIST_HEAD(&idle->sibling);
 		INIT_LIST_HEAD(&idle->children_list);
-		INIT_LIST_HEAD(&idle->sibling_list);
 	}
 }

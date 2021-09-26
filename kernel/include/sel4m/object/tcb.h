@@ -15,4 +15,6 @@ extern void tcb_set_task_stack_end_magic(struct task_struct *tsk);
 #define tcb_stack_end_corrupted(tsk)	\
 		(*(end_of_stack(tsk)) != STACK_END_MAGIC)
 
+extern void tcb_do_exit(struct task_struct *tsk, int flags);
+
 #endif /* !__SEL4M_OBJECT_TCB_H_ */

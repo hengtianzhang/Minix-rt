@@ -1,5 +1,7 @@
 #include <libsel4m/object/ipc.h>
 
+#include <base/bug.h>
+
 #include <bootinfo.h>
 #include <string.h>
 
@@ -10,5 +12,5 @@ void __sel4m_start_c(unsigned long ipcptr)
 	if (!size)
 		memset(__bss_start__, 0, size);
 
-	sel4m_ipc_buffer = ipcptr;
+	ipc_set_user_space_ptr(ipcptr);
 }

@@ -1,6 +1,7 @@
 #include <sel4m/signal.h>
 #include <sel4m/sched.h>
 #include <sel4m/thread.h>
+#include <sel4m/object/tcb.h>
 
 #include <asm/current.h>
 
@@ -9,10 +10,8 @@ int do_send_signal(int signal, pid_t pid, int flags)
 	if (signal == SIGCHLD) {
 		BUG_ON(!current->parent);
 		notifier_table_set_notifier(SIGCHLD, &current->parent->notifier.notifier_table);
-		set_tsk_thread_flag(current->parent, TIF_SIGPENDING);
-		current->exit_code = flags;
-		current->exit_signal = SIGCHLD;
-		current->exit_state = EXIT_ZOMBIE;
+		tcb_do_exit(current, flags);
+		BUG();
 	} else {
 		printf("TODO: signal %d pid %d flags %d\n", signal, pid, flags);
 	}

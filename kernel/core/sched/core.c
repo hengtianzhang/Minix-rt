@@ -1164,9 +1164,6 @@ static void finish_task_switch(struct rq *rq, struct task_struct *prev)
 	finish_lock_switch(rq, prev);
 	if (unlikely(mm))
 		BUG();
-	if (unlikely(prev_state == TASK_DEAD)) {
-		put_task_struct(prev);
-	}
 }
 
 /**

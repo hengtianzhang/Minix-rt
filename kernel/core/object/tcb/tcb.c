@@ -32,9 +32,7 @@ struct task_struct *tcb_create_task(unsigned int flags)
 	spin_lock_init(&tsk->pi_lock);
 	tsk->parent = NULL;
 	INIT_LIST_HEAD(&tsk->children);
-	INIT_LIST_HEAD(&tsk->sibling);
 	INIT_LIST_HEAD(&tsk->children_list);
-	INIT_LIST_HEAD(&tsk->sibling_list);
 	notifier_table_clearall(&tsk->notifier.notifier_table);
 	memset(tsk->notifier.action, 0, sizeof (struct k_sigaction));
 
@@ -63,7 +61,8 @@ void tcb_set_task_stack_end_magic(struct task_struct *tsk)
 	*stackend = STACK_END_MAGIC;	/* for overflow detection */
 }
 
-static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg, unsigned long clone_flags)
+static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
+				unsigned long clone_flags, unsigned long return_fn)
 {
 	int ret;
 	struct pt_regs *regs;
@@ -74,6 +73,9 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg, unsign
 		goto fail_ventry;
 
 	if (BAD_ADDR(varg))
+		goto fail_ventry;
+
+	if (BAD_ADDR(return_fn))
 		goto fail_ventry;
 
 	tsk = tcb_create_task(clone_flags);
@@ -119,6 +121,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg, unsign
 	regs = task_pt_regs(tsk);
 	start_thread(regs, ventry, stack_top);
 	regs->regs[0] = varg;
+	regs->regs[30] = return_fn;
 
 	memset(&tsk->thread.cpu_context, 0, sizeof(struct cpu_context));
 
@@ -141,15 +144,15 @@ fail_ventry:
 	return -EINVAL;
 }
 
-SYSCALL_DEFINE4(tcb_thread, enum tcb_table, table, pid_t, pid,
-		unsigned long, fn, unsigned long, arg)
+SYSCALL_DEFINE5(tcb_thread, enum tcb_table, table, pid_t, pid,
+		unsigned long, fn, unsigned long, arg, unsigned long, return_fn)
 {
 	if (!cap_table_test_cap(cap_thread_cap, &current->cap_table))
 		return -ENOTCB;
 
 	switch (table) {
 		case tcb_create_thread_fn:
-			return do_fork(pid, fn, arg, PF_THREAD);
+			return do_fork(pid, fn, arg, PF_THREAD, return_fn);
 		case tcb_create_tcb_object:
 			printf("tcb_create_tcb_object Nothing TODO!\n");
 			return -ECHILD;

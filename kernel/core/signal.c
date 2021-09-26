@@ -23,6 +23,7 @@ static void do_default_signal_handle(int signal)
 			list_add(&child->children_list, &current->children);
 		}
 
+		list_del(&tsk->children_list);
 		untype_destroy_mm(tsk);
 		kfree(tsk->stack);
 		pid_remove_pid_by_process(tsk);

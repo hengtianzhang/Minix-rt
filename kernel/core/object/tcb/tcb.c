@@ -153,7 +153,7 @@ SYSCALL_DEFINE4(tcb_thread, enum tcb_table, table, unsigned long, fn,
 
 		if (!cap_table_test_cap(cap_thread_cap, &current->cap_table))
 			return -ENOTCB;
-	
+
 		case tcb_create_thread_fn:
 			return do_fork(fn, arg, PF_THREAD, return_fn);
 		case tcb_create_tcb_object:

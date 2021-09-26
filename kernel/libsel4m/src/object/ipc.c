@@ -6,3 +6,8 @@ void ipc_set_user_space_ptr(unsigned long ipcptr)
 {
 	sel4m_ipc_buffer = ipcptr;
 }
+
+unsigned long ipc_get_user_space_ptr(void)
+{
+	return sel4m_ipc_buffer;
+}

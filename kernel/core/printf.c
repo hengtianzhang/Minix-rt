@@ -3,6 +3,7 @@
 #include <base/common.h>
 #include <base/errno.h>
 
+#include <sel4m/object/ipc.h>
 #include <sel4m/sched/clock.h>
 #include <sel4m/spinlock.h>
 #include <sel4m/syscalls.h>
@@ -112,17 +113,22 @@ asmlinkage __visible int printf(const char *fmt, ...)
 SYSCALL_DEFINE2(debug_printf, const char __user *, ptr, int, len)
 {
 	u64 flags;
-	char put_buffer[1024] = {0};
+//	char put_buffer[IPC_DEBUG_PRINTF_BUFFER_MAX] = {0};
+	char *buffer;
 
-	if (len > 1024)
+	if (len > IPC_DEBUG_PRINTF_BUFFER_MAX)
 		return -EMSGSIZE;
 
-	if(copy_from_user(put_buffer, ptr, len))
-		return -EFAULT;
+// Now, slowpath.
+//	if(copy_from_user(put_buffer, ptr, len))
+//		return -EFAULT;
 
+	buffer = ipc_get_debug_buffer();
+	buffer[IPC_DEBUG_PRINTF_BUFFER_MAX - 1] = '\0';
 	/* This stops the holder of console_sem just where we want him */
 	raw_spin_lock_irqsave(&printk_lock, flags);
-	puts_q(put_buffer);
+	//puts_q(put_buffer);
+	puts_q(ipc_get_debug_buffer());
 	raw_spin_unlock_irqrestore(&printk_lock, flags);
 
 	return 0;

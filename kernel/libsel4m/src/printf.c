@@ -3,22 +3,21 @@
 #include <base/common.h>
 
 #include <libsel4m/syscalls.h>
-
+#include <libsel4m/object/ipc.h>
 #include <libsel4m/object/notifier.h>
 
 asmlinkage __visible __weak int printf(const char *fmt, ...)
 {
 	va_list args;
-   char textbuf[1024];
-   char *text = textbuf;
-   size_t text_len;
+	char *text = ipc_get_debug_buffer();
+	size_t text_len;
 	int r = 0;
 
 	va_start(args, fmt);
-   text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
-   if (text_len) {
-      r = __syscall(__NR_debug_printf, text, text_len);
-   }
+   	text_len = vscnprintf(text, IPC_DEBUG_PRINTF_BUFFER_MAX, fmt, args);
+   	if (text_len) {
+    	r = __syscall(__NR_debug_printf, text, text_len);
+	}
 	va_end(args);
 
     return r;
@@ -26,7 +25,7 @@ asmlinkage __visible __weak int printf(const char *fmt, ...)
 
 __weak void hang(const char *fmt, ...)
 {
-	static char buf[1024];
+	static char buf[IPC_DEBUG_PRINTF_BUFFER_MAX];
 	s64 len;
 	va_list args;
 

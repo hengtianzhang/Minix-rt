@@ -47,5 +47,6 @@ void __init early_idle_task_init(void)
 		spin_lock_init(&idle->pi_lock);
 		INIT_LIST_HEAD(&idle->children);
 		INIT_LIST_HEAD(&idle->children_list);
+		INIT_LIST_HEAD(&idle->children_exit);
 	}
 }

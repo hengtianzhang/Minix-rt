@@ -162,8 +162,8 @@ struct task_struct {
 	struct task_struct		*parent;
 
 	struct list_head		children;
-
 	struct list_head		children_list;
+	struct list_head		children_exit;
 
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;

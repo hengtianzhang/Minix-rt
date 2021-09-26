@@ -26,10 +26,10 @@ static struct pid_struct *pid_find(pid_t pid)
 }
 
 /**
- * find_process_by_pid - find a process with a matching PID value.
+ * pid_find_process_by_pid - find a process with a matching PID value.
  * @pid: the pid in question.
  */
-struct task_struct *find_process_by_pid(pid_t pid)
+struct task_struct *pid_find_process_by_pid(pid_t pid)
 {
 	struct pid_struct *pids;
 
@@ -64,7 +64,7 @@ static bool pid_insert(struct pid_struct *data)
 	return true;
 }
 
-bool insert_process_by_pid(struct task_struct *tsk)
+bool pid_insert_process_by_pid(struct task_struct *tsk)
 {
 	if (!tsk)
 		return false;
@@ -72,7 +72,7 @@ bool insert_process_by_pid(struct task_struct *tsk)
 	return pid_insert(&tsk->pid);
 }
 
-bool remove_pid_by_process(struct task_struct *tsk)
+bool pid_remove_pid_by_process(struct task_struct *tsk)
 {
 	struct pid_struct *pids;
 
@@ -126,7 +126,7 @@ void __init process_pid_init(void)
 
 	for_each_possible_cpu(cpu) {
 		idle_threads[cpu].pid.pid = -cpu;
-		if (!insert_process_by_pid(&idle_threads[cpu]))
+		if (!pid_insert_process_by_pid(&idle_threads[cpu]))
 			BUG();
 	}
 }

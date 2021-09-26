@@ -5,6 +5,24 @@
 
 #include <asm/current.h>
 
+static void do_default_signal_handle(int signal)
+{
+	struct task_struct *tsk, *temp_tsk;
+
+	list_for_each_entry_safe(tsk, temp_tsk, &current->children_exit, children_list) {
+		if (tsk->exit_code) {
+			;
+		}
+		printf("tsk %s\n", tsk->comm);
+		printf("tsk %d\n", tsk->pid.pid);
+		printf("tsk  flags %d\n", tsk->flags);
+		printf("tsk  exitsignal %d\n", tsk->exit_signal);
+		printf("tsk  exitcode %d\n", tsk->exit_code);
+		printf("tsk  exitstate %d\n", tsk->exit_state);
+		printf("tsk  state %d\n", tsk->state);
+	}
+}
+
 int do_send_signal(int signal, pid_t pid, int flags)
 {
 	if (signal == SIGCHLD) {
@@ -33,7 +51,7 @@ bool get_signal(struct ksignal *ksig)
 		if (ka.sa.sa_handler == NOTIFIER_IGN) {
 			continue;
 		} else if (ka.sa.sa_handler == NOTIFIER_DFL) {
-			printf("Do default signal handle\n");
+			do_default_signal_handle(notifier);
 			continue;
 		} else {
 			if (ksig) {

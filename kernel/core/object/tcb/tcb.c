@@ -33,6 +33,7 @@ struct task_struct *tcb_create_task(unsigned int flags)
 	tsk->parent = NULL;
 	INIT_LIST_HEAD(&tsk->children);
 	INIT_LIST_HEAD(&tsk->children_list);
+	INIT_LIST_HEAD(&tsk->children_exit);
 	notifier_table_clearall(&tsk->notifier.notifier_table);
 	memset(tsk->notifier.action, 0, sizeof (struct k_sigaction));
 
@@ -83,7 +84,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
 		return -ENOMEM;
 
 	tsk->pid.pid = pid;
-	ret = insert_process_by_pid(tsk);
+	ret = pid_insert_process_by_pid(tsk);
 	if (!ret)
 		goto fail_inster_pid;
 
@@ -98,7 +99,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
 	if (ret)
 		goto fail_copy_mm;
 
-	tsk->flags = current->flags;
+	tsk->flags |= current->flags;
 	tsk->cap_ipcptr = (void *)ipcptr;
 	tsk->parent = current;
 
@@ -135,7 +136,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
 fail_copy_mm:
 	kfree(tsk->stack);
 fail_stack:
-	ret = remove_pid_by_process(tsk);
+	ret = pid_remove_pid_by_process(tsk);
 	BUG_ON(!ret);
 fail_inster_pid:
 	tcb_destroy_task(tsk);

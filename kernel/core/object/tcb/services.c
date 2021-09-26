@@ -274,7 +274,7 @@ __init struct task_struct *service_core_init(void)
 
 	tsk->state = TASK_RUNNING;
 	tsk->pid.pid = 1;
-	ret = insert_process_by_pid(tsk);
+	ret = pid_insert_process_by_pid(tsk);
 	if (!ret)
 		goto fail_service_stack;
 

@@ -3026,7 +3026,7 @@ long sched_setaffinity(pid_t pid, cpumask_t new_mask)
 	mutex_lock(&sched_hotcpu_mutex);
 	read_lock(&tasklist_lock);
 
-	p = find_process_by_pid(pid);
+	p = pid_find_process_by_pid(pid);
 	if (!p) {
 		read_unlock(&tasklist_lock);
 		mutex_unlock(&sched_hotcpu_mutex);
@@ -3073,7 +3073,7 @@ long sched_getaffinity(pid_t pid, cpumask_t *mask)
 	read_lock(&tasklist_lock);
 
 	retval = -ESRCH;
-	p = find_process_by_pid(pid);
+	p = pid_find_process_by_pid(pid);
 	if (!p)
 		goto out_unlock;
 

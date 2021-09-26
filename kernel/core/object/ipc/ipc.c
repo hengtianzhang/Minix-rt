@@ -1,5 +1,6 @@
 #include <sel4m/sched.h>
 #include <sel4m/object/untype.h>
+#include <sel4m/mm.h>
 
 int ipc_create_task_ipcptr(struct task_struct *tsk, unsigned long __user ipcptr)
 {
@@ -17,7 +18,10 @@ int ipc_create_task_ipcptr(struct task_struct *tsk, unsigned long __user ipcptr)
 	if (vmap_page_range(vma) <= 0)
 		return -ENOMEM;
 
+	BUG_ON(vma->nr_pages != 1);
+
 	tsk->cap_ipcptr = (void *)ipcptr;
+	tsk->kernel_ipcptr = page_to_virt(vma->pages[0]);
 
 	return 0;
 }

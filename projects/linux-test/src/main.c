@@ -3,9 +3,28 @@
 #include <libsel4m/object/tcb.h>
 #include <libsel4m/object/notifier.h>
 
+static int test_lock = 0;
+
+static void notifier_test(int notifier, void *private)
+{
+	printf("Hello, This is notifier test %d data: %d!\n", notifier, *(int *)private);
+	test_lock = 1;
+}
+
+int test = 5;
+int test1 = 5;
 static int test_thread(void *arg)
 {
 	printf("Hello, This is a test thread pid is %d!\n", tcb_get_pid_info());
+
+	notifier_register_handler(SIGCONT, notifier_test);
+
+	notifier_send_notifier(SIGCONT, tcb_get_pid_info(), &test1);
+	for (;;)
+		if (test_lock == 1)
+			break;
+
+	printf("finish notifier test, exit!\n");
 
 	return 0;
 }

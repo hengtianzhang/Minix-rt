@@ -8,7 +8,7 @@
 
 #include <asm/siginfo.h>
 
-extern int do_send_signal(int signal, pid_t pid, int flags);
+extern int do_send_signal(int signal, pid_t pid, long private);
 
 extern bool get_signal(struct ksignal *ksig);
 

@@ -1,6 +1,8 @@
 #ifndef __SEL4M_OBJECT_IPC_H_
 #define __SEL4M_OBJECT_IPC_H_
 
+#include <uapi/sel4m/object/ipc.h>
+
 struct task_struct;
 
 extern int

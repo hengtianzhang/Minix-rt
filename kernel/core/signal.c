@@ -2,6 +2,8 @@
 #include <sel4m/sched.h>
 #include <sel4m/thread.h>
 #include <sel4m/object/tcb.h>
+#include <sel4m/object/pid.h>
+#include <sel4m/object/ipc.h>
 
 #include <asm/current.h>
 
@@ -28,15 +30,26 @@ static void do_default_signal_handle(int signal)
 	}
 }
 
-int do_send_signal(int signal, pid_t pid, int flags)
+int do_send_signal(int signal, pid_t pid, long private)
 {
 	if (signal == SIGCHLD) {
 		BUG_ON(!current->parent);
 		notifier_table_set_notifier(SIGCHLD, &current->parent->notifier.notifier_table);
-		tcb_do_exit(current, flags);
+		tcb_do_exit(current, (int)private);
 		BUG();
 	} else {
-		printf("TODO: signal %d pid %d flags %d\n", signal, pid, flags);
+		struct task_struct *tsk;
+		struct ipc_share_struct *ipc_shr;
+
+		tsk = pid_find_process_by_pid(pid);
+		if (!tsk)
+			return -EINVAL;
+		
+		ipc_shr = tsk->kernel_ipcptr;
+		ipc_shr->message_info[signal] = private;
+
+		notifier_table_set_notifier(signal, &tsk->notifier.notifier_table);
+		set_tsk_thread_flag(tsk, TIF_SIGPENDING);
 	}
 
 	return 0;

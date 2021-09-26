@@ -22,6 +22,7 @@
 #include <sel4m/syscalls.h>
 #include <sel4m/sched.h>
 #include <sel4m/signal.h>
+#include <sel4m/object/ipc.h>
 
 #include <asm/traps.h>
 #include <asm/ptrace.h>
@@ -344,8 +345,10 @@ static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
 			 struct rt_sigframe_user_layout *user, int usig)
 {
 	__sigrestore_t sigtramp;
+	struct ipc_share_struct *ipc_shr = current->kernel_ipcptr;
 
 	regs->regs[0] = usig;
+	regs->regs[1] = (long)ipc_shr->message_info[usig];
 	regs->sp = (unsigned long)user->sigframe;
 	regs->regs[29] = (unsigned long)&user->next_frame->fp;
 	regs->pc = (unsigned long)ka->sa.sa_handler;

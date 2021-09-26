@@ -8,7 +8,7 @@
 
 SYSCALL_DEFINE6(notifier, enum notifier_type, table,
 				unsigned int, notifier, unsigned long, fn,
-				pid_t, pid, int, flags, __sigrestore_t, return_fn)
+				pid_t, pid, long, private, __sigrestore_t, return_fn)
 {
 	if (notifier == NOTIFIER_MESSAGE) {
 		if (!cap_table_test_cap(cap_notification_cap, &current->cap_table))
@@ -33,7 +33,7 @@ SYSCALL_DEFINE6(notifier, enum notifier_type, table,
 			return 0;
 		case notifier_send_signal:
 			if (notifier < SIGRTMAX)
-				return do_send_signal(notifier, pid, flags);
+				return do_send_signal(notifier, pid, private);
 			else
 				printf("send notifier %d nothing TODO\n", notifier);
 			return 0;

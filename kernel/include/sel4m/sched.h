@@ -150,6 +150,7 @@ struct task_struct {
     struct mm_struct *mm;
 
 	void __user *cap_ipcptr;
+	void __kernel *kernel_ipcptr;
 
 	int exit_state;
 	int exit_code, exit_signal;

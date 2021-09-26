@@ -921,10 +921,12 @@ int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 		if (new_vma->vm_flags & VM_USER_STACK)
 			if (stack_top)
 				*stack_top = new_vma->vm_end;
-		if (new_vma->vm_flags & VM_USER_IPCPTR)
+		if (new_vma->vm_flags & VM_USER_IPCPTR) {
+			BUG_ON(new_vma->nr_pages != 1);
+			tsk->kernel_ipcptr = page_to_virt(new_vma->pages[0]);
 			if (ipcptr)
 				*ipcptr = new_vma->vm_start;
-
+		}
 		i++;
 	}
 

@@ -38,7 +38,7 @@ int main(void)
 
 	for (pid = 2; pid < 3; pid++) {
 		test_data[pid] = pid;
-		ret = tcb_create_thread(pid, test_thread, &test_data[pid]);
+		ret = tcb_create_thread(test_thread, &test_data[pid]);
 		if (ret)
 			printf("create thred fail is %d\n", ret);
 	}

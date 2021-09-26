@@ -11,6 +11,7 @@ struct pid_struct {
 
 struct task_struct *pid_find_process_by_pid(pid_t pid);
 bool pid_insert_process_by_pid(struct task_struct *tsk);
+int pid_alloc_pid(struct task_struct *tsk);
 bool pid_remove_pid_by_process(struct task_struct *tsk);
 
 void process_pid_init(void);

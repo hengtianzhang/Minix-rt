@@ -1,11 +1,18 @@
 #include <base/common.h>
 #include <base/init.h>
 
+#include <sel4m/slab.h>
 #include <sel4m/sched.h>
 #include <sel4m/sched/idle.h>
 #include <sel4m/object/pid.h>
 
+struct pid_cache {
+	pid_t	pid;
+	struct list_head list;
+};
+
 static struct rb_root pid_root = RB_ROOT;
+static LIST_HEAD(pid_root_cache);
 
 static struct pid_struct *pid_find(pid_t pid)
 {
@@ -72,6 +79,40 @@ bool pid_insert_process_by_pid(struct task_struct *tsk)
 	return pid_insert(&tsk->pid);
 }
 
+int pid_alloc_pid(struct task_struct *tsk)
+{
+	pid_t pid;
+	struct rb_node *node;
+	struct pid_struct *pids;
+
+	if (!tsk)
+		return -EINVAL;
+
+	if (!list_empty(&pid_root_cache)) {
+		struct pid_cache *pidc;
+		pidc = list_first_entry(&pid_root_cache, struct pid_cache, list);
+		pid = pidc->pid;
+
+		list_del(&pidc->list);
+		kfree(pidc);
+
+		tsk->pid.pid = pid;
+		BUG_ON(!pid_insert_process_by_pid(tsk));
+
+		return 0;
+	}
+
+	node = rb_last(&pid_root);
+	BUG_ON(!node);
+
+	pids = rb_entry(node, struct pid_struct, node);
+
+	tsk->pid.pid = pids->pid + 1;
+	BUG_ON(!pid_insert_process_by_pid(tsk));
+
+	return 0;
+}
+
 bool pid_remove_pid_by_process(struct task_struct *tsk)
 {
 	struct pid_struct *pids;
@@ -82,6 +123,17 @@ bool pid_remove_pid_by_process(struct task_struct *tsk)
 	pids = pid_find(tsk->pid.pid);
 	if (!pids)
 		return false;
+
+	if (&pids->node != rb_last(&pid_root)) {
+		struct pid_cache *pidc;
+
+		pidc = kmalloc(sizeof (struct pid_cache), GFP_KERNEL);
+		if (!pidc)
+			return false;
+
+		pidc->pid = tsk->pid.pid;
+		list_add(&pidc->list, &pid_root_cache);
+	}
 
 	rb_erase(&pids->node, &pid_root);
 

@@ -62,7 +62,7 @@ void tcb_set_task_stack_end_magic(struct task_struct *tsk)
 	*stackend = STACK_END_MAGIC;	/* for overflow detection */
 }
 
-static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
+static pid_t do_fork(unsigned long ventry, unsigned long varg,
 				unsigned long clone_flags, unsigned long return_fn)
 {
 	int ret;
@@ -83,12 +83,11 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
 	if (!tsk)
 		return -ENOMEM;
 
-	tsk->pid.pid = pid;
-	ret = pid_insert_process_by_pid(tsk);
-	if (!ret)
+	ret = pid_alloc_pid(tsk);
+	if (ret)
 		goto fail_inster_pid;
 
-	snprintf(tsk->comm, TASK_COMM_LEN, "%s-%d", current->comm, pid);
+	snprintf(tsk->comm, TASK_COMM_LEN, "%s-%d", current->comm, tsk->pid.pid);
 	tsk->stack = kmalloc(THREAD_SIZE, GFP_KERNEL | GFP_ZERO);
 	if (!tsk->stack)
 		goto fail_stack;
@@ -131,7 +130,7 @@ static pid_t do_fork(pid_t pid, unsigned long ventry, unsigned long varg,
 
 	wake_up_new_task(tsk, 0);
 
-	return 0;
+	return tsk->pid.pid;
 
 fail_copy_mm:
 	kfree(tsk->stack);
@@ -145,15 +144,15 @@ fail_ventry:
 	return -EINVAL;
 }
 
-SYSCALL_DEFINE5(tcb_thread, enum tcb_table, table, pid_t, pid,
-		unsigned long, fn, unsigned long, arg, unsigned long, return_fn)
+SYSCALL_DEFINE4(tcb_thread, enum tcb_table, table, unsigned long, fn,
+				unsigned long, arg, unsigned long, return_fn)
 {
 	if (!cap_table_test_cap(cap_thread_cap, &current->cap_table))
 		return -ENOTCB;
 
 	switch (table) {
 		case tcb_create_thread_fn:
-			return do_fork(pid, fn, arg, PF_THREAD, return_fn);
+			return do_fork(fn, arg, PF_THREAD, return_fn);
 		case tcb_create_tcb_object:
 			printf("tcb_create_tcb_object Nothing TODO!\n");
 			return -ECHILD;

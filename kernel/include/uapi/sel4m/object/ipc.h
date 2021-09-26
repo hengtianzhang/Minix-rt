@@ -10,7 +10,8 @@
 #endif /* !__KERNEL__ */
 
 struct ipc_share_struct {
-	long message_info[NOTIFIER_NR_MAX];
+	long notifier_message_info[NOTIFIER_NR_MAX];
+	pid_t	notifier[NOTIFIER_NR_MAX];
 };
 
 #endif /* !__UAPI_SEL4M_OBJECT_IPC_H_ */

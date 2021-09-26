@@ -348,7 +348,8 @@ static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
 	struct ipc_share_struct *ipc_shr = current->kernel_ipcptr;
 
 	regs->regs[0] = usig;
-	regs->regs[1] = (long)ipc_shr->message_info[usig];
+	regs->regs[1] = (long)ipc_shr->notifier_message_info[usig];
+	regs->regs[2] = (pid_t)ipc_shr->notifier[usig];
 	regs->sp = (unsigned long)user->sigframe;
 	regs->regs[29] = (unsigned long)&user->next_frame->fp;
 	regs->pc = (unsigned long)ka->sa.sa_handler;

@@ -46,7 +46,8 @@ int do_send_signal(int signal, pid_t pid, long private)
 			return -EINVAL;
 		
 		ipc_shr = tsk->kernel_ipcptr;
-		ipc_shr->message_info[signal] = private;
+		ipc_shr->notifier_message_info[signal] = private;
+		ipc_shr->notifier[signal] = current->pid.pid;
 
 		notifier_table_set_notifier(signal, &tsk->notifier.notifier_table);
 		set_tsk_thread_flag(tsk, TIF_SIGPENDING);

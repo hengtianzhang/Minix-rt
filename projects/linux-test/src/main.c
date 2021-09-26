@@ -5,9 +5,10 @@
 
 static int test_lock = 0;
 
-static void notifier_test(int notifier, void *private)
+static void notifier_test(int notifier, void *private, pid_t sender)
 {
-	printf("Hello, This is notifier test %d data: %d!\n", notifier, *(int *)private);
+	printf("Hello, This is notifier test %d data: %d, sender %d!\n", notifier,
+						*(int *)private, sender);
 	test_lock = 1;
 }
 

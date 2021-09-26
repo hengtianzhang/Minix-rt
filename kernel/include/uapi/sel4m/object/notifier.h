@@ -401,7 +401,7 @@ static inline unsigned int notifier_table_size(void)
 	[0] =  1UL						\
 }}
 
-typedef void __signalfn_t(int, void *);
+typedef void __signalfn_t(int, void *, pid_t);
 typedef __signalfn_t __user *__sighandler_t;
 
 typedef void __restorefn_t(void);

@@ -5,6 +5,7 @@ enum tcb_table {
     tcb_create_thread_fn,
     tcb_create_tcb_object,
     tcb_clone_task_fn,
+    tcb_get_pid,
 };
 
 #endif /* !__UAPI_SEL4M_OBJECT_TCB_H_ */

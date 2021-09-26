@@ -944,6 +944,19 @@ fail_out:
 	return -ENOMEM;
 }
 
+void untype_destroy_mm(struct task_struct *tsk)
+{
+	struct vm_area_struct *vma;
+
+	if (!tsk)
+		return;
+
+	for_each_vm_area(vma, tsk) {
+		vumap_page_range(vma);
+		untype_free_vmap_area(vma->vm_start, tsk->mm);
+	}
+}
+
 void untype_core_init(void)
 {
 	free_area_init_nodes();

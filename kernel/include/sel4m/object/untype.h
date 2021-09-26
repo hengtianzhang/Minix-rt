@@ -32,6 +32,8 @@ extern void vumap_page_range(struct vm_area_struct *vma);
 extern struct mm_struct *untype_alloc_mm_struct(void);
 extern void untype_free_mm_struct(struct mm_struct *mm);
 
+extern void untype_destroy_mm(struct task_struct *tsk);
+
 struct untyp_ref_pud_talbe {
 	struct page *pud_page;
 	struct rb_node	node;

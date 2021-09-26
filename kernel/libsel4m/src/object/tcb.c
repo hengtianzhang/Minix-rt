@@ -18,3 +18,12 @@ pid_t tcb_create_thread(tcb_thread_fn_t fn, void *arg)
 
 	return ret;
 }
+
+pid_t tcb_get_pid_info(void)
+{
+	pid_t pid;
+
+	pid = __syscall(__NR_tcb_thread, tcb_get_pid, 0, 0, 0);
+
+	return pid;
+}

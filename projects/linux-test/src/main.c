@@ -3,19 +3,17 @@
 #include <libsel4m/object/tcb.h>
 #include <libsel4m/object/notifier.h>
 
-unsigned long test_data[20];
-
 static int test_thread(void *arg)
 {
-	printf("Hello, This is a test thread pid is %d!\n", *(pid_t *)arg);
+	printf("Hello, This is a test thread pid is %d!\n", tcb_get_pid_info());
 
 	return 0;
 }
 
 int main(void)
 {
-	pid_t pid = 2;
-	int ret;
+	pid_t pid;
+	int ret, i;
 
 	printf("This rootServices!\n");
 
@@ -36,11 +34,10 @@ int main(void)
 	untype_free_area(0x1000);
 	printf("Finish vmap test!\n");
 
-	for (pid = 2; pid < 3; pid++) {
-		test_data[pid] = pid;
-		ret = tcb_create_thread(test_thread, &test_data[pid]);
-		if (ret)
-			printf("create thred fail is %d\n", ret);
+	for (i = 0; i < 1; i++) {
+		pid = tcb_create_thread(test_thread, NULL);
+		if (pid)
+			printf("create thred sucess pid is %d\n", pid);
 	}
 
 	while (1);

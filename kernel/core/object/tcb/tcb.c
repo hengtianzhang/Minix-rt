@@ -147,10 +147,13 @@ fail_ventry:
 SYSCALL_DEFINE4(tcb_thread, enum tcb_table, table, unsigned long, fn,
 				unsigned long, arg, unsigned long, return_fn)
 {
-	if (!cap_table_test_cap(cap_thread_cap, &current->cap_table))
-		return -ENOTCB;
-
 	switch (table) {
+		case tcb_get_pid:
+			return current->pid.pid;
+
+		if (!cap_table_test_cap(cap_thread_cap, &current->cap_table))
+			return -ENOTCB;
+	
 		case tcb_create_thread_fn:
 			return do_fork(fn, arg, PF_THREAD, return_fn);
 		case tcb_create_tcb_object:

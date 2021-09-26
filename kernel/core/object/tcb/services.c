@@ -71,7 +71,7 @@ static __init unsigned long setup_services_stack(struct task_struct *tsk, unsign
 	stack_top = PAGE_ALIGN(stack_top);
 	stack_base = PAGE_ALIGN(stack_top - THREAD_SIZE);
 
-	vm_flags |= VM_READ | VM_WRITE | VM_EXEC | VM_USER_STACK;
+	vm_flags |= VM_READ | VM_WRITE | VM_USER_STACK;
 	vma = untype_get_vmap_area(stack_base, THREAD_SIZE,
 							vm_flags, tsk->mm, 0);
 	if (!vma)

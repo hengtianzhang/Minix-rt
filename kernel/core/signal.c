@@ -10,16 +10,21 @@ static void do_default_signal_handle(int signal)
 	struct task_struct *tsk, *temp_tsk;
 
 	list_for_each_entry_safe(tsk, temp_tsk, &current->children_exit, children_list) {
+		struct task_struct *child;
+
 		if (tsk->exit_code) {
-			;
+			BUG(); /* TODO  segment fault */
 		}
-		printf("tsk %s\n", tsk->comm);
-		printf("tsk %d\n", tsk->pid.pid);
-		printf("tsk  flags %d\n", tsk->flags);
-		printf("tsk  exitsignal %d\n", tsk->exit_signal);
-		printf("tsk  exitcode %d\n", tsk->exit_code);
-		printf("tsk  exitstate %d\n", tsk->exit_state);
-		printf("tsk  state %d\n", tsk->state);
+
+		list_for_each_entry(child, &tsk->children, children_list) {
+			child->parent = current;
+			list_add(&child->children_list, &current->children);
+		}
+
+		untype_destroy_mm(tsk);
+		kfree(tsk->stack);
+		pid_remove_pid_by_process(tsk);
+		tcb_destroy_task(tsk);
 	}
 }
 

@@ -1030,6 +1030,7 @@ schedule_hrtimeout_range_clock(ktime_t *expires, u64 delta,
 	hrtimer_set_expires_range_ns(&t.timer, *expires, delta);
 
 	delta1 = (lock_hrtimer_base(&t.timer, &flags))->get_time();
+	unlock_hrtimer_base(&t.timer, &flags);
 	if (mode == HRTIMER_MODE_ABS)
 		timeout = *expires - delta1;
 	else
@@ -1048,6 +1049,7 @@ schedule_hrtimeout_range_clock(ktime_t *expires, u64 delta,
 	__set_current_state(TASK_RUNNING);
 
 	delta2 = (lock_hrtimer_base(&t.timer, &flags))->get_time();
+	unlock_hrtimer_base(&t.timer, &flags);
 	if ((delta2 - delta1) > timeout)
 		*expires = 0;
 	else
@@ -1158,7 +1160,7 @@ s64 __sched schedule_timeout_uninterruptible(s64 timeout)
  */
 void msleep(unsigned int msecs)
 {
-	u64 timeout = msecs_to_jiffies(msecs) + 1;
+	u64 timeout = msecs * NSEC_PER_MSEC;
 
 	while (timeout)
 		timeout = schedule_timeout_uninterruptible(timeout);
@@ -1170,11 +1172,12 @@ void msleep(unsigned int msecs)
  */
 u64 msleep_interruptible(unsigned int msecs)
 {
-	u64 timeout = msecs_to_jiffies(msecs) + 1;
+	u64 timeout = msecs * NSEC_PER_MSEC;
 
 	while (timeout && !signal_pending(current))
 		timeout = schedule_timeout_interruptible(timeout);
-	return jiffies_to_msecs(timeout);
+
+	return timeout;
 }
 
 /**

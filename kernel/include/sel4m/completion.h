@@ -1,5 +1,5 @@
-#ifndef __SEL4M_COMPLETION_H_
-#define __SEL4M_COMPLETION_H_
+#ifndef __MINIX_RT_COMPLETION_H_
+#define __MINIX_RT_COMPLETION_H_
 
 /*
  * (C) Copyright 2001 Linus Torvalds
@@ -8,7 +8,7 @@
  * See kernel/sched.c for details.
  */
 
-#include <sel4m/wait.h>
+#include <minix_rt/wait.h>
 
 struct completion {
 	unsigned int done;
@@ -44,4 +44,4 @@ extern void complete_all(struct completion *);
 
 #define INIT_COMPLETION(x)	((x).done = 0)
 
-#endif /* !__SEL4M_COMPLETION_H_ */
+#endif /* !__MINIX_RT_COMPLETION_H_ */

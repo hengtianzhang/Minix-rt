@@ -1,12 +1,12 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_UTS_H_
-#define __SEL4M_UTS_H_
+#ifndef __MINIX_RT_UTS_H_
+#define __MINIX_RT_UTS_H_
 
 /*
  * Defines for what uname() should return 
  */
 #ifndef UTS_SYSNAME
-#define UTS_SYSNAME "Sel4m"
+#define UTS_SYSNAME "Minix-rt"
 #endif
 
 #ifndef UTS_NODENAME
@@ -17,4 +17,4 @@
 #define UTS_DOMAINNAME "(none)"	/* set by setdomainname() */
 #endif
 
-#endif /* !__SEL4M_UTS_H_ */
+#endif /* !__MINIX_RT_UTS_H_ */

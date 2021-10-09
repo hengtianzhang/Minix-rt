@@ -1,14 +1,14 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_BIT_SPINLOCK_H_
-#define __SEL4M_BIT_SPINLOCK_H_
+#ifndef __MINIX_RT_BIT_SPINLOCK_H_
+#define __MINIX_RT_BIT_SPINLOCK_H_
 
 #include <base/compiler.h>
 #include <base/common.h>
 #include <base/bug.h>
 #include <base/bitops.h>
 
-#include <sel4m/preempt.h>
-#include <sel4m/spinlock.h>
+#include <minix_rt/preempt.h>
+#include <minix_rt/spinlock.h>
 
 /*
  *  bit-based spin_lock()
@@ -84,4 +84,4 @@ static inline int bit_spin_is_locked(int bitnum, unsigned long *addr)
 	return test_bit(bitnum, addr);
 }
 
-#endif /* !__SEL4M_BIT_SPINLOCK_H_ */
+#endif /* !__MINIX_RT_BIT_SPINLOCK_H_ */

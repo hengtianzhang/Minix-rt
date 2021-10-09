@@ -24,7 +24,7 @@
 #include <base/sizes.h>
 #include <base/const.h>
 
-#include <sel4m/mm_types.h>
+#include <minix_rt/mm_types.h>
 
 /*
  * VMEMMAP_SIZE - allows the whole linear region to be covered by

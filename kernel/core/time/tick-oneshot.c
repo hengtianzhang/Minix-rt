@@ -18,9 +18,9 @@
  */
 #include <base/err.h>
 
-#include <sel4m/cpu.h>
-#include <sel4m/hrtimer.h>
-#include <sel4m/smp.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/smp.h>
 
 #include "tick-internal.h"
 

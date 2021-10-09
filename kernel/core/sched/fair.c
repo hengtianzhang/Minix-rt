@@ -33,9 +33,9 @@
  *  run vmstat and monitor the context-switches (cs) field)
  */
 
-#include <sel4m/sched.h>
-#include <sel4m/sched/rt.h>
-#include <sel4m/sched/fair.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/rt.h>
+#include <minix_rt/sched/fair.h>
 
 /*
  * Targeted preemption latency for CPU-bound tasks:

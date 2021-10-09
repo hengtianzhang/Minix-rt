@@ -7,11 +7,11 @@
 # Inputs:
 #
 #   ``*VERSION*`` and other constants set by
-#   maintainers in ``${SEL4M_BASE}/VERSION``
+#   maintainers in ``${MINIX_RT_BASE}/VERSION``
 #
 # Outputs with examples::
 #
-#   SEL4M_PROJECT_VERSION           1.14.99.07
+#   MINIX_RT_PROJECT_VERSION           1.14.99.07
 #   KERNEL_VERSION_STRING    "1.14.99-extraver"
 #
 #   KERNEL_VERSION_MAJOR       1
@@ -19,7 +19,7 @@
 #   KERNEL_PATCHLEVEL             99
 #   KERNELVERSION            0x10E6307
 #   KERNEL_VERSION_NUMBER    0x10E63
-#   SEL4M_VERSION_CODE        69219
+#   MINIX_RT_VERSION_CODE        69219
 #
 # Most outputs are converted to C macros, see ``version.h.in``
 #
@@ -27,8 +27,8 @@
 # ``git.cmake``.
 
 
-include(${SEL4M_BASE}/cmake/hex.cmake)
-file(READ ${SEL4M_BASE}/VERSION ver)
+include(${MINIX_RT_BASE}/cmake/hex.cmake)
+file(READ ${MINIX_RT_BASE}/VERSION ver)
 
 string(REGEX MATCH "VERSION_MAJOR = ([0-9]*)" _ ${ver})
 set(PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1})
@@ -54,19 +54,19 @@ if(PROJECT_VERSION_EXTRA)
 endif()
 
 if(PROJECT_VERSION_TWEAK)
-  set(SEL4M_PROJECT_VERSION ${PROJECT_VERSION_WITHOUT_TWEAK}.${PROJECT_VERSION_TWEAK})
+  set(MINIX_RT_PROJECT_VERSION ${PROJECT_VERSION_WITHOUT_TWEAK}.${PROJECT_VERSION_TWEAK})
 else()
-  set(SEL4M_PROJECT_VERSION ${PROJECT_VERSION_WITHOUT_TWEAK})
+  set(MINIX_RT_PROJECT_VERSION ${PROJECT_VERSION_WITHOUT_TWEAK})
 endif()
 
-set(PROJECT_VERSION_STR ${SEL4M_PROJECT_VERSION}${PROJECT_VERSION_EXTRA_STR})
+set(PROJECT_VERSION_STR ${MINIX_RT_PROJECT_VERSION}${PROJECT_VERSION_EXTRA_STR})
 
 if(DEFINED BUILD_VERSION)
   set(BUILD_VERSION_STR ", build: ${BUILD_VERSION}")
 endif()
 
 if (NOT NO_PRINT_VERSION)
-  message(STATUS "Sel4m version: ${PROJECT_VERSION_STR} (${SEL4M_BASE})${BUILD_VERSION_STR}")
+  message(STATUS "Minix-rt version: ${PROJECT_VERSION_STR} (${MINIX_RT_BASE})${BUILD_VERSION_STR}")
 endif()
 
 set(MAJOR ${PROJECT_VERSION_MAJOR}) # Temporary convenience variable
@@ -89,7 +89,7 @@ else()
   set(KERNEL_VERSION_STRING     "\"${PROJECT_VERSION_WITHOUT_TWEAK}\"")
 endif()
 
-set(SEL4M_VERSION_CODE ${KERNEL_VERSION_NUMBER_INT})
+set(MINIX_RT_VERSION_CODE ${KERNEL_VERSION_NUMBER_INT})
 
 # Cleanup convenience variables
 unset(MAJOR)

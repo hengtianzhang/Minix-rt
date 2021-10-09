@@ -3,8 +3,8 @@
 #include <base/compiler.h>
 #include <base/init.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/spinlock.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/spinlock.h>
 
 #include <asm/current.h>
 #include <asm/system_misc.h>

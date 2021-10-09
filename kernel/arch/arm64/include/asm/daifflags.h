@@ -16,7 +16,7 @@
 #ifndef __ASM_DAIFFLAGS_H_
 #define __ASM_DAIFFLAGS_H_
 
-#include <sel4m/irqflags.h>
+#include <minix_rt/irqflags.h>
 
 #define DAIF_PROCCTX		0
 #define DAIF_PROCCTX_NOIRQ	PSR_I_BIT

@@ -1,5 +1,5 @@
-#ifndef __SEL4M_RANDOM_H_
-#define __SEL4M_RANDOM_H_
+#ifndef __MINIX_RT_RANDOM_H_
+#define __MINIX_RT_RANDOM_H_
 
 #define RAND_MAX -1ULL
 
@@ -33,4 +33,4 @@ static inline u64 get_random_canary(void)
 	return val & CANARY_MASK;
 }
 
-#endif /* !__SEL4M_RANDOM_H_ */
+#endif /* !__MINIX_RT_RANDOM_H_ */

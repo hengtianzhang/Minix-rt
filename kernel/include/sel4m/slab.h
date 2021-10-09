@@ -1,11 +1,11 @@
-#ifndef __SEL4M_SLAB_H_
-#define __SEL4M_SLAB_H_
+#ifndef __MINIX_RT_SLAB_H_
+#define __MINIX_RT_SLAB_H_
 
 #include <base/types.h>
 
-#include <sel4m/gfp.h>
-#include <sel4m/slub_def.h>
-#include <sel4m/memory.h>
+#include <minix_rt/gfp.h>
+#include <minix_rt/slub_def.h>
+#include <minix_rt/memory.h>
 
 #define SLAB_RED_ZONE		0x00000400UL	/* DEBUG: Red zone objs in a cache */
 #define SLAB_POISON			0x00000800UL	/* DEBUG: Poison objects */
@@ -74,4 +74,4 @@ static __always_inline void *kmalloc(size_t size, gfp_t flags)
 	return __kmalloc(size, flags);
 }
 
-#endif /* !__SEL4M_SLAB_H_ */
+#endif /* !__MINIX_RT_SLAB_H_ */

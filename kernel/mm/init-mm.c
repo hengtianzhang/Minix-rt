@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
-#include <sel4m/mm_types.h>
+#include <minix_rt/mm_types.h>
 
 #include <asm/pgtable.h>
 #include <asm/mmu.h>

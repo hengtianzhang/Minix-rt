@@ -16,8 +16,8 @@
 #include <of/of.h>
 #include <of/of_fdt.h>
 
-#include <sel4m/of_reserved_mem.h>
-#include <sel4m/memory.h>
+#include <minix_rt/of_reserved_mem.h>
+#include <minix_rt/memory.h>
 
 #include <memalloc/memblock.h>
 

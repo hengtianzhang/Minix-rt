@@ -13,7 +13,7 @@
  */
 #include <base/linkage.h>
 
-#include <sel4m/arm-smccc.h>
+#include <minix_rt/arm-smccc.h>
 
 #include <asm/assembler.h>
 

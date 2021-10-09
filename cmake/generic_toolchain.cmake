@@ -15,30 +15,30 @@ if(NOT TOOLCHAIN_ROOT)
     set(TOOLCHAIN_ROOT $ENV{TOOLCHAIN_ROOT})
   else()
     # Default toolchain cmake file
-    set(TOOLCHAIN_ROOT ${SEL4M_BASE})
+    set(TOOLCHAIN_ROOT ${MINIX_RT_BASE})
   endif()
 endif()
-sel4m_file(APPLICATION_ROOT TOOLCHAIN_ROOT)
+minix_rt_file(APPLICATION_ROOT TOOLCHAIN_ROOT)
 
 # Don't inherit compiler flags from the environment
 foreach(var AFLAGS CFLAGS CXXFLAGS CPPFLAGS LDFLAGS)
   if(DEFINED ENV{${var}})
     message(WARNING "The environment variable '${var}' was set to $ENV{${var}},
-but sel4m ignores flags from the environment. Use 'cmake -DEXTRA_${var}=$ENV{${var}}' instead.")
+but minix_rt ignores flags from the environment. Use 'cmake -DEXTRA_${var}=$ENV{${var}}' instead.")
     unset(ENV{${var}})
   endif()
 endforeach()
 
-set(TOOLCHAIN_ROOT ${TOOLCHAIN_ROOT} CACHE STRING "sel4m toolchain root" FORCE)
-assert(TOOLCHAIN_ROOT "sel4m toolchain root path invalid: please set the TOOLCHAIN_ROOT-variable")
+set(TOOLCHAIN_ROOT ${TOOLCHAIN_ROOT} CACHE STRING "minix_rt toolchain root" FORCE)
+assert(TOOLCHAIN_ROOT "minix_rt toolchain root path invalid: please set the TOOLCHAIN_ROOT-variable")
 
-# Set cached SEL4M_TOOLCHAIN.
-set(SEL4M_TOOLCHAIN ${SEL4M_TOOLCHAIN} CACHE STRING "sel4m toolchain variant")
+# Set cached MINIX_RT_TOOLCHAIN.
+set(MINIX_RT_TOOLCHAIN ${MINIX_RT_TOOLCHAIN} CACHE STRING "minix_rt toolchain variant")
 
 # Configure the toolchain based on what SDK/toolchain is in use.
-include(${TOOLCHAIN_ROOT}/cmake/toolchain/${SEL4M_TOOLCHAIN}/generic.cmake)
+include(${TOOLCHAIN_ROOT}/cmake/toolchain/${MINIX_RT_TOOLCHAIN}/generic.cmake)
 
-set_ifndef(TOOLCHAIN_KCONFIG_DIR ${TOOLCHAIN_ROOT}/cmake/toolchain/${SEL4M_TOOLCHAIN})
+set_ifndef(TOOLCHAIN_KCONFIG_DIR ${TOOLCHAIN_ROOT}/cmake/toolchain/${MINIX_RT_TOOLCHAIN})
 
 # Configure the toolchain based on what toolchain technology is used
 # (gcc, host-gcc etc.)

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 #
-menu "Sel4m lib configuration"
+menu "Minix-rt lib configuration"
 
 source "lib/base/Kconfig"
 

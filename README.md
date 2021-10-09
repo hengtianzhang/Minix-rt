@@ -1,2 +1,2 @@
-# sel4m
-A micro kernel based on seL4
+# Minix-rt
+A micro kernel based on Minix-3.3

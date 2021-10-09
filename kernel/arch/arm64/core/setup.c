@@ -22,10 +22,10 @@
 #include <base/compiler.h>
 #include <base/types.h>
 
-#include <sel4m/memory.h>
-#include <sel4m/of_fdt.h>
-#include <sel4m/psci.h>
-#include <sel4m/stat.h>
+#include <minix_rt/memory.h>
+#include <minix_rt/of_fdt.h>
+#include <minix_rt/psci.h>
+#include <minix_rt/stat.h>
 
 #include <asm/base/processor.h>
 

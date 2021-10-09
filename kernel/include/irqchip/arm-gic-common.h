@@ -7,8 +7,8 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#ifndef __SEL4M_IRQCHIP_ARM_GIC_COMMON_H_
-#define __SEL4M_IRQCHIP_ARM_GIC_COMMON_H_
+#ifndef __MINIX_RT_IRQCHIP_ARM_GIC_COMMON_H_
+#define __MINIX_RT_IRQCHIP_ARM_GIC_COMMON_H_
 
 #include <base/types.h>
 
@@ -40,4 +40,4 @@ struct gic_kvm_info {
 
 const struct gic_kvm_info *gic_get_kvm_info(void);
 
-#endif /* !__SEL4M_IRQCHIP_ARM_GIC_COMMON_H_ */
+#endif /* !__MINIX_RT_IRQCHIP_ARM_GIC_COMMON_H_ */

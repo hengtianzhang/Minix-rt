@@ -12,9 +12,9 @@
 
 #include <of/of.h>
 
-#include <sel4m/irq.h>
-#include <sel4m/interrupt.h>
-#include <sel4m/smp.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/interrupt.h>
+#include <minix_rt/smp.h>
 
 #include <asm/ptrace.h>
 

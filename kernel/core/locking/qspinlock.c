@@ -21,7 +21,7 @@
  */
 #include <base/types.h>
 
-#include <sel4m/smp.h>
+#include <minix_rt/smp.h>
 
 #include <asm-generic/qspinlock.h>
 

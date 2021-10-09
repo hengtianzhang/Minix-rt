@@ -5,8 +5,8 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#ifndef __SEL4M_SCHED_CLOCK_H_
-#define __SEL4M_SCHED_CLOCK_H_
+#ifndef __MINIX_RT_SCHED_CLOCK_H_
+#define __MINIX_RT_SCHED_CLOCK_H_
 
 extern void generic_sched_clock_init(void);
 
@@ -16,4 +16,4 @@ extern void sched_clock_register(u64 (*read)(void), int bits,
 int sched_clock_suspend(void);
 void sched_clock_resume(void);
 
-#endif /* !__SEL4M_SCHED_CLOCK_H_ */
+#endif /* !__MINIX_RT_SCHED_CLOCK_H_ */

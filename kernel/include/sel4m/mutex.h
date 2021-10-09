@@ -7,14 +7,14 @@
  *
  * This file contains the main data structure and API definitions.
  */
-#ifndef __SEL4M_MUTEX_H_
-#define __SEL4M_MUTEX_H_
+#ifndef __MINIX_RT_MUTEX_H_
+#define __MINIX_RT_MUTEX_H_
 
 #include <base/list.h>
 #include <base/atomic.h>
 #include <base/linkage.h>
 
-#include <sel4m/sched.h>
+#include <minix_rt/sched.h>
 
 struct mutex {
 	/* 1: unlocked, 0: locked, negative: locked, possible waiters */
@@ -80,4 +80,4 @@ extern int mutex_lock_interruptible(struct mutex *lock);
 extern int mutex_trylock(struct mutex *lock);
 extern void mutex_unlock(struct mutex *lock);
 
-#endif /* !__SEL4M_MUTEX_H_ */
+#endif /* !__MINIX_RT_MUTEX_H_ */

@@ -6,7 +6,7 @@ if(DEFINED KERNEL_USE_DTB_PROPERTY)
 		OUTPUT
 			${APPLICATION_BINARY_DIR}/include/generated/gen_dtb.h
 		COMMAND
-			${PYTHON_EXECUTABLE} ${SEL4M_BASE}/scripts/gen_dtb_h.py
+			${PYTHON_EXECUTABLE} ${MINIX_RT_BASE}/scripts/gen_dtb_h.py
 				-i ${KERNEL_USE_DTB_PROPERTY}
 				-o ${APPLICATION_BINARY_DIR}/include/generated/gen_dtb.h
 		DEPENDS

@@ -19,12 +19,12 @@
  */
 #define ASM_OFFSET_GENERATED
 
-#include <sel4m/kbuild.h>
-#include <sel4m/smp.h>
-#include <sel4m/mm_types.h>
-#include <sel4m/mmzone.h>
-#include <sel4m/page-flags.h>
-#include <sel4m/arm-smccc.h>
+#include <minix_rt/kbuild.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/mm_types.h>
+#include <minix_rt/mmzone.h>
+#include <minix_rt/page-flags.h>
+#include <minix_rt/arm-smccc.h>
 
 #include <asm/ptrace.h>
 

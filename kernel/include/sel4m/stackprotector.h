@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_STACKPROTECTOR_H_
-#define __SEL4M_STACKPROTECTOR_H_
+#ifndef __MINIX_RT_STACKPROTECTOR_H_
+#define __MINIX_RT_STACKPROTECTOR_H_
 
 #include <base/compiler.h>
 
@@ -13,4 +13,4 @@ static inline void boot_init_stack_canary(struct task_struct *tsk)
 }
 #endif
 
-#endif /* !__SEL4M_STACKPROTECTOR_H_ */
+#endif /* !__MINIX_RT_STACKPROTECTOR_H_ */

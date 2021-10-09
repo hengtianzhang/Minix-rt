@@ -1,6 +1,6 @@
-#ifndef __LIBSEL4M_STDIO_H_
-#define __LIBSEL4M_STDIO_H_
+#ifndef __LIBMINIX_RT_STDIO_H_
+#define __LIBMINIX_RT_STDIO_H_
 
 #include <base/common.h>
 
-#endif /* !__LIBSEL4M_STDIO_H_ */
+#endif /* !__LIBMINIX_RT_STDIO_H_ */

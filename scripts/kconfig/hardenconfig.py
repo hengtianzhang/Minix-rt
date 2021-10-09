@@ -12,7 +12,7 @@ from kconfiglib import standard_kconfig
 def hardenconfig(kconf):
     kconf.load_config()
 
-    hardened_kconf_filename = os.path.join(os.environ['SEL4M_BASE'],
+    hardened_kconf_filename = os.path.join(os.environ['MINIX_RT_BASE'],
                                            'scripts', 'kconfig', 'hardened.csv')
 
     options = compare_with_hardened_conf(kconf, hardened_kconf_filename)

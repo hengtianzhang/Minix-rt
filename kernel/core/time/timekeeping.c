@@ -5,12 +5,12 @@
  */
 #include <base/bug.h>
 
-#include <sel4m/spinlock.h>
-#include <sel4m/ktime.h>
-#include <sel4m/clocksource.h>
-#include <sel4m/timekeeping.h>
-#include <sel4m/sched.h>
-#include <sel4m/seqlock.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/clocksource.h>
+#include <minix_rt/timekeeping.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/seqlock.h>
 
 #include "timekeeping_internal.h"
 

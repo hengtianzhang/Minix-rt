@@ -5,9 +5,9 @@
  *  handled in sched_fair.c)
  */
 
-#include <sel4m/sched.h>
-#include <sel4m/sched/idle.h>
-#include <sel4m/thread.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/idle.h>
+#include <minix_rt/thread.h>
 
 /* Linker adds these: start and end of __cpuidle functions */
 extern char __cpuidle_text_start[], __cpuidle_text_end[];

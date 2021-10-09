@@ -14,7 +14,7 @@
 #ifndef __ASM_GENERIC_SWITCH_TO_H
 #define __ASM_GENERIC_SWITCH_TO_H
 
-#include <sel4m/thread.h>
+#include <minix_rt/thread.h>
 
 struct task_struct;
 /*

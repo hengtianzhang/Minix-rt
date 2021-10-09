@@ -9,12 +9,12 @@
 
 #include <of/of.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/cpumask.h>
-#include <sel4m/ktime.h>
-#include <sel4m/cpu.h>
-#include <sel4m/irq.h>
-#include <sel4m/delay.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/delay.h>
 
 #include <asm/cache.h>
 #include <asm/cacheflush.h>

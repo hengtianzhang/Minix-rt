@@ -1,5 +1,5 @@
-#ifndef __SEL4M_SCHED_SCHED_H_
-#define __SEL4M_SCHED_SCHED_H_
+#ifndef __MINIX_RT_SCHED_SCHED_H_
+#define __MINIX_RT_SCHED_SCHED_H_
 
 #include <base/types.h>
 #include <base/compiler.h>
@@ -7,13 +7,13 @@
 #include <base/bitmap.h>
 #include <base/list.h>
 
-#include <sel4m/lockdep.h>
-#include <sel4m/spinlock.h>
-#include <sel4m/smp.h>
-#include <sel4m/cpumask.h>
-#include <sel4m/mm_types.h>
-#include <sel4m/sched/clock.h>
-#include <sel4m/sched/prio.h>
+#include <minix_rt/lockdep.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/mm_types.h>
+#include <minix_rt/sched/clock.h>
+#include <minix_rt/sched/prio.h>
 
 struct task_struct;
 
@@ -392,4 +392,4 @@ extern struct rq runqueues[CONFIG_NR_CPUS];
 #define for_each_domain(cpu, __sd) \
 	for (__sd = READ_ONCE(cpu_rq(cpu)->sd); __sd; __sd = __sd->parent)
 
-#endif /* !__SEL4M_SCHED_SCHED_H_ */
+#endif /* !__MINIX_RT_SCHED_SCHED_H_ */

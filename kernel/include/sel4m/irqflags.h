@@ -9,8 +9,8 @@
  * wrapped versions of the local_irq_*() APIs, based on the
  * raw_local_irq_*() macros from the lowlevel headers.
  */
-#ifndef __SEL4M_IRQFLAGS_H_
-#define __SEL4M_IRQFLAGS_H_
+#ifndef __MINIX_RT_IRQFLAGS_H_
+#define __MINIX_RT_IRQFLAGS_H_
 
 #include <base/typecheck.h>
 
@@ -59,4 +59,4 @@
 
 #define irqs_disabled_flags(flags) raw_irqs_disabled_flags(flags)
 
-#endif /* !__SEL4M_IRQFLAGS_H_ */
+#endif /* !__MINIX_RT_IRQFLAGS_H_ */

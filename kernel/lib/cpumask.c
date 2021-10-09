@@ -2,7 +2,7 @@
 #include <base/common.h>
 #include <base/bitops.h>
 
-#include <sel4m/cpumask.h>
+#include <minix_rt/cpumask.h>
 
 /**
  * cpumask_next - get the next cpu in a cpumask

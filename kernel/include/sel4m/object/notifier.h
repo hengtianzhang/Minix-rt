@@ -1,7 +1,7 @@
-#ifndef __SEL4M_OBJECT_NOTIFIER_H_
-#define __SEL4M_OBJECT_NOTIFIER_H_
+#ifndef __MINIX_RT_OBJECT_NOTIFIER_H_
+#define __MINIX_RT_OBJECT_NOTIFIER_H_
 
-#include <uapi/sel4m/object/notifier.h>
+#include <uapi/minix_rt/object/notifier.h>
 
 #include <asm/siginfo.h>
 
@@ -16,4 +16,4 @@ struct ksignal {
 	int sig;
 };
 
-#endif /* !__SEL4M_OBJECT_NOTIFIER_H_ */
+#endif /* !__MINIX_RT_OBJECT_NOTIFIER_H_ */

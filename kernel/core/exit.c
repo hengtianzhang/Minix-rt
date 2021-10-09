@@ -5,10 +5,10 @@
  */
 #include <base/compiler.h>
 
-#include <sel4m/sched.h>
-#include <sel4m/object/tcb.h>
-#include <sel4m/object/notifier.h>
-#include <sel4m/stat.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/object/tcb.h>
+#include <minix_rt/object/notifier.h>
+#include <minix_rt/stat.h>
 
 #include <asm/current.h>
 

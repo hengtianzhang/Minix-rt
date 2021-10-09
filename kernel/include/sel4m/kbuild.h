@@ -1,5 +1,5 @@
-#ifndef __SEL4M_KBUILD_H_
-#define __SEL4M_KBUILD_H_
+#ifndef __MINIX_RT_KBUILD_H_
+#define __MINIX_RT_KBUILD_H_
 
 #undef offsetof
 #ifdef __compiler_offsetof
@@ -19,4 +19,4 @@
 #define COMMENT(x) \
 	asm volatile("\n->#" x)
 
-#endif /* !__SEL4M_KBUILD_H_ */
+#endif /* !__MINIX_RT_KBUILD_H_ */

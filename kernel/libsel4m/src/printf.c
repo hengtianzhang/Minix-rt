@@ -2,9 +2,9 @@
 #include <base/compiler.h>
 #include <base/common.h>
 
-#include <libsel4m/syscalls.h>
-#include <libsel4m/object/ipc.h>
-#include <libsel4m/object/notifier.h>
+#include <libminix_rt/syscalls.h>
+#include <libminix_rt/object/ipc.h>
+#include <libminix_rt/object/notifier.h>
 
 asmlinkage __visible __weak int printf(const char *fmt, ...)
 {

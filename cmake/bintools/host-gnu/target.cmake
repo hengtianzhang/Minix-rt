@@ -11,4 +11,4 @@ find_program(CMAKE_READELF readelf)
 find_program(CMAKE_GDB     gdb    )
 
 # Include bin tool properties
-include(${SEL4M_BASE}/cmake/bintools/gnu/target_bintools.cmake)
+include(${MINIX_RT_BASE}/cmake/bintools/gnu/target_bintools.cmake)

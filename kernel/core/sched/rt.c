@@ -2,8 +2,8 @@
  * Real-Time Scheduling Class (mapped to the SCHED_FIFO and SCHED_RR
  * policies)
  */
-#include <sel4m/sched.h>
-#include <sel4m/sched/rt.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/rt.h>
 
 /*
  * Update the current task's runtime statistics. Skip current tasks that

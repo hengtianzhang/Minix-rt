@@ -33,7 +33,7 @@ check_set_compiler_property(
 	-fomit-frame-pointer
 )
 
-# GCC Option standard warning base in sel4m
+# GCC Option standard warning base in minix_rt
 set_compiler_property(PROPERTY warning_base
 		-Wall
 		-Wformat

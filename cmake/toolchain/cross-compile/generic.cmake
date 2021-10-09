@@ -3,8 +3,8 @@
 # CROSS_COMPILE is a KBuild mechanism for specifying an external
 # toolchain with a single environment variable.
 #
-# It is a legacy mechanism that will in sel4m translate to
-# specififying SEL4M_TOOLCHAIN to 'cross-compile' with the location
+# It is a legacy mechanism that will in minix_rt translate to
+# specififying MINIX_RT_TOOLCHAIN to 'cross-compile' with the location
 # 'CROSS_COMPILE'.
 #
 # It can be set from either the environment or from a CMake variable

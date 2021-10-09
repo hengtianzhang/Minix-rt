@@ -1,10 +1,10 @@
-#ifndef __SEL4M_PREEMPT_H_
-#define __SEL4M_PREEMPT_H_
+#ifndef __MINIX_RT_PREEMPT_H_
+#define __MINIX_RT_PREEMPT_H_
 
 #include <base/linkage.h>
 
-#include <sel4m/thread.h>
-#include <sel4m/interrupt.h>
+#include <minix_rt/thread.h>
+#include <minix_rt/interrupt.h>
 
 /*
  * We put the hardirq and softirq counter into the preemption
@@ -216,4 +216,4 @@ static inline void irq_exit(void)
 		preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
 	} while (0)
 
-#endif /* !__SEL4M_PREEMPT_H_ */
+#endif /* !__MINIX_RT_PREEMPT_H_ */

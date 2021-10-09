@@ -43,7 +43,7 @@ endforeach()
 # The CMAKE_REQUIRED_FLAGS variable is used by check_c_compiler_flag()
 # (and other commands which end up calling check_c_source_compiles())
 # to add additional compiler flags used during checking. These flags
-# are unused during "real" builds of sel4m source files linked into
+# are unused during "real" builds of minix_rt source files linked into
 # the final executable.
 #
 # Appending onto any existing values lets users specify

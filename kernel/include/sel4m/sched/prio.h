@@ -1,5 +1,5 @@
-#ifndef __SEL4M_SCHED_PRIO_H_
-#define __SEL4M_SCHED_PRIO_H_
+#ifndef __MINIX_RT_SCHED_PRIO_H_
+#define __MINIX_RT_SCHED_PRIO_H_
 
 /*
  * Priority of a process goes from 0..MAX_PRIO-1, valid RT
@@ -37,4 +37,4 @@
 #define TASK_USER_PRIO(p)	USER_PRIO((p)->static_prio)
 #define MAX_USER_PRIO		(USER_PRIO(MAX_PRIO))
 
-#endif /* !__SEL4M_SCHED_PRIO_H_ */
+#endif /* !__MINIX_RT_SCHED_PRIO_H_ */

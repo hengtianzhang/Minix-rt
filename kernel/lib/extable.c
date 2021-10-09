@@ -12,7 +12,7 @@
 #include <base/sort.h>
 #include <base/bsearch.h>
 
-#include <sel4m/extable.h>
+#include <minix_rt/extable.h>
 
 #ifndef ARCH_HAS_RELATIVE_EXTABLE
 #define ex_to_insn(x)	((x)->insn)

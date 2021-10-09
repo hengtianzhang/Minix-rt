@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <sel4m/sched.h>
-#include <sel4m/thread.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/thread.h>
 
 #include <asm/deubg-monitors.h>
 #include <asm/current.h>

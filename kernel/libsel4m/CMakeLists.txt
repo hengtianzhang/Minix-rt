@@ -2,14 +2,14 @@
 
 cmake_minimum_required(VERSION 3.20.0)
 
-project(lib${libsel4m_VAR}libsel4m VERSION 0.0.1)
+project(lib${libminix_rt_VAR}libminix_rt VERSION 0.0.1)
 
-add_library(${libsel4m_VAR}libsel4m STATIC EXCLUDE_FROM_ALL)
+add_library(${libminix_rt_VAR}libminix_rt STATIC EXCLUDE_FROM_ALL)
 
 add_subdirectory(src)
 add_subdirectory(arch/${ARCH}/src)
 
-target_include_directories(${libsel4m_VAR}libsel4m PUBLIC
+target_include_directories(${libminix_rt_VAR}libminix_rt PUBLIC
 	include
 	arch/${ARCH}/include
 	../include/uapi
@@ -19,7 +19,7 @@ target_include_directories(${libsel4m_VAR}libsel4m PUBLIC
 find_package(base REQUIRED)
 base_user_import_libraries()
 
-target_link_libraries(${libsel4m_VAR}libsel4m
+target_link_libraries(${libminix_rt_VAR}libminix_rt
 	PUBLIC
-	${libsel4m_VAR}base
+	${libminix_rt_VAR}base
 )

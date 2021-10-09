@@ -1,10 +1,10 @@
 #include <base/cache.h>
 
-#include <sel4m/interrupt.h>
-#include <sel4m/preempt.h>
-#include <sel4m/irq.h>
-#include <sel4m/smp.h>
-#include <sel4m/ktime.h>
+#include <minix_rt/interrupt.h>
+#include <minix_rt/preempt.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/ktime.h>
 
 static struct softirq_action softirq_vec[NR_SOFTIRQS] __cacheline_aligned_in_smp;
 

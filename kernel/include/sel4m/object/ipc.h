@@ -1,9 +1,9 @@
-#ifndef __SEL4M_OBJECT_IPC_H_
-#define __SEL4M_OBJECT_IPC_H_
+#ifndef __MINIX_RT_OBJECT_IPC_H_
+#define __MINIX_RT_OBJECT_IPC_H_
 
-#include <uapi/sel4m/object/ipc.h>
+#include <uapi/minix_rt/object/ipc.h>
 
-#include <sel4m/sched.h>
+#include <minix_rt/sched.h>
 
 #include <asm/current.h>
 
@@ -18,4 +18,4 @@ static inline char *ipc_get_debug_buffer(void)
 
 	return ipc_shr->debug_put_buffer;
 }
-#endif /* !__SEL4M_OBJECT_IPC_H_ */
+#endif /* !__MINIX_RT_OBJECT_IPC_H_ */

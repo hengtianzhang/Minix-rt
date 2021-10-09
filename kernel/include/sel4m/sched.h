@@ -1,15 +1,15 @@
-#ifndef __SEL4M_SCHED_H_
-#define __SEL4M_SCHED_H_
+#ifndef __MINIX_RT_SCHED_H_
+#define __MINIX_RT_SCHED_H_
 
 #include <base/types.h>
 
-#include <sel4m/mm_types.h>
-#include <sel4m/thread.h>
-#include <sel4m/sched/sched.h>
-#include <sel4m/object/pid.h>
-#include <sel4m/object/notifier.h>
+#include <minix_rt/mm_types.h>
+#include <minix_rt/thread.h>
+#include <minix_rt/sched/sched.h>
+#include <minix_rt/object/pid.h>
+#include <minix_rt/object/notifier.h>
 
-#include <uapi/sel4m/object/cap_types.h>
+#include <uapi/minix_rt/object/cap_types.h>
 
 #include <asm/thread_info.h>
 #include <asm/processor.h>
@@ -397,4 +397,4 @@ extern long io_schedule_timeout(long timeout);
 
 extern void show_task(struct task_struct *p);
 
-#endif /* !__SEL4M_SCHED_H_ */
+#endif /* !__MINIX_RT_SCHED_H_ */

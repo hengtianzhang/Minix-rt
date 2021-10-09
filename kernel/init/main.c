@@ -10,18 +10,18 @@
  */
 #include <base/init.h>
 
-#include <sel4m/cpu.h>
-#include <sel4m/irqflags.h>
-#include <sel4m/smp.h>
-#include <sel4m/of_fdt.h>
-#include <sel4m/extable.h>
-#include <sel4m/irq.h>
-#include <sel4m/ktime.h>
-#include <sel4m/hrtimer.h>
-#include <sel4m/sched.h>
-#include <sel4m/gfp.h>
-#include <sel4m/object/untype.h>
-#include <sel4m/sched/idle.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/irqflags.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/of_fdt.h>
+#include <minix_rt/extable.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/gfp.h>
+#include <minix_rt/object/untype.h>
+#include <minix_rt/sched/idle.h>
 
 enum system_states system_state __read_mostly;
 

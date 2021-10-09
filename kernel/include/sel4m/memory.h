@@ -1,5 +1,5 @@
-#ifndef __SEL4M_MEMORY_H_
-#define __SEL4M_MEMORY_H_
+#ifndef __MINIX_RT_MEMORY_H_
+#define __MINIX_RT_MEMORY_H_
 
 #include <base/string.h>
 
@@ -32,4 +32,4 @@ static inline void early_memtest(phys_addr_t start, phys_addr_t end)
 }
 #endif
 
-#endif /* !__SEL4M_MEMORY_H_ */
+#endif /* !__MINIX_RT_MEMORY_H_ */

@@ -1,4 +1,4 @@
-#include <sel4m/reciprocal_div.h>
+#include <minix_rt/reciprocal_div.h>
 
 #include <asm/base/div64.h>
 

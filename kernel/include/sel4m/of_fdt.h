@@ -1,5 +1,5 @@
-#ifndef __SEL4M_OF_FDT_H_
-#define __SEL4M_OF_FDT_H_
+#ifndef __MINIX_RT_OF_FDT_H_
+#define __MINIX_RT_OF_FDT_H_
 
 #include <of/of_fdt.h>
 
@@ -10,4 +10,4 @@ extern char boot_command_line[COMMAND_LINE_SIZE];
 extern phys_addr_t phys_initrd_start;
 extern phys_addr_t phys_initrd_size;
 
-#endif /* !__SEL4M_OF_FDT_H_ */
+#endif /* !__MINIX_RT_OF_FDT_H_ */

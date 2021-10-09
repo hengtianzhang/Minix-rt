@@ -1,10 +1,10 @@
-#ifndef __SEL4M_WAIT_H_
-#define __SEL4M_WAIT_H_
+#ifndef __MINIX_RT_WAIT_H_
+#define __MINIX_RT_WAIT_H_
 
 #include <base/list.h>
 #include <base/stddef.h>
 
-#include <sel4m/spinlock.h>
+#include <minix_rt/spinlock.h>
 
 #define WNOHANG		0x00000001
 #define WUNTRACED	0x00000002
@@ -370,4 +370,4 @@ int autoremove_wake_function(wait_queue_t *wait, unsigned mode, int sync, void *
 		INIT_LIST_HEAD(&(wait)->task_list);			\
 	} while (0)
 
-#endif /* !__SEL4M_WAIT_H_ */
+#endif /* !__MINIX_RT_WAIT_H_ */

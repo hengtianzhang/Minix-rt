@@ -11,8 +11,8 @@
 #include <base/init.h>
 #include <base/errno.h>
 
-#include <sel4m/console.h>
-#include <sel4m/of_fdt.h>
+#include <minix_rt/console.h>
+#include <minix_rt/of_fdt.h>
 
 #include <asm/fixmap.h>
 

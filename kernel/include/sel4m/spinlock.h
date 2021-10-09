@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_SPINLOCK_H_
-#define __SEL4M_SPINLOCK_H_
+#ifndef __MINIX_RT_SPINLOCK_H_
+#define __MINIX_RT_SPINLOCK_H_
 
 #include <base/common.h>
 
-#include <sel4m/preempt.h>
-#include <sel4m/irqflags.h>
+#include <minix_rt/preempt.h>
+#include <minix_rt/irqflags.h>
 
 /*
  * include/linux/spinlock.h - generic spinlock/rwlock declarations
@@ -58,7 +58,7 @@
 /*
  * Pull the arch_spinlock_t and arch_rwlock_t definitions:
  */
-#include <sel4m/spinlock_types.h>
+#include <minix_rt/spinlock_types.h>
 
 /*
  * Pull the arch_spin*() functions/declarations (UP-nondebug doesn't need them):
@@ -229,12 +229,12 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
 })
 
 /* Include rwlock functions */
-#include <sel4m/rwlock.h>
+#include <minix_rt/rwlock.h>
 
 /*
  * Pull the _spin_*()/_read_*()/_write_*() functions/declarations:
  */
-#include <sel4m/spinlock_api_smp.h>
+#include <minix_rt/spinlock_api_smp.h>
 
 /*
  * Map the spin_lock functions to the raw variants for PREEMPT_RT=n
@@ -357,4 +357,4 @@ extern int _atomic_dec_and_lock_irqsave(atomic_t *atomic, spinlock_t *lock,
 #define atomic_dec_and_lock_irqsave(atomic, lock, flags) \
 		__cond_lock(lock, _atomic_dec_and_lock_irqsave(atomic, lock, &(flags)))
 
-#endif /* !__SEL4M_SPINLOCK_H_ */
+#endif /* !__MINIX_RT_SPINLOCK_H_ */

@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef __SEL4M_CONSOLE_H_
-#define __SEL4M_CONSOLE_H_
+#ifndef __MINIX_RT_CONSOLE_H_
+#define __MINIX_RT_CONSOLE_H_
 
 #include <of/of.h>
 
@@ -28,4 +28,4 @@ extern int of_setup_console(const struct of_device_id *match,
 
 #define CONSOLE_DECLARE(name, compat, fn) OF_DECLARE_1(console, name, compat, fn)
 
-#endif /* !__SEL4M_CONSOLE_H_ */
+#endif /* !__MINIX_RT_CONSOLE_H_ */

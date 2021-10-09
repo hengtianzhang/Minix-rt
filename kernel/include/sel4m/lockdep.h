@@ -6,8 +6,8 @@
  *
  * see Documentation/locking/lockdep-design.txt for more details.
  */
-#ifndef __SEL4M_LOCKDEP_H_
-#define __SEL4M_LOCKDEP_H_
+#ifndef __MINIX_RT_LOCKDEP_H_
+#define __MINIX_RT_LOCKDEP_H_
 
 struct task_struct;
 struct lockdep_map;
@@ -134,4 +134,4 @@ static inline void print_irqtrace_events(struct task_struct *curr)
 #define lockdep_assert_irqs_enabled() do { } while (0)
 #define lockdep_assert_irqs_disabled() do { } while (0)
 
-#endif /* !__SEL4M_LOCKDEP_H_ */
+#endif /* !__MINIX_RT_LOCKDEP_H_ */

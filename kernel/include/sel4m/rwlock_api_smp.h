@@ -1,7 +1,7 @@
-#ifndef __SEL4M_RWLOCK_API_SMP_H_
-#define __SEL4M_RWLOCK_API_SMP_H_
+#ifndef __MINIX_RT_RWLOCK_API_SMP_H_
+#define __MINIX_RT_RWLOCK_API_SMP_H_
 
-#ifndef __SEL4M_SPINLOCK_API_SMP_H_
+#ifndef __MINIX_RT_SPINLOCK_API_SMP_H_
 # error "please don't include this file directly"
 #endif
 
@@ -143,4 +143,4 @@ static inline void __raw_write_unlock_irq(rwlock_t *lock)
 	preempt_enable();
 }
 
-#endif /* !__SEL4M_RWLOCK_API_SMP_H_ */
+#endif /* !__MINIX_RT_RWLOCK_API_SMP_H_ */

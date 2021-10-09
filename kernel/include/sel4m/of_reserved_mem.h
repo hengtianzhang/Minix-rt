@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_OF_RESERVED_MEM_H_
-#define __SEL4M_OF_RESERVED_MEM_H_
+#ifndef __MINIX_RT_OF_RESERVED_MEM_H_
+#define __MINIX_RT_OF_RESERVED_MEM_H_
 
 #include <base/types.h>
 
@@ -20,4 +20,4 @@ void fdt_reserved_mem_save_node(unsigned long node, const char *uname,
 				      phys_addr_t base, phys_addr_t size);
 void fdt_init_reserved_mem(void);
 
-#endif /* !__SEL4M_OF_RESERVED_MEM_H_ */
+#endif /* !__MINIX_RT_OF_RESERVED_MEM_H_ */

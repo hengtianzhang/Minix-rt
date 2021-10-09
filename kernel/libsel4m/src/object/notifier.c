@@ -1,5 +1,5 @@
-#include <libsel4m/object/notifier.h>
-#include <libsel4m/syscalls.h>
+#include <libminix_rt/object/notifier.h>
+#include <libminix_rt/syscalls.h>
 
 int notifier_register_handler(unsigned int notifier, __sighandler_t fn)
 {

@@ -25,7 +25,7 @@
 #include <base/bug.h>
 #include <base/rbtree.h>
 
-#include <sel4m/timerqueue.h>
+#include <minix_rt/timerqueue.h>
 
 /**
  * timerqueue_add - Adds timer to timerqueue.

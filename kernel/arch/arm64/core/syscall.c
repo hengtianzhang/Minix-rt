@@ -1,9 +1,9 @@
 #include <base/linkage.h>
 #include <base/common.h>
 
-#include <sel4m/sched.h>
-#include <sel4m/object/tcb.h>
-#include <sel4m/syscalls.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/object/tcb.h>
+#include <minix_rt/syscalls.h>
 
 #include <asm/daifflags.h>
 #include <asm/ptrace.h>

@@ -19,4 +19,4 @@ find_program(CMAKE_GDB     ${CROSS_COMPILE}gdb     ${find_program_gcc_args})
 find_program(CMAKE_GDB     gdb-multiarch           ${find_program_binutils_args})
 
 # Include bin tool properties
-include(${SEL4M_BASE}/cmake/bintools/gnu/target_bintools.cmake)
+include(${MINIX_RT_BASE}/cmake/bintools/gnu/target_bintools.cmake)

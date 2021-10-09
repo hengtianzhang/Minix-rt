@@ -1,5 +1,5 @@
-#ifndef __SEL4M_SPINLOCK_TYPES_H_
-#define __SEL4M_SPINLOCK_TYPES_H_
+#ifndef __MINIX_RT_SPINLOCK_TYPES_H_
+#define __MINIX_RT_SPINLOCK_TYPES_H_
 
 /*
  * include/linux/spinlock_types.h - generic spinlock type definitions
@@ -39,6 +39,6 @@ typedef struct spinlock {
 
 #define DEFINE_SPINLOCK(x)	spinlock_t x = __SPIN_LOCK_UNLOCKED(x)
 
-#include <sel4m/rwlock_types.h>
+#include <minix_rt/rwlock_types.h>
 
-#endif /* !__SEL4M_SPINLOCK_TYPES_H_ */
+#endif /* !__MINIX_RT_SPINLOCK_TYPES_H_ */

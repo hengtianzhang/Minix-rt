@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-# Writes/updates the sel4m/.config configuration file by merging configuration
+# Writes/updates the minix_rt/.config configuration file by merging configuration
 # files passed as arguments, e.g. board *_defconfig and application prj.conf
 # files.
 #
-# When fragments haven't changed, sel4m/.config is both the input and the
+# When fragments haven't changed, minix_rt/.config is both the input and the
 # output, which just updates it. This is handled in the CMake files.
 #
 # Also does various checks (most via Kconfiglib warnings).
@@ -14,7 +14,7 @@ import os
 import sys
 import textwrap
 
-# sel4m doesn't use tristate symbols. They're supported here just to make the
+# minix_rt doesn't use tristate symbols. They're supported here just to make the
 # script a bit more generic.
 from kconfiglib import Kconfig, split_expr, expr_value, expr_str, BOOL, \
                        TRISTATE, TRI_TO_STR, AND
@@ -23,8 +23,8 @@ from kconfiglib import Kconfig, split_expr, expr_value, expr_str, BOOL, \
 def main():
     args = parse_args()
 
-    if args.sel4m_base:
-        os.environ['SEL4M_BASE'] = args.sel4m_base
+    if args.minix_rt_base:
+        os.environ['MINIX_RT_BASE'] = args.minix_rt_base
 
     print("Parsing " + args.kconfig_file)
     kconf = Kconfig(args.kconfig_file, warn_to_stderr=False,
@@ -52,7 +52,7 @@ def main():
         # have no effect.
         #
         # This only makes sense when loading handwritten fragments and not when
-        # loading sel4m/.config, because sel4m/.config is configuration
+        # loading minix_rt/.config, because minix_rt/.config is configuration
         # output and also assigns promptless symbols.
         check_no_promptless_assign(kconf)
 
@@ -154,7 +154,7 @@ def missing_deps(sym):
     # on 'sym' (which can also come from e.g. a surrounding 'if'), returns a
     # list of all <expr>s with a value less than the value 'sym' was assigned
     # ("less" instead of "not equal" just to be general and handle tristates,
-    # even though sel4m doesn't use them).
+    # even though minix_rt doesn't use them).
     #
     # For string/int/hex symbols, just looks for <expr> = n.
     #
@@ -230,8 +230,8 @@ def parse_args():
                              "handwritten fragments and do additional checks "
                              "on them, like no promptless symbols being "
                              "assigned")
-    parser.add_argument("--sel4m-base",
-                        help="Path to current sel4m installation")
+    parser.add_argument("--minix_rt-base",
+                        help="Path to current minix_rt installation")
     parser.add_argument("kconfig_file",
                         help="Top-level Kconfig file")
     parser.add_argument("config_out",

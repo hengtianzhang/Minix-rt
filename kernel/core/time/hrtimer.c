@@ -24,11 +24,11 @@
 #include <base/err.h>
 #include <base/bug.h>
 
-#include <sel4m/cpu.h>
-#include <sel4m/hrtimer.h>
-#include <sel4m/timekeeping.h>
-#include <sel4m/smp.h>
-#include <sel4m/sched.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/timekeeping.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/sched.h>
 
 #include "tick-internal.h"
 #include "timekeeping.h"

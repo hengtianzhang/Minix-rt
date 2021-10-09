@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_TIME_H_
-#define __SEL4M_TIME_H_
+#ifndef __MINIX_RT_TIME_H_
+#define __MINIX_RT_TIME_H_
 
 #include <base/cache.h>
 #include <base/math64.h>
@@ -65,4 +65,4 @@ static inline bool itimerspec64_valid(const struct itimerspec64 *its)
 #define time_after32(a, b)	((s32)((u32)(b) - (u32)(a)) < 0)
 #define time_before32(b, a)	time_after32(a, b)
 
-#endif /* !__SEL4M_TIME_H_ */
+#endif /* !__MINIX_RT_TIME_H_ */

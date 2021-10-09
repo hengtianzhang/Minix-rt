@@ -21,10 +21,10 @@
 #include <base/cache.h>
 #include <base/string.h>
 
-#include <sel4m/mm.h>
-#include <sel4m/of_fdt.h>
-#include <sel4m/memory.h>
-#include <sel4m/page.h>
+#include <minix_rt/mm.h>
+#include <minix_rt/of_fdt.h>
+#include <minix_rt/memory.h>
+#include <minix_rt/page.h>
 
 #include <asm/pgtable.h>
 #include <asm/sections.h>

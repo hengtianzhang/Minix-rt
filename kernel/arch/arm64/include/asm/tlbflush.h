@@ -21,7 +21,7 @@
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/mm_types.h>
+#include <minix_rt/mm_types.h>
 
 #include <asm/kernel-pgtable.h>
 

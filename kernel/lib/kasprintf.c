@@ -10,7 +10,7 @@
 #include <base/string.h>
 #include <base/common.h>
 
-#include <sel4m/slab.h>
+#include <minix_rt/slab.h>
 
 /* Simplified asprintf. */
 char *kvasprintf(gfp_t gfp, const char *fmt, va_list ap)

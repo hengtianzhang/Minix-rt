@@ -4,8 +4,8 @@
  * - Incorporating suggestions made by Linus Torvalds
  */
 
-#ifndef __SEL4M_THREAD_INFO_H_
-#define __SEL4M_THREAD_INFO_H_
+#ifndef __MINIX_RT_THREAD_INFO_H_
+#define __MINIX_RT_THREAD_INFO_H_
 
 #include <base/types.h>
 #include <base/bitops.h>
@@ -61,4 +61,4 @@ static inline int test_ti_thread_flag(struct thread_info *ti, int flag)
 #define tif_need_resched() test_thread_flag(TIF_NEED_RESCHED)
 
 #endif /* __KERNEL__ */
-#endif /* !__SEL4M_THREAD_INFO_H_ */
+#endif /* !__MINIX_RT_THREAD_INFO_H_ */

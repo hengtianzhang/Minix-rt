@@ -22,9 +22,9 @@ endif()
 
 # See https://gitlab.kitware.com/cmake/cmake/issues/16228
 # and https://cmake.org/pipermail/cmake/2019-May/thread.html#69496
-if(NOT ${SEL4M_BASE}/projects STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+if(NOT ${MINIX_RT_BASE}/projects STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 message(WARNING "projects doesn't match CMAKE_CURRENT_SOURCE_DIR
-	SEL4M_BASE              = ${SEL4M_BASE}
+	MINIX_RT_BASE              = ${MINIX_RT_BASE}
 	PWD                      = $ENV{PWD}
 	CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}
 You may be using a mix of symbolic links and real paths which causes \
@@ -33,10 +33,10 @@ endif()
 
 # Verify that the toolchain can compile a dummy file, if it is not we
 # won't be able to test for compatibility with certain C flags.
-sel4m_check_compiler_flag(C "" toolchain_is_ok)
+minix_rt_check_compiler_flag(C "" toolchain_is_ok)
 assert(toolchain_is_ok "The toolchain is unable to build a dummy C file. See CMakeError.log.")
 
-project(rootServices VERSION ${SEL4M_PROJECT_VERSION})
+project(rootServices VERSION ${MINIX_RT_PROJECT_VERSION})
 enable_language(C CXX ASM)
 
 add_library(services_interface INTERFACE)
@@ -124,14 +124,14 @@ target_include_directories(services_interface SYSTEM INTERFACE $<TARGET_PROPERTY
 
 services_ld_options(-nostdlib -static)
 
-add_subdirectory(sel4mruntime)
+add_subdirectory(minix_rtruntime)
 
 set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/archive.S")
 
-function(sel4mruntime_configure rootservicesname)
+function(minix_rtruntime_configure rootservicesname)
 	get_property(SERVICES_LINKER_SCRIPT GLOBAL PROPERTY SERVICES_LINKER_SCRIPT_S)
 	if(NOT EXISTS ${SERVICES_LINKER_SCRIPT})
-		message(FATAL_ERROR "Could not find sel4m linker script: '${CMAKE_CURRENT_SOURCE_DIR}'. ${CMAKE_CURRENT_LIST_FILE} Corrupted configuration?")
+		message(FATAL_ERROR "Could not find minix_rt linker script: '${CMAKE_CURRENT_SOURCE_DIR}'. ${CMAKE_CURRENT_LIST_FILE} Corrupted configuration?")
 	endif()
 
 	find_package(base REQUIRED)
@@ -159,9 +159,9 @@ function(sel4mruntime_configure rootservicesname)
 endfunction()
 
 function(DeclareRootservices rootservicesname)
-	target_link_libraries(${rootservicesname} PRIVATE sel4mruntime_crt_obj)
+	target_link_libraries(${rootservicesname} PRIVATE minix_rtruntime_crt_obj)
 
-	sel4mruntime_configure(${rootservicesname})
+	minix_rtruntime_configure(${rootservicesname})
     set_property(
         TARGET ${rootservicesname}
         APPEND_STRING
@@ -186,9 +186,9 @@ function(DeclareRootservices rootservicesname)
 endfunction(DeclareRootservices)
 
 function(DeclareServicesApp servicesappname)
-	target_link_libraries(${servicesappname} PRIVATE sel4mruntime_crt_obj)
+	target_link_libraries(${servicesappname} PRIVATE minix_rtruntime_crt_obj)
 
-	sel4mruntime_configure(${servicesappname})
+	minix_rtruntime_configure(${servicesappname})
     set_property(
         TARGET ${servicesappname}
         APPEND_STRING
@@ -226,7 +226,7 @@ function(qemu_virt_setup)
 	get_property(CORE_IMAGE_TARGET_PROPERTY GLOBAL PROPERTY CORE_IMAGE_TARGET)
 	add_custom_command(
 		OUTPUT ${APPLICATION_BINARY_DIR}/simulate
-		COMMAND ${PYTHON_EXECUTABLE} ${SEL4M_BASE}/scripts/gen_simulate.py
+		COMMAND ${PYTHON_EXECUTABLE} ${MINIX_RT_BASE}/scripts/gen_simulate.py
 		-n ${CORE_IMAGE_NAME_PROPERTY}
 		-o ${APPLICATION_BINARY_DIR}/simulate
 		COMMAND chmod u+x "${APPLICATION_BINARY_DIR}/simulate"

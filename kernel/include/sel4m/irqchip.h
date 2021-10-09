@@ -8,8 +8,8 @@
  * warranty of any kind, whether express or implied.
  */
 
-#ifndef __SEL4M_IRQCHIP_H_
-#define __SEL4M_IRQCHIP_H_
+#ifndef __MINIX_RT_IRQCHIP_H_
+#define __MINIX_RT_IRQCHIP_H_
 
 #include <of/of.h>
 
@@ -31,4 +31,4 @@ void irqchip_init(void);
 static inline void irqchip_init(void) {}
 #endif
 
-#endif /* !__SEL4M_IRQCHIP_H_ */
+#endif /* !__MINIX_RT_IRQCHIP_H_ */

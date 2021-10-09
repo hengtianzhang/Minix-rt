@@ -3,8 +3,8 @@
 
 /* @templates@ values come from cmake/version.cmake */
 
-#cmakedefine SEL4M_VERSION_CODE @SEL4M_VERSION_CODE@
-#define SEL4M_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
+#cmakedefine MINIX_RT_VERSION_CODE @MINIX_RT_VERSION_CODE@
+#define MINIX_RT_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
 
 #define KERNELVERSION          @KERNELVERSION@
 #define KERNEL_VERSION_NUMBER  @KERNEL_VERSION_NUMBER@

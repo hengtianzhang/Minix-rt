@@ -19,11 +19,11 @@
 #include <base/common.h>
 #include <base/linkage.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/sched.h>
-#include <sel4m/stat.h>
-#include <sel4m/spinlock.h>
-#include <sel4m/object/notifier.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/stat.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/object/notifier.h>
 
 #include <asm/current.h>
 #include <asm/esr.h>

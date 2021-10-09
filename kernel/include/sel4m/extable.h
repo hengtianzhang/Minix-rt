@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_EXTABLE_H_
-#define __SEL4M_EXTABLE_H_
+#ifndef __MINIX_RT_EXTABLE_H_
+#define __MINIX_RT_EXTABLE_H_
 
 #include <base/stddef.h>	/* for NULL */
 #include <base/types.h>
@@ -20,4 +20,4 @@ void sort_main_extable(void);
 /* Given an address, look for it in the exception tables */
 const struct exception_table_entry *search_exception_tables(unsigned long add);
 
-#endif /* !__SEL4M_EXTABLE_H_ */
+#endif /* !__MINIX_RT_EXTABLE_H_ */

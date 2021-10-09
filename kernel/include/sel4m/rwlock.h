@@ -1,7 +1,7 @@
-#ifndef __SEL4M_RWLOCK_H_
-#define __SEL4M_RWLOCK_H_
+#ifndef __MINIX_RT_RWLOCK_H_
+#define __MINIX_RT_RWLOCK_H_
 
-#ifndef __SEL4M_SPINLOCK_H_
+#ifndef __MINIX_RT_SPINLOCK_H_
 #error "please don't include this file directly"
 #endif
 
@@ -83,4 +83,4 @@
 	1 : ({ local_irq_restore(flags); 0; }); \
 })
 
-#endif /* !__SEL4M_RWLOCK_H_ */
+#endif /* !__MINIX_RT_RWLOCK_H_ */

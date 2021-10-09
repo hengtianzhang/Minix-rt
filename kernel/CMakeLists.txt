@@ -22,9 +22,9 @@ endif()
 
 # See https://gitlab.kitware.com/cmake/cmake/issues/16228
 # and https://cmake.org/pipermail/cmake/2019-May/thread.html#69496
-if(NOT ${SEL4M_BASE}/kernel STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+if(NOT ${MINIX_RT_BASE}/kernel STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 message(WARNING "kernel doesn't match CMAKE_CURRENT_SOURCE_DIR
-	SEL4M_BASE              = ${SEL4M_BASE}
+	MINIX_RT_BASE              = ${MINIX_RT_BASE}
 	PWD                      = $ENV{PWD}
 	CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}
 You may be using a mix of symbolic links and real paths which causes \
@@ -33,13 +33,13 @@ endif()
 
 # Verify that the toolchain can compile a dummy file, if it is not we
 # won't be able to test for compatibility with certain C flags.
-sel4m_check_compiler_flag(C "" toolchain_is_ok)
+minix_rt_check_compiler_flag(C "" toolchain_is_ok)
 assert(toolchain_is_ok "The toolchain is unable to build a dummy C file. See CMakeError.log.")
 
-project(kernel VERSION ${SEL4M_PROJECT_VERSION})
+project(kernel VERSION ${MINIX_RT_PROJECT_VERSION})
 enable_language(C CXX ASM)
 
-set(VERSION_FILE ${SEL4M_BASE}/VERSION)
+set(VERSION_FILE ${MINIX_RT_BASE}/VERSION)
 # Re-configure (Re-execute all CMakeLists.txt code) when autoconf.h changes
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${VERSION_FILE})
 
@@ -86,7 +86,7 @@ kernel_include_directories(
 
 kernel_compile_definitions(
 	__KERNEL__
-	__SEL4M__=1
+	__MINIX_RT__=1
 )
 
 # Common toolchain-agnostic assembly flags
@@ -233,7 +233,7 @@ kernel_cc_option(-Werror=incompatible-pointer-types)
 kernel_cc_option(-Werror=designated-init)
 
 kernel_cc_option(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=CMAKE_SOURCE_DIR)
-kernel_cc_option(-fmacro-prefix-map=${SEL4M_BASE}=SEL4M_BASE)
+kernel_cc_option(-fmacro-prefix-map=${MINIX_RT_BASE}=MINIX_RT_BASE)
 
 # ==========================================================================
 #
@@ -314,7 +314,7 @@ kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,
 
 # Allow the user to inject options when calling cmake, e.g.
 # 'cmake -DEXTRA_CFLAGS="-Werror -Wno-deprecated-declarations" ..'
-include(${SEL4M_BASE}/cmake/kernel_extra_flags.cmake)
+include(${MINIX_RT_BASE}/cmake/kernel_extra_flags.cmake)
 
 kernel_cc_option(-fno-asynchronous-unwind-tables)
 kernel_cc_option(-fno-PIE)
@@ -350,7 +350,7 @@ set_target_properties(${ASM_OFFSETS_LIB} PROPERTIES COMPILE_OPTIONS "-S")
 
 add_custom_command(
 	OUTPUT ${ASM_OFFSETS_H_PATH}
-	COMMAND ${PYTHON_EXECUTABLE} ${SEL4M_BASE}/scripts/gen_header.py
+	COMMAND ${PYTHON_EXECUTABLE} ${MINIX_RT_BASE}/scripts/gen_header.py
 	-n "__ASM_OFFSETS_H_"
 	-i $<TARGET_OBJECTS:${ASM_OFFSETS_LIB}>
 	-o ${ASM_OFFSETS_H_PATH}
@@ -367,7 +367,7 @@ set(TIMECONST_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/timeconst.h)
 
 add_custom_command(
 	OUTPUT ${TIMECONST_H_PATH}
-	COMMAND ${SHELL} ${SEL4M_BASE}/scripts/timeconst.sh
+	COMMAND ${SHELL} ${MINIX_RT_BASE}/scripts/timeconst.sh
 	${CONFIG_HZ}
 	${BC}
 	${TIMECONST_BC_PATH}
@@ -380,7 +380,7 @@ add_custom_target(${TIMECONST_H_TARGET} DEPENDS ${TIMECONST_H_PATH})
 set(COMPILE_H_PATH ${APPLICATION_BINARY_DIR}/include/generated/compile.h)
 
 add_custom_target(${COMPILE_H_TARGET}
-	COMMAND ${SHELL} ${SEL4M_BASE}/scripts/mkcompile_h
+	COMMAND ${SHELL} ${MINIX_RT_BASE}/scripts/mkcompile_h
 	${COMPILE_H_PATH}
 	${UTS_MACHINE}
 	"SMP"
@@ -465,7 +465,7 @@ set_property(TARGET
 	${KERNEL_INCLUDE_DIRS}
 )
 
-add_executable(${KERNEL_FINAL_EXECUTABLE} ${SEL4M_BASE}/misc/empty.c)
+add_executable(${KERNEL_FINAL_EXECUTABLE} ${MINIX_RT_BASE}/misc/empty.c)
 toolchain_ld_link_kernel_elf(
 	TARGET_ELF            ${KERNEL_FINAL_EXECUTABLE}
 	OUTPUT_MAP            ${KERNEL_BINARY_DIR}/${KERNEL_FINAL_EXECUTABLE}.map
@@ -494,7 +494,7 @@ set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_COMMANDS
 	COMMAND
 	${SHELL}
-	${SEL4M_BASE}/scripts/mksysmap
+	${MINIX_RT_BASE}/scripts/mksysmap
 	${CMAKE_NM}
 	${KERNEL_ELF_NAME}
 	${GREP}
@@ -508,7 +508,7 @@ set_property(GLOBAL APPEND
 set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_COMMANDS
 	COMMAND
-	${SHELL} ${SEL4M_BASE}/scripts/gen_version.sh
+	${SHELL} ${MINIX_RT_BASE}/scripts/gen_version.sh
 	${APPLICATION_BINARY_DIR}
 ) 
 set_property(GLOBAL APPEND

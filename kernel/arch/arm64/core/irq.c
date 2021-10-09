@@ -23,10 +23,10 @@
 #include <base/types.h>
 #include <base/init.h>
 
-#include <sel4m/irqchip.h>
-#include <sel4m/irq.h>
-#include <sel4m/page.h>
-#include <sel4m/cpumask.h>
+#include <minix_rt/irqchip.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/page.h>
+#include <minix_rt/cpumask.h>
 
 u64 *irq_stack_ptr[CONFIG_NR_CPUS] __page_aligned_bss;
 

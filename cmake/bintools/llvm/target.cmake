@@ -11,4 +11,4 @@ find_program(CMAKE_OBJCOPY llvm-objcopy ${find_program_clang_args})
 find_program(CMAKE_READELF llvm-readelf ${find_program_clang_args})
 
 # Use the gnu binutil abstraction
-include(${SEL4M_BASE}/cmake/bintools/llvm/target_bintools.cmake)
+include(${MINIX_RT_BASE}/cmake/bintools/llvm/target_bintools.cmake)

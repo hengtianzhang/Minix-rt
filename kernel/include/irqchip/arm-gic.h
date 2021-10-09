@@ -7,8 +7,8 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#ifndef __SEL4M_IRQCHIP_ARM_GIC_H_
-#define __SEL4M_IRQCHIP_ARM_GIC_H_
+#ifndef __MINIX_RT_IRQCHIP_ARM_GIC_H_
+#define __MINIX_RT_IRQCHIP_ARM_GIC_H_
 
 #define GIC_CPU_CTRL			0x00
 #define GIC_CPU_PRIMASK			0x04
@@ -130,7 +130,7 @@
 
 #ifndef __ASSEMBLY__
 
-#include <sel4m/irq.h>
+#include <minix_rt/irq.h>
 
 struct device_node;
 struct gic_chip_data;
@@ -161,4 +161,4 @@ void gic_migrate_target(unsigned int new_cpu_id);
 u64 gic_get_sgir_physaddr(void);
 
 #endif /* !__ASSEMBLY */
-#endif /* !__SEL4M_IRQCHIP_ARM_GIC_H_ */
+#endif /* !__MINIX_RT_IRQCHIP_ARM_GIC_H_ */

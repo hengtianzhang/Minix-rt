@@ -20,8 +20,8 @@
 
 #include <of/of.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/psci.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/psci.h>
 
 #include <asm/cpu_ops.h>
 

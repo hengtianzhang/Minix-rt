@@ -54,9 +54,9 @@
  */
 #include <base/init.h>
 
-#include <sel4m/irqflags.h>
-#include <sel4m/sched_clock.h>
-#include <sel4m/sched/clock.h>
+#include <minix_rt/irqflags.h>
+#include <minix_rt/sched_clock.h>
+#include <minix_rt/sched/clock.h>
 
 void __init sched_clock_init(void)
 {

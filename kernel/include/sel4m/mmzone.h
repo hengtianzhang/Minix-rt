@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_MMZONE_H_
-#define __SEL4M_MMZONE_H_
+#ifndef __MINIX_RT_MMZONE_H_
+#define __MINIX_RT_MMZONE_H_
 
 #include <base/list.h>
 #include <base/cache.h>
 
-#include <sel4m/spinlock.h>
+#include <minix_rt/spinlock.h>
 
 enum zone_type {
 	ZONE_DMA,
@@ -91,4 +91,4 @@ static inline unsigned long zone_managed_pages(struct zone *zone)
 	for (order = 0; order < MAX_ORDER; order++)
 
 #endif /* ASM_OFFSET_GENERATED */
-#endif /* !__SEL4M_MMZONE_H_ */
+#endif /* !__MINIX_RT_MMZONE_H_ */

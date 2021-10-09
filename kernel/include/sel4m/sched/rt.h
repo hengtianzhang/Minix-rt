@@ -1,7 +1,7 @@
-#ifndef __SEL4M_SCHED_RT_H_
-#define __SEL4M_SCHED_RT_H_
+#ifndef __MINIX_RT_SCHED_RT_H_
+#define __MINIX_RT_SCHED_RT_H_
 
-#include <sel4m/jiffies.h>
+#include <minix_rt/jiffies.h>
 
 static inline int rt_prio(int prio)
 {
@@ -35,4 +35,4 @@ static inline int task_has_rt_policy(struct task_struct *p)
 	return rt_policy(p->policy);
 }
 
-#endif /* !__SEL4M_SCHED_RT_H_ */
+#endif /* !__MINIX_RT_SCHED_RT_H_ */

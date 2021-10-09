@@ -1,10 +1,10 @@
-#include <sel4m/object/notifier.h>
-#include <sel4m/syscalls.h>
-#include <sel4m/sched.h>
-#include <sel4m/signal.h>
+#include <minix_rt/object/notifier.h>
+#include <minix_rt/syscalls.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/signal.h>
 
-#include <uapi/sel4m/object/notifier.h>
-#include <uapi/sel4m/object/cap_types.h>
+#include <uapi/minix_rt/object/notifier.h>
+#include <uapi/minix_rt/object/cap_types.h>
 
 SYSCALL_DEFINE6(notifier, enum notifier_type, table,
 				unsigned int, notifier, unsigned long, fn,

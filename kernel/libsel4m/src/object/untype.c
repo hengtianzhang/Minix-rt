@@ -1,5 +1,5 @@
-#include <libsel4m/object/untype.h>
-#include <libsel4m/syscalls.h>
+#include <libminix_rt/object/untype.h>
+#include <libminix_rt/syscalls.h>
 
 int untype_alloc_area(unsigned long vstart,
             unsigned long size, unsigned long vm_flags)

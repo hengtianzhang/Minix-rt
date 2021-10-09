@@ -15,12 +15,12 @@
  */
 #include <base/pfn.h>
 
-#include <sel4m/gfp.h>
-#include <sel4m/mm.h>
-#include <sel4m/jiffies.h>
-#include <sel4m/ktime.h>
-#include <sel4m/sched.h>
-#include <sel4m/stat.h>
+#include <minix_rt/gfp.h>
+#include <minix_rt/mm.h>
+#include <minix_rt/jiffies.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/stat.h>
 
 #include <asm/current.h>
 

@@ -1,7 +1,7 @@
 
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_DELAY_H_
-#define __SEL4M_DELAY_H_
+#ifndef __MINIX_RT_DELAY_H_
+#define __MINIX_RT_DELAY_H_
 
 #include <base/common.h>
 #include <base/time.h>
@@ -49,4 +49,4 @@ static inline void ssleep(unsigned int seconds)
 	msleep(seconds * 1000);
 }
 
-#endif /* !__SEL4M_DELAY_H_ */
+#endif /* !__MINIX_RT_DELAY_H_ */

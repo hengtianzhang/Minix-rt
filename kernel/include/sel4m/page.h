@@ -1,5 +1,5 @@
-#ifndef __SEL4M_PAGE_H_
-#define __SEL4M_PAGE_H_
+#ifndef __MINIX_RT_PAGE_H_
+#define __MINIX_RT_PAGE_H_
 
 #include <base/compiler.h>
 
@@ -33,4 +33,4 @@ extern void copy_page(void *to, const void *from);
 extern void clear_page(void *to);
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__SEL4M_PAGE_H_ */
+#endif /* !__MINIX_RT_PAGE_H_ */

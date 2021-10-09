@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_SEQLOCK_H_
-#define __SEL4M_SEQLOCK_H_
+#ifndef __MINIX_RT_SEQLOCK_H_
+#define __MINIX_RT_SEQLOCK_H_
 /*
  * Reader/writer consistent mechanism without starving writers. This type of
  * lock for data where the reader wants a consistent set of information
@@ -34,9 +34,9 @@
  */
 #include <base/compiler.h>
 
-#include <sel4m/spinlock.h>
-#include <sel4m/preempt.h>
-#include <sel4m/lockdep.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/preempt.h>
+#include <minix_rt/lockdep.h>
 
 #include <asm/processor.h>
 
@@ -551,4 +551,4 @@ done_seqretry_irqrestore(seqlock_t *lock, int seq, u64 flags)
 		read_sequnlock_excl_irqrestore(lock, flags);
 }
 
-#endif /* !__SEL4M_SEQLOCK_H_ */
+#endif /* !__MINIX_RT_SEQLOCK_H_ */

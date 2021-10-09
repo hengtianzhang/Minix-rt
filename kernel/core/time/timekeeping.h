@@ -2,8 +2,8 @@
 #ifndef __KERNEL_TIME_TIMEKEEPING_H_
 #define __KERNEL_TIME_TIMEKEEPING_H_
 
-#include <sel4m/seqlock.h>
-#include <sel4m/clocksource.h>
+#include <minix_rt/seqlock.h>
+#include <minix_rt/clocksource.h>
 
 /*
  * Internal interfaces for kernel/time/

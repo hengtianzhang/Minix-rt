@@ -1,5 +1,5 @@
-#ifndef __UAPI_SEL4M_OBJECT_NOTIFIER_H_
-#define __UAPI_SEL4M_OBJECT_NOTIFIER_H_
+#ifndef __UAPI_MINIX_RT_OBJECT_NOTIFIER_H_
+#define __UAPI_MINIX_RT_OBJECT_NOTIFIER_H_
 
 #include <base/bitmap.h>
 #include <base/const.h>
@@ -425,4 +425,4 @@ enum notifier_type {
 	notifier_send_signal,
 };
 
-#endif /* !__UAPI_SEL4M_OBJECT_NOTIFIER_H_ */
+#endif /* !__UAPI_MINIX_RT_OBJECT_NOTIFIER_H_ */

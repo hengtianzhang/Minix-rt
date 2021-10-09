@@ -21,7 +21,7 @@
 #include <base/time.h>
 #include <base/init.h>
 
-#include <sel4m/clockchips.h>
+#include <minix_rt/clockchips.h>
 
 #include <clocksource/arm_arch_timer.h>
 

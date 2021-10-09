@@ -11,8 +11,8 @@
 #include <base/list.h>
 #include <base/string.h>
 
-#include <sel4m/ktime.h>
-#include <sel4m/clocksource.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/clocksource.h>
 
 #include "tick-internal.h"
 

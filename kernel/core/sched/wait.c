@@ -6,8 +6,8 @@
 #include <base/init.h>
 #include <base/hash.h>
 
-#include <sel4m/sched.h>
-#include <sel4m/wait.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/wait.h>
 
 void init_waitqueue_head(wait_queue_head_t *q)
 {

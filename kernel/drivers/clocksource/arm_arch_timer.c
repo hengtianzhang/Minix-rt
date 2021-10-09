@@ -14,14 +14,14 @@
 
 #include <of/of.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/cpu.h>
-#include <sel4m/of_irq.h>
-#include <sel4m/clocksource.h>
-#include <sel4m/clockchips.h>
-#include <sel4m/irq.h>
-#include <sel4m/cpu.h>
-#include <sel4m/sched_clock.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/of_irq.h>
+#include <minix_rt/clocksource.h>
+#include <minix_rt/clockchips.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/sched_clock.h>
 
 #include <clocksource/arm_arch_timer.h>
 

@@ -11,8 +11,8 @@
  * GNU General Public License for more details.
  *
  */
-#ifndef __SEL4M_ARM_SMCCC_H_
-#define __SEL4M_ARM_SMCCC_H_
+#ifndef __MINIX_RT_ARM_SMCCC_H_
+#define __MINIX_RT_ARM_SMCCC_H_
 
 #include <base/const.h>
 
@@ -313,4 +313,4 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
 #define SMCCC_RET_NOT_REQUIRED			-2
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__SEL4M_ARM_SMCCC_H_ */
+#endif /* !__MINIX_RT_ARM_SMCCC_H_ */

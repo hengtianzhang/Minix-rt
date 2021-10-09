@@ -2,6 +2,6 @@
 #ifndef __TICK_SCHED_H_
 #define __TICK_SCHED_H_
 
-#include <sel4m/hrtimer.h>
+#include <minix_rt/hrtimer.h>
 
 #endif /* !__TICK_SCHED_H_ */

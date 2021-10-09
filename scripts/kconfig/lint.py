@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Linter for the sel4m Kconfig files. Pass --help to see
+Linter for the minix_rt Kconfig files. Pass --help to see
 available checks. By default, all checks are enabled.
 
 Some of the checks rely on heuristics and can get tripped up
@@ -206,7 +206,7 @@ def init_kconfig():
         srctree=TOP_DIR,
         CMAKE_BINARY_DIR=modules_file_dir(),
         KCONFIG_DOC_MODE="1",
-        SEL4M_BASE=TOP_DIR,
+        MINIX_RT_BASE=TOP_DIR,
         SOC_DIR="soc",
         ARCH_DIR="arch",
         BOARD_DIR="boards/*/*",
@@ -220,7 +220,7 @@ def modules_file_dir():
     # the directory. Kconfig.modules brings in Kconfig files from modules.
 
     tmpdir = tempfile.mkdtemp()
-    run((os.path.join("scripts", "sel4m_module.py"),
+    run((os.path.join("scripts", "minix_rt_module.py"),
          "--kconfig-out", os.path.join(tmpdir, "Kconfig.modules")))
     return tmpdir
 
@@ -292,7 +292,7 @@ def name_and_locs(sym):
 
 def run(cmd, cwd=TOP_DIR, check=True):
     # Runs 'cmd' with subprocess, returning the decoded stdout output. 'cwd' is
-    # the working directory. It defaults to the top-level sel4m directory.
+    # the working directory. It defaults to the top-level minix_rt directory.
     # Exits with an error if the command exits with a non-zero return code if
     # 'check' is True.
 

@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_SLUB_DEF_H_
-#define __SEL4M_SLUB_DEF_H_
+#ifndef __MINIX_RT_SLUB_DEF_H_
+#define __MINIX_RT_SLUB_DEF_H_
 
 #include <base/list.h>
 #include <base/log2.h>
 
-#include <sel4m/spinlock.h>
+#include <minix_rt/spinlock.h>
 
 #include <asm/cache.h>
 
@@ -137,4 +137,4 @@ static __always_inline struct kmem_cache *kmalloc_slab(size_t size)
 	return &kmalloc_caches[index];
 }
 
-#endif /* !__SEL4M_SLUB_DEF_H_ */
+#endif /* !__MINIX_RT_SLUB_DEF_H_ */

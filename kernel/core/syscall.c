@@ -1,6 +1,6 @@
 #include <base/errno.h>
 
-#include <sel4m/syscalls.h>
+#include <minix_rt/syscalls.h>
 
 SYSCALL_DEFINE0(ni_syscall)
 {

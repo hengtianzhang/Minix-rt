@@ -1,6 +1,6 @@
-#include <sel4m/sched.h>
-#include <sel4m/object/untype.h>
-#include <sel4m/mm.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/object/untype.h>
+#include <minix_rt/mm.h>
 
 int ipc_create_task_ipcptr(struct task_struct *tsk, unsigned long __user ipcptr)
 {

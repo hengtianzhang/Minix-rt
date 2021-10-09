@@ -19,10 +19,10 @@
 #include <base/linkage.h>
 #include <base/common.h>
 
-#include <sel4m/syscalls.h>
-#include <sel4m/sched.h>
-#include <sel4m/signal.h>
-#include <sel4m/object/ipc.h>
+#include <minix_rt/syscalls.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/signal.h>
+#include <minix_rt/object/ipc.h>
 
 #include <asm/traps.h>
 #include <asm/ptrace.h>

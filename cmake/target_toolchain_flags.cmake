@@ -7,7 +7,7 @@
 #    the MD5 will also change (as example toolchain upgrade in same folder)
 #  * The CMAKE_C_COMPILER itself. This may be a symlink, but it ensures that
 #    multiple symlinks pointing to same executable will generate different
-#    signatures, as example: clang, gcc, arm-sel4m-eabi-gcc, links pointing to
+#    signatures, as example: clang, gcc, arm-minix_rt-eabi-gcc, links pointing to
 #    ccache will generate unique signatures
 #  * CMAKE_C_COMPILER_ID is taking the CMake compiler id for extra signature.
 #  * CMAKE_C_COMPILER_VERSION will ensure that even when using the previous

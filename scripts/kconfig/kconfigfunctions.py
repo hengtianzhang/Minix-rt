@@ -7,8 +7,8 @@ import os
 import pickle
 import sys
 
-SEL4M_BASE = os.environ["SEL4M_BASE"]
-sys.path.insert(0, os.path.join(SEL4M_BASE, "scripts", "dts",
+MINIX_RT_BASE = os.environ["MINIX_RT_BASE"]
+sys.path.insert(0, os.path.join(MINIX_RT_BASE, "scripts", "dts",
                                 "python-devicetree", "src"))
 
 from devicetree import edtlib

@@ -1,10 +1,10 @@
 #include <base/common.h>
 #include <base/init.h>
 
-#include <sel4m/slab.h>
-#include <sel4m/sched.h>
-#include <sel4m/sched/idle.h>
-#include <sel4m/object/pid.h>
+#include <minix_rt/slab.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/idle.h>
+#include <minix_rt/object/pid.h>
 
 struct pid_cache {
 	pid_t	pid;

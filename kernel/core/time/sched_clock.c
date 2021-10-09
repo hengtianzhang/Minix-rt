@@ -5,12 +5,12 @@
  */
 #include <base/bitops.h>
 
-#include <sel4m/clocksource.h>
-#include <sel4m/ktime.h>
-#include <sel4m/hrtimer.h>
-#include <sel4m/sched_clock.h>
-#include <sel4m/jiffies.h>
-#include <sel4m/seqlock.h>
+#include <minix_rt/clocksource.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/sched_clock.h>
+#include <minix_rt/jiffies.h>
+#include <minix_rt/seqlock.h>
 
 /**
  * struct clock_read_data - data required to read from sched_clock()

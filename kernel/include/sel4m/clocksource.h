@@ -6,8 +6,8 @@
  *  If you are not a clocksource, or timekeeping code, you should
  *  not be including this file!
  */
-#ifndef __SEL4M_CLOCKSOURCE_H_
-#define __SEL4M_CLOCKSOURCE_H_
+#ifndef __MINIX_RT_CLOCKSOURCE_H_
+#define __MINIX_RT_CLOCKSOURCE_H_
 
 #include <base/time.h>
 #include <base/init.h>
@@ -226,4 +226,4 @@ extern void timer_probe(void);
 static inline void timer_probe(void) {}
 #endif
 
-#endif /* !__SEL4M_CLOCKSOURCE_H_ */
+#endif /* !__MINIX_RT_CLOCKSOURCE_H_ */

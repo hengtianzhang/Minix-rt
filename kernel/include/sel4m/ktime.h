@@ -24,7 +24,7 @@
 #include <base/bug.h>
 #include <base/time.h>
 
-#include <sel4m/jiffies.h>
+#include <minix_rt/jiffies.h>
 
 typedef unsigned long cycles_t;
 
@@ -276,8 +276,8 @@ static inline ktime_t ms_to_ktime(u64 ms)
 	return ms * NSEC_PER_MSEC;
 }
 
-#include <sel4m/timekeeping.h>
-#include <sel4m/timekeeping32.h>
+#include <minix_rt/timekeeping.h>
+#include <minix_rt/timekeeping32.h>
 
 extern void time_init(void);
 

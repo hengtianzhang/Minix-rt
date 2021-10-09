@@ -39,8 +39,8 @@
 #include <base/errno.h>
 #include <base/init.h>
 
-#include <sel4m/cpumask.h>
-#include <sel4m/sched.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/sched.h>
 
 #include <asm/ptrace.h>
 #include <asm/stack_pointer.h>

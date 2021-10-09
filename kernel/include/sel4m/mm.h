@@ -1,15 +1,15 @@
-#ifndef __SEL4M_MM_H_
-#define __SEL4M_MM_H_
+#ifndef __MINIX_RT_MM_H_
+#define __MINIX_RT_MM_H_
 
 #include <base/string.h>
 
-#include <sel4m/mmzone.h>
-#include <sel4m/mm_types.h>
-#include <sel4m/memory.h>
-#include <sel4m/page.h>
-#include <sel4m/page-flags.h>
-#include <sel4m/page-flags-layout.h>
-#include <sel4m/page_ref.h>
+#include <minix_rt/mmzone.h>
+#include <minix_rt/mm_types.h>
+#include <minix_rt/memory.h>
+#include <minix_rt/page.h>
+#include <minix_rt/page-flags.h>
+#include <minix_rt/page-flags-layout.h>
+#include <minix_rt/page_ref.h>
 
 #ifndef page_to_virt
 #define page_to_virt(x)	__va(PFN_PHYS(page_to_pfn(x)))
@@ -188,4 +188,4 @@ static inline void mm_dec_nr_puds(struct mm_struct *mm)
 	atomic_long_sub(PTRS_PER_PUD * sizeof(pud_t), &mm->pgtables_bytes);
 }
 
-#endif /* !__SEL4M_MM_H_ */
+#endif /* !__MINIX_RT_MM_H_ */

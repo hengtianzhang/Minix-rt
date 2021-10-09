@@ -33,7 +33,7 @@ static __always_inline void boot_init_stack_canary(struct task_struct *tsk)
 {
 	u64 canary = random();
 
-	canary ^= SEL4M_VERSION_CODE;
+	canary ^= MINIX_RT_VERSION_CODE;
 	canary &= CANARY_MASK;
 
 	tsk->stack_canary = canary;

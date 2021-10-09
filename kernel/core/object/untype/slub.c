@@ -10,11 +10,11 @@
 #include <base/cache.h>
 #include <base/poison.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/bit_spinlock.h>
-#include <sel4m/slab.h>
-#include <sel4m/mutex.h>
-#include <sel4m/cpumask.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/bit_spinlock.h>
+#include <minix_rt/slab.h>
+#include <minix_rt/mutex.h>
+#include <minix_rt/cpumask.h>
 
 #define FROZEN (1 << PG_active)
 

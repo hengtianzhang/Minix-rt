@@ -5,8 +5,8 @@
  */
 #ifndef __TIME_TICK_INTERNAL_H_
 
-#include <sel4m/hrtimer.h>
-#include <sel4m/clockchips.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/clockchips.h>
 
 #include "tick-sched.h"
 

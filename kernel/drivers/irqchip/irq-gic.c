@@ -3,11 +3,11 @@
 
 #include <of/of.h>
 
-#include <sel4m/irqchip.h>
-#include <sel4m/irq.h>
-#include <sel4m/interrupt.h>
-#include <sel4m/smp.h>
-#include <sel4m/cpu.h>
+#include <minix_rt/irqchip.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/interrupt.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/cpu.h>
 
 #include <irqchip/arm-gic.h>
 

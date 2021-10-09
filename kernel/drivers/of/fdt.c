@@ -8,11 +8,11 @@
 #include <base/common.h>
 #include <base/sizes.h>
 
-#include <sel4m/page.h>
-#include <sel4m/of_fdt.h>
-#include <sel4m/of_reserved_mem.h>
-#include <sel4m/memory.h>
-#include <sel4m/console.h>
+#include <minix_rt/page.h>
+#include <minix_rt/of_fdt.h>
+#include <minix_rt/of_reserved_mem.h>
+#include <minix_rt/memory.h>
+#include <minix_rt/console.h>
 
 #include <of/libfdt.h>
 #include <of/of.h>

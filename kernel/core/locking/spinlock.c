@@ -16,9 +16,9 @@
  */
 #include <base/linkage.h>
 
-#include <sel4m/preempt.h>
-#include <sel4m/irqflags.h>
-#include <sel4m/spinlock.h>
+#include <minix_rt/preempt.h>
+#include <minix_rt/irqflags.h>
+#include <minix_rt/spinlock.h>
 
 int __lockfunc _raw_spin_trylock(raw_spinlock_t *lock)
 {

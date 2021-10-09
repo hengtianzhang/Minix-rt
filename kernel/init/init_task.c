@@ -1,11 +1,11 @@
-#include <sel4m/sched.h>
-#include <sel4m/mm_types.h>
-#include <sel4m/sched.h>
-#include <sel4m/sched/rt.h>
-#include <sel4m/stackprotector.h>
-#include <sel4m/object/tcb.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/mm_types.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/rt.h>
+#include <minix_rt/stackprotector.h>
+#include <minix_rt/object/tcb.h>
 
-#include <uapi/sel4m/object/cap_types.h>
+#include <uapi/minix_rt/object/cap_types.h>
 
 struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	[0 ... CONFIG_NR_CPUS - 1] = {

@@ -11,8 +11,8 @@
 
 #include <of/of.h>
 
-#include <sel4m/of_irq.h>
-#include <sel4m/irqchip.h>
+#include <minix_rt/of_irq.h>
+#include <minix_rt/irqchip.h>
 
 static const struct of_device_id
 irqchip_of_match_end __used __section(__irqchip_of_table_end);

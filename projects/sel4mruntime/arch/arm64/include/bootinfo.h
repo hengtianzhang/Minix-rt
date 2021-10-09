@@ -1,9 +1,9 @@
-#ifndef __SEL4MRUNTIME_BOOTINFO_H_
-#define __SEL4MRUNTIME_BOOTINFO_H_
+#ifndef __MINIX_RTRUNTIME_BOOTINFO_H_
+#define __MINIX_RTRUNTIME_BOOTINFO_H_
 
 #include <base/linkage.h>
 
-asmlinkage void __sel4m_start_c(unsigned long ipcptr);
+asmlinkage void __minix_rt_start_c(unsigned long ipcptr);
 
 extern char __executable_start[];
 extern char __rela_iplt_start[];
@@ -28,4 +28,4 @@ extern char __end__[];
 extern char _end[];
 extern char end[];
 
-#endif /* !__SEL4MRUNTIME_BOOTINFO_H_ */
+#endif /* !__MINIX_RTRUNTIME_BOOTINFO_H_ */

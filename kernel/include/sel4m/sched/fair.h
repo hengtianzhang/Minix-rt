@@ -1,5 +1,5 @@
-#ifndef __SEL4M_SCHED_FAIR_H_
-#define __SEL4M_SCHED_FAIR_H_
+#ifndef __MINIX_RT_SCHED_FAIR_H_
+#define __MINIX_RT_SCHED_FAIR_H_
 
 extern unsigned int sysctl_sched_latency;
 extern unsigned int sysctl_sched_min_granularity;
@@ -17,4 +17,4 @@ static inline struct cfs_rq *cpu_cfs_rq(struct cfs_rq *cfs_rq, int this_cpu)
 	return &cpu_rq(this_cpu)->cfs;
 }
 
-#endif /* !__SEL4M_SCHED_FAIR_H_ */
+#endif /* !__MINIX_RT_SCHED_FAIR_H_ */

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_PAGE_FLAGS_LAYOUT_H_
-#define __SEL4M_PAGE_FLAGS_LAYOUT_H_
+#ifndef __MINIX_RT_PAGE_FLAGS_LAYOUT_H_
+#define __MINIX_RT_PAGE_FLAGS_LAYOUT_H_
 
 /*
  * When a memory allocation must conform to specific limitations (such
@@ -30,4 +30,4 @@
 #define NODES_PGOFF		((sizeof(unsigned long)*8) - ZONES_WIDTH)
 #define ZONEID_MASK		((1UL << ZONES_SHIFT) - 1)
 
-#endif /* !__SEL4M_PAGE_FLAGS_LAYOUT_H_ */
+#endif /* !__MINIX_RT_PAGE_FLAGS_LAYOUT_H_ */

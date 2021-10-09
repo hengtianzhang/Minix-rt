@@ -19,11 +19,11 @@ set_compiler_property(PROPERTY optimization_size)
 
 set_compiler_property(PROPERTY app_warning_base)
 
-# Property for standard warning base in sel4m, this will always bet set when compiling.
+# Property for standard warning base in minix_rt, this will always bet set when compiling.
 set_compiler_property(PROPERTY warning_base)
 
 # GCC options for warning levels 1, 2, 3, when using `-DW=[1|2|3]`
-# Property for warning levels 1, 2, 3 in sel4m when using `-DW=[1|2|3]`
+# Property for warning levels 1, 2, 3 in minix_rt when using `-DW=[1|2|3]`
 set_compiler_property(PROPERTY warning_dw_1)
 
 set_compiler_property(PROPERTY warning_dw_2)

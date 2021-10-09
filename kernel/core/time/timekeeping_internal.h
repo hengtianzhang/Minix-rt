@@ -6,7 +6,7 @@
  */
 #include <base/time.h>
 
-#include <sel4m/clocksource.h>
+#include <minix_rt/clocksource.h>
 
 /**
  * struct tk_read_base - base structure for timekeeping readout

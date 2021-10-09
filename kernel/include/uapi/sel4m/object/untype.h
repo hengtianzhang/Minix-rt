@@ -1,5 +1,5 @@
-#ifndef __UAPI_SEL4M_OBJECT_UNTYPE_H_
-#define __UAPI_SEL4M_OBJECT_UNTYPE_H_
+#ifndef __UAPI_MINIX_RT_OBJECT_UNTYPE_H_
+#define __UAPI_MINIX_RT_OBJECT_UNTYPE_H_
 
 enum untype_table {
     untype_alloc,
@@ -26,4 +26,4 @@ enum untype_table {
 
 #define VM_PRIVATE_SHARE    0x00000080
 
-#endif /* !__UAPI_SEL4M_OBJECT_UNTYPE_H_ */
+#endif /* !__UAPI_MINIX_RT_OBJECT_UNTYPE_H_ */

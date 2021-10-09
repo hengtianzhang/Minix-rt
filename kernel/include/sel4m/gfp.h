@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_GFP_H_
-#define __SEL4M_GFP_H_
+#ifndef __MINIX_RT_GFP_H_
+#define __MINIX_RT_GFP_H_
 
 #include <base/types.h>
 
-#include <sel4m/mm.h>
+#include <minix_rt/mm.h>
 
 #define ___GFP_DMA			BIT(0)
 #define ___GFP_MOVABLE		BIT(1)
@@ -57,4 +57,4 @@ static inline enum zone_type gfp_zone(gfp_t flags)
 #define __free_page(page) __free_pages((page), 0)
 #define free_page(addr) free_pages((addr), 0)
 
-#endif /* !__SEL4M_GFP_H_ */
+#endif /* !__MINIX_RT_GFP_H_ */

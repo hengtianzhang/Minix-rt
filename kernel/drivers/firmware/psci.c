@@ -15,10 +15,10 @@
 
 #include <of/of.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/reboot.h>
-#include <sel4m/psci.h>
-#include <sel4m/arm-smccc.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/reboot.h>
+#include <minix_rt/psci.h>
+#include <minix_rt/arm-smccc.h>
 
 #include <asm/cputype.h>
 

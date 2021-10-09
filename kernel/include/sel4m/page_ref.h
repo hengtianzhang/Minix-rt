@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_PAGE_REF_H_
-#define __SEL4M_PAGE_REF_H_
+#ifndef __MINIX_RT_PAGE_REF_H_
+#define __MINIX_RT_PAGE_REF_H_
 
 #include <base/atomic.h>
 
-#include <sel4m/mm_types.h>
+#include <minix_rt/mm_types.h>
 
 static inline int page_ref_count(struct page *page)
 {
@@ -88,4 +88,4 @@ static inline void page_ref_unfreeze(struct page *page, int count)
 	atomic_set_release(&page->_refcount, count);
 }
 
-#endif /* !__SEL4M_PAGE_REF_H_ */
+#endif /* !__MINIX_RT_PAGE_REF_H_ */

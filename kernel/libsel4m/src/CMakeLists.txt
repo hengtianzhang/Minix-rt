@@ -1,6 +1,6 @@
 
 target_sources(
-	${libsel4m_VAR}libsel4m
+	${libminix_rt_VAR}libminix_rt
 	PRIVATE
 	printf.c
 )

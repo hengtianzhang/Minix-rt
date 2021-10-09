@@ -12,11 +12,11 @@
  *
  * Also see Documentation/mutex-design.txt.
  */
-#include <sel4m/mutex.h>
-#include <sel4m/sched.h>
-#include <sel4m/spinlock.h>
-#include <sel4m/interrupt.h>
-#include <sel4m/lockdep.h>
+#include <minix_rt/mutex.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/interrupt.h>
+#include <minix_rt/lockdep.h>
 
 #include <asm-generic/mutex-dec.h>
 

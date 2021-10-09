@@ -6,10 +6,10 @@
 
 #include <base/init.h>
 
-#include <sel4m/smp.h>
-#include <sel4m/sched.h>
-#include <sel4m/sched/idle.h>
-#include <sel4m/cpumask.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/idle.h>
+#include <minix_rt/cpumask.h>
 
 static __init int bringup_cpu(unsigned int cpu)
 {

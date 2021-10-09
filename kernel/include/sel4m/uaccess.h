@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_UACCESS_H_
-#define __SEL4M_UACCESS_H_
+#ifndef __MINIX_RT_UACCESS_H_
+#define __MINIX_RT_UACCESS_H_
 
 #include <base/string.h>
 #include <base/common.h>
 
-#include <sel4m/thread.h>
+#include <minix_rt/thread.h>
 
 #include <asm/uaccess.h>
 
@@ -98,4 +98,4 @@ copy_to_user(void __user *to, const void *from, unsigned long n)
 
 #define BAD_ADDR(x) ((unsigned long)(x) >= TASK_SIZE)
 
-#endif /* !__SEL4M_UACCESS_H_ */
+#endif /* !__MINIX_RT_UACCESS_H_ */

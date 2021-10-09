@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_MM_TYPES_H_
-#define __SEL4M_MM_TYPES_H_
+#ifndef __MINIX_RT_MM_TYPES_H_
+#define __MINIX_RT_MM_TYPES_H_
 
 #ifndef __ASSEMBLY__
 
@@ -8,8 +8,8 @@
 #include <base/list.h>
 #include <base/rbtree.h>
 
-#include <sel4m/slub_def.h>
-#include <sel4m/object/untype.h>
+#include <minix_rt/slub_def.h>
+#include <minix_rt/object/untype.h>
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
@@ -108,4 +108,4 @@ extern struct mm_struct init_mm;
 #define STRUCT_PAGE_MAX_SHIFT	(order_base_2(sizeof(struct page)))
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__SEL4M_MM_TYPES_H_ */
+#endif /* !__MINIX_RT_MM_TYPES_H_ */

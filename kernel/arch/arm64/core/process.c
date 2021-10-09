@@ -1,9 +1,9 @@
 #include <base/common.h>
 
-#include <sel4m/reboot.h>
-#include <sel4m/irqflags.h>
-#include <sel4m/sched.h>
-#include <sel4m/stat.h>
+#include <minix_rt/reboot.h>
+#include <minix_rt/irqflags.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/stat.h>
 
 #include <asm/stacktrace.h>
 #include <asm/mmu_context.h>

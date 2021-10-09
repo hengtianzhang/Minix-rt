@@ -18,7 +18,7 @@
 
 #include <of/of.h>
 
-#include <sel4m/clocksource.h>
+#include <minix_rt/clocksource.h>
 
 static const struct of_device_id __timer_of_table_sentinel
 	__used __section(__timer_of_table_end);

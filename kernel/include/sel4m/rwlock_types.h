@@ -1,5 +1,5 @@
-#ifndef __SEL4M_RWLOCK_TYPES_H_
-#define __SEL4M_RWLOCK_TYPES_H_
+#ifndef __MINIX_RT_RWLOCK_TYPES_H_
+#define __MINIX_RT_RWLOCK_TYPES_H_
 
 /*
  * include/linux/rwlock_types.h - generic rwlock type definitions
@@ -18,4 +18,4 @@ typedef struct {
 
 #define DEFINE_RWLOCK(x)	rwlock_t x = __RW_LOCK_UNLOCKED(x)
 
-#endif /* !__SEL4M_RWLOCK_TYPES_H_ */
+#endif /* !__MINIX_RT_RWLOCK_TYPES_H_ */

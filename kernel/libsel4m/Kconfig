@@ -1,7 +1,7 @@
 #
-# Library sel4m configuration
+# Library minix_rt configuration
 #
 
-menu "libsel4m routines"
+menu "libminix_rt routines"
 
 endmenu

@@ -1,5 +1,5 @@
-#ifndef __SEL4M_STAT_H_
-#define __SEL4M_STAT_H_
+#ifndef __MINIX_RT_STAT_H_
+#define __MINIX_RT_STAT_H_
 
 #include <base/compiler.h>
 #include <base/linkage.h>
@@ -17,4 +17,4 @@ void show_regs_print_info(void);
 
 #define system_running() (likely(system_state == SYSTEM_RUNNING))
 
-#endif /* !__SEL4M_STAT_H_ */
+#endif /* !__MINIX_RT_STAT_H_ */

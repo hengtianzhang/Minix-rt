@@ -1,10 +1,10 @@
-#ifndef __LIBSEL4M_SYSCALLS_H_
-#define __LIBSEL4M_SYSCALLS_H_
+#ifndef __LIBMINIX_RT_SYSCALLS_H_
+#define __LIBMINIX_RT_SYSCALLS_H_
 
 #include <base/errno.h>
 
 #include <asm/unistd.h>
 
-#include <asm/libsel4m/syscalls.h>
+#include <asm/libminix_rt/syscalls.h>
 
-#endif /* !__LIBSEL4M_SYSCALLS_H_ */
+#endif /* !__LIBMINIX_RT_SYSCALLS_H_ */

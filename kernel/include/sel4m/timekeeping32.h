@@ -1,5 +1,5 @@
-#ifndef __SEL4M_TIMEKEEPING32_H_
-#define __SEL4M_TIMEKEEPING32_H_
+#ifndef __MINIX_RT_TIMEKEEPING32_H_
+#define __MINIX_RT_TIMEKEEPING32_H_
 /*
  * These interfaces are all based on the old timespec type
  * and should get replaced with the timespec64 based versions
@@ -35,4 +35,4 @@ static inline void getrawmonotonic(struct timespec *ts)
 	*ts = timespec64_to_timespec(ts64);
 }
 
-#endif /* !__SEL4M_TIMEKEEPING32_H_ */
+#endif /* !__MINIX_RT_TIMEKEEPING32_H_ */

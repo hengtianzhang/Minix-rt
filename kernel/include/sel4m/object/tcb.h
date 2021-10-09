@@ -1,9 +1,9 @@
-#ifndef __SEL4M_OBJECT_TCB_H_
-#define __SEL4M_OBJECT_TCB_H_
+#ifndef __MINIX_RT_OBJECT_TCB_H_
+#define __MINIX_RT_OBJECT_TCB_H_
 
-#include <sel4m/object/pid.h>
+#include <minix_rt/object/pid.h>
 
-#include <uapi/sel4m/magic.h>
+#include <uapi/minix_rt/magic.h>
 
 struct task_struct;
 
@@ -17,4 +17,4 @@ extern void tcb_set_task_stack_end_magic(struct task_struct *tsk);
 
 extern void tcb_do_exit(struct task_struct *tsk, int flags);
 
-#endif /* !__SEL4M_OBJECT_TCB_H_ */
+#endif /* !__MINIX_RT_OBJECT_TCB_H_ */

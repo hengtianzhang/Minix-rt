@@ -24,12 +24,12 @@ endfunction()
 
 # Constructor with a directory-inferred name
 macro(kernel_library)
-	kernel_library_get_current_dir_lib_name(${SEL4M_BASE}/kernel lib_name)
+	kernel_library_get_current_dir_lib_name(${MINIX_RT_BASE}/kernel lib_name)
 	kernel_library_named(${lib_name})
 endmacro()
 
 macro(kernel_interface_library)
-	kernel_library_get_current_dir_lib_name(${SEL4M_BASE}/kernel lib_name)
+	kernel_library_get_current_dir_lib_name(${MINIX_RT_BASE}/kernel lib_name)
 	kernel_interface_library_named(${lib_name})
 endmacro()
 
@@ -182,7 +182,7 @@ endfunction()
 function(kernel_library_cc_option)
 	foreach(option ${ARGV})
 		string(MAKE_C_IDENTIFIER check${option} check)
-		sel4m_check_compiler_flag(C ${option} ${check})
+		minix_rt_check_compiler_flag(C ${option} ${check})
 
 		if(${check})
 			kernel_library_compile_options(${option})
@@ -193,7 +193,7 @@ endfunction()
 function(kernel_interface_library_cc_option)
 	foreach(option ${ARGV})
 		string(MAKE_C_IDENTIFIER check${option} check)
-		sel4m_check_compiler_flag(C ${option} ${check})
+		minix_rt_check_compiler_flag(C ${option} ${check})
 
 		if(${check})
 			kernel_interface_library_compile_options(${option})
@@ -201,7 +201,7 @@ function(kernel_interface_library_cc_option)
 	endforeach()
 endfunction()
 
-# sel4m_check_compiler_flag is a part of sel4m's toolchain
+# minix_rt_check_compiler_flag is a part of minix_rt's toolchain
 # infrastructure. It should be used when testing toolchain
 # capabilities and it should normally be used in place of the
 # functions:
@@ -221,10 +221,10 @@ endfunction()
 # so we cache the capability test results in USER_CACHE_DIR (This
 # caching comes in addition to the caching that CMake does in the
 # build folder's CMakeCache.txt)
-function(sel4m_check_compiler_flag lang option check)
+function(minix_rt_check_compiler_flag lang option check)
 	# Check if the option is covered by any hardcoded check before doing
 	# an automated test.
-	sel4m_check_compiler_flag_hardcoded(${lang} "${option}" check exists)
+	minix_rt_check_compiler_flag_hardcoded(${lang} "${option}" check exists)
 	if(exists)
 		set(check ${check} PARENT_SCOPE)
 		return()
@@ -232,7 +232,7 @@ function(sel4m_check_compiler_flag lang option check)
 
 	# Locate the cache directory
 	set_ifndef(
-		SEL4M_TOOLCHAIN_CAPABILITY_CACHE_DIR
+		MINIX_RT_TOOLCHAIN_CAPABILITY_CACHE_DIR
 		${USER_CACHE_DIR}/ToolchainCapabilityDatabase
 		)
 
@@ -261,7 +261,7 @@ function(sel4m_check_compiler_flag lang option check)
 	string(MD5 key ${key_string})
 
 	# Check the cache
-	set(key_path ${SEL4M_TOOLCHAIN_CAPABILITY_CACHE_DIR}/${key})
+	set(key_path ${MINIX_RT_TOOLCHAIN_CAPABILITY_CACHE_DIR}/${key})
 	if(EXISTS ${key_path})
 		file(READ
 		${key_path}   # File to be read
@@ -320,13 +320,13 @@ function(sel4m_check_compiler_flag lang option check)
 		# result, and the toolchain test.
 		file(
 			APPEND
-			${SEL4M_TOOLCHAIN_CAPABILITY_CACHE_DIR}/log.txt
+			${MINIX_RT_TOOLCHAIN_CAPABILITY_CACHE_DIR}/log.txt
 			"${inner_check} ${key} ${key_string}\n"
 			)
 	endif()
 endfunction()
 
-function(sel4m_check_compiler_flag_hardcoded lang option check exists)
+function(minix_rt_check_compiler_flag_hardcoded lang option check exists)
 	# Various flags that are not supported for CXX may not be testable
 	# because they would produce a warning instead of an error during
 	# the test.  Exclude them by toolchain-specific blocklist.
@@ -342,7 +342,7 @@ endfunction()
 # Determines what the current directory's lib name would be according to the
 # provided base and writes it to the argument "lib_name"
 macro(kernel_library_get_current_dir_lib_name base lib_name)
-	# Remove the prefix (/home/sebo/sel4m/kernel/driver/serial/CMakeLists.txt => driver/serial/CMakeLists.txt)
+	# Remove the prefix (/home/sebo/minix_rt/kernel/driver/serial/CMakeLists.txt => driver/serial/CMakeLists.txt)
 	file(RELATIVE_PATH name ${base} ${CMAKE_CURRENT_LIST_FILE})
 
 	# Remove the filename (driver/serial/CMakeLists.txt => driver/serial)
@@ -359,7 +359,7 @@ macro(add_depends_file_touch name)
 		TARGET ${name}
 		POST_BUILD
 		COMMAND
-		${SHELL} ${SEL4M_BASE}/scripts/gen_depends_file.sh
+		${SHELL} ${MINIX_RT_BASE}/scripts/gen_depends_file.sh
 		${APPLICATION_BINARY_DIR}
 		COMMAND_EXPAND_LISTS
 	)
@@ -729,7 +729,7 @@ function(services_get_compile_options_for_lang_as_string lang i)
 endfunction()
 
 function(kernel_get_include_directories_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET kernel_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
 	process_flags(${lang} flags output_list)
@@ -748,7 +748,7 @@ endfunction()
 
 function(kernel_get_imported_include_directories_for_lang lang i)
 	foreach(imported_lib ${KERNEL_IMPORTED_LIBS_PROPERTY})
-		sel4m_get_parse_args(args ${ARGN})
+		minix_rt_get_parse_args(args ${ARGN})
 		get_property(flags TARGET ${imported_lib} PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
 		process_flags(${lang} flags output_list)
@@ -769,7 +769,7 @@ function(kernel_get_imported_include_directories_for_lang lang i)
 endfunction()
 
 function(services_get_include_directories_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET services_interface PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
 	process_flags(${lang} flags output_list)
@@ -787,7 +787,7 @@ function(services_get_include_directories_for_lang lang i)
 endfunction()
 
 function(services_get_raw_include_directories_for_lang lib_interface lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET ${lib_interface} PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
 	process_flags(${lang} flags output_list)
@@ -805,7 +805,7 @@ function(services_get_raw_include_directories_for_lang lib_interface lang i)
 endfunction()
 
 function(kernel_get_system_include_directories_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET kernel_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
 
 	process_flags(${lang} flags output_list)
@@ -818,7 +818,7 @@ function(kernel_get_system_include_directories_for_lang lang i)
 endfunction()
 
 function(services_get_system_include_directories_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET services_interface PROPERTY INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
 
 	process_flags(${lang} flags output_list)
@@ -831,7 +831,7 @@ function(services_get_system_include_directories_for_lang lang i)
 endfunction()
 
 function(kernel_get_compile_definitions_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
 
 	process_flags(${lang} flags output_list)
@@ -844,7 +844,7 @@ function(kernel_get_compile_definitions_for_lang lang i)
 endfunction()
 
 function(services_get_compile_definitions_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET services_interface PROPERTY INTERFACE_COMPILE_DEFINITIONS)
 
 	process_flags(${lang} flags output_list)
@@ -857,7 +857,7 @@ function(services_get_compile_definitions_for_lang lang i)
 endfunction()
 
 function(kernel_get_compile_options_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET kernel_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
 
 	process_flags(${lang} flags output_list)
@@ -870,7 +870,7 @@ function(kernel_get_compile_options_for_lang lang i)
 endfunction()
 
 function(services_get_compile_options_for_lang lang i)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	get_property(flags TARGET services_interface PROPERTY INTERFACE_COMPILE_OPTIONS)
 
 	process_flags(${lang} flags output_list)
@@ -886,9 +886,9 @@ endfunction()
 # 'return_dict'. The dict has information about the parsed arguments,
 #
 # Usage:
-#   sel4m_get_parse_args(foo ${ARGN})
+#   minix_rt_get_parse_args(foo ${ARGN})
 #   print(foo_STRIP_PREFIX) # foo_STRIP_PREFIX might be set to 1
-function(sel4m_get_parse_args return_dict)
+function(minix_rt_get_parse_args return_dict)
 	foreach(x ${ARGN})
 		if(DEFINED single_argument)
 			set(${single_argument} ${x} PARENT_SCOPE)
@@ -977,7 +977,7 @@ function(convert_list_of_flags_to_string_of_flags ptr_list_of_flags string_of_fl
 endfunction()
 
 macro(get_property_and_add_prefix result target property prefix)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 
 	if(args_STRIP_PREFIX)
 		set(maybe_prefix "")
@@ -1005,7 +1005,7 @@ function(generate_inc_file
 		OUTPUT ${generated_file}
 		COMMAND
 		${PYTHON_EXECUTABLE}
-		${SEL4M_BASE}/scripts/file2hex.py
+		${MINIX_RT_BASE}/scripts/file2hex.py
 		${ARGN} # Extra arguments are passed to file2hex.py
 		--file ${source_file}
 		> ${generated_file} # Does pipe redirection work on Windows?
@@ -1233,7 +1233,7 @@ function(target_cc_option_fallback target scope option1 option2)
 		foreach(lang C CXX)
 			# For now, we assume that all flags that apply to C/CXX also
 			# apply to ASM.
-			sel4m_check_compiler_flag(${lang} ${option1} check)
+			minix_rt_check_compiler_flag(${lang} ${option1} check)
 			if(${check})
 				target_compile_options(${target} ${scope}
 					$<$<COMPILE_LANGUAGE:${lang}>:${option1}>
@@ -1247,7 +1247,7 @@ function(target_cc_option_fallback target scope option1 option2)
 			endif()
 		endforeach()
 	else()
-		sel4m_check_compiler_flag(C ${option1} check)
+		minix_rt_check_compiler_flag(C ${option1} check)
 		if(${check})
 			target_compile_options(${target} ${scope} ${option1})
 		elseif(option2)
@@ -1257,7 +1257,7 @@ function(target_cc_option_fallback target scope option1 option2)
 endfunction()
 
 function(target_ld_options target scope)
-	sel4m_get_parse_args(args ${ARGN})
+	minix_rt_get_parse_args(args ${ARGN})
 	list(REMOVE_ITEM ARGN NO_SPLIT)
 
 	foreach(option ${ARGN})
@@ -1269,7 +1269,7 @@ function(target_ld_options target scope)
 
 		set(SAVED_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 		string(JOIN " " CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} ${option})
-		sel4m_check_compiler_flag(C "" ${check})
+		minix_rt_check_compiler_flag(C "" ${check})
 		set(CMAKE_REQUIRED_FLAGS ${SAVED_CMAKE_REQUIRED_FLAGS})
 
 		target_link_libraries_ifdef(${check} ${target} ${scope} ${option})
@@ -1348,7 +1348,7 @@ function(check_set_linker_property)
 
 	set(SAVED_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 	set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} ${option}")
-	sel4m_check_compiler_flag(C "" ${check})
+	minix_rt_check_compiler_flag(C "" ${check})
 	set(CMAKE_REQUIRED_FLAGS ${SAVED_CMAKE_REQUIRED_FLAGS})
 
 	if(${check})
@@ -1405,7 +1405,7 @@ function(check_set_compiler_property)
 
 	foreach(option ${COMPILER_PROPERTY_PROPERTY})
 		if(CONFIG_CPLUSPLUS)
-			sel4m_check_compiler_flag(CXX ${option} check)
+			minix_rt_check_compiler_flag(CXX ${option} check)
 
 			if(${check})
 				set_property(TARGET compiler-cpp ${APPEND-CPP} PROPERTY ${property} ${option})
@@ -1413,7 +1413,7 @@ function(check_set_compiler_property)
 			endif()
 		endif()
 
-		sel4m_check_compiler_flag(C ${option} check)
+		minix_rt_check_compiler_flag(C ${option} check)
 
 		if(${check})
 			set_property(TARGET compiler ${APPEND} PROPERTY ${property} ${option})
@@ -1431,7 +1431,7 @@ function(print arg)
 endfunction()
 
 # Usage:
-#   assert(SEL4M_TOOLCHAIN "SEL4M_TOOLCHAIN not set.")
+#   assert(MINIX_RT_TOOLCHAIN "MINIX_RT_TOOLCHAIN not set.")
 #
 # will cause a FATAL_ERROR and print an error message if the first
 # expression is false
@@ -1467,7 +1467,7 @@ function(check_if_directory_is_writeable dir ok)
 	execute_process(
 		COMMAND
 		${PYTHON_EXECUTABLE}
-		${SEL4M_BASE}/scripts/dir_is_writeable.py
+		${MINIX_RT_BASE}/scripts/dir_is_writeable.py
 		${dir}
 		RESULT_VARIABLE ret
 		)
@@ -1528,11 +1528,11 @@ function(find_appropriate_cache_directory dir)
 	# files. Prefer a directory outside of the git repository because it
 	# is good practice to have clean git repositories.
 	if(DEFINED user_dir)
-		# sel4m's cache files go in the "sel4m" subdirectory of the
+		# minix_rt's cache files go in the "minix_rt" subdirectory of the
 		# user's cache directory.
-		set(local_dir ${user_dir}/sel4m)
+		set(local_dir ${user_dir}/minix_rt)
 	else()
-		set(local_dir ${SEL4M_BASE}/.cache)
+		set(local_dir ${MINIX_RT_BASE}/.cache)
 	endif()
 
 	set(${dir} ${local_dir} PARENT_SCOPE)
@@ -1549,9 +1549,9 @@ function(generate_unique_target_name_from_filename filename target_name)
 endfunction()
 
 # Usage:
-#   sel4m_file(<mode> <arg> ...)
+#   minix_rt_file(<mode> <arg> ...)
 #
-# sel4m file function extension.
+# minix_rt file function extension.
 # This function currently support the following <modes>
 #
 # APPLICATION_ROOT <path>: Check all paths in provided variable, and convert
@@ -1563,10 +1563,10 @@ endfunction()
 # CONF_FILES <path>: Nothing to do
 #
 # returns an updated list of absolute paths
-function(sel4m_file)
+function(minix_rt_file)
 	set(file_options APPLICATION_ROOT CONF_FILES)
 	if((ARGC EQUAL 0) OR (NOT (ARGV0 IN_LIST file_options)))
-		message(FATAL_ERROR "No <mode> given to `sel4m_file(<mode> <args>...)` function,\n \
+		message(FATAL_ERROR "No <mode> given to `minix_rt_file(<mode> <args>...)` function,\n \
 Please provide one of following: APPLICATION_ROOT, CONF_FILES")
 	endif()
 
@@ -1578,7 +1578,7 @@ Please provide one of following: APPLICATION_ROOT, CONF_FILES")
 
 	cmake_parse_arguments(FILE "" "${single_args}" "" ${ARGN})
 	if(FILE_UNPARSED_ARGUMENTS)
-			message(FATAL_ERROR "sel4m_file(${ARGV0} <path> ...) given unknown arguments: ${FILE_UNPARSED_ARGUMENTS}")
+			message(FATAL_ERROR "minix_rt_file(${ARGV0} <path> ...) given unknown arguments: ${FILE_UNPARSED_ARGUMENTS}")
 	endif()
 
 
@@ -1623,9 +1623,9 @@ Relative paths are only allowed with `-D${ARGV1}=<path>`")
 endfunction()
 
 # Usage:
-#   sel4m_string(<mode> <out-var> <input> ...)
+#   minix_rt_string(<mode> <out-var> <input> ...)
 #
-# sel4m string function extension.
+# minix_rt string function extension.
 # This function extends the CMake string function by providing additional
 # manipulation arguments to CMake string.
 #
@@ -1639,31 +1639,31 @@ endfunction()
 #                   The sanitized string will be returned in UPPER case.
 #
 # returns the updated string
-function(sel4m_string)
+function(minix_rt_string)
 	set(options SANITIZE TOUPPER)
-	cmake_parse_arguments(SEL4M_STRING "${options}" "" "" ${ARGN})
+	cmake_parse_arguments(MINIX_RT_STRING "${options}" "" "" ${ARGN})
 
-	if (NOT SEL4M_STRING_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Function sel4m_string() called without a return variable")
+	if (NOT MINIX_RT_STRING_UNPARSED_ARGUMENTS)
+		message(FATAL_ERROR "Function minix_rt_string() called without a return variable")
 	endif()
 
-	list(GET SEL4M_STRING_UNPARSED_ARGUMENTS 0 return_arg)
-	list(REMOVE_AT SEL4M_STRING_UNPARSED_ARGUMENTS 0)
+	list(GET MINIX_RT_STRING_UNPARSED_ARGUMENTS 0 return_arg)
+	list(REMOVE_AT MINIX_RT_STRING_UNPARSED_ARGUMENTS 0)
 
-	list(JOIN SEL4M_STRING_UNPARSED_ARGUMENTS "" work_string)
+	list(JOIN MINIX_RT_STRING_UNPARSED_ARGUMENTS "" work_string)
 
-	if(SEL4M_STRING_SANITIZE)
+	if(MINIX_RT_STRING_SANITIZE)
 		string(REGEX REPLACE "[^a-zA-Z0-9_]" "_" work_string ${work_string})
 	endif()
 
-	if(SEL4M_STRING_TOUPPER)
+	if(MINIX_RT_STRING_TOUPPER)
 		string(TOUPPER ${work_string} work_string)
 	endif()
 
 	set(${return_arg} ${work_string} PARENT_SCOPE)
 endfunction()
 
-function(sel4m_check_cache variable)
+function(minix_rt_check_cache variable)
 	cmake_parse_arguments(CACHE_VAR "REQUIRED;WATCH" "" "" ${ARGN})
 	string(TOLOWER ${variable} variable_text)
 	string(REPLACE "_" " " variable_text ${variable_text})
@@ -1730,12 +1730,12 @@ function(sel4m_check_cache variable)
 
 	if(CACHE_VAR_WATCH)
 		# The variable is now set to its final value.
-		sel4m_boilerplate_watch(${variable})
+		minix_rt_boilerplate_watch(${variable})
 	endif()
 endfunction()
 
 # Usage:
-#   sel4m_boilerplate_watch(SOME_BOILERPLATE_VAR)
+#   minix_rt_boilerplate_watch(SOME_BOILERPLATE_VAR)
 #
 # Inform the build system that SOME_BOILERPLATE_VAR, a variable
 # handled in cmake/app/boilerplate.cmake, is now fixed and should no
@@ -1743,11 +1743,11 @@ endfunction()
 #
 # This function uses variable_watch() to print a noisy warning
 # if the variable is set after it returns.
-function(sel4m_boilerplate_watch variable)
-	variable_watch(${variable} sel4m_variable_set_too_late)
+function(minix_rt_boilerplate_watch variable)
+	variable_watch(${variable} minix_rt_variable_set_too_late)
 endfunction()
 
-function(sel4m_variable_set_too_late variable access value current_list_file)
+function(minix_rt_variable_set_too_late variable access value current_list_file)
 	if (access STREQUAL "MODIFIED_ACCESS")
 		message(WARNING
 "
@@ -1760,7 +1760,7 @@ function(sel4m_variable_set_too_late variable access value current_list_file)
 	 *
 	 * This is too late to make changes! The change was ignored.
 	 *
-	 * Hint: ${variable} must be set before calling find_package(sel4m ...).
+	 * Hint: ${variable} must be set before calling find_package(minix_rt ...).
 	 *
 	 **********************************************************************
 ")
@@ -1768,7 +1768,7 @@ function(sel4m_variable_set_too_late variable access value current_list_file)
 endfunction()
 
 # Usage:
-#   sel4m_get_targets(<directory> <types> <targets>)
+#   minix_rt_get_targets(<directory> <types> <targets>)
 #
 # Get build targets for a given directory and sub-directories.
 #
@@ -1778,7 +1778,7 @@ endfunction()
 # Example of types: OBJECT_LIBRARY, STATIC_LIBRARY, INTERFACE_LIBRARY, UTILITY.
 #
 # returns a list of targets in <targets> matching the required <types>.
-function(sel4m_get_targets directory types targets)
+function(minix_rt_get_targets directory types targets)
 	get_property(sub_directories DIRECTORY ${directory} PROPERTY SUBDIRECTORIES)
 	get_property(dir_targets DIRECTORY ${directory} PROPERTY BUILDSYSTEM_TARGETS)
 	foreach(dir_target ${dir_targets})
@@ -1789,7 +1789,7 @@ function(sel4m_get_targets directory types targets)
 	endforeach()
 
 	foreach(directory ${sub_directories})
-	sel4m_get_targets(${directory} "${types}" ${targets})
+	minix_rt_get_targets(${directory} "${types}" ${targets})
 	endforeach()
 	set(${targets} ${${targets}} PARENT_SCOPE)
 endfunction()
@@ -1818,7 +1818,7 @@ function(target_byproducts)
 	)
 endfunction()
 
-macro(sel4m_import_libs_boilerplate lib_name)
+macro(minix_rt_import_libs_boilerplate lib_name)
 	set(${lib_name}_LIBS_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "")
 	mark_as_advanced(${lib_name}_LIBS_DIR)
 
@@ -1847,7 +1847,7 @@ macro(sel4m_import_libs_boilerplate lib_name)
 	endfunction()
 endmacro()
 
-macro(sel4m_import_syslibs_boilerplate lib_name)
+macro(minix_rt_import_syslibs_boilerplate lib_name)
 	set(${lib_name}_LIBS_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "")
 	mark_as_advanced(${lib_name}_LIBS_DIR)
 

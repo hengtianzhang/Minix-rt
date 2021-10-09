@@ -20,8 +20,8 @@
 #include <base/init.h>
 #include <base/common.h>
 
-#include <sel4m/ktime.h>
-#include <sel4m/delay.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/delay.h>
 
 #include <clocksource/arm_arch_timer.h>
 

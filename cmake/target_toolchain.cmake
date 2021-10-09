@@ -27,13 +27,13 @@ set(CMAKE_SYSTEM_PROCESSOR ${ARCH})
 #   When the CMAKE_SYSTEM_NAME variable is set explicitly to enable cross
 #   compiling then the value of CMAKE_SYSTEM_VERSION must also be set
 #   explicitly to specify the target system version.
-set(CMAKE_SYSTEM_VERSION ${SEL4M_PROJECT_VERSION})
+set(CMAKE_SYSTEM_VERSION ${MINIX_RT_PROJECT_VERSION})
 
 # We are not building dynamically loadable libraries
 set(BUILD_SHARED_LIBS OFF)
 
 if(NOT (COMPILER STREQUAL "host-gcc"))
-  include(${TOOLCHAIN_ROOT}/cmake/toolchain/${SEL4M_TOOLCHAIN}/target.cmake)
+  include(${TOOLCHAIN_ROOT}/cmake/toolchain/${MINIX_RT_TOOLCHAIN}/target.cmake)
 endif()
 
 # The 'generic' compiler and the 'target' compiler might be different,
@@ -49,7 +49,7 @@ unset(CMAKE_LINKER)
 unset(CMAKE_LINKER CACHE)
 
 # A toolchain consist of a compiler and a linker.
-# In sel4m, toolchains require a port under cmake/toolchain/.
+# In minix_rt, toolchains require a port under cmake/toolchain/.
 # Each toolchain port must set COMPILER and LINKER.
 # E.g. toolchain/llvm may pick {clang, ld} or {clang, lld}.
 add_custom_target(bintools)

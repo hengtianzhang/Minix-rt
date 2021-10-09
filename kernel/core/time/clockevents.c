@@ -9,12 +9,12 @@
 #include <base/init.h>
 #include <base/list.h>
 
-#include <sel4m/clockchips.h>
-#include <sel4m/smp.h>
-#include <sel4m/cpumask.h>
+#include <minix_rt/clockchips.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/cpumask.h>
 
-#include <sel4m/spinlock.h>
-#include <sel4m/timekeeping.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/timekeeping.h>
 
 #include "tick-internal.h"
 

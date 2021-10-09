@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 /* interrupt.h */
-#ifndef __SEL4M_INTERRUPT_H_
-#define __SEL4M_INTERRUPT_H_
+#ifndef __MINIX_RT_INTERRUPT_H_
+#define __MINIX_RT_INTERRUPT_H_
 
 /*
  * irq_get_irqchip_state/irq_set_irqchip_state specific flags
@@ -66,4 +66,4 @@ struct softirq_action {
 extern void open_softirq(int nr, void (*action)(struct softirq_action *), struct softirq_action *);
 extern void __do_softirq(void);
 extern void raise_softirq(unsigned int nr);
-#endif /* !__SEL4M_INTERRUPT_H_ */
+#endif /* !__MINIX_RT_INTERRUPT_H_ */

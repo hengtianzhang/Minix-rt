@@ -1,5 +1,5 @@
-#ifndef __SEL4M_OBJECT_CAP_TYPES_H_
-#define __SEL4M_OBJECT_CAP_TYPES_H_
+#ifndef __MINIX_RT_OBJECT_CAP_TYPES_H_
+#define __MINIX_RT_OBJECT_CAP_TYPES_H_
 
 #include <base/bitmap.h>
 #include <base/const.h>
@@ -411,4 +411,4 @@ static inline unsigned int cap_table_size(void)
 	[0] =  1UL						\
 }}
 
-#endif /* !__SEL4M_OBJECT_CAP_TYPES_H_ */
+#endif /* !__MINIX_RT_OBJECT_CAP_TYPES_H_ */

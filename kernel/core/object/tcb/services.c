@@ -4,16 +4,16 @@
 #include <base/string.h>
 #include <base/errno.h>
 
-#include <sel4m/cpumask.h>
-#include <sel4m/slab.h>
-#include <sel4m/gfp.h>
-#include <sel4m/page.h>
-#include <sel4m/sched.h>
-#include <sel4m/sched/rt.h>
-#include <sel4m/object/tcb.h>
-#include <sel4m/object/untype.h>
-#include <sel4m/object/ipc.h>
-#include <sel4m/uaccess.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/slab.h>
+#include <minix_rt/gfp.h>
+#include <minix_rt/page.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/rt.h>
+#include <minix_rt/object/tcb.h>
+#include <minix_rt/object/untype.h>
+#include <minix_rt/object/ipc.h>
+#include <minix_rt/uaccess.h>
 
 #include <asm/processor.h>
 

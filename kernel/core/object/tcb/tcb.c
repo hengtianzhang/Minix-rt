@@ -1,12 +1,12 @@
-#include <sel4m/sched.h>
-#include <sel4m/slab.h>
-#include <sel4m/gfp.h>
-#include <sel4m/object/tcb.h>
-#include <sel4m/object/pid.h>
-#include <sel4m/object/untype.h>
-#include <sel4m/syscalls.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/slab.h>
+#include <minix_rt/gfp.h>
+#include <minix_rt/object/tcb.h>
+#include <minix_rt/object/pid.h>
+#include <minix_rt/object/untype.h>
+#include <minix_rt/syscalls.h>
 
-#include <uapi/sel4m/object/tcb.h>
+#include <uapi/minix_rt/object/tcb.h>
 
 asmlinkage void ret_from_fork(void) asm("ret_from_fork");
 

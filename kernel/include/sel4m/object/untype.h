@@ -1,10 +1,10 @@
-#ifndef __SEL4M_OBJECT_H_
-#define __SEL4M_OBJECT_H_
+#ifndef __MINIX_RT_OBJECT_H_
+#define __MINIX_RT_OBJECT_H_
 
 #include <base/atomic.h>
 #include <base/rbtree.h>
 
-#include <uapi/sel4m/object/untype.h>
+#include <uapi/minix_rt/object/untype.h>
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
@@ -58,4 +58,4 @@ extern struct vm_area_struct *untype_next_vma(struct vm_area_struct *vma);
 extern int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 							unsigned long *stack_top, unsigned long *ipcptr);
 
-#endif /* !__SEL4M_OBJECT_H_ */
+#endif /* !__MINIX_RT_OBJECT_H_ */

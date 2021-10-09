@@ -6,10 +6,10 @@
 #include <base/cache.h>
 #include <base/init.h>
 
-#include <sel4m/hrtimer.h>
-#include <sel4m/cpu.h>
-#include <sel4m/smp.h>
-#include <sel4m/cpumask.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/cpu.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/cpumask.h>
 
 struct cpumask __cpu_possible_mask __read_mostly = {CPU_BITS_ALL};
 struct cpumask __cpu_online_mask __read_mostly;

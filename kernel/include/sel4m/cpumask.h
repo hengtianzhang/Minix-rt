@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_CPUMASK_H_
-#define __SEL4M_CPUMASK_H_
+#ifndef __MINIX_RT_CPUMASK_H_
+#define __MINIX_RT_CPUMASK_H_
 
 #ifndef __ASSEMBLY__
 
@@ -632,4 +632,4 @@ static inline const struct cpumask *get_cpu_mask(unsigned int cpu)
 } }
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__SEL4M_CPUMASK_H_ */
+#endif /* !__MINIX_RT_CPUMASK_H_ */

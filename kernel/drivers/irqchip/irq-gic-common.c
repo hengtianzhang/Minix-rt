@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sel4m/interrupt.h>
-#include <sel4m/irq.h>
+#include <minix_rt/interrupt.h>
+#include <minix_rt/irq.h>
 #include <irqchip/arm-gic.h>
 
 #include <asm/io.h>

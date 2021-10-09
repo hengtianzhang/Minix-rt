@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 #
-menu "Sel4m kernel configuration"
+menu "Minix-rt kernel configuration"
 
 source "kernel/init/Kconfig"
 
@@ -8,7 +8,7 @@ source "kernel/drivers/Kconfig"
 
 source "kernel/lib/Kconfig"
 
-source "kernel/libsel4m/Kconfig"
+source "kernel/libminix_rt/Kconfig"
 
 source "kernel/lib/Kconfig.debug"
 

@@ -1,12 +1,12 @@
-#ifndef __UAPI_SEL4M_OBJECT_IPC_H_
-#define __UAPI_SEL4M_OBJECT_IPC_H_
+#ifndef __UAPI_MINIX_RT_OBJECT_IPC_H_
+#define __UAPI_MINIX_RT_OBJECT_IPC_H_
 
 #include <asm/base/page-def.h>
 
 #ifndef __KERNEL__
-#include <sel4m/object/notifier.h>
+#include <minix_rt/object/notifier.h>
 #else
-#include <uapi/sel4m/object/notifier.h>
+#include <uapi/minix_rt/object/notifier.h>
 #endif /* !__KERNEL__ */
 
 #define IPC_DEBUG_PRINTF_BUFFER_MAX 1024
@@ -17,4 +17,4 @@ struct ipc_share_struct {
 	pid_t	notifier[NOTIFIER_NR_MAX];
 };
 
-#endif /* !__UAPI_SEL4M_OBJECT_IPC_H_ */
+#endif /* !__UAPI_MINIX_RT_OBJECT_IPC_H_ */

@@ -10,8 +10,8 @@
 
 #include <base/init.h>
 
-#include <sel4m/clockchips.h>
-#include <sel4m/smp.h>
+#include <minix_rt/clockchips.h>
+#include <minix_rt/smp.h>
 
 #include "tick-internal.h"
 #include "tick-sched.h"

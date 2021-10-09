@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
-#include <sel4m/uaccess.h>
+#include <minix_rt/uaccess.h>
 
 /* out-of-line parts */
 

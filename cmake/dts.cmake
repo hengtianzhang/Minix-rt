@@ -26,8 +26,8 @@ if(CONFIG_DTC_OVERLAY_FILE AND (NOT DEFINED USE_QEMU_DTB))
 	foreach(file ${DTC_OVERLAY_FILE_RAW_LIST})
 		if (EXISTS ${APPLICATION_SOURCE_DIR}/dts/${file}.dts)
 			list(APPEND DTC_OVERLAY_FILE_AS_LIST ${APPLICATION_SOURCE_DIR}/dts/${file}.dts)
-		elseif(EXISTS ${SEL4M_BASE}/kernel/arch/${ARCH}/boot/dts/${file}.dts)
-			list(APPEND DTC_OVERLAY_FILE_AS_LIST ${SEL4M_BASE}/kernel/arch/${ARCH}/boot/dts/${file}.dts)
+		elseif(EXISTS ${MINIX_RT_BASE}/kernel/arch/${ARCH}/boot/dts/${file}.dts)
+			list(APPEND DTC_OVERLAY_FILE_AS_LIST ${MINIX_RT_BASE}/kernel/arch/${ARCH}/boot/dts/${file}.dts)
 		else()
 			message(WARNING "Not found dts file: ${file}.dts")
 		endif()
@@ -42,11 +42,11 @@ if(CONFIG_DTC_OVERLAY_FILE AND (NOT DEFINED USE_QEMU_DTB))
 		set(CMAKE_DTS_PREPROCESSOR ${CMAKE_C_COMPILER})
 	endif()
 
-	sel4m_file(APPLICATION_ROOT DTS_ROOT)
+	minix_rt_file(APPLICATION_ROOT DTS_ROOT)
 	list(APPEND
 		DTS_ROOT
   		${APPLICATION_SOURCE_DIR}
-  		${SEL4M_BASE}/kernel/arch/${ARCH}/boot/dts
+  		${MINIX_RT_BASE}/kernel/arch/${ARCH}/boot/dts
   	)
 	list(REMOVE_DUPLICATES
 		DTS_ROOT

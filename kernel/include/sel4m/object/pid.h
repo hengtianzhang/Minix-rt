@@ -1,5 +1,5 @@
-#ifndef __SEL4M_OBJECT_PID_H_
-#define __SEL4M_OBJECT_PID_H_
+#ifndef __MINIX_RT_OBJECT_PID_H_
+#define __MINIX_RT_OBJECT_PID_H_
 
 #include <base/types.h>
 #include <base/rbtree.h>
@@ -21,4 +21,4 @@ pid_t pid_next(pid_t pid);
 #define pid_for_each_pid(pid)   \
 	for (pid = pid_first(); pid != INT_MAX; pid = pid_next(pid))
 
-#endif /* !__SEL4M_OBJECT_PID_H_ */
+#endif /* !__MINIX_RT_OBJECT_PID_H_ */

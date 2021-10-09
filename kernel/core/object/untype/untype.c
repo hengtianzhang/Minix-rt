@@ -1,15 +1,15 @@
-#include <sel4m/gfp.h>
-#include <sel4m/slab.h>
-#include <sel4m/cpumask.h>
-#include <sel4m/object/untype.h>
-#include <sel4m/spinlock.h>
-#include <sel4m/sched.h>
-#include <sel4m/preempt.h>
-#include <sel4m/syscalls.h>
-#include <sel4m/uaccess.h>
+#include <minix_rt/gfp.h>
+#include <minix_rt/slab.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/object/untype.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/preempt.h>
+#include <minix_rt/syscalls.h>
+#include <minix_rt/uaccess.h>
 
-#include <uapi/sel4m/object/untype.h>
-#include <uapi/sel4m/object/cap_types.h>
+#include <uapi/minix_rt/object/untype.h>
+#include <uapi/minix_rt/object/cap_types.h>
 
 #include <asm/mmu_context.h>
 #include <asm/mmu.h>

@@ -1,5 +1,5 @@
 #ifndef APP_LINKER_SCRIPT
-#error "This header file only to sel4m app"
+#error "This header file only to minix_rt app"
 #endif
 
 #ifndef __ASM_GENERIC_GENERIC_LINKER_LDS_H_

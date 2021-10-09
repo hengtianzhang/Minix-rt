@@ -6,9 +6,9 @@ file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/generated)
 file(MAKE_DIRECTORY ${APPLICATION_BINARY_DIR}/include/config)
 
 if(KCONFIG_ROOT)
-	sel4m_file(APPLICATION_ROOT KCONFIG_ROOT)
+	minix_rt_file(APPLICATION_ROOT KCONFIG_ROOT)
 else()
-	set(KCONFIG_ROOT ${SEL4M_BASE}/Kconfig)
+	set(KCONFIG_ROOT ${MINIX_RT_BASE}/Kconfig)
 endif()
 
 set(DOTCONFIG                  ${APPLICATION_BINARY_DIR}/.config)
@@ -16,16 +16,16 @@ set(PARSED_KCONFIG_SOURCES_TXT ${APPLICATION_BINARY_DIR}/kconfig/sources.txt)
 
 if(DEFINED KCONFIG_FILE)
 	file(REMOVE ${DOTCONFIG})
-	unset(SEL4M_DEFCONFIG)
-	unset(SEL4M_DEFCONFIG CACHE)
+	unset(MINIX_RT_DEFCONFIG)
+	unset(MINIX_RT_DEFCONFIG CACHE)
 endif()
 
-find_file(SEL4M_DEFCONFIG ${KCONFIG_FILE} ${APPLICATION_SOURCE_DIR}/configs)
-if (SEL4M_DEFCONFIG STREQUAL SEL4M_DEFCONFIG-NOTFOUND)
-	find_file(SEL4M_DEFCONFIG ${KCONFIG_FILE} ${SEL4M_BASE}/kernel/arch/${ARCH}/configs)
+find_file(MINIX_RT_DEFCONFIG ${KCONFIG_FILE} ${APPLICATION_SOURCE_DIR}/configs)
+if (MINIX_RT_DEFCONFIG STREQUAL MINIX_RT_DEFCONFIG-NOTFOUND)
+	find_file(MINIX_RT_DEFCONFIG ${KCONFIG_FILE} ${MINIX_RT_BASE}/kernel/arch/${ARCH}/configs)
 endif()
 
-if (SEL4M_DEFCONFIG STREQUAL SEL4M_DEFCONFIG-NOTFOUND)
+if (MINIX_RT_DEFCONFIG STREQUAL MINIX_RT_DEFCONFIG-NOTFOUND)
 	message(FATAL_ERROR "Not Found KCONFIG_FILE. The example:
 	-DKCONFIG_FILE=defconfig
 ")
@@ -34,14 +34,14 @@ endif()
 unset(KCONFIG_FILE)
 unset(KCONFIG_FILE CACHE)
 
-message(STATUS "Kconfig file: ${SEL4M_DEFCONFIG}")
+message(STATUS "Kconfig file: ${MINIX_RT_DEFCONFIG}")
 
 get_filename_component(APPLICATION_SOURCE ${APPLICATION_SOURCE_DIR} NAME)
 set(APPLICATION_SOURCE ${APPLICATION_SOURCE})
 
 set(COMMON_KCONFIG_ENV_SETTINGS
 	PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}
-	srctree=${SEL4M_BASE}
+	srctree=${MINIX_RT_BASE}
 	KERNEL_VERSION_STRING=${KERNEL_VERSION_STRING}
 	KCONFIG_CONFIG=${DOTCONFIG}
 	# Set environment variables so that Kconfig can prune Kconfig source
@@ -65,15 +65,15 @@ set(COMMON_KCONFIG_ENV_SETTINGS
 # -DEXTRA_KCONFIG_TARGET_COMMAND_FOR_cli=cli_kconfig_frontend.py
 
 set(EXTRA_KCONFIG_TARGET_COMMAND_FOR_menuconfig
-	${SEL4M_BASE}/scripts/kconfig/menuconfig.py
+	${MINIX_RT_BASE}/scripts/kconfig/menuconfig.py
 	)
 
 set(EXTRA_KCONFIG_TARGET_COMMAND_FOR_guiconfig
-	${SEL4M_BASE}/scripts/kconfig/guiconfig.py
+	${MINIX_RT_BASE}/scripts/kconfig/guiconfig.py
 	)
 
 set(EXTRA_KCONFIG_TARGET_COMMAND_FOR_hardenconfig
-	${SEL4M_BASE}/scripts/kconfig/hardenconfig.py
+	${MINIX_RT_BASE}/scripts/kconfig/hardenconfig.py
 	)
 
 foreach(kconfig_target
@@ -85,8 +85,8 @@ foreach(kconfig_target
 	add_custom_target(
 		${kconfig_target}
 		${CMAKE_COMMAND} -E env
-		SEL4M_BASE=${SEL4M_BASE}
-		SEL4M_TOOLCHAIN=${SEL4M_TOOLCHAIN}
+		MINIX_RT_BASE=${MINIX_RT_BASE}
+		MINIX_RT_TOOLCHAIN=${MINIX_RT_TOOLCHAIN}
 		${COMMON_KCONFIG_ENV_SETTINGS}
 		${PYTHON_EXECUTABLE}
 		${EXTRA_KCONFIG_TARGET_COMMAND_FOR_${kconfig_target}}
@@ -127,7 +127,7 @@ file(GLOB config_files ${APPLICATION_BINARY_DIR}/*.conf)
 list(SORT config_files)
 set(
 	merge_config_files
-	${SEL4M_DEFCONFIG}
+	${MINIX_RT_DEFCONFIG}
 	${CONF_FILE_AS_LIST}
 	${shield_conf_files}
 	${OVERLAY_CONFIG_AS_LIST}
@@ -195,8 +195,8 @@ execute_process(
 	${COMMON_KCONFIG_ENV_SETTINGS}
 	SHIELD_AS_LIST=${SHIELD_AS_LIST_ESCAPED}
 	${PYTHON_EXECUTABLE}
-	${SEL4M_BASE}/scripts/kconfig/kconfig.py
-	--sel4m-base=${SEL4M_BASE}
+	${MINIX_RT_BASE}/scripts/kconfig/kconfig.py
+	--minix_rt-base=${MINIX_RT_BASE}
 	${input_configs_are_handwritten}
 	${KCONFIG_ROOT}
 	${DOTCONFIG}
@@ -214,7 +214,7 @@ endif()
 
 if(CREATE_NEW_DOTCONFIG)
 	# Write the new configuration fragment checksum. Only do this if kconfig.py
-	# succeeds, to avoid marking sel4m/.config as up-to-date when it hasn't been
+	# succeeds, to avoid marking minix_rt/.config as up-to-date when it hasn't been
 	# regenerated.
 	file(WRITE ${merge_config_files_checksum_file}
 						 ${merge_config_files_checksum})
@@ -260,7 +260,7 @@ set(KCONFIG_H ${APPLICATION_BINARY_DIR}/include/generated/kconfig.h CACHE PATH "
 
 execute_process(
 	COMMAND ${PYTHON_EXECUTABLE}
-	${SEL4M_BASE}/scripts/mkkconfig_h.py
+	${MINIX_RT_BASE}/scripts/mkkconfig_h.py
 	-o ${KCONFIG_H}
 	OUTPUT_FILE ${KCONFIG_H}
 	OUTPUT_QUIET # Discard stdout

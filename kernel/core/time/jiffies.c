@@ -20,12 +20,12 @@
 #include <base/time.h>
 #include <base/cache.h>
 
-#include <sel4m/ktime.h>
-#include <sel4m/jiffies.h>
-#include <sel4m/hrtimer.h>
-#include <sel4m/sched.h>
-#include <sel4m/seqlock.h>
-#include <sel4m/smp.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/jiffies.h>
+#include <minix_rt/hrtimer.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/seqlock.h>
+#include <minix_rt/smp.h>
 
 #include "timekeeping.h"
 #include "tick-internal.h"

@@ -11,8 +11,8 @@
  * Copyright (C) 2015 ARM Limited
  */
 
-#ifndef __SEL4M_PSCI_H_
-#define __SEL4M_PSCI_H_
+#ifndef __MINIX_RT_PSCI_H_
+#define __MINIX_RT_PSCI_H_
 
 #include <base/init.h>
 #include <base/types.h>
@@ -145,4 +145,4 @@ int __init psci_dt_init(void);
 #define PSCI_RET_DISABLED			-8
 #define PSCI_RET_INVALID_ADDRESS		-9
 
-#endif /* !__SEL4M_PSCI_H_ */
+#endif /* !__MINIX_RT_PSCI_H_ */

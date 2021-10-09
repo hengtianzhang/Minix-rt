@@ -1,9 +1,9 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_SCHED_SCHED_CLOCK_H_
-#define __SEL4M_SCHED_SCHED_CLOCK_H_
+#ifndef __MINIX_RT_SCHED_SCHED_CLOCK_H_
+#define __MINIX_RT_SCHED_SCHED_CLOCK_H_
 
-#include <sel4m/sched_clock.h>
-#include <sel4m/smp.h>
+#include <minix_rt/sched_clock.h>
+#include <minix_rt/smp.h>
 
 extern u64 notrace sched_clock(void);
 
@@ -14,4 +14,4 @@ static inline u64 local_clock(void)
 	return sched_clock();
 }
 
-#endif /* !__SEL4M_SCHED_SCHED_CLOCK_H_ */
+#endif /* !__MINIX_RT_SCHED_SCHED_CLOCK_H_ */

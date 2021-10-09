@@ -1,5 +1,5 @@
-#ifndef __LIBSEL4M_ASM_LIBSEL4M_H_
-#define __LIBSEL4M_ASM_LIBSEL4M_H_
+#ifndef __LIBMINIX_RT_ASM_LIBMINIX_RT_H_
+#define __LIBMINIX_RT_ASM_LIBMINIX_RT_H_
 
 #ifndef __scc
 #define __scc(X) ((long) (X))
@@ -24,4 +24,4 @@ long ___syscall(syscall_arg_t, ...);
 
 #define __syscall(...) __SYSCALL_DISP(__syscall,__VA_ARGS__)
 
-#endif /* !__LIBSEL4M_ASM_LIBSEL4M_H_ */
+#endif /* !__LIBMINIX_RT_ASM_LIBMINIX_RT_H_ */

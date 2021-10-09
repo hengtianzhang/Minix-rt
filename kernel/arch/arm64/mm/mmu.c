@@ -23,8 +23,8 @@
 
 #include <of/libfdt.h>
 
-#include <sel4m/page.h>
-#include <sel4m/memory.h>
+#include <minix_rt/page.h>
+#include <minix_rt/memory.h>
 
 #include <asm/fixmap.h>
 #include <asm/pgtable.h>

@@ -27,21 +27,21 @@
 #include <base/cache.h>
 #include <base/linkage.h>
 
-#include <sel4m/reciprocal_div.h>
-#include <sel4m/sched.h>
-#include <sel4m/sched/rt.h>
-#include <sel4m/sched/fair.h>
-#include <sel4m/completion.h>
-#include <sel4m/wait.h>
-#include <sel4m/cpumask.h>
-#include <sel4m/mutex.h>
-#include <sel4m/jiffies.h>
-#include <sel4m/interrupt.h>
-#include <sel4m/irq.h>
-#include <sel4m/object/pid.h>
-#include <sel4m/sched/idle.h>
-#include <sel4m/irq.h>
-#include <sel4m/stat.h>
+#include <minix_rt/reciprocal_div.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/sched/rt.h>
+#include <minix_rt/sched/fair.h>
+#include <minix_rt/completion.h>
+#include <minix_rt/wait.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/mutex.h>
+#include <minix_rt/jiffies.h>
+#include <minix_rt/interrupt.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/object/pid.h>
+#include <minix_rt/sched/idle.h>
+#include <minix_rt/irq.h>
+#include <minix_rt/stat.h>
 
 #include <asm-generic/switch_to.h>
 

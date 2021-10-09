@@ -1,16 +1,16 @@
-#ifndef __LIBSEL4M_OBJECT_TCB_H_
-#define __LIBSEL4M_OBJECT_TCB_H_
+#ifndef __LIBMINIX_RT_OBJECT_TCB_H_
+#define __LIBMINIX_RT_OBJECT_TCB_H_
 
 #include <base/types.h>
 #include <base/linkage.h>
 
-#include <sel4m/object/tcb.h>
+#include <minix_rt/object/tcb.h>
 
 typedef int (*tcb_thread_fn_t)(void *);
 
 extern pid_t tcb_create_thread(tcb_thread_fn_t fn, void *arg);
 extern pid_t tcb_get_pid_info(void);
 
-extern asmlinkage void __sel4m_exit_c(void);
+extern asmlinkage void __minix_rt_exit_c(void);
 
-#endif /* !__LIBSEL4M_OBJECT_TCB_H_ */
+#endif /* !__LIBMINIX_RT_OBJECT_TCB_H_ */

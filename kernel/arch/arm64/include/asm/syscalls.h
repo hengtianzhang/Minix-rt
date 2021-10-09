@@ -1,5 +1,5 @@
-#ifndef __ASM_SEL4M_SYSCALLS_H_
-#define __ASM_SEL4M_SYSCALLS_H_
+#ifndef __ASM_MINIX_RT_SYSCALLS_H_
+#define __ASM_MINIX_RT_SYSCALLS_H_
 
 #include <asm/ptrace.h>
 
@@ -35,4 +35,4 @@ extern const syscall_fn_t sys_call_table[];
 	asmlinkage long __arm64_sys_##sname(void)
 #endif
 
-#endif /* !__ASM_SEL4M_SYSCALLS_H_ */
+#endif /* !__ASM_MINIX_RT_SYSCALLS_H_ */

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_JIFFIES_H_
-#define __SEL4M_JIFFIES_H_
+#ifndef __MINIX_RT_JIFFIES_H_
+#define __MINIX_RT_JIFFIES_H_
 
 #undef HZ
 #define HZ		CONFIG_HZ	/* Internal kernel timer frequency */
@@ -455,4 +455,4 @@ extern u64 nsecs_to_jiffies(u64 n);
 
 void system_tick_init(void);
 
-#endif /* !__SEL4M_JIFFIES_H_ */
+#endif /* !__MINIX_RT_JIFFIES_H_ */

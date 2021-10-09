@@ -20,10 +20,10 @@
 #include <base/linkage.h>
 #include <base/overflow.h>
 
-#include <sel4m/cpumask.h>
-#include <sel4m/spinlock.h>
-#include <sel4m/smp.h>
-#include <sel4m/memory.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/smp.h>
+#include <minix_rt/memory.h>
 
 #include <asm/mmu_context.h>
 #include <asm/sysreg.h>

@@ -1,5 +1,5 @@
-#ifndef __SEL4M_CPU_H_
-#define __SEL4M_CPU_H_
+#ifndef __MINIX_RT_CPU_H_
+#define __MINIX_RT_CPU_H_
 
 #include <base/list.h>
 #include <base/types.h>
@@ -114,4 +114,4 @@ static inline int cpuhp_setup_state_multi(enum cpuhp_state state,
 extern void boot_cpu_init(void);
 void notify_cpu_starting(unsigned int cpu);
 int migration_init(void);
-#endif /* !__SEL4M_CPU_H_ */
+#endif /* !__MINIX_RT_CPU_H_ */

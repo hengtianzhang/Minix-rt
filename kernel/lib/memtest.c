@@ -3,7 +3,7 @@
 #include <base/types.h>
 #include <base/init.h>
 
-#include <sel4m/memory.h>
+#include <minix_rt/memory.h>
 
 static u64 patterns[] __initdata = {
 	/* The first entry has to be 0 to leave memtest with zeroed memory */

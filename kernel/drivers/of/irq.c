@@ -20,8 +20,8 @@
 #include <of/of.h>
 #include <of/of_irq.h>
 
-#include <sel4m/memory.h>
-#include <sel4m/of_irq.h>
+#include <minix_rt/memory.h>
+#include <minix_rt/of_irq.h>
 
 struct of_intc_desc {
 	struct list_head	list;

@@ -1,5 +1,5 @@
 # First step is to inherit all properties from gcc, as clang is compatible with most flags.
-include(${SEL4M_BASE}/cmake/compiler/gcc/compiler_flags.cmake)
+include(${MINIX_RT_BASE}/cmake/compiler/gcc/compiler_flags.cmake)
 
 # Now, let's overwrite the flags that are different in clang.
 
@@ -20,7 +20,7 @@ set_compiler_property(PROPERTY diagnostic -fcolor-diagnostics)
 # This section covers flags related to warning levels #
 #######################################################
 
-# clang option standard warning base in sel4m
+# clang option standard warning base in minix_rt
 set_compiler_property(PROPERTY warning_base
 					  -Wall
 					  -Wformat

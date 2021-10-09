@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_TIMEKEEPING_H_
-#define __SEL4M_TIMEKEEPING_H_
+#ifndef __MINIX_RT_TIMEKEEPING_H_
+#define __MINIX_RT_TIMEKEEPING_H_
 
 #include <base/errno.h>
 
@@ -48,4 +48,4 @@ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
 extern int update_persistent_clock64(struct timespec64 now);
 extern u64 timekeeping_max_deferment(void);
 
-#endif /* !__SEL4M_TIMEKEEPING_H_ */
+#endif /* !__MINIX_RT_TIMEKEEPING_H_ */

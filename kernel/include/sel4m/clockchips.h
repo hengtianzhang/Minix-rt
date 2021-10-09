@@ -6,12 +6,12 @@
  *  If you are not a clockchip, or the time of day code, you should
  *  not be including this file!
  */
-#ifndef __SEL4M_CLOCKCHIPS_H_
-#define __SEL4M_CLOCKCHIPS_H_
+#ifndef __MINIX_RT_CLOCKCHIPS_H_
+#define __MINIX_RT_CLOCKCHIPS_H_
 
-#include <sel4m/clocksource.h>
-#include <sel4m/cpumask.h>
-#include <sel4m/ktime.h>
+#include <minix_rt/clocksource.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/ktime.h>
 
 /*
  * Possible states of a clock event device.
@@ -191,4 +191,4 @@ clockevents_calc_mult_shift(struct clock_event_device *ce, u32 freq, u32 maxsec)
 extern void clockevents_suspend(void);
 extern void clockevents_resume(void);
 
-#endif /* !__SEL4M_CLOCKCHIPS_H_ */
+#endif /* !__MINIX_RT_CLOCKCHIPS_H_ */

@@ -1,5 +1,5 @@
-#ifndef __SEL4M_RECIPROCAL_DIV_H_
-#define __SEL4M_RECIPROCAL_DIV_H_
+#ifndef __MINIX_RT_RECIPROCAL_DIV_H_
+#define __MINIX_RT_RECIPROCAL_DIV_H_
 
 #include <base/types.h>
 
@@ -29,4 +29,4 @@ static inline u32 reciprocal_divide(u32 A, u32 R)
 	return (u32)(((u64)A * R) >> 32);
 }
 
-#endif /* !__SEL4M_RECIPROCAL_DIV_H_ */
+#endif /* !__MINIX_RT_RECIPROCAL_DIV_H_ */

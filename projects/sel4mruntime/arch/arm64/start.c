@@ -1,11 +1,11 @@
-#include <libsel4m/object/ipc.h>
+#include <libminix_rt/object/ipc.h>
 
 #include <base/bug.h>
 
 #include <bootinfo.h>
 #include <string.h>
 
-void __sel4m_start_c(unsigned long ipcptr)
+void __minix_rt_start_c(unsigned long ipcptr)
 {
 	int size = __bss_end__ - __bss_start__;
 

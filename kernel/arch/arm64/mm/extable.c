@@ -3,7 +3,7 @@
  * Based on arch/arm/mm/extable.c
  */
 
-#include <sel4m/extable.h>
+#include <minix_rt/extable.h>
 
 #include <asm/ptrace.h>
 

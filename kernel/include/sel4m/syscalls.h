@@ -8,11 +8,11 @@
  * See the file COPYING for more details.
  */
 
-#ifndef __SEL4M_SYSCALLS_H_
-#define __SEL4M_SYSCALLS_H_
+#ifndef __MINIX_RT_SYSCALLS_H_
+#define __MINIX_RT_SYSCALLS_H_
 
-#include <sel4m/thread.h>
-#include <sel4m/uaccess.h>
+#include <minix_rt/thread.h>
+#include <minix_rt/uaccess.h>
 
 #include <asm/processor.h>
 #include <asm/syscalls.h>
@@ -111,4 +111,4 @@ static inline void addr_limit_user_check(void)
 #endif
 }
 
-#endif /* !__SEL4M_SYSCALLS_H_ */
+#endif /* !__MINIX_RT_SYSCALLS_H_ */

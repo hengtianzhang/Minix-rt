@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <libsel4m/object/untype.h>
-#include <libsel4m/object/tcb.h>
-#include <libsel4m/object/notifier.h>
+#include <libminix_rt/object/untype.h>
+#include <libminix_rt/object/tcb.h>
+#include <libminix_rt/object/notifier.h>
 
 static int test_lock = 0;
 

@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_TIMERQUEUE_H_
-#define __SEL4M_TIMERQUEUE_H_
+#ifndef __MINIX_RT_TIMERQUEUE_H_
+#define __MINIX_RT_TIMERQUEUE_H_
 
 #include <base/rbtree.h>
 
-#include <sel4m/ktime.h>
+#include <minix_rt/ktime.h>
 
 struct timerqueue_node {
 	struct rb_node node;
@@ -48,4 +48,4 @@ static inline void timerqueue_init_head(struct timerqueue_head *head)
 	head->next = NULL;
 }
 
-#endif /* !__SEL4M_TIMERQUEUE_H_ */
+#endif /* !__MINIX_RT_TIMERQUEUE_H_ */

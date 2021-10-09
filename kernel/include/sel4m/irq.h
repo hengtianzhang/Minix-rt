@@ -13,10 +13,10 @@
 #include <base/cache.h>
 #include <base/init.h>
 
-#include <sel4m/spinlock.h>
-#include <sel4m/cpumask.h>
-#include <sel4m/irqflags.h>
-#include <sel4m/interrupt.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/cpumask.h>
+#include <minix_rt/irqflags.h>
+#include <minix_rt/interrupt.h>
 
 #include <of/of.h>
 

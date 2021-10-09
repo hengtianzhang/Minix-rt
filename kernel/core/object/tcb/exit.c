@@ -1,5 +1,5 @@
-#include <sel4m/sched.h>
-#include <sel4m/object/tcb.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/object/tcb.h>
 
 void tcb_do_exit(struct task_struct *tsk, int flags)
 {

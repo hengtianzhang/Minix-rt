@@ -19,7 +19,7 @@
 #include <base/init.h>
 #include <base/common.h>
 
-#include <sel4m/smp.h>
+#include <minix_rt/smp.h>
 
 #include <asm/arch_timer.h>
 #include <asm/cpu.h>

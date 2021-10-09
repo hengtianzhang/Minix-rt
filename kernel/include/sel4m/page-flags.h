@@ -1,10 +1,10 @@
-#ifndef __SEL4M_PAGE_FLAGS_H_
-#define __SEL4M_PAGE_FLAGS_H_
+#ifndef __MINIX_RT_PAGE_FLAGS_H_
+#define __MINIX_RT_PAGE_FLAGS_H_
 
 #include <base/compiler.h>
 #include <base/bitops.h>
 
-#include <sel4m/mm_types.h>
+#include <minix_rt/mm_types.h>
 
 enum pageflags {
 	PG_locked,		/* Page is locked. Don't touch. */
@@ -219,4 +219,4 @@ PAGE_TYPE_OPS(Table, table)
 
 #endif /* ASM_OFFSET_GENERATED */
 
-#endif /* !__SEL4M_PAGE_FLAGS_H_ */
+#endif /* !__MINIX_RT_PAGE_FLAGS_H_ */

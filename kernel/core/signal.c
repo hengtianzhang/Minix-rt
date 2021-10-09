@@ -1,9 +1,9 @@
-#include <sel4m/signal.h>
-#include <sel4m/sched.h>
-#include <sel4m/thread.h>
-#include <sel4m/object/tcb.h>
-#include <sel4m/object/pid.h>
-#include <sel4m/object/ipc.h>
+#include <minix_rt/signal.h>
+#include <minix_rt/sched.h>
+#include <minix_rt/thread.h>
+#include <minix_rt/object/tcb.h>
+#include <minix_rt/object/pid.h>
+#include <minix_rt/object/ipc.h>
 
 #include <asm/current.h>
 

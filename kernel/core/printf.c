@@ -3,11 +3,11 @@
 #include <base/common.h>
 #include <base/errno.h>
 
-#include <sel4m/object/ipc.h>
-#include <sel4m/sched/clock.h>
-#include <sel4m/spinlock.h>
-#include <sel4m/syscalls.h>
-#include <sel4m/uaccess.h>
+#include <minix_rt/object/ipc.h>
+#include <minix_rt/sched/clock.h>
+#include <minix_rt/spinlock.h>
+#include <minix_rt/syscalls.h>
+#include <minix_rt/uaccess.h>
 
 unsigned long long __stack_chk_guard;
 

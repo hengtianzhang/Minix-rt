@@ -1,6 +1,6 @@
-#ifndef __LIBSEL4M_STRING_H_
-#define __LIBSEL4M_STRING_H_
+#ifndef __LIBMINIX_RT_STRING_H_
+#define __LIBMINIX_RT_STRING_H_
 
 #include <base/string.h>
 
-#endif /* !__LIBSEL4M_STRING_H_ */
+#endif /* !__LIBMINIX_RT_STRING_H_ */

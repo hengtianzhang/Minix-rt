@@ -19,7 +19,7 @@
 
 #include <of/of.h>
 
-#include <sel4m/interrupt.h>
+#include <minix_rt/interrupt.h>
 
 #include <irqchip/arm-gic-common.h>
 

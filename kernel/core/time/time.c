@@ -26,7 +26,7 @@
 
 #include <base/time.h>
 
-#include <sel4m/jiffies.h>
+#include <minix_rt/jiffies.h>
 
 /*
  * Convert jiffies to milliseconds and back.

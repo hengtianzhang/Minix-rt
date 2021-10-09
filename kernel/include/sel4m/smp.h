@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
-#ifndef __SEL4M_SMP_H_
-#define __SEL4M_SMP_H_
+#ifndef __MINIX_RT_SMP_H_
+#define __MINIX_RT_SMP_H_
 
 #ifndef __ASSEMBLY__
 
@@ -89,4 +89,4 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
 			     int wait);
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__SEL4M_SMP_H_ */
+#endif /* !__MINIX_RT_SMP_H_ */

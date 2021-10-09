@@ -18,7 +18,7 @@
 #include <base/init.h>
 #include <base/common.h>
 
-#include <sel4m/extable.h>
+#include <minix_rt/extable.h>
 
 #include <asm/sections.h>
 

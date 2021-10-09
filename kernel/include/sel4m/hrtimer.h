@@ -9,16 +9,16 @@
  *
  *  Started by: Thomas Gleixner and Ingo Molnar
  */
-#ifndef __SEL4M_HRTIMER_H_
-#define __SEL4M_HRTIMER_H_
+#ifndef __MINIX_RT_HRTIMER_H_
+#define __MINIX_RT_HRTIMER_H_
 
 #include <base/rbtree.h>
 #include <base/init.h>
 #include <base/list.h>
 
-#include <sel4m/ktime.h>
-#include <sel4m/seqlock.h>
-#include <sel4m/timerqueue.h>
+#include <minix_rt/ktime.h>
+#include <minix_rt/seqlock.h>
+#include <minix_rt/timerqueue.h>
 
 struct hrtimer_clock_base;
 struct hrtimer_cpu_base;
@@ -443,4 +443,4 @@ extern int tick_init_highres(void);
 
 #define hrtimers_dead_cpu	NULL
 
-#endif /* __SEL4M_HRTIMER_H_ */
+#endif /* __MINIX_RT_HRTIMER_H_ */

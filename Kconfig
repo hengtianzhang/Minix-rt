@@ -3,7 +3,7 @@
 # Copyright (c) 2014-2015 Wind River Systems, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-mainmenu "Minix-rt/$(ARCH) $(KERNEL_VERSION_STRING) Configuration (Project: $(APPLICATION_SOURCE))"
+mainmenu "Minix-rt/$(ARCH) $(MINIX_RT_VERSION_STRING) Configuration (Project: $(APPLICATION_SOURCE))"
 
 source "scripts/Kconfig.include"
 

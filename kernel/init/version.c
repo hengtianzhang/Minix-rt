@@ -20,7 +20,7 @@ int version_string(MINIX_RT_VERSION_CODE);
 
 /* FIXED STRINGS! Don't touch! */
 const char linux_banner[] =
-	"Minix-rt version " KERNEL_VERSION_STRING " (" KERNEL_COMPILE_BY "@"
+	"Minix-rt version " MINIX_RT_VERSION_STRING " (" KERNEL_COMPILE_BY "@"
 	KERNEL_COMPILE_HOST ") (" KERNEL_COMPILER ") " UTS_VERSION "\n";
 
 BUILD_SALT;

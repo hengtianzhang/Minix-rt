@@ -20,7 +20,7 @@ macro(include_boilerplate location)
 	endif()
 endmacro()
 
-set(ENV_MINIX_RT_BASE $ENV{MINIX_RT_BASE})
+set(ENV_MINIX_RT_BASE ${CMAKE_CURRENT_SOURCE_DIR})
 if((NOT DEFINED MINIX_RT_BASE) AND (DEFINED ENV_MINIX_RT_BASE))
 	# Get rid of any double folder string before comparison, as example, user provides
 	# MINIX_RT_BASE=//path/to//minix_rt_base/

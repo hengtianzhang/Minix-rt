@@ -162,11 +162,4 @@ config QEMU_DEBUG
 
 endif
 
-menuconfig HAS_PROJECT
-	bool "Project $(APPLICATION_SOURCE) Configuration"
-
-if HAS_PROJECT
-osource "$(APPLICATION_SOURCE_DIR)/Kconfig"
-endif
-
 endmenu

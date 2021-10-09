@@ -2,6 +2,6 @@
 # Library minix_rt configuration
 #
 
-menu "libminix_rt routines"
+menu "libminix-rt routines"
 
 endmenu

@@ -124,7 +124,7 @@ target_include_directories(services_interface SYSTEM INTERFACE $<TARGET_PROPERTY
 
 services_ld_options(-nostdlib -static)
 
-add_subdirectory(minix_rtruntime)
+add_subdirectory(minix_rt_runtime)
 
 set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/archive.S")
 

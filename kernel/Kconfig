@@ -8,7 +8,7 @@ source "kernel/drivers/Kconfig"
 
 source "kernel/lib/Kconfig"
 
-source "kernel/libminix_rt/Kconfig"
+source "kernel/libminix-rt/Kconfig"
 
 source "kernel/lib/Kconfig.debug"
 

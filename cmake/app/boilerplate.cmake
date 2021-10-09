@@ -58,28 +58,17 @@ set_property(GLOBAL PROPERTY KERNEL_IMPORTED_LIBS "")
 set(APPLICATION_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Application Source Directory")
 set(APPLICATION_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Application Binary Directory")
 
-set(kernel__build_dir ${CMAKE_CURRENT_BINARY_DIR}/kernel)
-set(services__build_dir ${CMAKE_CURRENT_BINARY_DIR}/projects)
+set(kernel__build_dir ${APPLICATION_BINARY_DIR}/kernel)
+set(services__build_dir ${APPLICATION_BINARY_DIR}/projects)
+set(drivers__build_dir ${APPLICATION_BINARY_DIR}/drivers)
+set(servers__build_dir ${APPLICATION_BINARY_DIR}/servers)
 
 set(kernel__sources_dir ${MINIX_RT_BASE}/kernel)
 set(services__sources_dir ${MINIX_RT_BASE}/projects)
+set(drivers__sources_dir ${MINIX_RT_BASE}/drivers)
+set(servers__sources_dir ${MINIX_RT_BASE}/servers)
 
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-
-if(${CMAKE_VERSION} VERSION_EQUAL 3.19.0 OR
-   ${CMAKE_VERSION} VERSION_EQUAL 3.19.1)
-  message(WARNING "CMake 3.19.0/3.19.1 contains a bug regarding Toolchain/compiler "
-          "testing. Consider switching to a different CMake version.")
-  # This is a workaround for #30232.
-  # During minix_rt CMake invocation a plain C compiler is used for DTS.
-  # This results in the internal `CheckCompilerFlag.cmake` being included by CMake
-  # Later, when the full toolchain is configured, then `CMakeCheckCompilerFlag.cmake` is included.
-  # This overloads the `cmake_check_compiler_flag()` function, thus causing #30232.
-  # By manualy loading `CMakeCheckCompilerFlag.cmake` then `CheckCompilerFlag.cmake` will overload
-  # the functions (and thus win the battle), and because `include_guard(GLOBAL)` is used in
-  # `CMakeCheckCompilerFlag.cmake` this file will not be re-included later.
-  include(${CMAKE_ROOT}/Modules/Internal/CMakeCheckCompilerFlag.cmake)
-endif()
 
 message(STATUS "Application: ${APPLICATION_SOURCE_DIR}")
 
@@ -193,11 +182,15 @@ include(${MINIX_RT_BASE}/cmake/kconfig.cmake)
 include(${MINIX_RT_BASE}/cmake/dts.cmake)
 
 set(CMAKE_PREFIX_PATH ${MINIX_RT_BASE} CACHE PATH "")
-list(APPEND CMAKE_PREFIX_PATH ${MINIX_RT_BASE}/kernel/libminix_rt)
+list(APPEND CMAKE_PREFIX_PATH ${MINIX_RT_BASE}/kernel/libminix-rt)
 
 configure_file(${MINIX_RT_BASE}/version.h.in ${APPLICATION_BINARY_DIR}/include/generated/version.h)
 
 set(KERNEL_SOURCE_DIR ${MINIX_RT_BASE}/kernel CACHE PATH "")
 set(SERVICES_SOURCE_DIR ${MINIX_RT_BASE}/projects CACHE PATH "")
+set(DRIVERS_SOURCE_DIR ${MINIX_RT_BASE}/drivers CACHE PATH "")
+set(SERVERS_SOURCE_DIR ${MINIX_RT_BASE}/servers CACHE PATH "")
 
 add_subdirectory(${SERVICES_SOURCE_DIR}  ${services__build_dir})
+add_subdirectory(${DRIVERS_SOURCE_DIR}   ${drivers__build_dir})
+add_subdirectory(${SERVERS_SOURCE_DIR}   ${servers__build_dir})

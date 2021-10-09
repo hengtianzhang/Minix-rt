@@ -12,3 +12,7 @@ source "kernel/Kconfig"
 source "lib/Kconfig"
 
 source "projects/Kconfig"
+
+source "servers/Kconfig"
+
+osource "drivers/Kconfig"

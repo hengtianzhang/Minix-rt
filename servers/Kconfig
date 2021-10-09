@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Minix-rt Servers configuration"
+
+source "servers/pm/Kconfig"
+source "servers/fs/Kconfig"
+
+endmenu

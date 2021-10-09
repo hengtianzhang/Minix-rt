@@ -2,7 +2,7 @@
 
 int main(void)
 {
-	printf("This is pm\n");
+	printf("This is fs\n");
 
 	return 0;
 }

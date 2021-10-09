@@ -112,6 +112,7 @@ include(${MINIX_RT_BASE}/cmake/version.cmake)  # depends on hex.cmake
 #
 include(${MINIX_RT_BASE}/cmake/python.cmake)
 include(${MINIX_RT_BASE}/cmake/ccache.cmake)
+include(${MINIX_RT_BASE}/cmake/cpio.cmake)
 
 set(KCONFIG_BINARY_DIR ${CMAKE_BINARY_DIR}/kconfig)
 file(MAKE_DIRECTORY ${KCONFIG_BINARY_DIR})

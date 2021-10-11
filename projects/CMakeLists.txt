@@ -184,7 +184,7 @@ function(DeclareServicesApp servicesappname)
 	set_property(GLOBAL APPEND PROPERTY SERVICES_ARCHIVE_FILE_LIST "$<TARGET_FILE:${servicesappname}>")
 endfunction(DeclareServicesApp)
 
-function(DeclareDrivesApp driversappname)
+function(DeclareDriversApp driversappname)
 	target_link_libraries(${driversappname} PRIVATE minix_rtruntime_crt_obj)
 
     set_property(

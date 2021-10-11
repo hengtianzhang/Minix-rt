@@ -476,9 +476,15 @@ add_dependencies(${KERNEL_FINAL_EXECUTABLE} linker_kernel_prebuilt_script_target
 set_target_properties(${KERNEL_FINAL_EXECUTABLE} PROPERTIES OUTPUT_NAME ${KERNEL_NAME})
 
 add_dependencies(${KERNEL_FINAL_EXECUTABLE} services_archive)
+add_dependencies(${KERNEL_FINAL_EXECUTABLE} drivers_archive)
 add_dependencies(linker_kernel_prebuilt_script_target services_archive)
+add_dependencies(linker_kernel_prebuilt_script_target drivers_archive)
+
 get_property(SERVICES_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY SERVICES_ARCHIVE_FILE)
 kernel_sources(${SERVICES_ARCHIVE_FILE_PROPERTY})
+
+get_property(DRIVERS_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY DRIVERS_ARCHIVE_FILE)
+kernel_sources(${DRIVERS_ARCHIVE_FILE_PROPERTY})
 
 set_property(GLOBAL APPEND
 	PROPERTY KERNEL_POST_BUILD_COMMANDS

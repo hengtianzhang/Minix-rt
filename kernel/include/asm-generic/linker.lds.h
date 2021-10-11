@@ -122,6 +122,7 @@
 	}				\
 					\
 	ARCHIVE_SERVICES(PAGE_SIZE)			\
+	ARCHIVE_DRIVERS(PAGE_SIZE)			\
 					\
 	.rodata1 : AT(ADDR(.rodata1) - LOAD_OFFSET) {		\
 		*(.rodata1)						\
@@ -159,6 +160,14 @@
 		__start_archive = .;				\
 		KEEP(*(.archive_services))			\
 		__end_archive = .;					\
+	}
+
+#define ARCHIVE_DRIVERS(align)		\
+	. = ALIGN((align));						\
+	.archive_drivers :  AT(ADDR(.archive_drivers) - LOAD_OFFSET) {		\
+		__start_archive_drivers = .;				\
+		KEEP(*(.archive_drivers))			\
+		__end_archive_drviers = .;					\
 	}
 
 #define PAGE_ALIGNED_DATA(page_align)					\

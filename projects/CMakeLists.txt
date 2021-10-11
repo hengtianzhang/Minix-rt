@@ -127,7 +127,9 @@ services_ld_options(-nostdlib -static)
 add_subdirectory(minix_rt_runtime)
 
 set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/archive.S")
+set_property(GLOBAL PROPERTY DRIVERS_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/drivers_archive.S")
 set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE_LIST "")
+set_property(GLOBAL PROPERTY DRIVERS_ARCHIVE_FILE_LIST "")
 
 get_property(SERVICES_LINKER_SCRIPT GLOBAL PROPERTY SERVICES_LINKER_SCRIPT_S)
 if(NOT EXISTS ${SERVICES_LINKER_SCRIPT})
@@ -182,7 +184,29 @@ function(DeclareServicesApp servicesappname)
 	set_property(GLOBAL APPEND PROPERTY SERVICES_ARCHIVE_FILE_LIST "$<TARGET_FILE:${servicesappname}>")
 endfunction(DeclareServicesApp)
 
-function(make_kernel_archive output_name)
+function(DeclareDrivesApp driversappname)
+	target_link_libraries(${driversappname} PRIVATE minix_rtruntime_crt_obj)
+
+    set_property(
+        TARGET ${driversappname}
+        APPEND_STRING
+        PROPERTY LINK_OPTIONS -Wl,-T ${SERVICES_BINARY_DIR}/linker.lds
+    )
+	set_property(
+		TARGET
+		${driversappname}
+		PROPERTY LINK_DEPENDS
+		${SERVICES_BINARY_DIR}/linker.lds
+	)
+	add_dependencies(${driversappname} linker_services_prebuilt_script_target)
+
+	target_link_libraries(${driversappname} PUBLIC services_interface)
+	target_link_libraries(${driversappname} PRIVATE libminix_rt)
+
+	set_property(GLOBAL APPEND PROPERTY DRIVERS_ARCHIVE_FILE_LIST "$<TARGET_FILE:${driversappname}>")
+endfunction()
+
+function(make_kernel_services_archive output_name)
 	MakeCPIO(commands ${output_name} ${ARGN})
 	add_custom_command(
 		OUTPUT ${output_name}
@@ -200,6 +224,26 @@ function(make_kernel_archive output_name)
 		VERBATIM
 	)
 	add_custom_target(services_archive DEPENDS ${output_name})
+endfunction()
+
+function(make_kernel_drivers_archive output_name)
+	MakeCPIO(commands ${output_name} ${ARGN})
+	add_custom_command(
+		OUTPUT ${output_name}
+		COMMAND rm -f ${output_name}
+		COMMAND rm -f ${output_name}.cpio
+		COMMAND ${commands}
+		COMMAND ${SHELL} -c
+		"echo 'X.section .archive_drivers,\"aw\"X.globl __archive_drivers_start, \
+		__archive_drivers_endX__archive_drivers_start:X.incbin \"${output_name}.cpio\"X__archive_drivers_end:X' | tr X '\\n'"
+		> ${output_name}
+		BYPRODUCTS
+		${output_name}.cpio
+		DEPENDS
+		${ARGN}
+		VERBATIM
+	)
+	add_custom_target(drivers_archive DEPENDS ${output_name})
 endfunction()
 
 function(qemu_virt_setup)

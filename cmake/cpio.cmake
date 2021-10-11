@@ -29,32 +29,26 @@ endfunction()
 
 # Function for declaring rules to build a cpio archive that can be linked
 # into another target
-function(MakeCPIO commands output_name input_files)
-    cmake_parse_arguments(PARSE_ARGV 2 MAKE_CPIO "" "CPIO_SYMBOL" "DEPENDS")
-    if(NOT "${MAKE_CPIO_UNPARSED_ARGUMENTS}" STREQUAL "")
-        message(FATAL_ERROR "Unknown arguments to MakeCPIO")
-    endif()
-    set(archive_symbol "_cpio_archive")
-    if(NOT "${MAKE_CPIO_CPIO_SYMBOL}" STREQUAL "")
-        set(archive_symbol ${MAKE_CPIO_CPIO_SYMBOL})
-    endif()
+function(MakeCPIO commands output_name)
+    string(REGEX REPLACE ".+/(.+)\\..*" "\\1" basename ${output_name})
     # Check that the reproducible flag is available. Don't use it if it isn't.
     CheckCPIOArgument(cpio_reproducible_flag "--reproducible")
     set(append "")
     set(
-        commands
-        "bash;-c;cpio ${cpio_reproducible_flag} --quiet --create -H newc --file=${CMAKE_CURRENT_BINARY_DIR}/archive.${output_name}.cpio;&&"
+        commands_l
+        "bash;-c;cpio ${cpio_reproducible_flag} --quiet --create -H newc --file=${output_name}.cpio &;&&"
     )
-    foreach(file IN LISTS input_files)
+    foreach(file ${ARGN})
         # Try and generate reproducible cpio meta-data as we do this:
         # - touch -d @0 file sets the modified time to 0
         # - --owner=root:root sets user and group values to 0:0
         # - --reproducible creates reproducible archives with consistent inodes and device numbering
         list(
             APPEND
-                commands
-                "bash;-c;cd `dirname ${file}` && mkdir -p temp_${output_name} && cd temp_${output_name} && cp -a ${file} . && touch -d @0 `basename ${file}` && echo `basename ${file}` | cpio --append ${cpio_reproducible_flag} --owner=root:root --quiet -o -H newc --file=${CMAKE_CURRENT_BINARY_DIR}/archive.${output_name}.cpio && rm `basename ${file}` && cd ../ && rmdir temp_${output_name};&&"
+            commands_l
+                "bash;-c;cd `dirname ${file}` && mkdir -p temp_${basename} && cd temp_${basename} && cp -a ${file} . && touch -d @0 `basename ${file}` && echo `basename ${file}` | cpio --append ${cpio_reproducible_flag} --owner=root:root --quiet -o -H newc --file=${output_name}.cpio && rm `basename ${file}` && cd ../ && rmdir temp_${basename};&&"
         )
     endforeach()
-    list(APPEND commands "true")
+    list(APPEND commands_l "true")
+    set(${commands} ${commands_l} PARENT_SCOPE)
 endfunction()

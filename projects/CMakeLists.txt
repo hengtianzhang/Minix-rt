@@ -127,6 +127,7 @@ services_ld_options(-nostdlib -static)
 add_subdirectory(minix_rt_runtime)
 
 set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE "${SERVICES_BINARY_DIR}/archive.S")
+set_property(GLOBAL PROPERTY SERVICES_ARCHIVE_FILE_LIST "")
 
 get_property(SERVICES_LINKER_SCRIPT GLOBAL PROPERTY SERVICES_LINKER_SCRIPT_S)
 if(NOT EXISTS ${SERVICES_LINKER_SCRIPT})
@@ -156,31 +157,8 @@ set_property(TARGET
 	${SERVICES_INCLUDE_DIRS}
 )
 
-function(DeclareRootservices rootservicesname)
-	target_link_libraries(${rootservicesname} PRIVATE minix_rtruntime_crt_obj)
-
-    set_property(
-        TARGET ${rootservicesname}
-        APPEND_STRING
-        PROPERTY LINK_OPTIONS -Wl,-T ${SERVICES_BINARY_DIR}/linker.lds
-    )
-	set_property(
-		TARGET
-		${rootservicesname}
-		PROPERTY LINK_DEPENDS
-		${SERVICES_BINARY_DIR}/linker.lds
-	)
-	add_dependencies(${rootservicesname} linker_services_prebuilt_script_target)
-
-	target_link_libraries(${rootservicesname} PUBLIC services_interface)
-
-	get_property(SERVICES_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY SERVICES_ARCHIVE_FILE)
-	make_kernel_archive(${SERVICES_ARCHIVE_FILE_PROPERTY} "$<TARGET_FILE:${rootservicesname}>")
-
-	add_subdirectory(${KERNEL_SOURCE_DIR} ${kernel__build_dir})
-
-	qemu_virt_setup()
-endfunction(DeclareRootservices)
+find_package(libminix_rt REQUIRED)
+libminix_rt_user_import_libraries()
 
 function(DeclareServicesApp servicesappname)
 	target_link_libraries(${servicesappname} PRIVATE minix_rtruntime_crt_obj)
@@ -199,19 +177,26 @@ function(DeclareServicesApp servicesappname)
 	add_dependencies(${servicesappname} linker_services_prebuilt_script_target)
 
 	target_link_libraries(${servicesappname} PUBLIC services_interface)
+	target_link_libraries(${servicesappname} PRIVATE libminix_rt)
+
+	set_property(GLOBAL APPEND PROPERTY SERVICES_ARCHIVE_FILE_LIST "$<TARGET_FILE:${servicesappname}>")
 endfunction(DeclareServicesApp)
 
-function(make_kernel_archive output_name input_files)
-	MakeCPIO(commands ${output_name} ${input_files})
+function(make_kernel_archive output_name)
+	MakeCPIO(commands ${output_name} ${ARGN})
 	add_custom_command(
 		OUTPUT ${output_name}
 		COMMAND rm -f ${output_name}
+		COMMAND rm -f ${output_name}.cpio
+		COMMAND ${commands}
 		COMMAND ${SHELL} -c
 		"echo 'X.section .archive_services,\"aw\"X.globl __archive_services_start, \
-		__archive_services_endX__archive_services_start:X.incbin \"${input_files}\"X__archive_services_end:X' | tr X '\\n'"
+		__archive_services_endX__archive_services_start:X.incbin \"${output_name}.cpio\"X__archive_services_end:X' | tr X '\\n'"
 		> ${output_name}
+		BYPRODUCTS
+		${output_name}.cpio
 		DEPENDS
-		${input_files}
+		${ARGN}
 		VERBATIM
 	)
 	add_custom_target(services_archive DEPENDS ${output_name})

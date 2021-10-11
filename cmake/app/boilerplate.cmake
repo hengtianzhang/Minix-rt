@@ -195,3 +195,12 @@ set(SERVERS_SOURCE_DIR ${MINIX_RT_BASE}/servers CACHE PATH "")
 add_subdirectory(${SERVICES_SOURCE_DIR}  ${services__build_dir})
 add_subdirectory(${DRIVERS_SOURCE_DIR}   ${drivers__build_dir})
 add_subdirectory(${SERVERS_SOURCE_DIR}   ${servers__build_dir})
+
+get_property(SERVICES_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY SERVICES_ARCHIVE_FILE)
+get_property(SERVICES_ARCHIVE_FILE_LIST_PROPERTY GLOBAL PROPERTY SERVICES_ARCHIVE_FILE_LIST)
+
+make_kernel_archive(${SERVICES_ARCHIVE_FILE_PROPERTY} ${SERVICES_ARCHIVE_FILE_LIST_PROPERTY})
+
+add_subdirectory(${KERNEL_SOURCE_DIR}    ${kernel__build_dir})
+
+qemu_virt_setup()

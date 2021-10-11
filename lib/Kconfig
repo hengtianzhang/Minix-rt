@@ -4,6 +4,8 @@ menu "Minix-rt lib configuration"
 
 source "lib/base/Kconfig"
 
+source "lib/cpio/Kconfig"
+
 source "lib/memalloc/Kconfig"
 
 source "lib/of/Kconfig"

@@ -121,6 +121,8 @@
 		RO_AFTER_INIT_DATA	/* Read only after init */	\
 	}				\
 					\
+	ARCHIVE_SERVICES(PAGE_SIZE)			\
+					\
 	.rodata1 : AT(ADDR(.rodata1) - LOAD_OFFSET) {		\
 		*(.rodata1)						\
 		__end_rodata = .;				\

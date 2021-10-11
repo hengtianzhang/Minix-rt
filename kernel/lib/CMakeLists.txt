@@ -13,3 +13,6 @@ kernel_interface_library_sources_ifdef(
 
 find_package(memalloc REQUIRED)
 memalloc_kernel_import_libraries()
+
+find_package(cpio REQUIRED)
+cpio_kernel_import_libraries()

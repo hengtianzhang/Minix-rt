@@ -108,8 +108,6 @@ SECTIONS
 		*(.init.rodata.* .init.bss)	/* from the EFI stub */
 	}
 
-	ARCHIVE_SERVICES(PAGE_SIZE)
-
 	.rela.dyn : ALIGN(8) {
 		*(.rela .rela*)
 	}

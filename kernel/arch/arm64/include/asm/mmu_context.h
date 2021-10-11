@@ -161,6 +161,21 @@ static inline void cpu_replace_ttbr1(pgd_t *pgdp)
 	cpu_uninstall_idmap();
 }
 
+static inline void update_saved_ttbr0(struct task_struct *tsk,
+				      struct mm_struct *mm)
+{
+}
+
+static inline void
+enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+{
+	/*
+	 * We don't actually care about the ttbr0 mapping, so point it at the
+	 * zero page.
+	 */
+	update_saved_ttbr0(tsk, &init_mm);
+}
+
 static inline void __switch_mm(struct mm_struct *next)
 {
 	unsigned int cpu = smp_processor_id();

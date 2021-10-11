@@ -147,7 +147,7 @@ struct task_struct {
 
 	struct notifier_struct notifier;
 
-    struct mm_struct *mm;
+    struct mm_struct *mm, *active_mm;
 
 	void __user *cap_ipcptr;
 	void __kernel *kernel_ipcptr;

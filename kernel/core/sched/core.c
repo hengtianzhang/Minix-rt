@@ -1163,7 +1163,7 @@ static void finish_task_switch(struct rq *rq, struct task_struct *prev)
 	finish_arch_switch(prev);
 	finish_lock_switch(rq, prev);
 	if (unlikely(mm))
-		BUG();
+		BUG(); /* TODO */
 }
 
 /**
@@ -1194,12 +1194,19 @@ context_switch(struct rq *rq, struct task_struct *prev,
 
 	prepare_task_switch(rq, prev, next);
 	mm = next->mm;
-	oldmm = prev->mm;
+	oldmm = prev->active_mm;
 
-	switch_mm(oldmm, mm, next);
+	if (unlikely(!mm)) {
+		next->active_mm = oldmm;
+		atomic_inc(&oldmm->mm_count);
+		enter_lazy_tlb(oldmm, next);
+	} else
+		switch_mm(oldmm, mm, next);
 
-	if (unlikely(!prev->mm))
+	if (unlikely(!prev->mm)) {
+		prev->active_mm = NULL;
 		rq->prev_mm = oldmm;
+	}
 
 	/*
 	 * Since the runqueue lock will be released by the next

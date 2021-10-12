@@ -22,7 +22,13 @@
 int system_thread(void *arg)
 {
 	while (1) {
-		printf("hello world!\n");
+		pid_t pid;
+		pid_for_each_pid(pid) {
+			struct task_struct *tsk = pid_find_process_by_pid(pid);
+			if (tsk->se.on_rq)
+				show_task(tsk);
+		}
+		printf("\n");
 		msleep(1000);
 	}
 };

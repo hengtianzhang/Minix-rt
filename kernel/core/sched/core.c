@@ -3102,6 +3102,7 @@ asmlinkage long sys_sched_yield(void)
 	 */
 	__release(rq->lock);
 	spin_release(&rq->lock.dep_map, 1, _THIS_IP_);
+	preempt_disable();
 	spin_unlock(&rq->lock);
 	preempt_enable_no_resched();
 

@@ -244,7 +244,6 @@ struct rq {
 
 	struct task_struct *curr, *idle;
 	u64 next_balance;
-	struct mm_struct *prev_mm;
 
 	u64 clock, prev_clock_raw;
 	s64 clock_max_delta;

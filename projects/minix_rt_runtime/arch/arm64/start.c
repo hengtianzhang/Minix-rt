@@ -1,5 +1,3 @@
-#include <libminix_rt/object/ipc.h>
-
 #include <base/bug.h>
 
 #include <bootinfo.h>
@@ -11,6 +9,4 @@ void __minix_rt_start_c(unsigned long ipcptr)
 
 	if (!size)
 		memset(__bss_start__, 0, size);
-
-	ipc_set_user_space_ptr(ipcptr);
 }

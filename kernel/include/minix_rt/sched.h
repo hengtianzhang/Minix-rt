@@ -147,7 +147,7 @@ struct task_struct {
 
 	struct notifier_struct notifier;
 
-    struct mm_struct *mm, *active_mm;
+    struct mm_struct *mm;
 
 	void __user *cap_ipcptr;
 	void __kernel *kernel_ipcptr;
@@ -414,4 +414,7 @@ extern void task_set_stack_end_magic(struct task_struct *tsk);
 extern pid_t do_fork(unsigned long ventry, unsigned long varg,
 				unsigned long clone_flags, unsigned long return_fn);
 extern struct task_struct *create_system_task(void);
+extern void system_task_init(void);
+extern void services_task_init(void);
+
 #endif /* !__MINIX_RT_SCHED_H_ */

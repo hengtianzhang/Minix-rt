@@ -9,6 +9,7 @@ extern struct task_struct idle_threads[CONFIG_NR_CPUS];
 
 extern void early_idle_task_init(void);
 
-extern struct task_struct *service_core_init(void);
+extern struct task_struct *service_core_init(int type,
+			unsigned long elf_start_archive, const char *name);
 
 #endif /* !__MINIX_RT_SCHED_IDLE_H_ */

@@ -9,12 +9,12 @@
 asmlinkage __visible __weak int printf(const char *fmt, ...)
 {
 	va_list args;
-	char *text = ipc_get_debug_buffer();
+	char text[1024];
 	size_t text_len;
 	int r = 0;
 
 	va_start(args, fmt);
-   	text_len = vscnprintf(text, IPC_DEBUG_PRINTF_BUFFER_MAX, fmt, args);
+   	text_len = vscnprintf(text, 1024, fmt, args);
    	if (text_len) {
     	r = __syscall(__NR_debug_printf, text, text_len);
 	}
@@ -25,7 +25,7 @@ asmlinkage __visible __weak int printf(const char *fmt, ...)
 
 __weak void hang(const char *fmt, ...)
 {
-	static char buf[IPC_DEBUG_PRINTF_BUFFER_MAX];
+	static char buf[1024];
 	s64 len;
 	va_list args;
 

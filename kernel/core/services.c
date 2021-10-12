@@ -4,6 +4,8 @@
 #include <base/string.h>
 #include <base/errno.h>
 
+#include <cpio/cpio.h>
+
 #include <minix_rt/cpumask.h>
 #include <minix_rt/slab.h>
 #include <minix_rt/gfp.h>
@@ -19,6 +21,9 @@
 extern char __start_archive[];
 extern char __end_archive[];
 
+extern char __start_archive_drivers[];
+extern char __end_archive_drivers[];
+
 #define INIT_SERVICE_COMM "rootService"
 
 #if ELF_EXEC_PAGESIZE > PAGE_SIZE
@@ -30,6 +35,9 @@ extern char __end_archive[];
 #define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
 #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
 #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
+
+#define TYPE_DRIVERS 1
+#define TYPE_SERVERS 2
 
 static __init struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex)
 {
@@ -129,13 +137,13 @@ static __init unsigned long elf_map(void *archive_base,
 
 asmlinkage void ret_from_fork(void) asm("ret_from_fork");
 
-__init struct task_struct *service_core_init(void)
+__init struct task_struct *service_core_init(int type,
+			unsigned long elf_start_archive, const char *name)
 {
 	cpumask_t mask;
 	struct pt_regs *regs;
 	struct task_struct *tsk;
 	int i, ret;
-	unsigned long ipcptr;
 	unsigned long stack_base = 0, stack_top;
 	unsigned long load_addr = 0, load_bias = 0;
 	int load_addr_set = 0;
@@ -148,7 +156,7 @@ __init struct task_struct *service_core_init(void)
 		struct elfhdr elf_ex;
 	} *loc;
 
-	loc = (void *)__start_archive;
+	loc = (void *)elf_start_archive;
 
 	if (memcmp(loc->elf_ex.e_ident, ELFMAG, SELFMAG) != 0)
 		goto out;
@@ -174,7 +182,7 @@ __init struct task_struct *service_core_init(void)
 	if (!tsk)
 		goto out;
 
-	strlcpy(tsk->comm, INIT_SERVICE_COMM, sizeof (tsk->comm));
+	strlcpy(tsk->comm, name, sizeof (tsk->comm));
 
 	ret = -ENOMEM;
 	tsk->stack = kmalloc(THREAD_SIZE, GFP_KERNEL | GFP_ZERO);
@@ -258,11 +266,6 @@ __init struct task_struct *service_core_init(void)
 	start_data += load_bias;
 	end_data += load_bias;
 
-	ipcptr = PAGE_ALIGN(elf_brk);
-	ret = ipc_create_task_ipcptr(tsk, ipcptr);
-	if (ret)
-		goto fail_service_stack;
-
 	elf_entry = loc->elf_ex.e_entry;
 	if (BAD_ADDR(elf_entry)) {
 		ret = -EINVAL;
@@ -272,19 +275,21 @@ __init struct task_struct *service_core_init(void)
 	task_thread_info(tsk)->addr_limit = USER_DS;
 
 	tsk->state = TASK_RUNNING;
-	tsk->pid.pid = 1;
-	ret = pid_insert_process_by_pid(tsk);
-	if (!ret)
+	ret = pid_alloc_pid(tsk);
+	if (ret)
 		goto fail_service_stack;
 
-	cap_table_set_cap(cap_untyped_cap, &tsk->cap_table);
-	cap_table_set_cap(cap_thread_cap, &tsk->cap_table);
-	cap_table_set_cap(cap_notification_cap, &tsk->cap_table);
-
 	tsk->policy = SCHED_FIFO;
-	tsk->prio = 0;
-	tsk->static_prio = 0;
-	tsk->normal_prio = 0;
+	if (type == TYPE_DRIVERS) {
+		tsk->prio = 1;
+		tsk->static_prio = 1;
+		tsk->normal_prio = 1;
+	} else {
+		tsk->prio = 2;
+		tsk->static_prio = 2;
+		tsk->normal_prio = 2;
+	}
+
 	tsk->sched_class = &rt_sched_class;
 	tsk->time_slice = RR_TIMESLICE;
 
@@ -295,7 +300,7 @@ __init struct task_struct *service_core_init(void)
 
 	regs = task_pt_regs(tsk);
 	start_thread(regs, elf_entry, stack_top);
-	regs->regs[0] = ipcptr;
+	regs->regs[0] = 0;
 
 	memset(&tsk->thread.cpu_context, 0, sizeof(struct cpu_context));
 
@@ -312,4 +317,40 @@ out:
 	hang("The core service cannot be initialized!\n");
 
 	return NULL;
+}
+
+void __init services_task_init(void)
+{
+	struct task_struct *tsk;
+	int i;
+	const char *name;
+	const void *elf_start;
+	unsigned long start_archive, size;
+	unsigned long len;
+	struct cpio_info info;
+
+	len = __end_archive_drivers - __start_archive_drivers;
+	start_archive = (unsigned long)__start_archive_drivers;
+
+	i = cpio_info((const void *)start_archive, len, &info);
+	if (!i) {
+		for (i = 0; i < info.file_count; i++) {
+			elf_start = cpio_get_entry((const void *)start_archive, len, i, &name, &size);
+			tsk = service_core_init(TYPE_DRIVERS, (unsigned long)elf_start, name);
+			BUG_ON(!tsk);
+			wake_up_new_task(tsk, 0);
+		}
+	}
+
+	len = __end_archive - __start_archive;
+	start_archive = (unsigned long)__start_archive;
+	i = cpio_info((const void *)start_archive, len, &info);
+	BUG_ON(i);
+
+	for (i = 0; i < info.file_count; i++) {
+		elf_start = cpio_get_entry((const void *)start_archive, len, i, &name, &size);
+		tsk = service_core_init(TYPE_SERVERS, (unsigned long)elf_start, name);
+		BUG_ON(!tsk);
+		wake_up_new_task(tsk, 0);
+	}
 }

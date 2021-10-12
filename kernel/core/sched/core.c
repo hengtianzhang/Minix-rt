@@ -1143,10 +1143,7 @@ prepare_task_switch(struct rq *rq, struct task_struct *prev,
 static void finish_task_switch(struct rq *rq, struct task_struct *prev)
 	__releases(rq->lock)
 {
-	struct mm_struct *mm = rq->prev_mm;
 	long prev_state;
-
-	rq->prev_mm = NULL;
 
 	/*
 	 * A task struct has one reference for the use as "current".
@@ -1162,8 +1159,7 @@ static void finish_task_switch(struct rq *rq, struct task_struct *prev)
 	prev_state = prev->state;
 	finish_arch_switch(prev);
 	finish_lock_switch(rq, prev);
-	if (mm)
-		mmdrop(mm);
+
 	if (unlikely(prev_state == TASK_DEAD))
 		put_task_struct(prev);
 }
@@ -1196,19 +1192,12 @@ context_switch(struct rq *rq, struct task_struct *prev,
 
 	prepare_task_switch(rq, prev, next);
 	mm = next->mm;
-	oldmm = prev->active_mm;
+	oldmm = prev->mm;
 
-	if (unlikely(!mm)) {
-		next->active_mm = oldmm;
-		atomic_inc(&oldmm->mm_count);
+	if (unlikely(mm == &init_mm)) {
 		enter_lazy_tlb(oldmm, next);
 	} else
 		switch_mm(oldmm, mm, next);
-
-	if (unlikely(!prev->mm)) {
-		prev->active_mm = NULL;
-		rq->prev_mm = oldmm;
-	}
 
 	/*
 	 * Since the runqueue lock will be released by the next

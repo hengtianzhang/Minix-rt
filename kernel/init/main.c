@@ -40,8 +40,6 @@ static __init void mm_init(void)
 
 noinline void rest_init(void)
 {
-	struct task_struct *tsk;
-
 	system_state = SYSTEM_SCHEDULING;
 
 	smp_prepare_cpus(CONFIG_NR_CPUS);
@@ -52,8 +50,8 @@ noinline void rest_init(void)
 
 	mm_init();
 
-	tsk = create_system_task();
-	BUG_ON(!tsk);
+	system_task_init();	
+	services_task_init();
 
 	free_initmem();
 
@@ -63,7 +61,6 @@ noinline void rest_init(void)
 
 	printf("Booting all finished, dropped to user space\n");
 
-	wake_up_new_task(tsk, 0);
 	preempt_enable_no_resched();
 	schedule();
 	preempt_disable();

@@ -167,7 +167,7 @@
 	.archive_drivers :  AT(ADDR(.archive_drivers) - LOAD_OFFSET) {		\
 		__start_archive_drivers = .;				\
 		KEEP(*(.archive_drivers))			\
-		__end_archive_drviers = .;					\
+		__end_archive_drivers = .;					\
 	}
 
 #define PAGE_ALIGNED_DATA(page_align)					\

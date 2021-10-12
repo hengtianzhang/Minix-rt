@@ -36,9 +36,6 @@ struct task_struct * __init create_system_task(void)
 	tsk = task_create_tsk(PF_SYSTEMSERVICE | PF_KTHREAD);
 	BUG_ON(!tsk);
 
-	tsk->mm = NULL;
-	tsk->active_mm = &init_mm;
-
 	strlcpy(tsk->comm, INIT_SERVICE_COMM, sizeof (tsk->comm));
 
 	ret = -ENOMEM;
@@ -67,4 +64,14 @@ struct task_struct * __init create_system_task(void)
 	copy_thread(tsk->flags, (unsigned long)system_thread, 0, tsk);
 
 	return tsk;
+}
+
+void __init system_task_init(void)
+{
+	struct task_struct *tsk;
+
+	tsk = create_system_task();
+	BUG_ON(!tsk);
+
+	wake_up_new_task(tsk, 0);
 }

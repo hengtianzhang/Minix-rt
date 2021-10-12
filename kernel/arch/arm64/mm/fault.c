@@ -121,7 +121,7 @@ void show_pte(unsigned long addr)
 
 	if (is_ttbr0_addr(addr)) {
 		/* TTBR0 */
-		mm = current->mm;
+		mm = current->active_mm;
 		if (mm == &init_mm) {
 			printf("[%016lx] user address but mm is kernel\n",
 				 addr);

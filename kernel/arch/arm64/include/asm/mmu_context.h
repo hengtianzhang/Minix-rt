@@ -122,7 +122,7 @@ static inline void __cpu_set_tcr_t0sz(unsigned long t0sz)
  */
 static inline void cpu_uninstall_idmap(void)
 {
-	struct mm_struct *mm = current->mm;
+	struct mm_struct *mm = current->active_mm;
 
 	cpu_set_reserved_ttbr0();
 	local_flush_tlb_all();

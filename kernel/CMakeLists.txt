@@ -477,6 +477,8 @@ set_target_properties(${KERNEL_FINAL_EXECUTABLE} PROPERTIES OUTPUT_NAME ${KERNEL
 
 add_dependencies(${KERNEL_FINAL_EXECUTABLE} services_archive)
 add_dependencies(${KERNEL_FINAL_EXECUTABLE} drivers_archive)
+add_dependencies(kernel_generated_headers services_archive)
+add_dependencies(kernel_generated_headers drivers_archive)
 add_dependencies(linker_kernel_prebuilt_script_target services_archive)
 add_dependencies(linker_kernel_prebuilt_script_target drivers_archive)
 

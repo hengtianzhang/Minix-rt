@@ -22,6 +22,7 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/stat.h>
 
+#include <asm/sections.h>
 #include <asm/current.h>
 
 #include <asm/base/processor.h>
@@ -29,23 +30,6 @@
 #include "internal.h"
 
 struct pglist_data node_data;
-
-static bool untype_prepare_check(int order, enum zone_type index)
-{
-	if (system_running()) {
-		unsigned long nr_used_pages;
-		unsigned long nr_pages;
-
-		BUG_ON(current->pid.pid <= 0);
-		nr_used_pages = current->mm->untype[index].nr_used_pages;
-		nr_pages = current->mm->untype[index].nr_pages;
-		if (likely((nr_used_pages + (1 << order)) < nr_pages))
-			return true;
-		else
-			return false;
-	} else
-		return true;
-}
 
 static char * const zone_names[MAX_NR_ZONES] = {
 	"DMA",
@@ -329,12 +313,6 @@ static __always_inline bool free_pages_prepare(struct page *page,
 	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
 
 	arch_free_page(page, order);
-
-	if (system_running()) {
-		BUG_ON(current->pid.pid <= 0);
-		current->mm->untype[page_zone_id(page)].nr_used_pages
-				-= 1 << order;
-	}
 
 	return true;
 }
@@ -673,12 +651,6 @@ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_mask)
 
 	if (order)
 		prep_compound_page(page, order);
-
-	if (system_running()) {
-		BUG_ON(current->pid.pid <= 0);
-		current->mm->untype[page_zone_id(page)].nr_used_pages
-				+= 1 << order;
-	}
 }
 
 /*
@@ -923,7 +895,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
 {
 	ac->zoneidx = gfp_zone(gfp_mask);
 
-	return untype_prepare_check(order, ac->zoneidx);
+	return true;
 }
 
 /*

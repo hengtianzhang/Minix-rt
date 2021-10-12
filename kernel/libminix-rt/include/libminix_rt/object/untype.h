@@ -1,7 +1,7 @@
 #ifndef __LIBMINIX_RT_OBJECT_UNTYPE_H_
 #define __LIBMINIX_RT_OBJECT_UNTYPE_H_
 
-#include <minix_rt/object/untype.h>
+#include <minix_rt/mmap.h>
 
 extern int untype_alloc_area(unsigned long vstart,
             unsigned long size, unsigned long vm_flags);

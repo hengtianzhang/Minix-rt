@@ -1,6 +1,7 @@
 #include <minix_rt/signal.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/thread.h>
+#include <minix_rt/mmap.h>
 #include <minix_rt/object/tcb.h>
 #include <minix_rt/object/pid.h>
 #include <minix_rt/object/ipc.h>
@@ -24,7 +25,7 @@ static void do_default_signal_handle(int signal)
 		}
 
 		list_del(&tsk->children_list);
-		untype_destroy_mm(tsk);
+		mmap_destroy_mm(tsk);
 		kfree(tsk->stack);
 		pid_remove_pid_by_process(tsk);
 		tcb_destroy_task(tsk);

@@ -3,7 +3,7 @@
 #include <minix_rt/gfp.h>
 #include <minix_rt/object/tcb.h>
 #include <minix_rt/object/pid.h>
-#include <minix_rt/object/untype.h>
+#include <minix_rt/mmap.h>
 #include <minix_rt/syscalls.h>
 
 #include <uapi/minix_rt/object/tcb.h>
@@ -19,7 +19,7 @@ struct task_struct *tcb_create_task(unsigned int flags)
 	if (!tsk)
 		return NULL;
 
-	mm = untype_alloc_mm_struct();
+	mm = mmap_alloc_mm_struct();
 	if (!mm)
 		goto fail_mm;
 
@@ -50,7 +50,7 @@ void tcb_destroy_task(struct task_struct *tsk)
 	if (!tsk)
 		return;
 
-	untype_free_mm_struct(tsk->mm);
+	mmap_free_mm_struct(tsk->mm);
 	kfree(tsk);
 }
 

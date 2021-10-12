@@ -8,9 +8,6 @@
 #define __NR_no_syscall (-1)
 __SYSCALL(__NR_no_syscall, sys_ni_syscall)
 
-#define __NR_untype (-2)
-__SYSCALL(__NR_untype, sys_untype)
-
 #define __NR_notifier (-3)
 __SYSCALL(__NR_notifier, sys_notifier)
 

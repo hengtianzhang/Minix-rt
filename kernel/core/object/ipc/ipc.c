@@ -1,5 +1,5 @@
 #include <minix_rt/sched.h>
-#include <minix_rt/object/untype.h>
+#include <minix_rt/mmap.h>
 #include <minix_rt/mm.h>
 
 int ipc_create_task_ipcptr(struct task_struct *tsk, unsigned long __user ipcptr)
@@ -11,7 +11,7 @@ int ipc_create_task_ipcptr(struct task_struct *tsk, unsigned long __user ipcptr)
 		return -EINVAL;
 
 	flags = VM_READ | VM_WRITE | VM_USER_IPCPTR;
-	vma = untype_get_vmap_area(ipcptr, PAGE_SIZE, flags, tsk->mm, 0);
+	vma = mmap_get_vmap_area(ipcptr, PAGE_SIZE, flags, tsk->mm, 0);
 	if (!vma)
 		return -ENOMEM;
 

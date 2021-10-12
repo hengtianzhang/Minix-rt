@@ -75,6 +75,7 @@ static inline pg_data_t *page_pgdat(const struct page *page)
 	return NODE_DATA();
 }
 
+extern void mem_print_memory_info(void);
 extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
 extern void memblock_free_pages(struct page *page, unsigned long pfn,
 							unsigned int order);

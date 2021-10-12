@@ -11,7 +11,7 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/sched/rt.h>
 #include <minix_rt/object/tcb.h>
-#include <minix_rt/object/untype.h>
+#include <minix_rt/mmap.h>
 #include <minix_rt/object/ipc.h>
 #include <minix_rt/uaccess.h>
 
@@ -72,7 +72,7 @@ static __init unsigned long setup_services_stack(struct task_struct *tsk, unsign
 	stack_base = PAGE_ALIGN(stack_top - THREAD_SIZE);
 
 	vm_flags |= VM_READ | VM_WRITE | VM_USER_STACK;
-	vma = untype_get_vmap_area(stack_base, THREAD_SIZE,
+	vma = mmap_get_vmap_area(stack_base, THREAD_SIZE,
 							vm_flags, tsk->mm, 0);
 	if (!vma)
 		goto fail_vma;
@@ -87,7 +87,7 @@ static __init unsigned long setup_services_stack(struct task_struct *tsk, unsign
 	return stack_base;
 
 fail_map_vma:
-	untype_free_vmap_area(stack_base, tsk->mm);
+	mmap_free_vmap_area(stack_base, tsk->mm);
 
 fail_vma:
 	return 0;
@@ -108,7 +108,7 @@ static __init unsigned long elf_map(void *archive_base,
 	if (!size)
 		return -EFAULT;
 
-	vma = untype_get_vmap_area(addr, size, prot, tsk->mm, 0);
+	vma = mmap_get_vmap_area(addr, size, prot, tsk->mm, 0);
 	if (!vma)
 		return -ENOMEM;
 
@@ -121,7 +121,7 @@ static __init unsigned long elf_map(void *archive_base,
 	}
 	i = vmap_page_range(vma);
 	if (i <= 0) {
-		untype_free_vmap_area(addr, tsk->mm);
+		mmap_free_vmap_area(addr, tsk->mm);
 		return -ENOMEM;
 	}
 

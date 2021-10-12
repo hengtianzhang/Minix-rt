@@ -20,7 +20,8 @@
 #include <minix_rt/hrtimer.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/gfp.h>
-#include <minix_rt/object/untype.h>
+#include <minix_rt/slab.h>
+#include <minix_rt/mmap.h>
 #include <minix_rt/sched/idle.h>
 
 enum system_states system_state __read_mostly;
@@ -29,6 +30,13 @@ extern const char linux_banner[];
 
 void __weak __init early_arch_platform_init(void) {}
 void __weak __init setup_arch(void) {}
+
+static __init void mm_init(void)
+{
+	free_area_init_nodes();
+	mem_print_memory_info();
+	kmem_cache_init();
+}
 
 noinline void rest_init(void)
 {
@@ -42,12 +50,12 @@ noinline void rest_init(void)
 
 	sched_init_smp();
 
-	untype_core_init();
+	mm_init();
 
 	tsk = service_core_init();
 	BUG_ON(!tsk);
 
-	untype_core_init_late(tsk);
+	free_initmem();
 
 	mark_rodata_ro();
 

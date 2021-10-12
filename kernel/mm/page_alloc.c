@@ -1285,6 +1285,43 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char 
 	return pages;
 }
 
+void __init mem_print_memory_info(void)
+{
+	unsigned long physpages, codesize, datasize, rosize, bss_size;
+	unsigned long init_code_size, init_data_size;
+
+	physpages = total_physpages;
+	codesize = _etext - _stext;
+	datasize = _edata - _sdata;
+	rosize = __end_rodata - __start_rodata;
+	bss_size = __bss_stop - __bss_start;
+	init_data_size = __init_end - __init_begin;
+	init_code_size = _einittext - _sinittext;
+
+#define adj_init_size(start, end, size, pos, adj) \
+	do { \
+		if (start <= pos && pos < end && size > adj) \
+			size -= adj; \
+	} while (0)
+
+	adj_init_size(__init_begin, __init_end, init_data_size,
+		     _sinittext, init_code_size);
+	adj_init_size(_stext, _etext, codesize, _sinittext, init_code_size);
+	adj_init_size(_sdata, _edata, datasize, __init_begin, init_data_size);
+	adj_init_size(_stext, _etext, codesize, __start_rodata, rosize);
+	adj_init_size(_sdata, _edata, datasize, __start_rodata, rosize);
+
+#undef	adj_init_size
+	printf("Kernel memory info:\n");
+	printf("  Memory: %luK/%luK available (%luK kernel code, %luK rwdata, %luK rodata, %luK init, %luK bss, %luK"
+		" reserved)\n",
+		nr_managed_pages() << (PAGE_SHIFT - 10),
+		physpages << (PAGE_SHIFT - 10),
+		codesize >> 10, datasize >> 10, rosize >> 10,
+		(init_data_size + init_code_size) >> 10, bss_size >> 10,
+		(physpages - nr_managed_pages()) << (PAGE_SHIFT - 10));
+}
+
 unsigned long nr_managed_pages(void)
 {
 	enum zone_type i;

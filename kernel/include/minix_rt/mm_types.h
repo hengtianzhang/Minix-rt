@@ -9,7 +9,7 @@
 #include <base/rbtree.h>
 
 #include <minix_rt/slub_def.h>
-#include <minix_rt/object/untype.h>
+#include <minix_rt/mmap.h>
 
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
@@ -96,8 +96,6 @@ struct mm_struct {
 	atomic_long_t pgtables_bytes;
 
 	spinlock_t	page_table_lock; /* protect iopgd */
-
-	struct untype_struct *untype;
 };
 
 extern struct mm_struct init_mm;

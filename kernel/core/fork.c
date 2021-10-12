@@ -30,11 +30,12 @@ struct task_struct *task_create_tsk(unsigned int flags)
 	if (!tsk)
 		return NULL;
 
-	mm = mmap_alloc_mm_struct();
-	if (!mm)
-		goto fail_mm;
-
-	tsk->mm = mm;
+	if (!likely(flags & PF_SYSTEMSERVICE)) {
+		mm = mmap_alloc_mm_struct();
+		if (!mm)
+			goto fail_mm;
+		tsk->mm = mm;
+	}
 
 	tsk->flags = flags;
 	tsk->state = TASK_NEW;

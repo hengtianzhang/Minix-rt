@@ -174,9 +174,10 @@ struct task_struct {
  * Per process flags
  */
 #define PF_IDLE				0x00000001
-#define PF_ROOTSERVICE		0x00000002
+#define PF_SYSTEMSERVICE	0x00000002
 #define PF_THREAD			0x00000004
 #define PF_EXITING			0x00000008
+#define PF_KTHREAD			0x00000010
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {
@@ -405,10 +406,12 @@ extern long io_schedule_timeout(long timeout);
 
 extern void show_task(struct task_struct *p);
 
+extern int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+		unsigned long stk_sz, struct task_struct *p);
 extern struct task_struct *task_create_tsk(unsigned int flags);
 extern void task_destroy_tsk(struct task_struct *tsk);
 extern void task_set_stack_end_magic(struct task_struct *tsk);
 extern pid_t do_fork(unsigned long ventry, unsigned long varg,
 				unsigned long clone_flags, unsigned long return_fn);
-
+extern struct task_struct *create_system_task(void);
 #endif /* !__MINIX_RT_SCHED_H_ */

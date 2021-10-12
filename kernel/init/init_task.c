@@ -3,7 +3,6 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/sched/rt.h>
 #include <minix_rt/stackprotector.h>
-#include <minix_rt/object/tcb.h>
 
 #include <uapi/minix_rt/object/cap_types.h>
 

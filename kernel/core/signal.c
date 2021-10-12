@@ -2,7 +2,6 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/thread.h>
 #include <minix_rt/mmap.h>
-#include <minix_rt/object/tcb.h>
 #include <minix_rt/pid.h>
 #include <minix_rt/object/ipc.h>
 
@@ -31,7 +30,7 @@ static void do_default_signal_handle(int signal)
 		task_destroy_tsk(tsk);
 	}
 }
-
+extern void tcb_do_exit(struct task_struct *tsk, int flags);
 int do_send_signal(int signal, pid_t pid, long private)
 {
 	if (signal == SIGCHLD) {

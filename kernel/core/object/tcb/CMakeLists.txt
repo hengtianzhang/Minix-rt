@@ -1,4 +1,4 @@
 
 kernel_sources(
-	services.c exit.c
+	exit.c
 )

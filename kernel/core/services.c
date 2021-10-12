@@ -10,7 +10,6 @@
 #include <minix_rt/page.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/sched/rt.h>
-#include <minix_rt/object/tcb.h>
 #include <minix_rt/mmap.h>
 #include <minix_rt/object/ipc.h>
 #include <minix_rt/uaccess.h>
@@ -171,7 +170,7 @@ __init struct task_struct *service_core_init(void)
 	start_data = 0;
 	end_data = 0;
 
-	tsk = task_create_tsk(PF_ROOTSERVICE);
+	tsk = task_create_tsk(PF_SYSTEMSERVICE);
 	if (!tsk)
 		goto out;
 

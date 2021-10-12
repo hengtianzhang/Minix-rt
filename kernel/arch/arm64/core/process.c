@@ -9,6 +9,8 @@
 #include <asm/mmu_context.h>
 #include <asm/ptrace.h>
 
+asmlinkage void ret_from_fork(void) asm("ret_from_fork");
+
 /*
  * Function pointers to optional machine specific functions
  */
@@ -109,6 +111,40 @@ struct task_struct *__switch_to(struct task_struct *prev,
 	last = cpu_switch_to(prev, next);
 
 	return last;
+}
+
+int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+		unsigned long stk_sz, struct task_struct *p)
+{
+	struct pt_regs *childregs = task_pt_regs(p);
+
+	memset(&p->thread.cpu_context, 0, sizeof(struct cpu_context));
+
+	if (likely(!(p->flags & PF_KTHREAD))) {
+		*childregs = *task_pt_regs(current);
+		childregs->regs[0] = 0;
+
+		/*
+		 * Read the current TLS pointer from tpidr_el0 as it may be
+		 * out-of-sync with the saved value.
+		 */
+		*task_user_tls(p) = read_sysreg(tpidr_el0);
+
+		if (stack_start)
+			childregs->sp = stack_start;
+	} else {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		childregs->pstate = PSR_MODE_EL1h;
+
+		childregs->pstate |= PSR_SSBS_BIT;
+
+		p->thread.cpu_context.x19 = stack_start;
+		p->thread.cpu_context.x20 = stk_sz;
+	}
+	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
+	p->thread.cpu_context.sp = (unsigned long)childregs;
+
+	return 0;
 }
 
 static void print_pstate(struct pt_regs *regs)

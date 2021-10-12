@@ -52,7 +52,7 @@ noinline void rest_init(void)
 
 	mm_init();
 
-	tsk = service_core_init();
+	tsk = create_system_task();
 	BUG_ON(!tsk);
 
 	free_initmem();

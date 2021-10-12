@@ -2,7 +2,6 @@
 #include <base/common.h>
 
 #include <minix_rt/sched.h>
-#include <minix_rt/object/tcb.h>
 #include <minix_rt/syscalls.h>
 
 #include <asm/daifflags.h>

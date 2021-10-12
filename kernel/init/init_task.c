@@ -43,7 +43,7 @@ void __init early_idle_task_init(void)
 		idle->cpu = cpu;
 		idle->oncpu = 0;
 		idle->stack = &kernel_stack_alloc[cpu];
-		tcb_set_task_stack_end_magic(idle);
+		task_set_stack_end_magic(idle);
 		snprintf(idle->comm, TASK_COMM_LEN, "idle-%d", cpu);
 		spin_lock_init(&idle->pi_lock);
 		INIT_LIST_HEAD(&idle->children);

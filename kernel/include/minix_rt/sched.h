@@ -6,7 +6,7 @@
 #include <minix_rt/mm_types.h>
 #include <minix_rt/thread.h>
 #include <minix_rt/sched/sched.h>
-#include <minix_rt/object/pid.h>
+#include <minix_rt/pid.h>
 #include <minix_rt/object/notifier.h>
 
 #include <uapi/minix_rt/object/cap_types.h>
@@ -216,6 +216,14 @@ static inline void put_task_stack(struct task_struct *tsk)
 		kfree(tsk->stack);
 }
 
+static inline void mmdrop(struct mm_struct *mm)
+{
+	if (unlikely(atomic_dec_and_test(&mm->mm_count))) {
+		mmap_destroy_mm(mm);
+		mmap_free_mm_struct(mm);
+	}
+}
+
 /* set thread flags in other task's structures
  * - see asm/thread_info.h for TIF_xxxx flags available
  */
@@ -396,5 +404,11 @@ extern void io_schedule(void);
 extern long io_schedule_timeout(long timeout);
 
 extern void show_task(struct task_struct *p);
+
+extern struct task_struct *task_create_tsk(unsigned int flags);
+extern void task_destroy_tsk(struct task_struct *tsk);
+extern void task_set_stack_end_magic(struct task_struct *tsk);
+extern pid_t do_fork(unsigned long ventry, unsigned long varg,
+				unsigned long clone_flags, unsigned long return_fn);
 
 #endif /* !__MINIX_RT_SCHED_H_ */

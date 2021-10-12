@@ -171,7 +171,7 @@ __init struct task_struct *service_core_init(void)
 	start_data = 0;
 	end_data = 0;
 
-	tsk = tcb_create_task(PF_ROOTSERVICE);
+	tsk = task_create_tsk(PF_ROOTSERVICE);
 	if (!tsk)
 		goto out;
 
@@ -182,7 +182,7 @@ __init struct task_struct *service_core_init(void)
 	if (!tsk->stack)
 		goto fail_stack;
 
-	tcb_set_task_stack_end_magic(tsk);
+	task_set_stack_end_magic(tsk);
 
 	stack_base = setup_services_stack(tsk, &stack_top);
 	if (!stack_base)
@@ -308,7 +308,7 @@ __init struct task_struct *service_core_init(void)
 fail_service_stack:
 	kfree(tsk->stack);
 fail_stack:
-	tcb_destroy_task(tsk);
+	task_destroy_tsk(tsk);
 out:
 	hang("The core service cannot be initialized!\n");
 

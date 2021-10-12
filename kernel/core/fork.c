@@ -1,16 +1,27 @@
+/*
+ *  linux/kernel/fork.c
+ *
+ *  Copyright (C) 1991, 1992  Linus Torvalds
+ */
+
+/*
+ *  'fork.c' contains the help-routines for the 'fork' system call
+ * (see also entry.S and others).
+ * Fork is rather simple, once you get the hang of it, but the memory
+ * management can be a bitch. See 'mm/memory.c': 'copy_page_range()'
+ */
 #include <minix_rt/sched.h>
 #include <minix_rt/slab.h>
 #include <minix_rt/gfp.h>
-#include <minix_rt/object/tcb.h>
-#include <minix_rt/object/pid.h>
+#include <minix_rt/pid.h>
 #include <minix_rt/mmap.h>
 #include <minix_rt/syscalls.h>
 
-#include <uapi/minix_rt/object/tcb.h>
+#include <uapi/minix_rt/magic.h>
 
 asmlinkage void ret_from_fork(void) asm("ret_from_fork");
 
-struct task_struct *tcb_create_task(unsigned int flags)
+struct task_struct *task_create_tsk(unsigned int flags)
 {
 	struct task_struct *tsk;
 	struct mm_struct *mm;
@@ -34,8 +45,6 @@ struct task_struct *tcb_create_task(unsigned int flags)
 	INIT_LIST_HEAD(&tsk->children);
 	INIT_LIST_HEAD(&tsk->children_list);
 	INIT_LIST_HEAD(&tsk->children_exit);
-	notifier_table_clearall(&tsk->notifier.notifier_table);
-	memset(tsk->notifier.action, 0, sizeof (struct k_sigaction));
 
 	return tsk;
 
@@ -45,7 +54,7 @@ fail_mm:
 	return NULL;
 }
 
-void tcb_destroy_task(struct task_struct *tsk)
+void task_destroy_tsk(struct task_struct *tsk)
 {
 	if (!tsk)
 		return;
@@ -54,7 +63,7 @@ void tcb_destroy_task(struct task_struct *tsk)
 	kfree(tsk);
 }
 
-void tcb_set_task_stack_end_magic(struct task_struct *tsk)
+void task_set_stack_end_magic(struct task_struct *tsk)
 {
 	unsigned long *stackend;
 
@@ -62,7 +71,7 @@ void tcb_set_task_stack_end_magic(struct task_struct *tsk)
 	*stackend = STACK_END_MAGIC;	/* for overflow detection */
 }
 
-static pid_t do_fork(unsigned long ventry, unsigned long varg,
+pid_t do_fork(unsigned long ventry, unsigned long varg,
 				unsigned long clone_flags, unsigned long return_fn)
 {
 	int ret;
@@ -79,7 +88,7 @@ static pid_t do_fork(unsigned long ventry, unsigned long varg,
 	if (BAD_ADDR(return_fn))
 		goto fail_ventry;
 
-	tsk = tcb_create_task(clone_flags);
+	tsk = task_create_tsk(clone_flags);
 	if (!tsk)
 		return -ENOMEM;
 
@@ -92,9 +101,9 @@ static pid_t do_fork(unsigned long ventry, unsigned long varg,
 	if (!tsk->stack)
 		goto fail_stack;
 
-	tcb_set_task_stack_end_magic(tsk);
+	task_set_stack_end_magic(tsk);
 
-	ret = untype_copy_mm(tsk, current, &stack_top, &ipcptr);
+	ret = mmap_copy_mm(tsk, current, &stack_top, &ipcptr);
 	if (ret)
 		goto fail_copy_mm;
 
@@ -138,31 +147,8 @@ fail_stack:
 	ret = pid_remove_pid_by_process(tsk);
 	BUG_ON(!ret);
 fail_inster_pid:
-	tcb_destroy_task(tsk);
+	task_destroy_tsk(tsk);
 fail_ventry:
 
 	return -EINVAL;
-}
-
-SYSCALL_DEFINE4(tcb_thread, enum tcb_table, table, unsigned long, fn,
-				unsigned long, arg, unsigned long, return_fn)
-{
-	switch (table) {
-		case tcb_get_pid:
-			return current->pid.pid;
-
-		if (!cap_table_test_cap(cap_thread_cap, &current->cap_table))
-			return -ENOTCB;
-
-		case tcb_create_thread_fn:
-			return do_fork(fn, arg, PF_THREAD, return_fn);
-		case tcb_create_tcb_object:
-			printf("tcb_create_tcb_object Nothing TODO!\n");
-			return -ECHILD;
-		case tcb_clone_task_fn:
-			printf("tcb_create_tcb_object Nothing TODO!\n");
-			return -ECHILD;
-	}
-
-	return -EINVAL;;
 }

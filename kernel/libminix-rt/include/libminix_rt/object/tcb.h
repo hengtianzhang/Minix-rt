@@ -4,8 +4,6 @@
 #include <base/types.h>
 #include <base/linkage.h>
 
-#include <minix_rt/object/tcb.h>
-
 typedef int (*tcb_thread_fn_t)(void *);
 
 extern pid_t tcb_create_thread(tcb_thread_fn_t fn, void *arg);

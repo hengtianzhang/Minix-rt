@@ -835,12 +835,12 @@ fail_pgd:
 	return NULL;
 }
 
-struct vm_area_struct *mmap_first_vma(struct task_struct *tsk)
+struct vm_area_struct *mmap_first_vma(struct mm_struct *mm)
 {
 	struct rb_node *node;
 	struct vm_area_struct *vma;
 
-	node = rb_first(&tsk->mm->vma_rb_root);
+	node = rb_first(&mm->vma_rb_root);
 	if (!node)
 		return NULL;
 
@@ -880,14 +880,14 @@ void mmap_free_mm_struct(struct mm_struct *mm)
 	kfree(mm);
 }
 
-int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
+int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 			unsigned long *stack_top, unsigned long *ipcptr)
 {
 	int i = 0, j, ret;
 	unsigned long vstart, size, flags;
 	struct vm_area_struct *vma, *new_vma;
 
-	for_each_vm_area(vma, orgi_tsk) {
+	for_each_vm_area(vma, orgi_tsk->mm) {
 		vstart = vma->vm_start;
 		size = vma->vm_end - vma->vm_start;
 		flags = vma->vm_flags;
@@ -929,7 +929,7 @@ fail_vma:
 	mmap_free_vmap_area(vstart, tsk->mm);
 fail_out:
 	j = 0;
-	for_each_vm_area(vma, tsk) {
+	for_each_vm_area(vma, tsk->mm) {
 		vumap_page_range(vma);
 		mmap_free_vmap_area(vma->vm_start, tsk->mm);
 		j++;
@@ -939,15 +939,15 @@ fail_out:
 	return -ENOMEM;
 }
 
-void mmap_destroy_mm(struct task_struct *tsk)
+void mmap_destroy_mm(struct mm_struct *mm)
 {
 	struct vm_area_struct *vma;
 
-	if (!tsk)
+	if (!mm)
 		return;
 
-	for_each_vm_area(vma, tsk) {
+	for_each_vm_area(vma, mm) {
 		vumap_page_range(vma);
-		mmap_free_vmap_area(vma->vm_start, tsk->mm);
+		mmap_free_vmap_area(vma->vm_start, mm);
 	}
 }

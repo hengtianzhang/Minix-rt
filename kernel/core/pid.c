@@ -4,7 +4,7 @@
 #include <minix_rt/slab.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/sched/idle.h>
-#include <minix_rt/object/pid.h>
+#include <minix_rt/pid.h>
 
 struct pid_cache {
 	pid_t	pid;

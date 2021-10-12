@@ -38,7 +38,7 @@
 #include <minix_rt/jiffies.h>
 #include <minix_rt/interrupt.h>
 #include <minix_rt/irq.h>
-#include <minix_rt/object/pid.h>
+#include <minix_rt/pid.h>
 #include <minix_rt/sched/idle.h>
 #include <minix_rt/irq.h>
 #include <minix_rt/stat.h>
@@ -1162,8 +1162,10 @@ static void finish_task_switch(struct rq *rq, struct task_struct *prev)
 	prev_state = prev->state;
 	finish_arch_switch(prev);
 	finish_lock_switch(rq, prev);
-	if (unlikely(mm))
-		BUG(); /* TODO */
+	if (mm)
+		mmdrop(mm);
+	if (unlikely(prev_state == TASK_DEAD))
+		put_task_struct(prev);
 }
 
 /**

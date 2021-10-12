@@ -24,7 +24,7 @@ extern void vumap_page_range(struct vm_area_struct *vma);
 extern struct mm_struct *mmap_alloc_mm_struct(void);
 extern void mmap_free_mm_struct(struct mm_struct *mm);
 
-extern void mmap_destroy_mm(struct task_struct *tsk);
+extern void mmap_destroy_mm(struct mm_struct *mm);
 
 struct mmap_ref_pud_talbe {
 	struct page *pud_page;
@@ -41,13 +41,13 @@ struct mmap_ref_pte_talbe {
 	struct rb_node	node;
 };
 
-extern struct vm_area_struct *mmap_first_vma(struct task_struct *tsk);
+extern struct vm_area_struct *mmap_first_vma(struct mm_struct *mm);
 extern struct vm_area_struct *mmap_next_vma(struct vm_area_struct *vma);
 
-#define for_each_vm_area(vma, tsk)	\
-	for (vma = mmap_first_vma(tsk); vma != NULL; vma = mmap_next_vma(vma))
+#define for_each_vm_area(vma, mm)	\
+	for (vma = mmap_first_vma(mm); vma != NULL; vma = mmap_next_vma(vma))
 
-extern int untype_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
+extern int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 							unsigned long *stack_top, unsigned long *ipcptr);
 
 #endif /* !__MINIX_RT_MMAP_H_ */

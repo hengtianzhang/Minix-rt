@@ -4,14 +4,11 @@
 #include <minix_rt/sched/rt.h>
 #include <minix_rt/stackprotector.h>
 
-#include <uapi/minix_rt/object/cap_types.h>
-
 struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 	[0 ... CONFIG_NR_CPUS - 1] = {
 		.thread_info	= INIT_THREAD_INFO(idle_threads),
 		.stack_refcount	= ATOMIC_INIT(1),
 		.state 			= 0,
-		.cap_table		= CAP_TABLE_MASK_NONE,
 		.notifier 		= {
 			.notifier_table = NOTIFIER_TABLE_MASK_NONE,
 			.action			= { { { .sa_handler = NOTIFIER_DFL, }, }, },

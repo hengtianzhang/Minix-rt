@@ -9,8 +9,6 @@
 #include <minix_rt/pid.h>
 #include <minix_rt/notifier.h>
 
-#include <uapi/minix_rt/object/cap_types.h>
-
 #include <asm/thread_info.h>
 #include <asm/processor.h>
 
@@ -142,8 +140,6 @@ struct task_struct {
 
 	int				oncpu;
 	int 			cpu;
-
-	cap_table_t cap_table;
 
 	struct notifier_struct notifier;
 

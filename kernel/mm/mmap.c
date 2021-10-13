@@ -9,7 +9,6 @@
 #include <minix_rt/uaccess.h>
 
 #include <uapi/minix_rt/mmap.h>
-#include <uapi/minix_rt/object/cap_types.h>
 
 #include <asm/mmu_context.h>
 #include <asm/mmu.h>

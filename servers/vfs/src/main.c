@@ -2,7 +2,7 @@
 
 int main(void)
 {
-	printf("This is fs\n");
+	printf("This is vfs\n");
 	while (1);
 	return 0;
 }

@@ -7,6 +7,7 @@
 #include <minix_rt/thread.h>
 #include <minix_rt/sched/sched.h>
 #include <minix_rt/pid.h>
+#include <minix_rt/ipc.h>
 #include <minix_rt/notifier.h>
 
 #include <asm/thread_info.h>
@@ -146,6 +147,7 @@ struct task_struct {
     struct mm_struct *mm;
 
 	int services_type;
+	endpoint_t	ep;
 
 	int exit_state;
 	int exit_code, exit_signal;
@@ -415,5 +417,7 @@ extern struct task_struct *create_system_task(void);
 extern void system_task_init(void);
 extern void services_task_init(void);
 extern void task_do_exit(struct task_struct *tsk, int flags);
+
+#define INIT_SERVICE_COMM "rootService"
 
 #endif /* !__MINIX_RT_SCHED_H_ */

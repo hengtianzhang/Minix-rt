@@ -17,8 +17,6 @@
 
 #include <asm/processor.h>
 
-#define INIT_SERVICE_COMM "rootService"
-
 int system_thread(void *arg)
 {
 	while (1) {
@@ -55,6 +53,8 @@ struct task_struct * __init create_system_task(void)
 	ret = pid_insert_process_by_pid(tsk);
 
 	BUG_ON(ret == false);
+
+	BUG_ON(ipc_register_endpoint_by_tsk(tsk));
 
 	tsk->policy = SCHED_FIFO;
 	tsk->prio = 0;

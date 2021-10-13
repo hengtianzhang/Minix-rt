@@ -110,9 +110,4 @@
 
 #define EHWPOISON	133	/* Memory page has hardware error */
 
-/* for cap table */
-#define ENOUNTYPE	134
-#define ENOTCB		135
-#define ENONOTIFIER	136
-
 #endif /* !__ASM_GENERIC_BASE_ERRNO_H_ */

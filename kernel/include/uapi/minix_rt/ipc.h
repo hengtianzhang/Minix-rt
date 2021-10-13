@@ -38,9 +38,9 @@ typedef struct {
 
 		u8			size[IPC_MAX_MESSAGE_BYPE];	/* message payload may have 56 bytes at most */
 	};
-} message __aligned(16);
+} message_t __aligned(16);
 
 /* Ensure the complete union respects the IPC assumptions. */
-typedef int _ASSERT_message[/* CONSTCOND */sizeof(message) == 64 ? 1 : -1];
+typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 
 #endif /* !__UAPI_MINIX_RT_IPC_H_ */

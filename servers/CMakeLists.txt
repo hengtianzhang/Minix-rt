@@ -1,3 +1,3 @@
 
 add_subdirectory(pm)
-add_subdirectory(fs)
+add_subdirectory(vfs)

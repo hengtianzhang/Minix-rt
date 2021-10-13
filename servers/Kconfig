@@ -3,6 +3,6 @@
 menu "Minix-rt Servers configuration"
 
 source "servers/pm/Kconfig"
-source "servers/fs/Kconfig"
+source "servers/vfs/Kconfig"
 
 endmenu

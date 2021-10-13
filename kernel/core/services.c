@@ -275,8 +275,6 @@ __init struct task_struct *service_core_init(int type,
 	tsk->mm->elf_brk = elf_brk;
 	tsk->mm->start_stack = stack_top;
 
-	tsk->services_type = type;
-
 	elf_entry = loc->elf_ex.e_entry;
 	if (BAD_ADDR(elf_entry)) {
 		ret = -EINVAL;
@@ -289,6 +287,10 @@ __init struct task_struct *service_core_init(int type,
 	ret = pid_alloc_pid(tsk);
 	if (ret)
 		goto fail_service_stack;
+
+	tsk->services_type = type;
+
+	BUG_ON(ipc_register_endpoint_by_tsk(tsk));
 
 	tsk->policy = SCHED_FIFO;
 	if (type == TYPE_DRIVERS) {

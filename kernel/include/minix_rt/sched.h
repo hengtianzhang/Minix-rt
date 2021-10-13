@@ -145,6 +145,8 @@ struct task_struct {
 
     struct mm_struct *mm;
 
+	int services_type;
+
 	int exit_state;
 	int exit_code, exit_signal;
 	int pdeath_signal;  /*  The signal sent when the parent dies  */
@@ -171,6 +173,9 @@ struct task_struct {
 #define PF_THREAD			0x00000004
 #define PF_EXITING			0x00000008
 #define PF_KTHREAD			0x00000010
+
+#define TYPE_DRIVERS 0x1
+#define TYPE_SERVERS 0x2
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {

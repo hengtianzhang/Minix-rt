@@ -35,9 +35,6 @@ extern char __end_archive_drivers[];
 #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
 #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
 
-#define TYPE_DRIVERS 1
-#define TYPE_SERVERS 2
-
 static __init struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex)
 {
 	int size;
@@ -277,6 +274,8 @@ __init struct task_struct *service_core_init(int type,
 	tsk->mm->elf_bss = elf_bss;
 	tsk->mm->elf_brk = elf_brk;
 	tsk->mm->start_stack = stack_top;
+
+	tsk->services_type = type;
 
 	elf_entry = loc->elf_ex.e_entry;
 	if (BAD_ADDR(elf_entry)) {

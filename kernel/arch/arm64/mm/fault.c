@@ -22,7 +22,7 @@
 
 #include <minix_rt/smp.h>
 #include <minix_rt/stat.h>
-#include <minix_rt/object/notifier.h>
+#include <minix_rt/notifier.h>
 
 #include <asm/traps.h>
 #include <asm/pgtable.h>

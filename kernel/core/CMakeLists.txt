@@ -8,6 +8,5 @@ kernel_sources(
 
 add_subdirectory(irq)
 add_subdirectory(locking)
-add_subdirectory(object)
 add_subdirectory(sched)
 add_subdirectory(time)

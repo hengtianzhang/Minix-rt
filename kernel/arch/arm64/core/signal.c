@@ -22,7 +22,6 @@
 #include <minix_rt/syscalls.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/signal.h>
-#include <minix_rt/object/ipc.h>
 
 #include <asm/traps.h>
 #include <asm/ptrace.h>
@@ -345,11 +344,10 @@ static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
 			 struct rt_sigframe_user_layout *user, int usig)
 {
 	__sigrestore_t sigtramp;
-	struct ipc_share_struct *ipc_shr = current->kernel_ipcptr;
 
 	regs->regs[0] = usig;
-	regs->regs[1] = (long)ipc_shr->notifier_message_info[usig];
-	regs->regs[2] = (pid_t)ipc_shr->notifier[usig];
+	regs->regs[1] = (long)current->notifier.private[usig];
+	regs->regs[2] = (pid_t)current->notifier.pid[usig];
 	regs->sp = (unsigned long)user->sigframe;
 	regs->regs[29] = (unsigned long)&user->next_frame->fp;
 	regs->pc = (unsigned long)ka->sa.sa_handler;

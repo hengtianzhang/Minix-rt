@@ -1,4 +1,4 @@
-#include <libminix_rt/object/notifier.h>
+#include <libminix_rt/notifier.h>
 #include <libminix_rt/syscalls.h>
 
 int notifier_register_handler(unsigned int notifier, __sighandler_t fn)
@@ -7,6 +7,16 @@ int notifier_register_handler(unsigned int notifier, __sighandler_t fn)
 
 	ret = __syscall(__NR_notifier, notifier_regiser_fn,
 					notifier, (unsigned long)fn, 0, 0, __kernel_rt_sigreturn);
+
+	return ret;
+}
+
+int notifier_remove_handler(unsigned int notifier)
+{
+	int ret;
+
+	ret = __syscall(__NR_notifier, notifier_remove_fn,
+					notifier, 0, 0, 0, 0);
 
 	return ret;
 }

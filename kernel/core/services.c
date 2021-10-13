@@ -13,7 +13,6 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/sched/rt.h>
 #include <minix_rt/mmap.h>
-#include <minix_rt/object/ipc.h>
 #include <minix_rt/uaccess.h>
 
 #include <asm/processor.h>

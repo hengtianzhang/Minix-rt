@@ -4,7 +4,7 @@
 
 #include <base/types.h>
 
-#include <minix_rt/object/notifier.h>
+#include <minix_rt/notifier.h>
 
 #include <asm/siginfo.h>
 

@@ -31,6 +31,7 @@ int system_thread(void *arg)
 		printf("\n");
 		msleep(1000);
 	}
+	BUG();
 };
 
 struct task_struct * __init create_system_task(void)

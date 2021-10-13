@@ -4,9 +4,9 @@
 #include <asm/base/page-def.h>
 
 #ifndef __KERNEL__
-#include <minix_rt/object/notifier.h>
+#include <minix_rt/notifier.h>
 #else
-#include <uapi/minix_rt/object/notifier.h>
+#include <uapi/minix_rt/notifier.h>
 #endif /* !__KERNEL__ */
 
 #define IPC_DEBUG_PRINTF_BUFFER_MAX 1024

@@ -1,5 +1,5 @@
-#ifndef __UAPI_MINIX_RT_OBJECT_NOTIFIER_H_
-#define __UAPI_MINIX_RT_OBJECT_NOTIFIER_H_
+#ifndef __UAPI_MINIX_RT_NOTIFIER_H_
+#define __UAPI_MINIX_RT_NOTIFIER_H_
 
 #include <base/bitmap.h>
 #include <base/const.h>
@@ -11,9 +11,7 @@
 #endif /* !__KERNEL__ */
 
 #define NOTIFIER_IRQ		(SIGRTMAX + 1)
-#define NOTIFIER_TASK_EXIT	(NOTIFIER_IRQ + 1)
-#define NOTIFIER_MESSAGE	(NOTIFIER_TASK_EXIT + 1)
-#define NOTIFIER_NR_MAX		(NOTIFIER_MESSAGE + 1)
+#define NOTIFIER_NR_MAX		(NOTIFIER_IRQ + 1)
 
 #define notifier_nr_max		((unsigned int)NOTIFIER_NR_MAX)
 
@@ -425,4 +423,4 @@ enum notifier_type {
 	notifier_send_signal,
 };
 
-#endif /* !__UAPI_MINIX_RT_OBJECT_NOTIFIER_H_ */
+#endif /* !__UAPI_MINIX_RT_NOTIFIER_H_ */

@@ -23,7 +23,7 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/stat.h>
 #include <minix_rt/spinlock.h>
-#include <minix_rt/object/notifier.h>
+#include <minix_rt/notifier.h>
 
 #include <asm/current.h>
 #include <asm/esr.h>

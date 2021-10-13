@@ -1,7 +1,7 @@
-#ifndef __MINIX_RT_OBJECT_NOTIFIER_H_
-#define __MINIX_RT_OBJECT_NOTIFIER_H_
+#ifndef __MINIX_RT_NOTIFIER_H_
+#define __MINIX_RT_NOTIFIER_H_
 
-#include <uapi/minix_rt/object/notifier.h>
+#include <uapi/minix_rt/notifier.h>
 
 #include <asm/siginfo.h>
 
@@ -9,6 +9,8 @@ struct notifier_struct {
 	notifier_table_t notifier_table;
 	struct k_sigaction action[NOTIFIER_NR_MAX];
 	__sigrestore_t return_fn;
+	unsigned long private[NOTIFIER_NR_MAX];
+	pid_t 			pid[NOTIFIER_NR_MAX];
 };
 
 struct ksignal {
@@ -16,4 +18,4 @@ struct ksignal {
 	int sig;
 };
 
-#endif /* !__MINIX_RT_OBJECT_NOTIFIER_H_ */
+#endif /* !__MINIX_RT_NOTIFIER_H_ */

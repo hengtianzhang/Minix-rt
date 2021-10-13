@@ -9,6 +9,9 @@
 #include <asm/current.h>
 #include <asm/esr.h>
 
+asmlinkage long sys_ni_syscall(const struct pt_regs *);
+#define __arm64_sys_ni_syscall	sys_ni_syscall
+
 #undef __UAPI_ASM_SYSCALLS_H_
 #undef __SYSCALL
 #define __SYSCALL(nr, sym)	asmlinkage long __arm64_##sym(const struct pt_regs *);
@@ -16,9 +19,10 @@
 #include <uapi/asm/unistd.h>
 
 #undef __SYSCALL
-#define __SYSCALL(nr, sym)	[(-nr) - 1] = (syscall_fn_t)__arm64_##sym,
-const syscall_fn_t sys_call_table[(-__NR_syscalls) - 1] = {
+#define __SYSCALL(nr, sym)	[nr] = (syscall_fn_t)__arm64_##sym,
+const syscall_fn_t sys_call_table[__NR_syscalls] = {
 #undef __UAPI_ASM_SYSCALLS_H_
+	[0 ... __NR_syscalls - 1] = (syscall_fn_t)sys_ni_syscall,
 #include <uapi/asm/unistd.h>
 };
 
@@ -38,13 +42,12 @@ static void invoke_syscall(struct pt_regs *regs, int scno,
 {
 	long ret;
 
-	if ((sc_nr < scno) && (scno < 0)) {
+	if (scno < sc_nr) {
 		syscall_fn_t syscall_fn;
-		syscall_fn = syscall_table[(-scno) - 1];
+		syscall_fn = syscall_table[scno];
 		ret = __invoke_syscall(regs, syscall_fn);
 	} else {
-		printf("Now, TODO syscall %d\n", scno);
-		ret = -ENOSYS;
+		ret = sys_ni_syscall(NULL);
 	}
 
 	regs->regs[0] = ret;

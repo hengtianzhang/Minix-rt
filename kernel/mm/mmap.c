@@ -881,7 +881,7 @@ void mmap_free_mm_struct(struct mm_struct *mm)
 }
 
 int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
-			unsigned long *stack_top, unsigned long *ipcptr)
+			unsigned long *stack_top)
 {
 	int i = 0, j, ret;
 	unsigned long vstart, size, flags;
@@ -892,7 +892,7 @@ int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 		size = vma->vm_end - vma->vm_start;
 		flags = vma->vm_flags;
 
-		if (!(vma->vm_flags & (VM_USER_STACK | VM_USER_IPCPTR)))
+		if (!(vma->vm_flags & (VM_USER_STACK)))
 			flags |= VM_PRIVATE_SHARE;
 
 		new_vma = mmap_get_vmap_area(vstart, size, flags, tsk->mm, 0);
@@ -900,13 +900,6 @@ int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 			goto fail_out;
 
 		BUG_ON(new_vma->nr_pages != vma->nr_pages);
-		if (!(new_vma->vm_flags & (VM_USER_STACK | VM_USER_IPCPTR))) {
-			for (j = 0; j < new_vma->nr_pages; j++) {
-				new_vma->pages[j] = vma->pages[j];
-				BUG_ON(!new_vma->pages[j]);
-				get_page(new_vma->pages[j]);
-			}
-		}
 		ret = vmap_page_range(new_vma);
 		if (ret <= 0)
 			goto fail_vma;
@@ -914,12 +907,6 @@ int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 		if (new_vma->vm_flags & VM_USER_STACK)
 			if (stack_top)
 				*stack_top = new_vma->vm_end;
-		if (new_vma->vm_flags & VM_USER_IPCPTR) {
-			BUG_ON(new_vma->nr_pages != 1);
-			tsk->kernel_ipcptr = page_to_virt(new_vma->pages[0]);
-			if (ipcptr)
-				*ipcptr = new_vma->vm_start;
-		}
 		i++;
 	}
 

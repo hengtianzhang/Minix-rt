@@ -3,7 +3,8 @@
 
 #include <base/linkage.h>
 
-asmlinkage void __minix_rt_start_c(unsigned long ipcptr);
+asmlinkage void __minix_rt_start_c(void);
+asmlinkage void __minix_rt_exit_c(unsigned long code);
 
 extern char __executable_start[];
 extern char __rela_iplt_start[];

@@ -7,7 +7,7 @@
 #include <minix_rt/thread.h>
 #include <minix_rt/sched/sched.h>
 #include <minix_rt/pid.h>
-#include <minix_rt/object/notifier.h>
+#include <minix_rt/notifier.h>
 
 #include <uapi/minix_rt/object/cap_types.h>
 
@@ -148,9 +148,6 @@ struct task_struct {
 	struct notifier_struct notifier;
 
     struct mm_struct *mm;
-
-	void __user *cap_ipcptr;
-	void __kernel *kernel_ipcptr;
 
 	int exit_state;
 	int exit_code, exit_signal;
@@ -416,5 +413,6 @@ extern pid_t do_fork(unsigned long ventry, unsigned long varg,
 extern struct task_struct *create_system_task(void);
 extern void system_task_init(void);
 extern void services_task_init(void);
+extern void task_do_exit(struct task_struct *tsk, int flags);
 
 #endif /* !__MINIX_RT_SCHED_H_ */

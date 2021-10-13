@@ -48,6 +48,6 @@ extern struct vm_area_struct *mmap_next_vma(struct vm_area_struct *vma);
 	for (vma = mmap_first_vma(mm); vma != NULL; vma = mmap_next_vma(vma))
 
 extern int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
-							unsigned long *stack_top, unsigned long *ipcptr);
+							unsigned long *stack_top);
 
 #endif /* !__MINIX_RT_MMAP_H_ */

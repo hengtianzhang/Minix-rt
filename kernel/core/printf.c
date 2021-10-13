@@ -3,7 +3,6 @@
 #include <base/common.h>
 #include <base/errno.h>
 
-#include <minix_rt/object/ipc.h>
 #include <minix_rt/sched/clock.h>
 #include <minix_rt/spinlock.h>
 #include <minix_rt/syscalls.h>

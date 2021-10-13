@@ -79,7 +79,7 @@ pid_t do_fork(unsigned long ventry, unsigned long varg,
 	int ret;
 	struct pt_regs *regs;
 	struct task_struct *tsk;
-	unsigned long stack_top, ipcptr;
+	unsigned long stack_top;
 
 	if (BAD_ADDR(ventry))
 		goto fail_ventry;
@@ -105,12 +105,11 @@ pid_t do_fork(unsigned long ventry, unsigned long varg,
 
 	task_set_stack_end_magic(tsk);
 
-	ret = mmap_copy_mm(tsk, current, &stack_top, &ipcptr);
+	ret = mmap_copy_mm(tsk, current, &stack_top);
 	if (ret)
 		goto fail_copy_mm;
 
 	tsk->flags |= current->flags;
-	tsk->cap_ipcptr = (void *)ipcptr;
 	tsk->parent = current;
 
 	list_add(&tsk->children_list, &current->children);

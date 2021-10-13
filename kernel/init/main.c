@@ -118,6 +118,8 @@ asmlinkage __visible void __init start_kernel(void)
 	sched_clock_init();
 	system_tick_init();
 
+	ipc_init();
+
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();
 }

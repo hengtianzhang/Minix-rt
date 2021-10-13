@@ -28,7 +28,7 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_u64);
 
 typedef struct {
-	endpoint_t m_source; /* who sent the message */
+	pid_t m_source; /* who sent the message */
 	int	m_type;		/* what kind of message is it */
 	union {
 		mess_u8		m_u8;
@@ -42,5 +42,15 @@ typedef struct {
 
 /* Ensure the complete union respects the IPC assumptions. */
 typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
+
+#define IPC_M_TYPE_NOTIFIER 0x1
+
+enum {
+	ENDPOINT_SYSTEM,
+	ENDPOINT_I2C,
+	ENDPOINT_PM,
+	ENDPOINT_VFS,
+	ENDPOINT_END,
+};
 
 #endif /* !__UAPI_MINIX_RT_IPC_H_ */

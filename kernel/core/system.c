@@ -20,13 +20,20 @@
 int system_thread(void *arg)
 {
 	while (1) {
-		pid_t pid;
-		pid_for_each_pid(pid) {
-			struct task_struct *tsk = pid_find_process_by_pid(pid);
-			if (tsk->se.on_rq)
-				show_task(tsk);
-		}
-		printf("\n");
+		int ret;
+		message_t m;
+		struct task_struct *tsk;
+
+		memset(&m, 0, sizeof (message_t));
+		ret = __ipc_receive(ENDPOINT_SYSTEM, &m);
+		if (ret)
+			printf("receive ipc failed!\n");
+
+		tsk = pid_find_process_by_pid(m.m_source);
+		BUG_ON(!tsk);
+		printf("sender %s vaule 0x%llx\n", tsk->comm, m.m_u64.data[1]);
+		__ipc_reply(ENDPOINT_SYSTEM, &m);
+
 		msleep(1000);
 	}
 	BUG();

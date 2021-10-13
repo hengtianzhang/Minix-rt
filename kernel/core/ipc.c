@@ -91,12 +91,12 @@ int __ipc_send(endpoint_t dest, message_t *m_ptr)
 
 	spin_lock_irqsave(&ep_info->ep_list_lock, flags);
 	list_add_tail(&ep_node->queue_list, &ep_info->ep_list);
-	spin_unlock_irqrestore(&ep_info->ep_list_lock, flags);
-
 	if (ep_info->state == EP_STATE_WAITTING) {
 		ep_info->state = EP_STATE_RUNNING;
+		spin_unlock_irqrestore(&ep_info->ep_list_lock, flags);
 		wake_up(&ep_info->wait);
-	}
+	} else
+		spin_unlock_irqrestore(&ep_info->ep_list_lock, flags);
 
 	if (!(m_ptr->m_type & IPC_M_TYPE_NOTIFIER)) {
 		wait_event(ep_node->wait, ep_node->is_finish);

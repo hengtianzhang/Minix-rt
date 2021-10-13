@@ -67,5 +67,7 @@ typedef s64		clock_t;
 
 typedef unsigned __bitwise gfp_t;
 
+typedef int endpoint_t;			/* process identifier */
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__MINIX_RT_TYPES_H_ */

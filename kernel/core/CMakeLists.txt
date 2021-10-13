@@ -4,6 +4,7 @@ kernel_sources(
     cpu.c reboot.c clock.c softirq.c
     smp.c exit.c syscall.c signal.c
     pid.c fork.c services.c system.c
+    ipc.c
 )
 
 add_subdirectory(irq)

@@ -96,6 +96,10 @@ struct mm_struct {
 	atomic_long_t pgtables_bytes;
 
 	spinlock_t	page_table_lock; /* protect iopgd */
+
+	unsigned long mmap_base, mmap_end;
+	unsigned long start_code, end_code, start_data, end_data;
+	unsigned long elf_bss, elf_brk, start_stack;
 };
 
 extern struct mm_struct init_mm;

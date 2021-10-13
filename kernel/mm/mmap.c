@@ -818,6 +818,8 @@ struct mm_struct *mmap_alloc_mm_struct(void)
 	if (!mm->pgd)
 		goto fail_pgd;
 
+	mm->mmap_base = USER_DS;
+	mm->mmap_end = 0;
 	mm->task_size = TASK_SIZE;
 	mm->vma_rb_root = RB_ROOT;
 	spin_lock_init(&mm->vma_lock);

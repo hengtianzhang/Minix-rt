@@ -99,7 +99,9 @@ struct mm_struct {
 
 	unsigned long mmap_base, mmap_end;
 	unsigned long start_code, end_code, start_data, end_data;
-	unsigned long elf_bss, elf_brk, start_stack;
+	unsigned long start_brk, brk, start_stack;
+	unsigned long arg_start, arg_end, env_start, env_end;
+	unsigned long elf_bss, elf_brk;
 };
 
 extern struct mm_struct init_mm;

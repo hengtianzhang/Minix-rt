@@ -128,11 +128,6 @@ static __init unsigned long elf_map(void *archive_base,
 		return -ENOMEM;
 	}
 
-	if (vma->vm_start < tsk->mm->mmap_base)
-		tsk->mm->mmap_base = vma->vm_start;
-	if (vma->vm_end > tsk->mm->mmap_end)
-		tsk->mm->mmap_end = vma->vm_end;
-
 	return 0;
 }
 
@@ -274,6 +269,8 @@ __init struct task_struct *service_core_init(int type,
 	tsk->mm->elf_bss = elf_bss;
 	tsk->mm->elf_brk = elf_brk;
 	tsk->mm->start_stack = stack_top;
+	tsk->mm->start_brk = tsk->mm->brk =  PAGE_ALIGN(elf_brk);
+	tsk->mm->mmap_base = tsk->mm->mmap_end = stack_base;
 
 	elf_entry = loc->elf_ex.e_entry;
 	if (BAD_ADDR(elf_entry)) {

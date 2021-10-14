@@ -43,7 +43,8 @@ typedef struct {
 /* Ensure the complete union respects the IPC assumptions. */
 typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 
-#define IPC_M_TYPE_NOTIFIER 0x1
+#define IPC_M_TYPE_MASK			0x7fffffff
+#define IPC_M_TYPE_NOTIFIER 	0x80000000
 
 enum {
 	ENDPOINT_SYSTEM,

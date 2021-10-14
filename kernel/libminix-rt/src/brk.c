@@ -1,3 +1,10 @@
+/*
+ * kernel/libminix_rt/src/brk.c
+ *
+ * brk,sbrk is implemented for Compatibility with Linux brk,
+ * For malloc use only and should not be used by applications.
+ */
+
 #include <string.h>
 
 #include <libminix_rt/brk.h>

@@ -4,6 +4,7 @@
 #include <base/types.h>
 
 unsigned long get_free_page(void);
+void free_page(unsigned long addr);
 
 void *malloc(size_t size);
 void free(void *addr);

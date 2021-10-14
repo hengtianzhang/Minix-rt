@@ -7,13 +7,14 @@
 
 int main(void)
 {
-	unsigned long addr;
+	void *addr;
 
 	printf("This is pm\n");
 
-	addr = get_free_page();
+	addr = malloc(0x10);
 
-	printf("addr 0x%lx\n", addr);
+	free(addr);
+
 	while (1) {
 		int ret = 0;
 		message_t m;

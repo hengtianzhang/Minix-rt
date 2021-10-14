@@ -10,7 +10,7 @@ void __minix_rt_start_c(void)
 	int size = __bss_end__ - __bss_start__;
 
 	if (size)
-		memset(__bss_start__, 0, size + 8);
+		memset(__bss_start__, 0, size);
 }
 
 void __minix_rt_exit_c(unsigned long code)

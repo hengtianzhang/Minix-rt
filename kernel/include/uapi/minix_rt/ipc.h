@@ -28,6 +28,13 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_u64);
 
 typedef struct {
+	int state;
+	u64 brk;
+	u8 payload[34];
+} mess_system_brk;
+IPC_ASSERT_MSG_SIZE(mess_system_brk);
+
+typedef struct {
 	pid_t m_source; /* who sent the message */
 	int	m_type;		/* what kind of message is it */
 	union {
@@ -35,6 +42,8 @@ typedef struct {
 		mess_u16	m_u16;
 		mess_u32	m_u32;
 		mess_u64	m_u64;
+
+		mess_system_brk		m_sys_brk;
 
 		u8			size[IPC_MAX_MESSAGE_BYPE];	/* message payload may have 56 bytes at most */
 	};
@@ -45,6 +54,9 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 
 #define IPC_M_TYPE_MASK			0x7fffffff
 #define IPC_M_TYPE_NOTIFIER 	0x80000000
+
+#define IPC_M_TYPE_SBRK			0x1
+#define IPC_M_TYPE_BRK			0x2
 
 enum {
 	ENDPOINT_SYSTEM,

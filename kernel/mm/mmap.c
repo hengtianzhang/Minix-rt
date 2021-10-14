@@ -772,6 +772,22 @@ fail_pages:
 	return NULL;
 }
 
+struct vm_area_struct *
+mmap_find_vma_area(unsigned long addr, struct mm_struct *mm)
+{
+	struct vm_area_struct *vma;
+
+	if (!mm) {
+		return NULL;
+	}
+
+	spin_lock(&mm->vma_lock);
+	vma = __find_vma_area(addr, mm);
+	spin_unlock(&mm->vma_lock);
+
+	return vma;
+}
+
 void mmap_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 {
 	unsigned long i;

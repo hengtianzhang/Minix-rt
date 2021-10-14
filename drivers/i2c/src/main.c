@@ -12,7 +12,6 @@ int main(void)
 
 		memset(&m, 0, sizeof (message_t));
 
-		printf("i2c send 0x95\n");
 		m.m_u64.data[1] = 0x95;
 		ret = ipc_send(ENDPOINT_SYSTEM, &m);
 		if (ret) {

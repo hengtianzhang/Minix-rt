@@ -18,6 +18,8 @@ extern struct vm_area_struct *mmap_get_vmap_area(unsigned long vstart,
 				struct mm_struct *mm, phys_addr_t io_space);
 extern void mmap_free_vmap_area(unsigned long addr, struct mm_struct *mm);
 
+extern struct vm_area_struct *
+mmap_find_vma_area(unsigned long addr, struct mm_struct *mm);
 extern int vmap_page_range(struct vm_area_struct *vma);
 extern void vumap_page_range(struct vm_area_struct *vma);
 

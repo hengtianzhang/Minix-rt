@@ -9,6 +9,7 @@
 #include <minix_rt/gfp.h>
 #include <minix_rt/page.h>
 #include <minix_rt/sched.h>
+#include <minix_rt/system.h>
 #include <minix_rt/sched/rt.h>
 #include <minix_rt/mmap.h>
 #include <minix_rt/pid.h>
@@ -17,24 +18,33 @@
 
 #include <asm/processor.h>
 
+static void system_handle_ipc_message(endpoint_t ep, message_t *m)
+{
+	switch (m->m_type & IPC_M_TYPE_MASK) {
+		case IPC_M_TYPE_BRK:
+		case IPC_M_TYPE_SBRK:
+			system_brk(ep, m);
+			break;
+		default:
+			break;
+	}
+}
+
 int system_thread(void *arg)
 {
 	while (1) {
 		int ret;
 		message_t m;
-		struct task_struct *tsk;
 
 		memset(&m, 0, sizeof (message_t));
+
 		ret = __ipc_receive(ENDPOINT_SYSTEM, &m);
-		if (ret)
-			printf("receive ipc failed!\n");
+		BUG_ON(ret);
 
-		tsk = pid_find_process_by_pid(m.m_source);
-		BUG_ON(!tsk);
-		printf("sender %s vaule 0x%llx\n", tsk->comm, m.m_u64.data[1]);
-		__ipc_reply(ENDPOINT_SYSTEM, &m);
+		system_handle_ipc_message(ENDPOINT_SYSTEM, &m);
 
-		msleep(1000);
+		ret = __ipc_reply(ENDPOINT_SYSTEM, &m);
+		BUG_ON(ret);
 	}
 	BUG();
 };

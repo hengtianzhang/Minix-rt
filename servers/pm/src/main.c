@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <libminix_rt/brk.h>
@@ -6,16 +7,13 @@
 
 int main(void)
 {
-	int ret __maybe_unused;
-	void *addr;
+	unsigned long addr;
+
 	printf("This is pm\n");
 
-	addr = sbrk(0);
-	if (!addr)
-		return -1;
+	addr = get_free_page();
 
-	printf("current heap %p\n", addr);
-
+	printf("addr 0x%lx\n", addr);
 	while (1) {
 		int ret = 0;
 		message_t m;

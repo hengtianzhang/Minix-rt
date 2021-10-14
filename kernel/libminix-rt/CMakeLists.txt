@@ -19,7 +19,10 @@ target_include_directories(${libminix_rt_VAR}libminix_rt PUBLIC
 find_package(base REQUIRED)
 base_user_import_libraries()
 
+find_package(memalloc REQUIRED)
+memalloc_user_import_libraries()
+
 target_link_libraries(${libminix_rt_VAR}libminix_rt
 	PUBLIC
-	${libminix_rt_VAR}base
+	${libminix_rt_VAR}base ${libminix_rt_VAR}memalloc
 )

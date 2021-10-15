@@ -902,7 +902,7 @@ int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 {
 	int i = 0, j, ret;
 	unsigned long vstart, size, flags;
-	struct vm_area_struct *vma, *new_vma;
+	struct vm_area_struct *vma, *new_vma, *tmp_vma;
 
 	for_each_vm_area(vma, orgi_tsk->mm) {
 		vstart = vma->vm_start;
@@ -933,7 +933,7 @@ fail_vma:
 	mmap_free_vmap_area(vstart, tsk->mm);
 fail_out:
 	j = 0;
-	for_each_vm_area(vma, tsk->mm) {
+	for_each_vm_area_safe(vma, tmp_vma, tsk->mm) {
 		vumap_page_range(vma);
 		mmap_free_vmap_area(vma->vm_start, tsk->mm);
 		j++;
@@ -945,12 +945,12 @@ fail_out:
 
 void mmap_destroy_mm(struct mm_struct *mm)
 {
-	struct vm_area_struct *vma;
+	struct vm_area_struct *vma, *tmp_vma;
 
 	if (!mm)
 		return;
 
-	for_each_vm_area(vma, mm) {
+	for_each_vm_area_safe(vma, tmp_vma, mm) {
 		vumap_page_range(vma);
 		mmap_free_vmap_area(vma->vm_start, mm);
 	}

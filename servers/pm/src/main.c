@@ -11,9 +11,8 @@ int main(void)
 
 	printf("This is pm\n");
 
-	addr = malloc(0x10);
-
-	free(addr);
+	addr = sbrk(0);
+	printf("addr 0x%p\n", addr);
 
 	while (1) {
 		int ret = 0;

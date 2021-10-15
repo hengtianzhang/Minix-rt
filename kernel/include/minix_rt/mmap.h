@@ -49,6 +49,17 @@ extern struct vm_area_struct *mmap_next_vma(struct vm_area_struct *vma);
 #define for_each_vm_area(vma, mm)	\
 	for (vma = mmap_first_vma(mm); vma != NULL; vma = mmap_next_vma(vma))
 
+#define for_each_vm_area_safe(vma, n, mm)	\
+	for (vma = mmap_first_vma(mm), n = mmap_next_vma(vma); vma != NULL;	\
+		vma = n, n = mmap_next_vma(vma))
+
+#define for_each_next_vm_area(vma, curr_vma)	\
+	for (vma = mmap_next_vma(curr_vma); vma != NULL; vma = mmap_next_vma(vma))
+
+#define for_each_next_vm_area_safe(vma, n, curr_vma)	\
+	for (vma = mmap_next_vma(curr_vma), n = mmap_next_vma(vma); vma != NULL; \
+		vma = n, n = mmap_next_vma(vma))
+
 extern int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 							unsigned long *stack_top);
 

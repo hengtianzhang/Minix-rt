@@ -871,6 +871,9 @@ struct vm_area_struct *mmap_next_vma(struct vm_area_struct *vma)
 	struct rb_node *node;
 	struct vm_area_struct *next;
 
+	if (!vma)
+		return NULL;
+
 	node = rb_next(&vma->vm_rb_node);
 	if (!node)
 		return NULL;

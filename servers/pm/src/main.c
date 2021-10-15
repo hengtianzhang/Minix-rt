@@ -2,17 +2,59 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <base/common.h>
 #include <libminix_rt/brk.h>
 #include <libminix_rt/ipc.h>
 
 int main(void)
 {
-	void *addr;
+	void *addr1;
 
 	printf("This is pm\n");
 
-	addr = sbrk(0);
-	printf("addr 0x%p\n", addr);
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
+
+	addr1 = malloc(0x123);
+	printf("aaaaa addr1 0x%p\n", addr1);
+	free(addr1);
 
 	while (1) {
 		int ret = 0;

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include <base/compiler.h>
 #include <base/common.h>
@@ -62,6 +63,110 @@ void free_pages(unsigned long addr, int nr_pages)
 	}
 }
 
+struct bkmap_desc {
+	unsigned long start, end;
+	struct list_head list;
+	unsigned long ref_count;
+	int *map;
+};
+
+static LIST_HEAD(bkmap_list);
+
+static inline unsigned long calc_perpages_managed_bytes(void)
+{
+	return ((PAGE_SIZE - sizeof (struct bkmap_desc)) / sizeof (int)) * PAGE_SIZE;
+}
+
+static struct bkmap_desc *init_bkmap_desc(unsigned long addr)
+{
+	int i;
+	struct bkmap_desc *bkmap;
+	unsigned long managed_bytes, size;
+	unsigned long start;
+
+	bkmap = (struct bkmap_desc *)get_free_pages(1);
+	if (!bkmap)
+		return NULL;
+
+	memset(bkmap, 0, PAGE_SIZE);
+	managed_bytes = calc_perpages_managed_bytes();
+	size = addr - start_base;
+	i = size / managed_bytes;
+	start = start_base + (i * managed_bytes);
+
+	bkmap->ref_count = 0;
+	bkmap->start = start;
+	bkmap->end = start + managed_bytes;
+	bkmap->map = (int *)bkmap + sizeof (struct bkmap_desc);
+	list_add(&bkmap->list, &bkmap_list);
+
+	return bkmap;
+}
+
+static struct bkmap_desc *bkmap_find_area(unsigned long addr)
+{
+	struct bkmap_desc *bkmap = NULL;
+
+	list_for_each_entry(bkmap, &bkmap_list, list) {
+		if ((bkmap->start <= addr) && (addr < bkmap->end))
+			goto found;
+	}
+
+	bkmap = init_bkmap_desc(addr);
+found:
+	return bkmap;
+}
+
+static int bkmap_set_page_size(unsigned long addr, unsigned long size)
+{
+	struct bkmap_desc *bkmap;
+	int index;
+
+	bkmap = bkmap_find_area(addr);
+	if (!bkmap)
+		return -ENOMEM;
+
+	index = (addr - bkmap->start) >> PAGE_SHIFT;
+	if (index < 0)
+		return -EINVAL;
+
+	if (bkmap->map[index] != 0)
+		return -EINVAL;
+
+	bkmap->map[index] = size;
+	bkmap->ref_count++;
+
+	return 0;
+}
+
+static unsigned long bkmap_put_page_size(unsigned long addr)
+{
+	struct bkmap_desc *bkmap;
+	unsigned long size;
+	int index;
+
+	bkmap = bkmap_find_area(addr);
+	if (!bkmap)
+		return 0;
+
+	index = (addr - bkmap->start) >> PAGE_SHIFT;
+	if (index < 0)
+		return 0;
+
+	if (bkmap->map[index] == 0)
+		return 0;
+
+	size = bkmap->map[index];
+	bkmap->map[index] = 0;
+	bkmap->ref_count--;
+	if (bkmap->ref_count == 0) {
+		list_del(&bkmap->list);
+		free_pages((unsigned long)bkmap, 1);
+	}
+
+	return size;
+}
+
 struct bucket_desc {
 	void *page;
 	struct bucket_desc *next;
@@ -83,122 +188,86 @@ static struct _bucket_dir bucket_dir[] = {
 	{ 0, NULL}
 };
 
-static struct bucket_desc *free_bucket_desc = NULL;
-
-struct bdesc_store_desc {
+struct bdescmap_desc {
 	int ref_count;
+	struct bucket_desc *freeptr;
 	struct list_head list;
-	struct bucket_desc *bdesc_map;
+	struct bucket_desc *map;
 };
 
-static LIST_HEAD(bdesc_store_list);
+static LIST_HEAD(bdescmap_list);
 
-static struct bdesc_store_desc *init_bdesc_store_map(void)
+static struct bdescmap_desc *init_bdescmap_desc(void)
 {
-	struct bdesc_store_desc *bd_store_map;
+	struct bdescmap_desc *bdescmap;
 	struct bucket_desc *first;
 	int i;
 
-	bd_store_map = (struct bdesc_store_desc *)get_free_pages(1);
-	if (!bd_store_map)
+	bdescmap = (struct bdescmap_desc *)get_free_pages(1);
+	if (!bdescmap)
 		return NULL;
 
-	bd_store_map->ref_count = 0;
-	bd_store_map->bdesc_map = (void *)bd_store_map +
-					sizeof (struct bdesc_store_desc);
-	first = bd_store_map->bdesc_map;
-	
-	for (i = ((PAGE_SIZE - sizeof (struct bdesc_store_desc)) / sizeof (struct bucket_desc));
+	memset(bdescmap, 0, PAGE_SIZE);
+	bdescmap->ref_count = 0;
+	bdescmap->map = (void *)bdescmap +
+				sizeof (struct bdescmap_desc);
+	first = bdescmap->map;
+	bdescmap->freeptr = first;
+
+	for (i = ((PAGE_SIZE - sizeof (struct bdescmap_desc)) / sizeof (struct bucket_desc));
 			i > 1; i--) {
-		first->page = NULL;
 		first->next = first + 1;
 		first++;
 	}
-
-	first->page = NULL;
 	first->next = NULL;
-	list_add(&bd_store_map->list, &bdesc_store_list);
+	list_add(&bdescmap->list, &bdescmap_list);
 
-	return bd_store_map;
+	return bdescmap;
 }
 
-static struct bdesc_store_desc *bdesc_store_find_area(struct bucket_desc *bdesc)
+static struct bucket_desc *bdescmap_get_desc(void)
 {
-	struct bdesc_store_desc *bd_store_map = NULL;
+	struct bdescmap_desc *bdescmap;
+	struct bucket_desc *bdesc;
 
-	list_for_each_entry(bd_store_map, &bdesc_store_list, list) {
-		if (((unsigned long)bd_store_map < (unsigned long)bdesc) &&
-			((unsigned long)bd_store_map + PAGE_SIZE) > (unsigned long)bdesc)
-			return bd_store_map;
+	list_for_each_entry(bdescmap, &bdescmap_list, list) {
+		if (bdescmap->freeptr)
+			goto found;
 	}
 
-	return NULL;
+	bdescmap = init_bdescmap_desc();
+found:
+	bdescmap->ref_count++;
+	bdesc = bdescmap->freeptr;
+	bdescmap->freeptr = bdesc->next;
+	bdesc->next = NULL;
+
+	return bdesc;
 }
 
-static struct bdesc_store_desc *init_bucket_desc(void)
+static int bdescmap_put_bdesc(struct bucket_desc *bdesc)
 {
-	struct bdesc_store_desc *bd_store_map;
+	struct bdescmap_desc *bdescmap;
+	struct bucket_desc *freeptr;
 
-	bd_store_map = bdesc_store_find_area(free_bucket_desc);
-	if (!bd_store_map) {
-		bd_store_map = init_bdesc_store_map();
-		if (!bd_store_map)
-			return NULL;
-		free_bucket_desc = bd_store_map->bdesc_map;
+	list_for_each_entry(bdescmap, &bdescmap_list, list) {
+		if (((unsigned long)bdescmap < (unsigned long)bdesc) &&
+			((unsigned long)bdescmap + PAGE_SIZE) > (unsigned long)bdesc)
+			goto found;
 	}
 
-	return bd_store_map;
-}
+	return -EINVAL;
 
-struct bkmap_desc {
-	unsigned long start, end;
-	struct list_head list;
-	unsigned long ref_count;
-	int *map;
-};
-
-static LIST_HEAD(bkmap_list);
-
-static inline unsigned long calc_perpages_managed_bytes(void)
-{
-	return ((PAGE_SIZE - sizeof (struct bkmap_desc))/sizeof (int)) * PAGE_SIZE;
-}
-
-static struct bkmap_desc *init_bkmap_desc(unsigned long addr)
-{
-	int i;
-	struct bkmap_desc *bkmap;
-	unsigned long managed_bytes, size;
-	unsigned long start;
-
-	bkmap = (struct bkmap_desc *)get_free_pages(1);
-	if (!bkmap)
-		return NULL;
-
-	managed_bytes = calc_perpages_managed_bytes();
-	size = addr - start_base;
-	i = size / managed_bytes;
-	start = start_base + (i * managed_bytes);
-
-	bkmap->ref_count = 0;
-	bkmap->start = start;
-	bkmap->end = start + managed_bytes;
-	bkmap->map = (int *)bkmap + sizeof (struct bkmap_desc);
-	list_add(&bkmap->list, &bkmap_list);
-
-	return bkmap;
-}
-
-static struct bkmap_desc *bkmap_find_area(unsigned long addr)
-{
-	struct bkmap_desc *bkmap = NULL;
-
-	list_for_each_entry(bkmap, &bkmap_list, list) {
-		if ((bkmap->start <= addr) && (addr < bkmap->end))
-			return bkmap;
+found:
+	freeptr = bdescmap->freeptr;
+	bdesc->next = freeptr;
+	bdescmap->freeptr = bdesc;
+	bdescmap->ref_count--;
+	if (bdescmap->ref_count == 0) {
+		list_del(&bdescmap->list);
+		free_pages((unsigned long)bdescmap, 1);
 	}
-
-	return NULL;
+	return 0;
 }
 
 static inline int nr_pages_size(size_t size)
@@ -208,31 +277,23 @@ static inline int nr_pages_size(size_t size)
 
 void *malloc(size_t size)
 {
-	int nr_pages;
+	int nr_pages, ret;
+	unsigned long addr;
 	struct _bucket_dir *bdir;
 	struct bucket_desc *bdesc;
-	struct bkmap_desc *bkmap = NULL;
 	void *retval = NULL;
 
 	if (size > PAGE_SIZE / 2) {
-		unsigned long addr;
-
 		nr_pages = nr_pages_size(size);
 		addr = get_free_pages(nr_pages);
 		if (!addr)
 			return NULL;
 
-		bkmap = bkmap_find_area(addr);
-		if (!bkmap)
-			bkmap = init_bkmap_desc(addr);
-		if (!bkmap) {
+		ret = bkmap_set_page_size(addr, size);
+		if (ret) {
 			free_pages(addr, nr_pages);
 			return NULL;
 		}
-
-		bkmap->ref_count++;
-		bkmap->map[(addr - bkmap->start) >> PAGE_SHIFT] = nr_pages * PAGE_SIZE;
-
 		return (void *)addr;
 	}
 
@@ -241,7 +302,7 @@ void *malloc(size_t size)
 			break;
 
 	if (!bdir->size)
-		return retval;
+		return NULL;
 
 	for (bdesc = bdir->chain; bdesc; bdesc = bdesc->next)
 		if (bdesc->freeptr)
@@ -250,33 +311,29 @@ void *malloc(size_t size)
 	if (!bdesc) {
 		char *cp;
 		int i;
-		struct bdesc_store_desc *bd_store_map;
 
-		bd_store_map = bdesc_store_find_area(free_bucket_desc);
-		if (!bd_store_map) {
-			bd_store_map = init_bucket_desc();
-			if (!bd_store_map)
-				return NULL;
+		bdesc = bdescmap_get_desc();
+		if (!bdesc)
+			return NULL;
+
+		cp = (char *)get_free_pages(1);
+		if (!cp) {
+			i = bdescmap_put_bdesc(bdesc);
+			BUG_ON(i);
+
+			return NULL;
 		}
-		bdesc = free_bucket_desc;
-		free_bucket_desc = bdesc->next;
+		i = bkmap_set_page_size((unsigned long)cp, bdir->size);
+		if (i) {
+			i = bdescmap_put_bdesc(bdesc);
+			BUG_ON(i);
+
+			free_pages((unsigned long)cp, 1);
+
+			return NULL;
+		}
 		bdesc->refcnt = 0;
 		bdesc->bucket_size = bdir->size;
-		cp = (char *)get_free_pages(1);
-		if (!cp)
-			return NULL;
-
-		bkmap = bkmap_find_area((unsigned long)cp);
-		if (!bkmap)
-			bkmap = init_bkmap_desc((unsigned long)cp);
-		if (!bkmap) {
-			free_pages((unsigned long)cp, 1);
-			return NULL;
-		}
-
-		bkmap->ref_count++;
-		bkmap->map[((unsigned long)cp - bkmap->start) >> PAGE_SHIFT] = bdir->size;
-
 		bdesc->page = cp;
 		bdesc->freeptr = cp;
 		for (i = PAGE_SIZE / bdir->size; i > 1; i--) {
@@ -286,7 +343,6 @@ void *malloc(size_t size)
 		*((char **)cp) = 0;
 		bdesc->next = bdir->chain;
 		bdir->chain = bdesc;
-		bd_store_map->ref_count++;
 	}
 	retval = (void *)bdesc->freeptr;
 	bdesc->freeptr = *((void **)retval);
@@ -297,34 +353,26 @@ void *malloc(size_t size)
 
 void free(void *addr)
 {
+	int nr_pages, ret;
+	unsigned long size;
 	void *page, *freeptr;
-	size_t size;
-	int nr_pages;
 	struct _bucket_dir *bdir;
 	struct bucket_desc *bdesc, *prev;
-	struct bkmap_desc *bkmap = NULL;
 
 	page = (void *)((unsigned long)addr & PAGE_MASK);
-	bkmap = bkmap_find_area((unsigned long)page);
-	BUG_ON(!bkmap);
-
-	size = bkmap->map[((unsigned long)page - bkmap->start) >> PAGE_SHIFT];
+	size = bkmap_put_page_size((unsigned long)page);
+	BUG_ON(!size);
 
 	if (size > PAGE_SIZE / 2) {
 		BUG_ON(!ALIGN(size, PAGE_SIZE));
 		BUG_ON(!ALIGN((unsigned long)addr, PAGE_SIZE));
+
 		nr_pages = nr_pages_size(size);
-		free_pages((unsigned long)page, nr_pages);
-		bkmap->ref_count--;
-		if (bkmap->ref_count == 0) {
-			free_pages((unsigned long)bkmap, 1);
-			list_del(&bkmap->list);
-		}
+		free_pages((unsigned long)addr, nr_pages);
 		return ;
 	}
 
 	BUG_ON((unsigned long)addr & (size - 1));
-
 	for (bdir = bucket_dir; bdir->size; bdir++) {
 		prev = NULL;
 
@@ -353,36 +401,12 @@ found:
 	bdesc->freeptr = addr;
 	bdesc->refcnt--;
 	if (bdesc->refcnt == 0) {
-		struct bdesc_store_desc *bd_store_map;
-
-		if ((prev && (prev->next != bdesc)) ||
-			(!prev && (bdir->chain != bdesc)))
-			for (prev = bdir->chain; prev; prev = prev->next)
-				if (prev->next == bdesc)
-					break;
-
-		if (prev)
+		if (!prev)
+			bdir->chain = NULL;
+		else
 			prev->next = bdesc->next;
-		else {
-			if (bdir->chain != bdesc)
-				hang("Malloc bucket chains corrupted\n");
-			bdir->chain = bdesc->next;
-		}
+		ret = bdescmap_put_bdesc(bdesc);
+		BUG_ON(ret);
 		free_pages((unsigned long)bdesc->page, 1);
-		bdesc->page = NULL;
-		bdesc->next = free_bucket_desc;
-		free_bucket_desc = bdesc;
-		bd_store_map = bdesc_store_find_area(free_bucket_desc);
-		BUG_ON(!bd_store_map);
-		bd_store_map->ref_count--;
-		bkmap->ref_count--;
-		if (bd_store_map->ref_count == 0) {
-			list_del(&bd_store_map->list);
-			free_pages((unsigned long)bd_store_map, 1);
-		}
-		if (bkmap->ref_count == 0) {
-			list_del(&bkmap->list);
-			free_pages((unsigned long)bkmap, 1);	
-		}
 	}
 }

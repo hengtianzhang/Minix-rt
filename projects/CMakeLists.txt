@@ -248,19 +248,25 @@ endfunction()
 
 function(qemu_virt_setup)
 	if (CONFIG_QEMU_VIRT)
-	get_property(CORE_IMAGE_NAME_PROPERTY GLOBAL PROPERTY CORE_IMAGE_NAME)
-	get_property(CORE_IMAGE_TARGET_PROPERTY GLOBAL PROPERTY CORE_IMAGE_TARGET)
-	add_custom_command(
-		OUTPUT ${APPLICATION_BINARY_DIR}/simulate
-		COMMAND ${PYTHON_EXECUTABLE} ${MINIX_RT_BASE}/scripts/gen_simulate.py
-		-n ${CORE_IMAGE_NAME_PROPERTY}
-		-o ${APPLICATION_BINARY_DIR}/simulate
-		COMMAND chmod u+x "${APPLICATION_BINARY_DIR}/simulate"
-		DEPENDS
-		${CORE_IMAGE_TARGET_PROPERTY}
-		WORKING_DIRECTORY
-		${APPLICATION_BINARY_DIR}
-	)
-	add_custom_target(qemu_virt ALL DEPENDS ${APPLICATION_BINARY_DIR}/simulate)
+		if (NOT CONFIG_QEMU_INITRD)
+			set(qemu_initrd "none")
+		else()
+			set(qemu_initrd ${CONFIG_QEMU_INITRD})
+		endif()
+		get_property(CORE_IMAGE_NAME_PROPERTY GLOBAL PROPERTY CORE_IMAGE_NAME)
+		get_property(CORE_IMAGE_TARGET_PROPERTY GLOBAL PROPERTY CORE_IMAGE_TARGET)
+		add_custom_command(
+			OUTPUT ${APPLICATION_BINARY_DIR}/simulate
+			COMMAND ${PYTHON_EXECUTABLE} ${MINIX_RT_BASE}/scripts/gen_simulate.py
+			-n ${CORE_IMAGE_NAME_PROPERTY}
+			-o ${APPLICATION_BINARY_DIR}/simulate
+			-i ${qemu_initrd}
+			COMMAND chmod u+x "${APPLICATION_BINARY_DIR}/simulate"
+			DEPENDS
+			${CORE_IMAGE_TARGET_PROPERTY}
+			WORKING_DIRECTORY
+			${APPLICATION_BINARY_DIR}
+		)
+		add_custom_target(qemu_virt ALL DEPENDS ${APPLICATION_BINARY_DIR}/simulate)
 	endif()
 endfunction()

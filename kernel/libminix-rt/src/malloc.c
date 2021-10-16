@@ -47,6 +47,8 @@ retry:
 void free_pages(unsigned long addr, int nr_pages)
 {
 	int ret;
+	u64 i;
+	phys_addr_t start, end;
 	unsigned long size = PAGE_SIZE * nr_pages;
 
 	BUG_ON(!size);
@@ -56,10 +58,12 @@ void free_pages(unsigned long addr, int nr_pages)
 
 	memblock_free(&memblock, addr, size);
 	if (current_base == (addr + size)) {
-		ret = brk((void *)(current_base - size));
+		for_each_free_mem_range(&memblock, i, 0, &start, &end);
+
+		ret = brk((void *)start);
 		BUG_ON(ret);
-		memblock_remove(&memblock, addr, size);
-		current_base = addr;
+		memblock_remove(&memblock, start, end);
+		current_base = start;
 	}
 }
 
@@ -97,7 +101,7 @@ static struct bkmap_desc *init_bkmap_desc(unsigned long addr)
 	bkmap->ref_count = 0;
 	bkmap->start = start;
 	bkmap->end = start + managed_bytes;
-	bkmap->map = (int *)bkmap + sizeof (struct bkmap_desc);
+	bkmap->map = (void *)bkmap + sizeof (struct bkmap_desc);
 	list_add(&bkmap->list, &bkmap_list);
 
 	return bkmap;
@@ -137,6 +141,22 @@ static int bkmap_set_page_size(unsigned long addr, unsigned long size)
 	bkmap->ref_count++;
 
 	return 0;
+}
+
+static unsigned long bkmap_get_page_size(unsigned long addr)
+{
+	struct bkmap_desc *bkmap;
+	int index;
+
+	bkmap = bkmap_find_area(addr);
+	if (!bkmap)
+		return 0;
+
+	index = (addr - bkmap->start) >> PAGE_SHIFT;
+	if (index < 0)
+		return 0;
+
+	return bkmap->map[index];
 }
 
 static unsigned long bkmap_put_page_size(unsigned long addr)
@@ -360,13 +380,15 @@ void free(void *addr)
 	struct bucket_desc *bdesc, *prev;
 
 	page = (void *)((unsigned long)addr & PAGE_MASK);
-	size = bkmap_put_page_size((unsigned long)page);
+	size = bkmap_get_page_size((unsigned long)page);
 	BUG_ON(!size);
 
 	if (size > PAGE_SIZE / 2) {
 		BUG_ON(!ALIGN(size, PAGE_SIZE));
 		BUG_ON(!ALIGN((unsigned long)addr, PAGE_SIZE));
 
+		size = bkmap_put_page_size((unsigned long)addr);
+		BUG_ON(!size);
 		nr_pages = nr_pages_size(size);
 		free_pages((unsigned long)addr, nr_pages);
 		return ;
@@ -407,6 +429,8 @@ found:
 			prev->next = bdesc->next;
 		ret = bdescmap_put_bdesc(bdesc);
 		BUG_ON(ret);
+		size = bkmap_put_page_size((unsigned long)page);
+		BUG_ON(!size);
 		free_pages((unsigned long)bdesc->page, 1);
 	}
 }

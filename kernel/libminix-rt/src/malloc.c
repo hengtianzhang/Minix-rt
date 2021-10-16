@@ -424,7 +424,7 @@ found:
 	bdesc->refcnt--;
 	if (bdesc->refcnt == 0) {
 		if (!prev)
-			bdir->chain = NULL;
+			bdir->chain = bdesc->next;
 		else
 			prev->next = bdesc->next;
 		ret = bdescmap_put_bdesc(bdesc);

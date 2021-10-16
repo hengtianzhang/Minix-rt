@@ -705,7 +705,7 @@ static struct vm_area_struct *__find_vma_area(unsigned long addr,
 
 struct vm_area_struct *mmap_get_vmap_area(unsigned long vstart,
 				unsigned long size, unsigned long flags,
-				struct mm_struct *mm, phys_addr_t io_space)
+				struct mm_struct *mm, phys_addr_t phys_addr)
 {
 	struct vm_area_struct *vma;
 	unsigned long array_size, i;

@@ -68,7 +68,7 @@ struct vm_area_struct {
 	struct page		**pages;
 	unsigned int	nr_pages;
 
-	phys_addr_t		io_space;
+	phys_addr_t		phys_addr;
 
 	struct rb_root	pud_root;
 	struct rb_root	pmd_root;

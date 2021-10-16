@@ -15,7 +15,7 @@ extern pgprot_t vm_get_page_prot(unsigned long vm_flags);
 struct mm_struct;
 extern struct vm_area_struct *mmap_get_vmap_area(unsigned long vstart,
 				unsigned long size, unsigned long flags,
-				struct mm_struct *mm, phys_addr_t io_space);
+				struct mm_struct *mm, phys_addr_t phys_addr);
 extern void mmap_free_vmap_area(unsigned long addr, struct mm_struct *mm);
 
 extern struct vm_area_struct *

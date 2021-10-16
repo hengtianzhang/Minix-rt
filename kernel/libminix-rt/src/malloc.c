@@ -414,7 +414,7 @@ found:
 	freeptr = (void *)bdesc->freeptr;
 	if (freeptr != NULL)
 		while (*(void **)freeptr) {
-			if (*(void **)freeptr == *(void **)addr)
+			if (*(void **)freeptr == addr)
 				BUG();
 			freeptr = *(void **)freeptr;
 		}

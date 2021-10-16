@@ -649,6 +649,7 @@ int vmap_page_range(struct vm_area_struct *vma)
 	if (nr != vma->nr_pages)
 		goto err;
 
+	flush_tlb_range(vma->vm_mm, vma->vm_start, vma->vm_end);
 	return nr;
 err:
 	vmap_free_bad_area(vma);
@@ -857,9 +858,13 @@ struct vm_area_struct *mmap_first_vma(struct mm_struct *mm)
 	struct rb_node *node;
 	struct vm_area_struct *vma;
 
+	spin_lock(&mm->vma_lock);
 	node = rb_first(&mm->vma_rb_root);
-	if (!node)
+	if (!node) {
+		spin_unlock(&mm->vma_lock);
 		return NULL;
+	}
+	spin_unlock(&mm->vma_lock);
 
 	vma = rb_entry(node, struct vm_area_struct, vm_rb_node);
 
@@ -874,9 +879,13 @@ struct vm_area_struct *mmap_next_vma(struct vm_area_struct *vma)
 	if (!vma)
 		return NULL;
 
+	spin_lock(&vma->vm_mm->vma_lock);
 	node = rb_next(&vma->vm_rb_node);
-	if (!node)
+	if (!node) {
+		spin_unlock(&vma->vm_mm->vma_lock);
 		return NULL;
+	}
+	spin_unlock(&vma->vm_mm->vma_lock);
 
 	next = rb_entry(node, struct vm_area_struct, vm_rb_node);
 

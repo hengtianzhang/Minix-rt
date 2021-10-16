@@ -47,29 +47,24 @@ void system_brk(endpoint_t ep, message_t *m)
 			increment = m->m_sys_brk.brk;
 			if (increment < 0)
 				brk_populate_mess(m, -1, 0);
-			else {
+			else if (increment == 0) {
+				brk_populate_mess(m, 0, tsk->mm->brk);
+			} else {
 				if (tsk->mm->brk + increment >= tsk->mm->mmap_base) {
 					brk_populate_mess(m, -1, 0);
 
 					return ;
 				}
 
-				vma = mmap_find_vma_area(tsk->mm->brk + increment, tsk->mm);
+				vma = mmap_find_vma_area(tsk->mm->brk + increment - 1, tsk->mm);
 				if (vma) {
 					tsk->mm->brk += increment;
 					brk_populate_mess(m, 0, tsk->mm->brk);
 				} else {
 					int ret;
 
-					this_start = tsk->mm->brk;
-					if (increment == 0) {
-						brk_populate_mess(m, 0, tsk->mm->brk);
-						return ;
-					}
+					this_start = tsk->mm->brk - 1;
 
-					if (this_start == tsk->mm->start_brk || this_start == tsk->mm->brk)
-						this_start -= 1;
-	
 					vma =  mmap_find_vma_area(this_start, tsk->mm);
 					BUG_ON(!vma);
 
@@ -97,20 +92,17 @@ void system_brk(endpoint_t ep, message_t *m)
 				return ;
 			}
 
-			vma = mmap_find_vma_area(mess_brk, tsk->mm);
 			if (mess_brk == curr_brk) {
 				brk_populate_mess(m, 0, 0);
 			} else if (mess_brk > curr_brk) {
+				vma = mmap_find_vma_area(mess_brk - 1, tsk->mm);
 				if (vma) {
 					tsk->mm->brk = mess_brk;
 					brk_populate_mess(m, 0, 0);
 				} else {
 					int ret;
 
-					this_start = curr_brk;
-					if (this_start == tsk->mm->start_brk)
-						this_start -= 1;
-
+					this_start = curr_brk - 1;
 					vma =  mmap_find_vma_area(this_start, tsk->mm);
 					BUG_ON(!vma);
 
@@ -118,11 +110,7 @@ void system_brk(endpoint_t ep, message_t *m)
 					BUG_ON(!PAGE_ALIGNED(start));
 
 					size = PAGE_ALIGN(mess_brk - start);
-					if (!size) {
-						brk_populate_mess(m, 0, 0);
-
-						return ;
-					}
+					BUG_ON(!size);
 					ret = brk_mmap_heap(start, size, VM_READ | VM_WRITE, tsk);
 					if (ret) {
 						brk_populate_mess(m, ret, 0);
@@ -133,6 +121,8 @@ void system_brk(endpoint_t ep, message_t *m)
 				}
 			} else {
 				struct vm_area_struct *next_vma, *tmp_vma;
+
+				vma = mmap_find_vma_area(mess_brk - 1, tsk->mm);
 				BUG_ON(!vma);
 
 				for_each_next_vm_area_safe(next_vma, tmp_vma, vma) {
@@ -140,11 +130,6 @@ void system_brk(endpoint_t ep, message_t *m)
 						break;
 					vumap_page_range(next_vma);
 					mmap_free_vmap_area(next_vma->vm_start, tsk->mm);
-				}
-
-				if (vma->vm_start == mess_brk) {
-					vumap_page_range(vma);
-					mmap_free_vmap_area(vma->vm_start, tsk->mm);
 				}
 
 				tsk->mm->brk = mess_brk;

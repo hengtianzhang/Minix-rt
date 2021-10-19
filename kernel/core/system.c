@@ -25,6 +25,9 @@ static void system_handle_ipc_message(endpoint_t ep, message_t *m)
 		case IPC_M_TYPE_SYSTEM_SBRK:
 			system_brk(ep, m);
 			break;
+		case IPC_M_TYPE_SYSTEM_STRING:
+			system_string(ep, m);
+			break;
 		default:
 			break;
 	}

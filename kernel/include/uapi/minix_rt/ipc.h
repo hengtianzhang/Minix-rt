@@ -28,18 +28,46 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_u64);
 
 typedef struct {
-	int state;
 	u64 brk;
-	u8 payload[34];
+	int retval;
+	u8 padding[44];
 } mess_system_brk;
 IPC_ASSERT_MSG_SIZE(mess_system_brk);
+
+typedef struct {
+#define DIRECT_CPY_FROM		0x1
+#define DIRECT_CPY_TO		0x2
+	int direct;
+	pid_t pid;
+	const void *dest;
+	const void *src;
+	int size;
+	int retval;
+#if BITS_PER_LONG == 64
+	u8 padding[24];
+#elif BITS_PER_LONG == 32
+	u8 padding[32];
+#else
+#error "Not availd sys string size btypes"
+#endif
+} mess_system_string;
+IPC_ASSERT_MSG_SIZE(mess_system_string);
 
 typedef struct {
 	const char *filename;
 	const char *const *argv;
 	const char *const *envp;
+	int filename_len;
+	int envp_len;
+	int argv_len;
 	int retval;
-	u8 payload[28];
+#if BITS_PER_LONG == 64
+	u8 padding[16];
+#elif BITS_PER_LONG == 32
+	u8 padding[28];
+#else
+#error "Not availd vfs exec size btypes"
+#endif
 } mess_vfs_exec;
 IPC_ASSERT_MSG_SIZE(mess_vfs_exec);
 
@@ -53,6 +81,7 @@ typedef struct {
 		mess_u64	m_u64;
 
 		mess_system_brk		m_sys_brk;
+		mess_system_string	m_sys_string;
 
 		mess_vfs_exec		m_vfs_exec;
 
@@ -68,8 +97,9 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 
 #define IPC_M_TYPE_SYSTEM_SBRK			0x1
 #define IPC_M_TYPE_SYSTEM_BRK			0x2
+#define IPC_M_TYPE_SYSTEM_STRING		0x3
 
-#define IPC_M_TYPE_VFS_EXEC				0x3
+#define IPC_M_TYPE_VFS_EXEC				0x4
 
 enum {
 	ENDPOINT_SYSTEM,

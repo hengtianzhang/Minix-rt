@@ -5,7 +5,7 @@
 
 static inline void brk_populate_mess(message_t *m, int state, u64 brk)
 {
-	m->m_sys_brk.state = state;
+	m->m_sys_brk.retval = state;
 	m->m_sys_brk.brk = brk;
 }
 

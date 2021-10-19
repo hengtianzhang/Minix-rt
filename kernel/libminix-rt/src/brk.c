@@ -25,7 +25,7 @@ void *sbrk(long increment)
 	if (ret)
 		return NULL;
 
-	if (m.m_sys_brk.state == 0)
+	if (m.m_sys_brk.retval == 0)
 		return (void *)m.m_sys_brk.brk;
 	else
 		return NULL;
@@ -44,5 +44,5 @@ int brk(void *addr)
 	if (ret)
 		return -1;
 
-	return m.m_sys_brk.state == 0 ? 0 : -1;
+	return m.m_sys_brk.retval == 0 ? 0 : -1;
 }

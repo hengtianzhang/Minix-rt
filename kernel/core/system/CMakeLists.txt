@@ -1,4 +1,4 @@
 
 kernel_sources(
-	brk.c
+	brk.c string.c
 )

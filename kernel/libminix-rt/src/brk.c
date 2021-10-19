@@ -18,7 +18,7 @@ void *sbrk(long increment)
 
 	memset(&m, 0, sizeof (message_t));
 
-	m.m_type = IPC_M_TYPE_SBRK;
+	m.m_type = IPC_M_TYPE_SYSTEM_SBRK;
 	m.m_sys_brk.brk = increment;
 
 	ret = ipc_send(ENDPOINT_SYSTEM, &m);
@@ -38,7 +38,7 @@ int brk(void *addr)
 
 	memset(&m, 0, sizeof (message_t));
 
-	m.m_type = IPC_M_TYPE_BRK;
+	m.m_type = IPC_M_TYPE_SYSTEM_BRK;
 	m.m_sys_brk.brk = (unsigned long)addr;
 	ret = ipc_send(ENDPOINT_SYSTEM, &m);
 	if (ret)

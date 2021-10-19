@@ -43,7 +43,7 @@ void system_brk(endpoint_t ep, message_t *m)
 	BUG_ON(!tsk);
 
 	switch (m_type) {
-		case IPC_M_TYPE_SBRK:
+		case IPC_M_TYPE_SYSTEM_SBRK:
 			increment = m->m_sys_brk.brk;
 			if (increment < 0)
 				brk_populate_mess(m, -1, 0);
@@ -82,7 +82,7 @@ void system_brk(endpoint_t ep, message_t *m)
 				}
 			}
 			break;
-		case IPC_M_TYPE_BRK:
+		case IPC_M_TYPE_SYSTEM_BRK:
 			curr_brk = tsk->mm->brk;
 			mess_brk = m->m_sys_brk.brk;
 			if (mess_brk < tsk->mm->start_brk ||

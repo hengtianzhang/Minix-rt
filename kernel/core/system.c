@@ -21,8 +21,8 @@
 static void system_handle_ipc_message(endpoint_t ep, message_t *m)
 {
 	switch (m->m_type & IPC_M_TYPE_MASK) {
-		case IPC_M_TYPE_BRK:
-		case IPC_M_TYPE_SBRK:
+		case IPC_M_TYPE_SYSTEM_BRK:
+		case IPC_M_TYPE_SYSTEM_SBRK:
 			system_brk(ep, m);
 			break;
 		default:

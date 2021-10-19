@@ -983,7 +983,7 @@ done:
  *	      allocate only from memory limited by memblock.current_limit value
  *
  * Public function, provides additional debug information (including caller
- * info), if enabled. Does not zero allocated memory, does not hang if request
+ * info), if enabled. Does not zero allocated memory, does not panic if request
  * cannot be satisfied.
  *
  * Return:

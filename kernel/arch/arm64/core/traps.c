@@ -221,7 +221,7 @@ void die(const char *str, struct pt_regs *regs, int err)
 	ret = __die(str, err, regs);
 
 	if (in_interrupt())
-		hang("Fatal exception in interrupt");
+		panic("Fatal exception in interrupt");
 
 	raw_spin_unlock_irqrestore(&die_lock, flags);
 
@@ -519,7 +519,7 @@ asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr)
 		esr_get_class_string(esr));
 
 	local_daif_mask();
-	hang("bad mode");
+	panic("bad mode");
 }
 
 /*

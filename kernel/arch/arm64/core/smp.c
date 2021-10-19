@@ -131,7 +131,7 @@ int __init __cpu_up(unsigned int cpu, struct task_struct *idle)
 				printf("CPU%u: does not support %luK granule \n", cpu, PAGE_SIZE / SZ_1K);
 			break;
 		case CPU_PANIC_KERNEL:
-			hang("CPU%u detected unsupported configuration\n", cpu);
+			panic("CPU%u detected unsupported configuration\n", cpu);
 		}
 	}
 

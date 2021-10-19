@@ -16,7 +16,7 @@
  */
 __visible void __stack_chk_fail(void)
 {
-	hang("stack-protector: Kernel stack is corrupted in: %pB",
+	panic("stack-protector: Kernel stack is corrupted in: %pB",
 		__builtin_return_address(0));
 }
 #endif
@@ -43,7 +43,7 @@ void __init dump_stack_set_arch_desc(const char *fmt, ...)
 	va_end(args);
 }
 
-void hang(const char *fmt, ...)
+void panic(const char *fmt, ...)
 {
 	int this_cpu = smp_processor_id();
 	static char buf[1024];

@@ -279,8 +279,8 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
 	 * If hres is not active, hardware does not have to be
 	 * reprogrammed yet.
 	 *
-	 * If a hang was detected in the last timer interrupt then we
-	 * leave the hang delay active in the hardware. We want the
+	 * If a panic was detected in the last timer interrupt then we
+	 * leave the panic delay active in the hardware. We want the
 	 * system to make progress. That also prevents the following
 	 * scenario:
 	 * T1 expires 50ms from now
@@ -365,9 +365,9 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
 	 * If hres is not active, hardware does not have to be
 	 * programmed yet.
 	 *
-	 * If a hang was detected in the last timer interrupt then we
+	 * If a panic was detected in the last timer interrupt then we
 	 * do not schedule a timer which is earlier than the expiry
-	 * which we enforced in the hang detection. We want the system
+	 * which we enforced in the panic detection. We want the system
 	 * to make progress.
 	 */
 	if (cpu_base->hang_detected)

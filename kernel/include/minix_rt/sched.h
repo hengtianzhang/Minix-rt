@@ -176,8 +176,9 @@ struct task_struct {
 #define PF_EXITING			0x00000008
 #define PF_KTHREAD			0x00000010
 
-#define TYPE_DRIVERS 0x1
-#define TYPE_SERVERS 0x2
+#define TYPE_DRIVERS	0x1
+#define TYPE_SERVERS	0x2
+#define TYPE_INIT		0x3
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {

@@ -301,7 +301,7 @@ static void __arch_timer_setup(unsigned type,
 		clk->name = "arch_mem_timer";
 		clk->rating = 400;
 		clk->cpumask = cpu_possible_mask;
-		hang("Current not support mem arch timer!\n");
+		panic("Current not support mem arch timer!\n");
 	}
 
 	clk->set_state_shutdown(clk);
@@ -401,7 +401,7 @@ static int __init arch_timer_register(void)
 			err = request_percpu_irq(ppi, arch_timer_handler_phys,
 						 "arch_timer", &arch_timer_evt, sizeof(arch_timer_evt[0]));
 			if (err)
-				hang("Current not support free_percpu!\n");
+				panic("Current not support free_percpu!\n");
 		}
 		break;
 	case ARCH_TIMER_HYP_PPI:
@@ -431,7 +431,7 @@ static int __init arch_timer_register(void)
 	return 0;
 
 out_free:
-	hang("Current not support free_percpu!\n");
+	panic("Current not support free_percpu!\n");
 
 	return err;
 }

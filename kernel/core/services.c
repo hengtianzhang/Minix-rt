@@ -174,7 +174,10 @@ __init struct task_struct *service_core_init(int type,
 	start_data = 0;
 	end_data = 0;
 
-	tsk = task_create_tsk(PF_SYSTEMSERVICE);
+	if (type != TYPE_INIT)
+		tsk = task_create_tsk(PF_SYSTEMSERVICE);
+	else
+		tsk = task_create_tsk(0);
 	if (!tsk)
 		goto out;
 
@@ -287,21 +290,27 @@ __init struct task_struct *service_core_init(int type,
 
 	tsk->services_type = type;
 
-	BUG_ON(ipc_register_endpoint_by_tsk(tsk));
+	if (type != TYPE_INIT)
+		BUG_ON(ipc_register_endpoint_by_tsk(tsk));
 
 	tsk->policy = SCHED_FIFO;
+	tsk->sched_class = &rt_sched_class;
+	tsk->time_slice = RR_TIMESLICE;
 	if (type == TYPE_DRIVERS) {
 		tsk->prio = 1;
 		tsk->static_prio = 1;
 		tsk->normal_prio = 1;
-	} else {
+	} else if (type == TYPE_SERVERS) {
 		tsk->prio = 2;
 		tsk->static_prio = 2;
 		tsk->normal_prio = 2;
+	} else {
+		tsk->prio = MAX_PRIO - 20;
+		tsk->static_prio = MAX_PRIO - 20;
+		tsk->normal_prio = MAX_PRIO - 20;
+		tsk->policy = SCHED_NORMAL;
+		tsk->sched_class = &fair_sched_class;
 	}
-
-	tsk->sched_class = &rt_sched_class;
-	tsk->time_slice = RR_TIMESLICE;
 
 	mask = CPU_MASK_ALL;
 	set_cpus_allowed(tsk, mask);
@@ -324,7 +333,7 @@ fail_service_stack:
 fail_stack:
 	task_destroy_tsk(tsk);
 out:
-	hang("The core service cannot be initialized!\n");
+	panic("The core service cannot be initialized!\n");
 
 	return NULL;
 }
@@ -359,7 +368,10 @@ void __init services_task_init(void)
 
 	for (i = 0; i < info.file_count; i++) {
 		elf_start = cpio_get_entry((const void *)start_archive, len, i, &name, &size);
-		tsk = service_core_init(TYPE_SERVERS, (unsigned long)elf_start, name);
+		if (strncmp(name, "init", 5) != 0)
+			tsk = service_core_init(TYPE_SERVERS, (unsigned long)elf_start, name);
+		else
+			tsk = service_core_init(TYPE_INIT, (unsigned long)elf_start, name);
 		BUG_ON(!tsk);
 		wake_up_new_task(tsk, 0);
 	}

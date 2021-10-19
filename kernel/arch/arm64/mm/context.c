@@ -267,7 +267,7 @@ int asids_init(void)
 
 	phys_addr = memblock_alloc(&memblock_kernel, bytes, sizeof(*asid_map));
 	if (!phys_addr)
-		hang("Failed to allocate bitmap for %lu ASIDs\n",
+		panic("Failed to allocate bitmap for %lu ASIDs\n",
 		      NUM_USER_ASIDS);
 	
 	asid_map = phys_to_virt(phys_addr);

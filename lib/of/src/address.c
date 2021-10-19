@@ -316,7 +316,7 @@ static u64 __of_translate_address(struct device_node *dev,
 			result = of_read_number(addr, na);
 			break;
 		}
-		hang("Current not support parent scan!\n");
+		panic("Current not support parent scan!\n");
 
 		/* Apply bus translation */
 		if (of_translate_one(dev, bus, pbus, addr, na, ns, pna, rprop))

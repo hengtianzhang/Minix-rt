@@ -388,7 +388,7 @@ extern __scanf(2, 0)
 int vsscanf(const char *, const char *, va_list);
 
 extern __printf(1, 2)
-void hang(const char *fmt, ...) __noreturn __cold;
+void panic(const char *fmt, ...) __noreturn __cold;
 
 extern asmlinkage __printf(1, 2) __cold
 int printf(const char *fmt, ...);

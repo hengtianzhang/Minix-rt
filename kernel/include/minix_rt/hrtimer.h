@@ -153,7 +153,7 @@ enum  hrtimer_base_type {
  * @clock_was_set_seq:	Sequence counter of clock was set events
  * @hres_active:	State of high resolution mode
  * @in_hrtirq:		hrtimer_interrupt() is currently executing
- * @hang_detected:	The last hrtimer interrupt detected a hang
+ * @hang_detected:	The last hrtimer interrupt detected a panic
  * @softirq_activated:	displays, if the softirq is raised - update of softirq
  *			related settings is not required then.
  * @nr_events:		Total number of hrtimer interrupt events

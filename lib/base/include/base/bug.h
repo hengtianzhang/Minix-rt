@@ -70,7 +70,7 @@
 #define BUG() do { \
 	printf("BUG: failure at %s:%d/%s()!\n", __FILE__, __LINE__, __func__); \
 	barrier_before_unreachable();	\
-	hang("BUG!"); \
+	panic("BUG!"); \
 } while (0)
 
 #define BUG_ON(condition) do { if (unlikely(condition)) BUG(); } while (0)

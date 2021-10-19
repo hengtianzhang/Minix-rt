@@ -82,7 +82,7 @@ void __init smp_setup_processor_id(void)
 	cpu_logical_map(0) = mpidr;
 
 	/*
-	 * clear __my_cpu_offset on boot CPU to avoid hang caused by
+	 * clear __my_cpu_offset on boot CPU to avoid panic caused by
 	 * using percpu variable early, for example, lockdep will
 	 * access percpu variable inside lock_release
 	 */

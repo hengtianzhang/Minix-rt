@@ -440,7 +440,7 @@ static void gic_init_chip(struct gic_chip_data *gic,
 	gic->chip.name = name;
 
 	if (use_eoimode1)
-		hang("Current not support eoimode1!\n");
+		panic("Current not support eoimode1!\n");
 
 	if (gic == &gic_data[0])
 		gic->chip.irq_set_affinity = gic_set_affinity;

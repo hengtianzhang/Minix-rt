@@ -996,7 +996,7 @@ static int kmem_cache_open(struct kmem_cache *s, gfp_t gfpflags,
 
 error:
 	if (flags & SLAB_PANIC)
-		hang("Cannot create slab %s size=%lu realsize=%u "
+		panic("Cannot create slab %s size=%lu realsize=%u "
 			"order=%u offset=%u flags=%lx\n",
 			s->name, (unsigned long)size, s->size, s->order,
 			s->offset, flags);
@@ -1125,7 +1125,7 @@ static struct kmem_cache *create_kmalloc_cache(struct kmem_cache *s,
 	return s;
 
 panic:
-	hang("Creation of kmalloc slab %s size=%d failed.\n", name, size);
+	panic("Creation of kmalloc slab %s size=%d failed.\n", name, size);
 }
 
 /*
@@ -1416,7 +1416,7 @@ struct kmem_cache *kmem_cache_create(const char *name, size_t size,
 	mutex_unlock(&slub_lock);
 
 	if (flags & SLAB_PANIC)
-		hang("Cannot create slabcache %s\n", name);
+		panic("Cannot create slabcache %s\n", name);
 	else
 		s = NULL;
 	return s;

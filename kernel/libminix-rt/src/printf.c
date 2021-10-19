@@ -22,7 +22,7 @@ asmlinkage __visible __weak int printf(const char *fmt, ...)
     return r;
 }
 
-__weak void hang(const char *fmt, ...)
+__weak void panic(const char *fmt, ...)
 {
 	static char buf[1024];
 	s64 len;
@@ -35,7 +35,7 @@ __weak void hang(const char *fmt, ...)
 	if (len && buf[len - 1] == '\n')
 		buf[len - 1] = '\0';
 
-   printf("task hang %s\n", buf);
+   printf("task panic %s\n", buf);
    notifier_send_child_exit(-1);
    for (;;);
 }

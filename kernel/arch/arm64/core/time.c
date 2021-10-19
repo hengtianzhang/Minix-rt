@@ -35,5 +35,5 @@ void __init time_init(void)
 
 	arch_timer_rate = arch_timer_get_rate();
 	if (!arch_timer_rate)
-		hang("Unable to initialise architected timer.\n");
+		panic("Unable to initialise architected timer.\n");
 }

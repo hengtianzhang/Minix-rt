@@ -7,7 +7,7 @@
 /*
  *  'fork.c' contains the help-routines for the 'fork' system call
  * (see also entry.S and others).
- * Fork is rather simple, once you get the hang of it, but the memory
+ * Fork is rather simple, once you get the panic of it, but the memory
  * management can be a bitch. See 'mm/memory.c': 'copy_page_range()'
  */
 #include <minix_rt/sched.h>

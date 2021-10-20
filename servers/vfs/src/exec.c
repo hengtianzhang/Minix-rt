@@ -34,8 +34,10 @@ static int count(struct user_arg_ptr argv, int max, pid_t pid)
 		return -ENOMEM;
 
 	ret = message_memcpy(native, argv.ptr.native, argv.len, pid);
-	if (ret != argv.len)
-		return -EINVAL;
+	if (ret != argv.len) {
+		ret = -EINVAL;
+		goto free;
+	}
 
 	i = 0;
 	for (;;) {
@@ -44,12 +46,17 @@ static int count(struct user_arg_ptr argv, int max, pid_t pid)
 		if (!p)
 			break;
 
-		if (i >= max)
-			return -E2BIG;
+		if (i >= max) {
+			ret = -E2BIG;
+			goto free;
+		}
 		++i;
 	}
 
-	return i;
+	ret = i;
+free:
+	free(native);
+	return ret;
 }
 
 static int prepare_arg_pages(struct minix_rt_binprm *bprm, message_t *m)

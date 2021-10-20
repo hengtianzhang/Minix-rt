@@ -23,14 +23,6 @@ static int message_memcpy(const void *dst, const void *src,
 		goto out;
 	}
 
-	/*
-	 * The dest task may be in the Running state
-	 */
-	if (!src_tsk->state) {
-		ret = -EBUSY;
-		goto out;
-	}
-
 	if (!size) {
 		ret = -EINVAL;
 		goto out;

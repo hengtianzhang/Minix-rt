@@ -1,5 +1,5 @@
 
 add_executable(vfs)
-target_sources(vfs PRIVATE src/main.c)
+add_subdirectory(src)
 
 DeclareServicesApp(vfs)

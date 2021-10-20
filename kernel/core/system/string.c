@@ -10,7 +10,6 @@ static int message_memcpy(const void *dst, const void *src,
 	int ret = 0;
 	struct task_struct *dst_tsk, *src_tsk;
 	void *tmp_buf;
-	struct vm_area_struct *vma;
 
 	dst_tsk = pid_find_process_by_pid(dst_pid);
 	if (!dst_tsk) {
@@ -43,9 +42,15 @@ static int message_memcpy(const void *dst, const void *src,
 		goto out;
 	}
 
-	vma = mmap_find_vma_area((unsigned long)src, src_tsk->mm);
-	if (!vma) {
-		ret = -EPERM;
+	ret = mmap_memcpy_from_vma(tmp_buf, (unsigned long)src, size, src_tsk);
+	if (ret != size) {
+		ret = -EINVAL;
+		goto free_out;
+	}
+
+	ret = mmap_memcpy_to_vma((unsigned long)dst, size, tmp_buf, dst_tsk);
+	if (ret != size) {
+		ret = -EINVAL;
 		goto free_out;
 	}
 

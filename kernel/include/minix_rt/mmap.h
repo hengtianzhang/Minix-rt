@@ -46,11 +46,23 @@ struct mmap_ref_pte_talbe {
 extern struct vm_area_struct *mmap_first_vma(struct mm_struct *mm);
 extern struct vm_area_struct *mmap_next_vma(struct vm_area_struct *vma);
 
+extern int mmap_memcpy_from_vma(void *dest, unsigned long addr, unsigned long size,
+			struct task_struct *tsk);
+extern int mmap_memcpy_to_vma(unsigned long addr, unsigned long size, void *src, 
+			struct task_struct *tsk);
+
 #define for_each_vm_area(vma, mm)	\
 	for (vma = mmap_first_vma(mm); vma != NULL; vma = mmap_next_vma(vma))
 
 #define for_each_vm_area_safe(vma, n, mm)	\
 	for (vma = mmap_first_vma(mm), n = mmap_next_vma(vma); vma != NULL;	\
+		vma = n, n = mmap_next_vma(vma))
+
+#define for_each_curr_vm_area(vma, curr_vma)	\
+	for (vma = curr_vma; vma != NULL; vma = mmap_next_vma(vma))
+
+#define for_each_curr_vm_area_safe(vma, n, curr_vma)	\
+	for (vma = curr_vma, n = mmap_next_vma(vma); vma != NULL; \
 		vma = n, n = mmap_next_vma(vma))
 
 #define for_each_next_vm_area(vma, curr_vma)	\

@@ -909,6 +909,78 @@ void mmap_free_mm_struct(struct mm_struct *mm)
 	kfree(mm);
 }
 
+static int __mmap_memcpy_vma(void *buffer, unsigned long addr, unsigned long size,
+			struct task_struct *tsk, bool is_from_vma)
+{
+	int ret, start_offset, curr_size;
+	unsigned long start, end, cp_size;
+	struct vm_area_struct *vma, *curr_vma;
+	struct page *page;
+	void *virt;
+
+	if (unlikely(tsk->mm == &init_mm))
+		return -EPERM;
+
+	if (!buffer || !size)
+		return -EINVAL;
+
+	ret = -EINVAL;
+	curr_vma = mmap_find_vma_area(addr, tsk->mm);
+	start = addr;
+	end = addr + size;
+	cp_size = size;
+	start_offset = 0;
+	for_each_curr_vm_area(vma, curr_vma) {
+		int i, start_index, end_index;
+
+		if (vma != curr_vma && start != vma->vm_start)
+			break;
+
+		start_index = (start - vma->vm_start) >> PAGE_SHIFT;
+		if (end > vma->vm_end)
+			end = vma->vm_end;
+		end_index = (end - 1 - vma->vm_start) >> PAGE_SHIFT;
+
+		for (i = start_index; i < end_index + 1; i++) {
+			page = vma->pages[i];
+			virt = page_to_virt(page);
+			if (i == start_index) {
+				start_offset = (start - vma->vm_start) % PAGE_SIZE;
+				virt += start_offset;
+			}
+
+			curr_size = PAGE_SIZE;
+			if (i == start_index)
+				curr_size = PAGE_SIZE - start_offset;
+			if (i == end_index)
+				curr_size = end - PAGE_ALIGN_DOWN(end - 1) - start_offset;
+			if (is_from_vma)
+				memcpy(buffer, virt, curr_size);
+			else
+				memcpy(virt, buffer, curr_size);
+			buffer += curr_size;
+			cp_size -= curr_size;
+		}
+
+		start = end;
+		end = start + cp_size;
+	}
+
+	return size - cp_size;
+}
+
+int mmap_memcpy_from_vma(void *dest, unsigned long addr, unsigned long size,
+			struct task_struct *tsk)
+{
+	return __mmap_memcpy_vma(dest, addr, size, tsk, true);
+}
+
+int mmap_memcpy_to_vma(unsigned long addr, unsigned long size, void *src, 
+			struct task_struct *tsk)
+{
+	return __mmap_memcpy_vma(src, addr, size, tsk, false);
+}
+
 int mmap_copy_mm(struct task_struct *tsk, struct task_struct *orgi_tsk,
 			unsigned long *stack_top)
 {

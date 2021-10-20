@@ -371,6 +371,17 @@ void *malloc(size_t size)
 	return retval;
 }
 
+void *zalloc(size_t size)
+{
+	void *addr;
+
+	addr = malloc(size);
+	if (addr) {
+		memset(addr, 0, size);
+	}
+	return addr;
+}
+
 void free(void *addr)
 {
 	int nr_pages, ret;

@@ -69,8 +69,8 @@ typedef struct {
 	const char *const *argv;
 	const char *const *envp;
 	int filename_len;
-	int envp_len;
 	int argv_len;
+	int envp_len;
 	int retval;
 #if BITS_PER_LONG == 64
 	u8 padding[16];

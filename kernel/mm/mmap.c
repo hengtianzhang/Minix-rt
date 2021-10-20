@@ -7,6 +7,7 @@
 #include <minix_rt/preempt.h>
 #include <minix_rt/syscalls.h>
 #include <minix_rt/uaccess.h>
+#include <minix_rt/page.h>
 
 #include <uapi/minix_rt/mmap.h>
 
@@ -743,6 +744,26 @@ struct vm_area_struct *mmap_get_vmap_area(unsigned long vstart,
 			}
 			vma->pages[i] = page;
 		}
+	} else if (!(flags & VM_IOREMAP)){
+		unsigned long addr;
+
+		vma->phys_addr = phys_addr;
+		if (!PAGE_ALIGNED(vma->phys_addr))
+			goto fail_pages_ptr;
+
+		addr = phys_addr;
+		for (i = 0; i < vma->nr_pages; i++) {
+			struct page *page;
+
+			if (!pfn_valid(__phys_to_pfn(addr)))
+				goto fail_pages_ptr;
+
+			page = phys_to_page(addr);
+			if (unlikely(!page))
+				goto fail_pages_ptr;
+			vma->pages[i] = page;
+			addr += PAGE_SIZE;
+		}
 	}
 
 	vma->pud_root = RB_ROOT;
@@ -768,6 +789,8 @@ fail_page:
 		__free_page(page);
 	}
 
+fail_pages_ptr:
+	kfree(vma->pages);
 fail_pages:
 	kfree(vma);
 	return NULL;
@@ -812,11 +835,13 @@ void mmap_free_vmap_area(unsigned long addr, struct mm_struct *mm)
 	rb_erase(&vma->vm_rb_node, &mm->vma_rb_root);
 	spin_unlock(&mm->vma_lock);
 
-	for (i = 0; i < vma->nr_pages; i++) {
-		struct page *page = vma->pages[i];
+	if (!(vma->vm_flags & VM_PRIVATE_SHARE)) {
+		for (i = 0; i < vma->nr_pages; i++) {
+			struct page *page = vma->pages[i];
 
-		BUG_ON(unlikely(!page));
-		put_page(page);
+			BUG_ON(unlikely(!page));
+			put_page(page);
+		}
 	}
 
 	kfree(vma->pages);

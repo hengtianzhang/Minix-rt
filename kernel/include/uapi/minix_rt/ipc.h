@@ -54,6 +54,17 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_system_string);
 
 typedef struct {
+	u64 mmap_base;
+	u64 size;
+	unsigned long vm_flags;
+#define MMAP_INITRD		0x1
+	int flags;
+	int retval;
+	u8 padding[24];
+} mess_system_mmap;
+IPC_ASSERT_MSG_SIZE(mess_system_mmap);
+
+typedef struct {
 	const char *filename;
 	const char *const *argv;
 	const char *const *envp;
@@ -82,6 +93,7 @@ typedef struct {
 
 		mess_system_brk		m_sys_brk;
 		mess_system_string	m_sys_string;
+		mess_system_mmap	m_sys_mmap;
 
 		mess_vfs_exec		m_vfs_exec;
 
@@ -98,8 +110,9 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_SYSTEM_SBRK			0x1
 #define IPC_M_TYPE_SYSTEM_BRK			0x2
 #define IPC_M_TYPE_SYSTEM_STRING		0x3
+#define IPC_M_TYPE_SYSTEM_MMAP			0x4
 
-#define IPC_M_TYPE_VFS_EXEC				0x4
+#define IPC_M_TYPE_VFS_EXEC				0x5
 
 enum {
 	ENDPOINT_SYSTEM,

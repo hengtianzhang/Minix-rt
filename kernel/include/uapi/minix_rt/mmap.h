@@ -14,8 +14,7 @@
 
 #define VM_IOREMAP  	0x00000010
 
-#define VM_USER_STACK   0x00000020
-
+#define VM_USER_STACK   	0x00000020
 #define VM_PRIVATE_SHARE    0x00000080
 
 #endif /* !__UAPI_MINIX_RT_MMAP_H_ */

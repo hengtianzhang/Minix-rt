@@ -102,7 +102,7 @@ static unsigned long cpio_len_next(unsigned long len, const void *prev, const vo
  *
  * Return -1 if the header is not valid, 1 if it is EOF.
  */
-int cpio_parse_header(const struct cpio_header *archive, unsigned long len,
+static int cpio_parse_header(const struct cpio_header *archive, unsigned long len,
                       struct cpio_header_info *info)
 {
     const char *filename;

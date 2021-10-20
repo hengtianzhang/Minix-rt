@@ -7,6 +7,9 @@
 
 #include "exec.h"
 
+unsigned long initrd_start = 0;
+unsigned long initrd_size = 0;
+
 void do_exec(endpoint_t ep, message_t *m)
 {
 	int ret;

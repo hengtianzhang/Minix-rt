@@ -28,8 +28,6 @@ int main(void)
 	ret = mmap_initrd(&initrd_start, &initrd_size);
 	BUG_ON(ret);
 
-	printf("initrd_start 0x%lx initrd_size 0x%lx\n", initrd_start, initrd_size);
-
 	while (1) {
 		memset(&m, 0, sizeof (message_t));
 

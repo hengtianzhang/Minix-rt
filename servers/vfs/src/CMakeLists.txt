@@ -1,4 +1,4 @@
 
 target_sources(vfs PRIVATE
-	main.c exec.c
+	main.c exec.c binfmt_elf.c
 )

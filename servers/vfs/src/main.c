@@ -5,6 +5,7 @@
 #include <libminix_rt/mmap.h>
 #include <libminix_rt/ipc.h>
 
+#include "binfmt.h"
 #include "exec.h"
 
 static void vfs_handle_ipc_message(endpoint_t ep, message_t *m)
@@ -24,6 +25,8 @@ int main(void)
 	message_t m;
 
 	printf("This is vfs\n");
+
+	init_elf_binfmt();
 
 	ret = mmap_initrd(&initrd_start, &initrd_size);
 	BUG_ON(ret);

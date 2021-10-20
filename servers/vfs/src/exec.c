@@ -5,11 +5,48 @@
 
 #include <libminix_rt/ipc.h>
 
+#include <base/list.h>
+
 #include <cpio/cpio.h>
 
 #include "exec.h"
 #include "fs.h"
 #include "binfmt.h"
+
+static LIST_HEAD(formats);
+
+void __register_binfmt(struct minix_rt_binfmt *fmt, int insert)
+{
+	BUG_ON(!fmt);
+	if (WARN_ON(!fmt->load_binary))
+		return;
+	insert ? list_add(&fmt->lh, &formats) :
+		 list_add_tail(&fmt->lh, &formats);
+}
+
+void unregister_binfmt(struct minix_rt_binfmt *fmt)
+{
+	list_del(&fmt->lh);
+}
+
+static inline int search_binary_handler(struct minix_rt_binprm *bprm)
+{
+	struct minix_rt_binfmt *fmt;
+	int retval;
+
+	retval = -ENOENT;
+	list_for_each_entry(fmt, &formats, lh) {
+		retval = fmt->load_binary(bprm);
+		if (!retval)
+			break;
+	}
+	return retval;
+}
+
+static int exec_binprm(struct minix_rt_binprm *bprm)
+{
+	return search_binary_handler(bprm);
+}
 
 unsigned long initrd_start = 0;
 unsigned long initrd_size = 0;
@@ -78,6 +115,14 @@ static int prepare_arg_pages(struct minix_rt_binprm *bprm, message_t *m)
 	return 0;
 }
 
+static int prepare_binprm(struct minix_rt_binprm *bprm)
+{
+	memset(bprm->buf, 0, BINPRM_BUF_SIZE);
+	memcpy(bprm->buf, bprm->file, BINPRM_BUF_SIZE);
+
+	return 0;
+}
+
 static int do_execve_file(struct filename *filename, message_t *m)
 {
 	int retval;
@@ -95,7 +140,18 @@ static int do_execve_file(struct filename *filename, message_t *m)
 	if (retval < 0)
 		goto out_free;
 
-	retval = 0;
+	bprm->file = filename->file;
+	bprm->file_size = filename->file_size;
+	bprm->filename = filename->name;
+	bprm->argv = m->m_vfs_exec.argv;
+	bprm->envp = m->m_vfs_exec.envp;
+
+	retval = prepare_binprm(bprm);
+	if (retval < 0)
+		goto out_free;
+
+	retval = exec_binprm(bprm);
+
 out_free:
 	free(bprm);
 out:

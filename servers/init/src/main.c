@@ -27,7 +27,7 @@ static int do_execve(const char *filename, const char *const argv[],
 
 	ret = ipc_send(ENDPOINT_VFS, &m);
 	if (ret)
-		panic("Init process send message fail!\n");
+		panic("Init process send message fail! %d\n", ret);
 
 	return m.m_vfs_exec.retval;
 }

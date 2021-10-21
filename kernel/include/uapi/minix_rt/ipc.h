@@ -65,6 +65,13 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_system_mmap);
 
 typedef struct {
+	u64 bprm;
+	int retval;
+	u8 padding[44];
+} mess_system_exec;
+IPC_ASSERT_MSG_SIZE(mess_system_exec);
+
+typedef struct {
 	const char *filename;
 	const char *const *argv;
 	const char *const *envp;
@@ -94,6 +101,7 @@ typedef struct {
 		mess_system_brk		m_sys_brk;
 		mess_system_string	m_sys_string;
 		mess_system_mmap	m_sys_mmap;
+		mess_system_exec	m_sys_exec;
 
 		mess_vfs_exec		m_vfs_exec;
 
@@ -112,8 +120,9 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_SYSTEM_STRING		0x3
 #define IPC_M_TYPE_SYSTEM_MMAP			0x4
 #define IPC_M_TYPE_SYSTEM_TASK_SIZE		0x5
+#define IPC_M_TYPE_SYSTEM_EXEC			0x6
 
-#define IPC_M_TYPE_VFS_EXEC				0x6
+#define IPC_M_TYPE_VFS_EXEC				0x7
 
 enum {
 	ENDPOINT_SYSTEM,

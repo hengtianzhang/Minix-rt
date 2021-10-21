@@ -31,6 +31,9 @@ static void system_handle_ipc_message(endpoint_t ep, message_t *m)
 		case IPC_M_TYPE_SYSTEM_MMAP:
 			system_mmap(ep, m);
 			break;
+		case IPC_M_TYPE_SYSTEM_EXEC:
+			system_exec(ep, m);
+			break;
 		default:
 			system_misc(ep, m);
 			break;
@@ -56,16 +59,16 @@ int system_thread(void *arg)
 	BUG();
 };
 
-struct task_struct * __init create_system_task(void)
+struct task_struct *create_system_task(int flags, kthread_t kthread, char *name,
+				void *data, cpumask_t mask)
 {
-	cpumask_t mask;
 	int ret;
 	struct task_struct *tsk;
 
 	tsk = task_create_tsk(PF_SYSTEMSERVICE | PF_KTHREAD);
 	BUG_ON(!tsk);
 
-	strlcpy(tsk->comm, INIT_SERVICE_COMM, sizeof (tsk->comm));
+	strlcpy(tsk->comm, name, sizeof (tsk->comm));
 
 	ret = -ENOMEM;
 	tsk->stack = kmalloc(THREAD_SIZE, GFP_KERNEL | GFP_ZERO);
@@ -73,26 +76,38 @@ struct task_struct * __init create_system_task(void)
 
 	task_set_stack_end_magic(tsk);
 	tsk->state = TASK_RUNNING;
-	tsk->pid.pid = 1;
-	ret = pid_insert_process_by_pid(tsk);
+	if (flags == CREATE_SYSTEM_THREAD) {
+		tsk->pid.pid = 1;
+		ret = pid_insert_process_by_pid(tsk);
+		BUG_ON(ret == false);
+	} else {
+		ret = pid_alloc_pid(tsk);
+		BUG_ON(ret);
+	}
 
-	BUG_ON(ret == false);
-
-	BUG_ON(ipc_register_endpoint_by_tsk(tsk));
+	if (flags == CREATE_SYSTEM_THREAD)
+		BUG_ON(ipc_register_endpoint_by_tsk(tsk));
 
 	tsk->policy = SCHED_FIFO;
-	tsk->prio = 0;
-	tsk->static_prio = 0;
-	tsk->normal_prio = 0;
+
+	if (flags == CREATE_SYSTEM_THREAD) {
+		tsk->prio = 0;
+		tsk->static_prio = 0;
+		tsk->normal_prio = 0;
+	} else {
+		tsk->prio = MAX_RT_PRIO - 1;
+		tsk->static_prio = MAX_RT_PRIO - 1;
+		tsk->normal_prio = MAX_RT_PRIO - 1;
+	}
+
 	tsk->sched_class = &rt_sched_class;
 	tsk->time_slice = RR_TIMESLICE;
 
-	mask = CPU_MASK_ALL;
 	set_cpus_allowed(tsk, mask);
 
 	sched_fork(tsk, 0);
 
-	copy_thread(tsk->flags, (unsigned long)system_thread, 0, tsk);
+	copy_thread(tsk->flags, (unsigned long)kthread, (unsigned long)data, tsk);
 
 	return tsk;
 }
@@ -101,8 +116,11 @@ void __init system_task_init(void)
 {
 	struct task_struct *tsk;
 
-	tsk = create_system_task();
+	tsk = create_system_task(CREATE_SYSTEM_THREAD, system_thread, INIT_SERVICE_COMM,
+						NULL, CPU_MASK_ALL);
 	BUG_ON(!tsk);
 
 	wake_up_new_task(tsk, 0);
+
+	BUG_ON(create_migration_thread());	
 }

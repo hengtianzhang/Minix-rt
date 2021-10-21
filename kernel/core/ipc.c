@@ -8,6 +8,7 @@
 #include <minix_rt/spinlock.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/ipc.h>
+#include <minix_rt/jiffies.h>
 
 static struct endpoint_info ipc_ep_info[] = {
 	[ENDPOINT_SYSTEM] = {
@@ -34,7 +35,7 @@ void ipc_init(void)
 
 	for (i = 0; i < ARRAY_SIZE(ipc_ep_info); i++) {
 		struct endpoint_info *ep_info = &ipc_ep_info[i];
-
+		ep_info->state = EP_STATE_NONE;
 		ep_info->tsk = NULL;
 		ep_info->ipc_req_count = 0;
 		INIT_LIST_HEAD(&ep_info->ep_list);
@@ -60,6 +61,8 @@ int ipc_register_endpoint_by_tsk(struct task_struct *tsk)
 					return -EBUSY;
 				tsk->ep = ipc_ep_info[i].endpoint;
 				ipc_ep_info[i].tsk = tsk;
+				ipc_ep_info[i].state = EP_STATE_RUNNING;
+				wake_up(&ipc_ep_info[i].wait);
 				return 0;
 			}
 		}
@@ -78,7 +81,10 @@ int __ipc_send(endpoint_t dest, message_t *m_ptr)
 
 	ep_info = &ipc_ep_info[dest];
 	if (unlikely(!ep_info->tsk))
-		return -ENODEV;
+		if (!wait_event_timeout(ep_info->wait,
+				ep_info->state == EP_STATE_RUNNING,
+				jiffies_to_nsecs(60 * HZ)))
+			return -ENODEV;
 
 	ep_node = kmalloc(sizeof (struct ipc_mess_node), GFP_KERNEL | GFP_ZERO);
 	if (!ep_node)

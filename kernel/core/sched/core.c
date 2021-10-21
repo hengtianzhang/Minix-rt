@@ -1599,6 +1599,25 @@ iter_move_one_task(struct rq *this_rq, int this_cpu, struct rq *busiest,
 }
 
 /*
+ * move_one_task tries to move exactly one task from busiest to this_rq, as
+ * part of active balancing operations within "domain".
+ * Returns 1 if successful and 0 otherwise.
+ *
+ * Called with both runqueues locked.
+ */
+static int move_one_task(struct rq *this_rq, int this_cpu, struct rq *busiest,
+			 struct sched_domain *sd, enum cpu_idle_type idle)
+{
+	const struct sched_class *class;
+
+	for (class = sched_class_highest; class; class = class->next)
+		if (class->move_one_task(this_rq, this_cpu, busiest, sd, idle))
+			return 1;
+
+	return 0;
+}
+
+/*
  * find_busiest_group finds and returns the busiest CPU group within the
  * domain. It calculates and returns the amount of weighted load which
  * should be moved to restore balance via the imbalance parameter.
@@ -3353,6 +3372,171 @@ out:
 	task_rq_unlock(rq, &flags);
 
 	return ret;
+}
+
+/*
+ * active_load_balance is run by migration threads. It pushes running tasks
+ * off the busiest CPU onto idle CPUs. It requires at least 1 task to be
+ * running on each physical CPU where possible, and avoids physical /
+ * logical imbalances.
+ *
+ * Called with busiest_rq locked.
+ */
+static void active_load_balance(struct rq *busiest_rq, int busiest_cpu)
+{
+	int target_cpu = busiest_rq->push_cpu;
+	struct sched_domain *sd;
+	struct rq *target_rq;
+
+	/* Is there any task to move? */
+	if (busiest_rq->nr_running <= 1)
+		return;
+
+	target_rq = cpu_rq(target_cpu);
+
+	/*
+	 * This condition is "impossible", if it occurs
+	 * we need to fix it. Originally reported by
+	 * Bjorn Helgaas on a 128-cpu setup.
+	 */
+	BUG_ON(busiest_rq == target_rq);
+
+	/* move a task from busiest_rq to target_rq */
+	double_lock_balance(busiest_rq, target_rq);
+	update_rq_clock(busiest_rq);
+	update_rq_clock(target_rq);
+
+	/* Search for an sd spanning us and the target CPU. */
+	for_each_domain(target_cpu, sd) {
+		if ((sd->flags & SD_LOAD_BALANCE) &&
+		    cpumask_test_cpu(busiest_cpu, &sd->span))
+				break;
+	}
+
+	if (likely(sd)) {
+		move_one_task(target_rq, target_cpu, busiest_rq,
+				  sd, CPU_IDLE);
+	}
+	spin_unlock(&target_rq->lock);
+}
+
+/*
+ * Move (not current) task off this cpu, onto dest cpu. We're doing
+ * this because either it can't run here any more (set_cpus_allowed()
+ * away from this CPU, or CPU going down), or because we're
+ * attempting to rebalance this task on exec (sched_exec).
+ *
+ * So we race with normal scheduler movements, but that's OK, as long
+ * as the task is no longer on this CPU.
+ *
+ * Returns non-zero if task was successfully migrated.
+ */
+static int __migrate_task(struct task_struct *p, int src_cpu, int dest_cpu)
+{
+	struct rq *rq_dest, *rq_src;
+	int ret = 0, on_rq;
+
+	if (unlikely(cpu_is_offline(dest_cpu)))
+		return ret;
+
+	rq_src = cpu_rq(src_cpu);
+	rq_dest = cpu_rq(dest_cpu);
+
+	double_rq_lock(rq_src, rq_dest);
+	/* Already moved. */
+	if (task_cpu(p) != src_cpu)
+		goto out;
+	/* Affinity changed (again). */
+	if (!cpumask_test_cpu(dest_cpu, &p->cpus_allowed))
+		goto out;
+
+	on_rq = p->se.on_rq;
+	if (on_rq)
+		deactivate_task(rq_src, p, 0);
+
+	set_task_cpu(p, dest_cpu);
+	if (on_rq) {
+		activate_task(rq_dest, p, 0);
+		check_preempt_curr(rq_dest, p);
+	}
+	ret = 1;
+out:
+	double_rq_unlock(rq_src, rq_dest);
+	return ret;
+}
+
+/*
+ * migration_thread - this is a highprio system thread that performs
+ * thread migration by bumping thread off CPU then 'pushing' onto
+ * another runqueue.
+ */
+static int migration_thread(void *data)
+{
+	int cpu = (long)data;
+	struct rq *rq;
+
+	rq = cpu_rq(cpu);
+	BUG_ON(rq->migration_thread != current);
+
+	set_current_state(TASK_INTERRUPTIBLE);
+	while(1) {
+		struct migration_req *req;
+		struct list_head *head;
+
+		spin_lock_irq(&rq->lock);
+
+		if (cpu_is_offline(cpu)) {
+			spin_unlock_irq(&rq->lock);
+			goto wait_to_die;
+		}
+
+		if (rq->active_balance) {
+			active_load_balance(rq, cpu);
+			rq->active_balance = 0;
+		}
+
+		head = &rq->migration_queue;
+
+		if (list_empty(head)) {
+			spin_unlock_irq(&rq->lock);
+			schedule();
+			set_current_state(TASK_INTERRUPTIBLE);
+			continue;
+		}
+		req = list_entry(head->next, struct migration_req, list);
+		list_del_init(head->next);
+		spin_unlock(&rq->lock);
+		__migrate_task(req->task, cpu, req->dest_cpu);
+		local_irq_enable();
+
+		complete(&req->done);
+	}
+wait_to_die:
+	BUG();
+	return 0;
+}
+
+int create_migration_thread(void)
+{
+	long cpu;
+	struct rq *rq;
+	struct task_struct *tsk;
+
+	for_each_online_cpu(cpu) {
+		cpumask_t mask;
+		char buf[TASK_COMM_LEN] = {0};
+
+		cpumask_clear(&mask);
+		cpumask_set_cpu(cpu, &mask);
+		snprintf(buf, TASK_COMM_LEN, "migrate-%ld", cpu);
+		tsk = create_system_task(CREATE_NO_SYSTEM_THREAD, migration_thread, buf, (void *)cpu, mask);
+		BUG_ON(!tsk);
+		rq = cpu_rq(cpu);
+		rq->migration_thread = tsk;
+		wake_up_new_task(tsk, 0);
+	}
+
+	return 0;
 }
 
 static int sd_degenerate(struct sched_domain *sd)

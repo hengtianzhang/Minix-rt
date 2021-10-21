@@ -19,6 +19,7 @@ struct endpoint_info {
 	spinlock_t	ep_list_lock;
 };
 
+#define EP_STATE_NONE		0x0
 #define EP_STATE_WAITTING 	0x1
 #define EP_STATE_RUNNING	0x2	
 

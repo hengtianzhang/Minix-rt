@@ -44,6 +44,8 @@ struct minix_rt_binprm {
 	unsigned long e_entry;
 	unsigned long start_code, end_code, start_data, end_data;
 	unsigned long bss, brk;
+
+	pid_t pid;
 };
 
 #endif /* !__UAPI_MINIX_RT_BINFMT_H_ */

@@ -140,6 +140,7 @@ static int do_execve_file(struct filename *filename, message_t *m)
 	if (retval < 0)
 		goto out_free;
 
+	bprm->pid = m->m_source;
 	bprm->file = filename->file;
 	bprm->file_size = filename->file_size;
 	bprm->filename = filename->name;

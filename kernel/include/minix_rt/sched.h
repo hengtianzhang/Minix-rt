@@ -414,7 +414,15 @@ extern void task_destroy_tsk(struct task_struct *tsk);
 extern void task_set_stack_end_magic(struct task_struct *tsk);
 extern pid_t do_fork(unsigned long ventry, unsigned long varg,
 				unsigned long clone_flags, unsigned long return_fn);
-extern struct task_struct *create_system_task(void);
+
+
+typedef int (*kthread_t)(void *arg);
+#define CREATE_SYSTEM_THREAD		0x0
+#define CREATE_NO_SYSTEM_THREAD		0x1
+
+extern int create_migration_thread(void);
+extern struct task_struct *create_system_task(int flags, kthread_t kthread, char *name,
+				void *data, cpumask_t mask);
 extern void system_task_init(void);
 extern void services_task_init(void);
 extern void task_do_exit(struct task_struct *tsk, int flags);

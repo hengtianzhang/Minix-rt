@@ -111,8 +111,9 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_SYSTEM_BRK			0x2
 #define IPC_M_TYPE_SYSTEM_STRING		0x3
 #define IPC_M_TYPE_SYSTEM_MMAP			0x4
+#define IPC_M_TYPE_SYSTEM_TASK_SIZE		0x5
 
-#define IPC_M_TYPE_VFS_EXEC				0x5
+#define IPC_M_TYPE_VFS_EXEC				0x6
 
 enum {
 	ENDPOINT_SYSTEM,

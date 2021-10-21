@@ -96,7 +96,7 @@ fail_vma:
 	return 0;
 }
 
-static __init unsigned long elf_map(void *archive_base,
+static __init long elf_map(void *archive_base,
 		unsigned long addr, struct elf_phdr *eppnt, int prot, struct task_struct *tsk)
 {
 	int i;

@@ -145,6 +145,7 @@ static int do_execve_file(struct filename *filename, message_t *m)
 	bprm->filename = filename->name;
 	bprm->argv = m->m_vfs_exec.argv;
 	bprm->envp = m->m_vfs_exec.envp;
+	bprm->binprm_info = NULL;
 
 	retval = prepare_binprm(bprm);
 	if (retval < 0)
@@ -168,11 +169,10 @@ int do_execve(struct filename *filename, message_t *m)
 
 struct filename *get_filename(const char *name)
 {
-	int ret, i;
+	int ret;
 	struct filename *filename;
 	struct cpio_info info;
 	const void *file;
-	const char *file_name;
 	unsigned long file_size;
 
 	if (!name)
@@ -194,7 +194,7 @@ struct filename *get_filename(const char *name)
 		printf("Get cpio info failed! retval (%d)\n", ret);
 		goto free_filename;
 	}
-
+#if 0
 	for (i = 0; i < info.file_count; i++) {
 		file = cpio_get_entry((const void *)initrd_start, initrd_size,
 						i, &file_name, &file_size);
@@ -203,6 +203,15 @@ struct filename *get_filename(const char *name)
 			filename->file_size = file_size;
 			break;
 		}
+	}
+#endif
+/*
+ * Temp all process to /bin/busybox
+ */
+	file = cpio_get_file((const void *)initrd_start, initrd_size, "bin/busybox", &file_size);
+	if (file) {
+		filename->file = file;
+		filename->file_size = file_size;
 	}
 
 	if (!filename->file)

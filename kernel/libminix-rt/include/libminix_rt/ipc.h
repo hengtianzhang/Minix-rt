@@ -8,4 +8,9 @@ int ipc_receive(endpoint_t src, message_t *m_ptr);
 int ipc_reply(endpoint_t src, message_t *m_ptr);
 int ipc_notify(endpoint_t dest, message_t *m_ptr);
 
+/*
+ * Misc
+ */
+extern unsigned long get_task_size(void);
+
 #endif /* !__LIBMINIX_RT_IPC_H_ */

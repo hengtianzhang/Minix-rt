@@ -32,6 +32,7 @@ static void system_handle_ipc_message(endpoint_t ep, message_t *m)
 			system_mmap(ep, m);
 			break;
 		default:
+			system_misc(ep, m);
 			break;
 	}
 }

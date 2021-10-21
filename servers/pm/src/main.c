@@ -9,8 +9,6 @@ int main(void)
 	int ret = 0;
 	message_t m;
 
-	printf("This is pm\n");
-
 	while (1) {
 		memset(&m, 0, sizeof (message_t));
 

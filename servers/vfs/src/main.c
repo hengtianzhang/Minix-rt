@@ -24,8 +24,6 @@ int main(void)
 	int ret = 0;
 	message_t m;
 
-	printf("This is vfs\n");
-
 	init_elf_binfmt();
 
 	ret = mmap_initrd(&initrd_start, &initrd_size);

@@ -55,8 +55,6 @@ static int try_to_run_init_process(const char *init_filename)
 
 int main(void)
 {
-	printf("This is init\n");
-
 	try_to_run_init_process("/sbin/init");
 	try_to_run_init_process("/etc/init");
 	try_to_run_init_process("/bin/init");

@@ -51,6 +51,11 @@ extern int mmap_memcpy_from_vma(void *dest, unsigned long addr, unsigned long si
 extern int mmap_memcpy_to_vma(unsigned long addr, unsigned long size, void *src, 
 			struct task_struct *tsk);
 
+extern int mmap_strnlen_vma(char *s, struct task_struct *tsk);
+
+extern int mmap_strcpy_from_vma(void *dest, unsigned long addr, struct task_struct *tsk);
+extern int mmap_strcpy_to_vma(unsigned long addr, void *src, struct task_struct *tsk);
+
 #define for_each_vm_area(vma, mm)	\
 	for (vma = mmap_first_vma(mm); vma != NULL; vma = mmap_next_vma(vma))
 

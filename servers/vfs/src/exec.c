@@ -144,6 +144,7 @@ static int do_execve_file(struct filename *filename, message_t *m)
 	bprm->file = filename->file;
 	bprm->file_size = filename->file_size;
 	bprm->filename = filename->name;
+	bprm->filename_size = strlen(filename->name) + 1;
 	bprm->argv = m->m_vfs_exec.argv;
 	bprm->envp = m->m_vfs_exec.envp;
 	bprm->binprm_info = NULL;

@@ -32,6 +32,7 @@ struct minix_rt_binprm {
 	char buf[BINPRM_BUF_SIZE];
 
 	const char *filename;
+	unsigned long filename_size;
 	const void *file;
 	unsigned long file_size;
 

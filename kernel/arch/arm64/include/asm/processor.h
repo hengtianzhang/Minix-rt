@@ -22,12 +22,14 @@
 #ifndef __ASSEMBLY__
 #ifdef __KERNEL__
 
+#include <base/auxvec.h>
 #include <base/string.h>
 #include <base/init.h>
 #include <base/cache.h>
 
 #include <asm/memory.h>
 #include <asm/ptrace.h>
+#include <asm/current.h>
 
 #include <asm/base/processor.h>
 
@@ -102,6 +104,9 @@ static inline void start_thread(struct pt_regs *regs, unsigned long pc,
 
 extern unsigned long __ro_after_init signal_minsigstksz; /* sigframe size */
 extern void __init minsigstksz_setup(void);
+
+extern u64 get_arch_auxvec_cnt(void);
+extern void get_arch_auxvec(u64 *auxvec, int cnt);
 
 #endif /* __KERNEL__ */
 #endif /* !__ASSEMBLY__*/

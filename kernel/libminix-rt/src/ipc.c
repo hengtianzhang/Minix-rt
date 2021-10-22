@@ -48,3 +48,49 @@ unsigned long get_task_size(void)
 
 	return m.m_u64.data[0];
 }
+
+u64 get_arch_auxvec_cnt(void)
+{
+	int ret;
+	message_t m;
+
+	memset(&m, 0, sizeof (message_t));
+	m.m_type = IPC_M_TYPE_SYSTEM_AUXVEC_CNT;
+	ret = ipc_send(ENDPOINT_SYSTEM, &m);
+	if (ret)
+		return 0;
+
+	return m.m_u64.data[0];
+}
+
+int get_arch_auxvec(u64 *auxvec, int cnt)
+{
+	int ret;
+	message_t m;
+
+	memset(&m, 0, sizeof (message_t));
+	m.m_type = IPC_M_TYPE_SYSTEM_AUXVEC;
+	m.m_u64.data[0] = cnt;
+	ret = ipc_send(ENDPOINT_SYSTEM, &m);
+	if (ret)
+		return ret;
+
+	auxvec[0] = m.m_u64.data[0];
+	auxvec[1] = m.m_u64.data[1];
+
+	return 0;
+}
+
+u64 get_arch_elf_hwcap(void)
+{
+	int ret;
+	message_t m;
+
+	memset(&m, 0, sizeof (message_t));
+	m.m_type = IPC_M_TYPE_SYSTEM_ELF_HWCAP;
+	ret = ipc_send(ENDPOINT_SYSTEM, &m);
+	if (ret)
+		return 0;
+
+	return m.m_u64.data[0];
+}

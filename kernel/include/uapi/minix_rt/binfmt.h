@@ -46,11 +46,12 @@ struct minix_rt_binprm {
 
 	unsigned long e_entry;
 	unsigned long start_code, end_code, start_data, end_data;
+	unsigned long arg_start, arg_end, env_start, env_end;
 	unsigned long bss, brk;
 
 	unsigned long saved_auxv[AT_VECTOR_SIZE];
 
-	unsigned long p;
+	unsigned long p, env_p, argv_p;
 
 	pid_t pid;
 };

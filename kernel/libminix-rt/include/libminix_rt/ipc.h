@@ -14,4 +14,8 @@ int ipc_notify(endpoint_t dest, message_t *m_ptr);
 extern unsigned long get_task_size(void);
 extern void get_random_bytes(void *buf, int nbytes);
 
+extern u64 get_arch_auxvec_cnt(void);
+extern int get_arch_auxvec(u64 *auxvec, int cnt);
+extern u64 get_arch_elf_hwcap(void);
+
 #endif /* !__LIBMINIX_RT_IPC_H_ */

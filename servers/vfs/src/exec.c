@@ -114,6 +114,7 @@ static int prepare_arg_pages(struct minix_rt_binprm *bprm, message_t *m)
 	bprm->argc = count(argv, MAX_ARG_STRINGS, m->m_source, &size);
 	if (bprm->argc < 0)
 		return bprm->argc;
+	bprm->argv_p = size;
 	bprm->p += size;
 
 	argv.ptr.native = m->m_vfs_exec.envp;
@@ -122,6 +123,7 @@ static int prepare_arg_pages(struct minix_rt_binprm *bprm, message_t *m)
 	bprm->envc = count(argv, MAX_ARG_STRINGS, m->m_source, &size);
 	if (bprm->envc < 0)
 		return bprm->argc;
+	bprm->env_p = size;
 	bprm->p += size;
 
 	return 0;
@@ -149,6 +151,8 @@ static int do_execve_file(struct filename *filename, message_t *m)
 		goto out;
 
 	bprm->p = 0;
+	bprm->argv_p = 0;
+	bprm->env_p = 0;
 	retval = prepare_arg_pages(bprm, m);
 	if (retval < 0)
 		goto out_free;

@@ -1228,3 +1228,24 @@ void check_local_cpu_capabilities(void)
 	else
 		verify_local_cpu_capabilities();
 }
+
+u64 get_arch_auxvec_cnt(void)
+{
+	return 2;
+}
+
+void get_arch_auxvec(u64 *auxvec, int cnt)
+{
+	if (cnt == 0) {
+		auxvec[0] = AT_SYSINFO_EHDR;
+		auxvec[1] = (unsigned long)current->mm->context.vdso;
+	} else {
+		if (likely(signal_minsigstksz)) {
+			auxvec[0] = AT_MINSIGSTKSZ;
+			auxvec[1] = signal_minsigstksz;
+		} else {
+			auxvec[0] = AT_IGNORE;
+			auxvec[1] = 0;
+		}
+	}
+}

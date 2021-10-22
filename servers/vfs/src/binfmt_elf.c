@@ -40,6 +40,11 @@
 #define ELF_BASE_PLATFORM NULL
 #endif
 
+#define STACK_ADD(sp, items) ((elf_addr_t __user *)(sp) - (items))
+#define STACK_ROUND(sp, items) \
+	(((unsigned long) (sp - items)) &~ 15UL)
+#define STACK_ALLOC(sp, len) ({ sp -= len ; sp; })
+
 static struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex,
 				       const void *elf_file)
 {
@@ -101,27 +106,49 @@ static int elf_map(struct minix_rt_binprm *bprm, const void *file, unsigned long
 }
 
 static int
-create_elf_tables(struct minix_rt_binprm *bprm)
+create_elf_tables(struct minix_rt_binprm *bprm, unsigned long task_size)
 {
-	unsigned long p = bprm->p;
+	unsigned long p = bprm->p, top = task_size;
 	const char *k_platform = ELF_PLATFORM;
 	const char *k_base_platform = ELF_BASE_PLATFORM;
+	elf_addr_t *u_platform;
+	elf_addr_t *u_base_platform;
+	elf_addr_t *u_rand_bytes;
+	elf_addr_t *u_envp, *u_argv;
 	unsigned char k_rand_bytes[16];
 	elf_addr_t *elf_info;
+	int cnt, ret, i;
+	int ei_index = 0;
+	int items, argc, envc;
+	elf_addr_t *addr;
 
+	u_platform = NULL;
 	if (k_platform) {
 		size_t len = strlen(k_platform) + 1;
 
-		p += len;
+		u_platform = (elf_addr_t *)STACK_ALLOC(top, len);
 	}
+
+	u_base_platform = NULL;
 	if (k_base_platform) {
 		size_t len = strlen(k_base_platform) + 1;
-		p += len;
+
+		u_base_platform = (elf_addr_t *)STACK_ALLOC(top, len);
 	}
 
-
 	get_random_bytes(k_rand_bytes, sizeof (k_rand_bytes));
-	p += sizeof (k_rand_bytes);
+	u_rand_bytes = (elf_addr_t *)
+		       STACK_ALLOC(top, sizeof(k_rand_bytes));
+
+	u_envp = (elf_addr_t *)
+		STACK_ALLOC(top, ALIGN(bprm->env_p, sizeof (void *)));
+	bprm->env_start = (unsigned long)u_envp;
+	bprm->env_end = bprm->env_start + ALIGN(bprm->env_p, sizeof (void *));
+
+	u_argv = (elf_addr_t *)
+		STACK_ALLOC(top, ALIGN(bprm->argv_p, sizeof (void *)));
+	bprm->arg_start = (unsigned long)u_argv;
+	bprm->arg_end = bprm->arg_start + ALIGN(bprm->argv_p, sizeof (void *));
 
 	elf_info = (elf_addr_t *)bprm->saved_auxv;
 	/* update AT_VECTOR_SIZE_BASE if the number of NEW_AUX_ENT() changes */
@@ -131,6 +158,79 @@ create_elf_tables(struct minix_rt_binprm *bprm)
 		elf_info[ei_index++] = val; \
 	} while (0)
 
+	cnt = get_arch_auxvec_cnt();
+	if (cnt) {
+		for (i = 0; i < cnt; i++) {
+			ret = get_arch_auxvec(&elf_info[ei_index], i);
+			if (ret)
+				return ret;
+			ei_index += 2;
+		}
+	}
+
+	NEW_AUX_ENT(AT_HWCAP, get_arch_elf_hwcap());
+	NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
+	NEW_AUX_ENT(AT_CLKTCK, 100);
+	/* TODO dync lib, uselib */
+	//NEW_AUX_ENT(AT_PHDR, 0 + exec->e_phoff);
+	NEW_AUX_ENT(AT_PHENT, sizeof(struct elf_phdr));
+	//NEW_AUX_ENT(AT_PHNUM, exec->e_phnum);
+	//NEW_AUX_ENT(AT_BASE, interp_load_addr);
+	NEW_AUX_ENT(AT_FLAGS, 0);
+	//NEW_AUX_ENT(AT_ENTRY, exec->e_entry);
+	NEW_AUX_ENT(AT_RANDOM, (elf_addr_t)(unsigned long)u_rand_bytes);
+	if (k_platform) {
+		NEW_AUX_ENT(AT_PLATFORM,
+			    (elf_addr_t)(unsigned long)u_platform);
+	}
+	if (k_base_platform) {
+		NEW_AUX_ENT(AT_BASE_PLATFORM,
+			    (elf_addr_t)(unsigned long)u_base_platform);
+	}
+#undef NEW_AUX_ENT
+	/* AT_NULL is zero; clear the rest too */
+	memset(&elf_info[ei_index], 0,
+	       sizeof (bprm->saved_auxv) - ei_index * sizeof elf_info[0]);
+
+	/* And advance past the AT_NULL entry.  */
+	ei_index += 2;
+
+	top = (unsigned long)STACK_ADD(top, ei_index);
+
+	items = bprm->argc + 1 + bprm->envc + 1 + 1;
+	top = STACK_ROUND(top, items);
+
+	addr = (elf_addr_t *)malloc(task_size - top);
+	if (!addr)
+		return -ENOMEM;
+
+	*addr++ = bprm->argc;
+	top += sizeof (elf_addr_t);
+	argc = bprm->argc;
+	bprm->arg_start = bprm->arg_end = u_argv;
+	while (argc-- > 0) {
+		size_t len;
+
+		*addr = u_argv;
+
+		/* TODO */
+	}
+
+	bprm->env_start = bprm->env_end = u_envp;
+	while (argc-- > 0) {
+		size_t len;
+
+		*addr = u_envp;
+
+		/* TODO */
+	}
+
+	*addr++ = 0;
+
+	memcpy(addr, elf_info, ei_index * sizeof (elf_addr_t));
+	top += ei_index * sizeof (elf_addr_t);
+
+	printf("AA addr 0x%lx\n", top);
 	return 0;
 }
 
@@ -279,7 +379,7 @@ static int load_elf_binary(struct minix_rt_binprm *bprm)
 	bprm->bss = elf_bss;
 	bprm->brk = elf_brk;
 
-	retval = create_elf_tables(bprm);
+	retval = create_elf_tables(bprm, task_size);
 	if (retval)
 		goto free_elf_phdata;
 

@@ -23,6 +23,8 @@
 #ifdef __KERNEL__
 
 #include <base/string.h>
+#include <base/init.h>
+#include <base/cache.h>
 
 #include <asm/memory.h>
 #include <asm/ptrace.h>
@@ -97,6 +99,9 @@ static inline void start_thread(struct pt_regs *regs, unsigned long pc,
 	regs->pstate |= PSR_SSBS_BIT;
 	regs->sp = sp;
 }
+
+extern unsigned long __ro_after_init signal_minsigstksz; /* sigframe size */
+extern void __init minsigstksz_setup(void);
 
 #endif /* __KERNEL__ */
 #endif /* !__ASSEMBLY__*/

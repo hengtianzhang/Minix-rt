@@ -23,6 +23,7 @@
 #include <asm/cpu_ops.h>
 #include <asm/mmu_context.h>
 #include <asm/daifflags.h>
+#include <asm/cpufeature.h>
 
 #define NR_IPI	7
 
@@ -163,7 +164,7 @@ asmlinkage void secondary_start_kernel(void)
 	 * this CPU ticks all of those. If it doesn't, the CPU will
 	 * fail to come online.
 	 */
-	verify_cpu_asid_bits();
+	check_local_cpu_capabilities();
 
 	if (cpu_ops[cpu]->cpu_postboot)
 		cpu_ops[cpu]->cpu_postboot();
@@ -199,19 +200,27 @@ asmlinkage void secondary_start_kernel(void)
 
 void __init smp_cpus_done(unsigned int max_cpus)
 {
-	u32 cwg;
-
 	printf("SMP: Total of %d processors activated.\n", num_online_cpus());
-
-	/*
-	 * Check for sane CTR_EL0.CWG value.
-	 */
-	cwg = cache_type_cwg();
-	if (!cwg)
-		printf("No Cache Writeback Granule information, assuming %d\n",
-			ARCH_DMA_MINALIGN);
-
+	setup_cpu_features();
 	mark_linear_text_alias_ro();
+}
+
+/*
+ * Kill the calling secondary CPU, early in bringup before it is turned
+ * online.
+ */
+void cpu_die_early(void)
+{
+	int cpu = smp_processor_id();
+
+	printf("CPU%d: will not boot\n", cpu);
+
+	/* Mark this CPU absent */
+	set_cpu_present(cpu, 0);
+
+	update_cpu_boot_status(CPU_STUCK_IN_KERNEL);
+
+	cpu_park_loop();
 }
 
 void __init smp_prepare_boot_cpu(void)

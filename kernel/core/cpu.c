@@ -6,6 +6,8 @@
 #include <base/cache.h>
 #include <base/init.h>
 
+#include <minix_rt/cpumask.h>
+#include <minix_rt/interrupt.h>
 #include <minix_rt/hrtimer.h>
 #include <minix_rt/cpu.h>
 #include <minix_rt/smp.h>

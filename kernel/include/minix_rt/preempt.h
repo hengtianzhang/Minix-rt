@@ -3,6 +3,7 @@
 
 #include <base/linkage.h>
 
+#include <minix_rt/irqflags.h>
 #include <minix_rt/thread.h>
 #include <minix_rt/interrupt.h>
 

@@ -98,6 +98,7 @@ void cpuinfo_store_cpu(void)
 {
 	struct cpuinfo_arm64 *info = &cpu_data[smp_processor_id()];
 	__cpuinfo_store_cpu(info);
+	update_cpu_features(smp_processor_id(), info, &boot_cpu_data);
 }
 
 void __init cpuinfo_store_boot_cpu(void)
@@ -107,4 +108,5 @@ void __init cpuinfo_store_boot_cpu(void)
 	__cpuinfo_store_cpu(info);
 
 	boot_cpu_data = *info;
+	init_cpu_features(&boot_cpu_data);
 }

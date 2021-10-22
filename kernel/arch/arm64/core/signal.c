@@ -708,3 +708,28 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
 		thread_flags = READ_ONCE(current_thread_info()->flags);
 	} while (thread_flags & _TIF_WORK_MASK);
 }
+
+unsigned long __ro_after_init signal_minsigstksz;
+
+/*
+ * Determine the stack space required for guaranteed signal devliery.
+ * This function is used to populate AT_MINSIGSTKSZ at process startup.
+ * cpufeatures setup is assumed to be complete.
+ */
+void __init minsigstksz_setup(void)
+{
+	struct rt_sigframe_user_layout user;
+
+	init_user_layout(&user);
+
+	/*
+	 * If this fails, SIGFRAME_MAXSZ needs to be enlarged.  It won't
+	 * be big enough, but it's our best guess:
+	 */
+	if (WARN_ON(setup_sigframe_layout(&user, true)))
+		return;
+
+	signal_minsigstksz = sigframe_size(&user) +
+		round_up(sizeof(struct frame_record), 16) +
+		16; /* max alignment padding */
+}

@@ -159,5 +159,7 @@ extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
 
 extern void crash_smp_send_stop(void);
 
+extern void cpu_die_early(void);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_SMP_H_ */

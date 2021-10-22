@@ -31,6 +31,16 @@ enum irqchip_irq_state {
 
 #define MAX_IRQ_ID 1024
 
+/* Some architectures might implement lazy enabling/disabling of
+ * interrupts. In some cases, such as stop_machine, we might want
+ * to ensure that after a local_irq_disable(), interrupts have
+ * really been disabled in hardware. Such architectures need to
+ * implement the following hook.
+ */
+#ifndef hard_irq_disable
+#define hard_irq_disable()	do { } while(0)
+#endif
+
 extern void __local_bh_enable(void);
 static inline void local_bh_enable(void)
 {

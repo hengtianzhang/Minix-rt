@@ -4,5 +4,5 @@ target_sources(
 	PRIVATE
 	printf.c
 	notifier.c ipc.c brk.c malloc.c string.c mmap.c
-	exec.c
+	exec.c random.c
 )

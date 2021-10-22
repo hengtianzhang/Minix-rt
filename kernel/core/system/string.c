@@ -52,6 +52,25 @@ out:
 	return ret;
 }
 
+static int message_strlen(const void *s, pid_t src_pid, int *size)
+{
+	int ret = 0;
+	struct task_struct *src_tsk;
+
+	src_tsk = pid_find_process_by_pid(src_pid);
+	if (!src_tsk)
+		return -ESRCH;
+
+	ret = mmap_strnlen_vma(s, src_tsk);
+	if (ret <= 0)
+		return -EINVAL;
+
+	if (size)
+		*size = ret;
+
+	return 0;
+}
+
 void system_string(endpoint_t ep, message_t *m)
 {
 	int ret;
@@ -66,14 +85,18 @@ void system_string(endpoint_t ep, message_t *m)
 	}
 
 	switch (direct) {
-		case DIRECT_CPY_FROM:
+		case DIRECT_MEMCPY_FROM:
 			ret = message_memcpy(m->m_sys_string.dest, m->m_sys_string.src,
 						m->m_sys_string.size, m->m_source, m->m_sys_string.pid);
 			m->m_sys_string.retval = ret;
 			break;
-		case DIRECT_CPY_TO:
+		case DIRECT_MEMCPY_TO:
 			ret = message_memcpy(m->m_sys_string.dest, m->m_sys_string.src,
 						m->m_sys_string.size, m->m_sys_string.pid, m->m_source);
+			m->m_sys_string.retval = ret;
+			break;
+		case DIRECT_STRLEN:
+			ret = message_strlen(m->m_sys_string.src, m->m_sys_string.pid, &m->m_sys_string.size);
 			m->m_sys_string.retval = ret;
 			break;
 		default:

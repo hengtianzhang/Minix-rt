@@ -12,5 +12,6 @@ int ipc_notify(endpoint_t dest, message_t *m_ptr);
  * Misc
  */
 extern unsigned long get_task_size(void);
+extern void get_random_bytes(void *buf, int nbytes);
 
 #endif /* !__LIBMINIX_RT_IPC_H_ */

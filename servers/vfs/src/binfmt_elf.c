@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <base/elf.h>
+#include <base/auxvec.h>
 
 #include <asm/base/page-def.h>
 
@@ -29,6 +30,15 @@
 #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
 
 #define BAD_ADDR(x) ((unsigned long)(x) >= task_size)
+
+#ifndef ELF_BASE_PLATFORM
+/*
+ * AT_BASE_PLATFORM indicates the "real" hardware/microarchitecture.
+ * If the arch defines ELF_BASE_PLATFORM (in asm/elf.h), the value
+ * will be copied to the user stack in the same manner as AT_PLATFORM.
+ */
+#define ELF_BASE_PLATFORM NULL
+#endif
 
 static struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex,
 				       const void *elf_file)
@@ -86,6 +96,40 @@ static int elf_map(struct minix_rt_binprm *bprm, const void *file, unsigned long
 	binprm_info->prot = prot;
 	binprm_info->next = bprm->binprm_info;
 	bprm->binprm_info = binprm_info;
+
+	return 0;
+}
+
+static int
+create_elf_tables(struct minix_rt_binprm *bprm)
+{
+	unsigned long p = bprm->p;
+	const char *k_platform = ELF_PLATFORM;
+	const char *k_base_platform = ELF_BASE_PLATFORM;
+	unsigned char k_rand_bytes[16];
+	elf_addr_t *elf_info;
+
+	if (k_platform) {
+		size_t len = strlen(k_platform) + 1;
+
+		p += len;
+	}
+	if (k_base_platform) {
+		size_t len = strlen(k_base_platform) + 1;
+		p += len;
+	}
+
+
+	get_random_bytes(k_rand_bytes, sizeof (k_rand_bytes));
+	p += sizeof (k_rand_bytes);
+
+	elf_info = (elf_addr_t *)bprm->saved_auxv;
+	/* update AT_VECTOR_SIZE_BASE if the number of NEW_AUX_ENT() changes */
+#define NEW_AUX_ENT(id, val) \
+	do { \
+		elf_info[ei_index++] = id; \
+		elf_info[ei_index++] = val; \
+	} while (0)
 
 	return 0;
 }
@@ -234,6 +278,10 @@ static int load_elf_binary(struct minix_rt_binprm *bprm)
 	bprm->end_data = end_data;
 	bprm->bss = elf_bss;
 	bprm->brk = elf_brk;
+
+	retval = create_elf_tables(bprm);
+	if (retval)
+		goto free_elf_phdata;
 
 	retval = execve(bprm);
 free_elf_phdata:

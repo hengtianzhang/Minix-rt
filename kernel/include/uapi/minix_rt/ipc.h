@@ -35,8 +35,11 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_system_brk);
 
 typedef struct {
-#define DIRECT_CPY_FROM		0x1
-#define DIRECT_CPY_TO		0x2
+#define DIRECT_MEMCPY_FROM		0x1
+#define DIRECT_MEMCPY_TO		0x2
+#define DIRECT_STRLEN			0x3
+#define DIRECT_STRCPY_FROM		0x4
+#define DIRECT_STRCPY_TO		0x5
 	int direct;
 	pid_t pid;
 	const void *dest;
@@ -119,10 +122,11 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_SYSTEM_BRK			0x2
 #define IPC_M_TYPE_SYSTEM_STRING		0x3
 #define IPC_M_TYPE_SYSTEM_MMAP			0x4
-#define IPC_M_TYPE_SYSTEM_TASK_SIZE		0x5
-#define IPC_M_TYPE_SYSTEM_EXEC			0x6
+#define IPC_M_TYPE_SYSTEM_EXEC			0x5
+#define IPC_M_TYPE_SYSTEM_TASK_SIZE		0x6
+#define IPC_M_TYPE_SYSTEM_SEED			0x7
 
-#define IPC_M_TYPE_VFS_EXEC				0x7
+#define IPC_M_TYPE_VFS_EXEC				0x8
 
 enum {
 	ENDPOINT_SYSTEM,

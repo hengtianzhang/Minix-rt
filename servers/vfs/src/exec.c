@@ -61,7 +61,7 @@ struct user_arg_ptr {
 /*
  * count() counts the number of strings in array ARGV.
  */
-static int count(struct user_arg_ptr argv, int max, pid_t pid)
+static int count(struct user_arg_ptr argv, int max, pid_t pid, int *size)
 {
 	int ret, i;
 	const char **native;
@@ -87,6 +87,13 @@ static int count(struct user_arg_ptr argv, int max, pid_t pid)
 			ret = -E2BIG;
 			goto free;
 		}
+
+		if (size) {
+			ret = message_strlen(p, pid);
+			if (ret <= 0)
+				goto free;
+			*size += ret;
+		}
 		++i;
 	}
 
@@ -99,18 +106,23 @@ free:
 static int prepare_arg_pages(struct minix_rt_binprm *bprm, message_t *m)
 {
 	struct user_arg_ptr argv;
+	int size;
 
 	argv.ptr.native = m->m_vfs_exec.argv;
 	argv.len = m->m_vfs_exec.argv_len;
-	bprm->argc = count(argv, MAX_ARG_STRINGS, m->m_source);
+	size = 0;
+	bprm->argc = count(argv, MAX_ARG_STRINGS, m->m_source, &size);
 	if (bprm->argc < 0)
 		return bprm->argc;
+	bprm->p += size;
 
 	argv.ptr.native = m->m_vfs_exec.envp;
 	argv.len = m->m_vfs_exec.envp_len;
-	bprm->envc = count(argv, MAX_ARG_STRINGS, m->m_source);
+	size = 0;
+	bprm->envc = count(argv, MAX_ARG_STRINGS, m->m_source, &size);
 	if (bprm->envc < 0)
 		return bprm->argc;
+	bprm->p += size;
 
 	return 0;
 }
@@ -136,6 +148,7 @@ static int do_execve_file(struct filename *filename, message_t *m)
 	if (!bprm)
 		goto out;
 
+	bprm->p = 0;
 	retval = prepare_arg_pages(bprm, m);
 	if (retval < 0)
 		goto out_free;

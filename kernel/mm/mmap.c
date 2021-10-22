@@ -1095,11 +1095,11 @@ int mmap_strcpy_to_vma(unsigned long addr, void *src, struct task_struct *tsk)
 	return __mmap_strcpy_vma(src, addr, tsk, false);
 }
 
-int mmap_strnlen_vma(char *s, struct task_struct *tsk)
+int mmap_strnlen_vma(const char *s, struct task_struct *tsk)
 {
 	int ret, start_offset, skip = 0;
 	struct vm_area_struct *vma, *curr_vma;
-	char *start;
+	const char *start;
 	struct page *page;
 	void *virt;
 	int size, total_size, curr_size;

@@ -1,6 +1,8 @@
 #ifndef __UAPI_MINIX_RT_BINFMT_H_
 #define __UAPI_MINIX_RT_BINFMT_H_
 
+#include <base/auxvec.h>
+
 #include <asm/base/page-def.h>
 
 /* Stack area protections */
@@ -45,6 +47,10 @@ struct minix_rt_binprm {
 	unsigned long e_entry;
 	unsigned long start_code, end_code, start_data, end_data;
 	unsigned long bss, brk;
+
+	unsigned long saved_auxv[AT_VECTOR_SIZE];
+
+	unsigned long p;
 
 	pid_t pid;
 };

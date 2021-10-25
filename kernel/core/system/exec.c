@@ -192,6 +192,9 @@ free_mm:
 	if (m->m_sys_exec.retval) {
 		mmap_destroy_mm(mm);
 		mmap_free_mm_struct(mm);
+	} else if (old_mm) {
+		mmap_destroy_mm(old_mm);
+		mmap_free_mm_struct(old_mm);
 	}
 free_file:
 	kfree(file);

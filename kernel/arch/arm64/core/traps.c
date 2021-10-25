@@ -19,6 +19,7 @@
 #include <base/common.h>
 #include <base/linkage.h>
 
+#include <minix_rt/uaccess.h>
 #include <minix_rt/smp.h>
 #include <minix_rt/sched.h>
 #include <minix_rt/stat.h>
@@ -33,6 +34,7 @@
 #include <asm/exception.h>
 #include <asm/ptrace.h>
 #include <asm/uaccess.h>
+#include <asm/traps.h>
 #include <asm/arch_timer.h>
 
 static const char *handler[]= {
@@ -291,6 +293,58 @@ void arm64_skip_faulting_instruction(struct pt_regs *regs, unsigned long size)
 //		user_fastforward_single_step(current);
 }
 
+static LIST_HEAD(undef_hook);
+static DEFINE_RAW_SPINLOCK(undef_lock);
+
+void register_undef_hook(struct undef_hook *hook)
+{
+	u64 flags;
+
+	raw_spin_lock_irqsave(&undef_lock, flags);
+	list_add(&hook->node, &undef_hook);
+	raw_spin_unlock_irqrestore(&undef_lock, flags);
+}
+
+void unregister_undef_hook(struct undef_hook *hook)
+{
+	u64 flags;
+
+	raw_spin_lock_irqsave(&undef_lock, flags);
+	list_del(&hook->node);
+	raw_spin_unlock_irqrestore(&undef_lock, flags);
+}
+
+static int call_undef_hook(struct pt_regs *regs)
+{
+	struct undef_hook *hook;
+	u64 flags;
+	u32 instr;
+	int (*fn)(struct pt_regs *regs, u32 instr) = NULL;
+	void __user *pc = (void __user *)regs->pc;
+
+	if (!user_mode(regs)) {
+		__le32 instr_le;
+		if (probe_kernel_address((__force __le32 *)pc, instr_le))
+			goto exit;
+		instr = le32_to_cpu(instr_le);
+	} else {
+		/* 32-bit ARM instruction */
+		__le32 instr_le;
+		if (get_user(instr_le, (__le32 __user *)pc))
+			goto exit;
+		instr = le32_to_cpu(instr_le);
+	}
+
+	raw_spin_lock_irqsave(&undef_lock, flags);
+	list_for_each_entry(hook, &undef_hook, node)
+		if ((instr & hook->instr_mask) == hook->instr_val &&
+			(regs->pstate & hook->pstate_mask) == hook->pstate_val)
+			fn = hook->fn;
+	raw_spin_unlock_irqrestore(&undef_lock, flags);
+exit:
+	return fn ? fn(regs, instr) : 1;
+}
+
 void force_signal_inject(int signal, int code, unsigned long address)
 {
 	const char *desc;
@@ -332,6 +386,9 @@ void arm64_notify_segfault(unsigned long addr)
 
 asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 {
+	if (call_undef_hook(regs) == 0)
+		return;
+
 	BUG_ON(!user_mode(regs));
 	force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc);
 }

@@ -98,4 +98,32 @@ copy_to_user(void __user *to, const void *from, unsigned long n)
 
 #define BAD_ADDR(x) ((unsigned long)(x) >= TASK_SIZE)
 
+/*
+ * probe_kernel_read(): safely attempt to read from a location
+ * @dst: pointer to the buffer that shall take the data
+ * @src: address to read from
+ * @size: size of the data chunk
+ *
+ * Safely read from address @src to the buffer at @dst.  If a kernel fault
+ * happens, handle that and return -EFAULT.
+ */
+extern long probe_kernel_read(void *dst, const void *src, size_t size);
+extern long __probe_kernel_read(void *dst, const void *src, size_t size);
+
+static __always_inline unsigned long
+__copy_from_user_inatomic(void *to, const void __user *from, unsigned long n)
+{
+	return raw_copy_from_user(to, from, n);
+}
+
+/**
+ * probe_kernel_address(): safely attempt to read from a location
+ * @addr: address to read from
+ * @retval: read into this variable
+ *
+ * Returns 0 on success, or -EFAULT.
+ */
+#define probe_kernel_address(addr, retval)		\
+	probe_kernel_read(&retval, addr, sizeof(retval))
+
 #endif /* !__MINIX_RT_UACCESS_H_ */

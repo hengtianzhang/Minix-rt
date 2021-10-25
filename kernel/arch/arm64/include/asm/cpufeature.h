@@ -198,6 +198,11 @@ static inline s64 arm64_ftr_value(const struct arm64_ftr_bits *ftrp, u64 val)
 	return (s64)cpuid_feature_extract_field_width(val, ftrp->shift, ftrp->width, ftrp->sign);
 }
 
+static inline u64 arm64_ftr_reg_user_value(const struct arm64_ftr_reg *reg)
+{
+	return (reg->user_val | (reg->sys_val & reg->user_mask));
+}
+
 static inline int cpucap_default_scope(const struct arm64_cpu_capabilities *cap)
 {
 	return cap->type & ARM64_CPUCAP_SCOPE_MASK;
@@ -240,4 +245,5 @@ static inline bool cpus_have_cap(unsigned int num)
 void __init setup_cpu_features(void);
 void check_local_cpu_capabilities(void);
 
+int do_emulate_mrs(struct pt_regs *regs, u32 sys_reg, u32 rt);
 #endif /* !__ASM_CPUFEATURE_H_ */

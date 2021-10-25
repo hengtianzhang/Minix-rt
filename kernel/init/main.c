@@ -31,6 +31,8 @@ extern const char linux_banner[];
 void __weak __init early_arch_platform_init(void) {}
 void __weak __init setup_arch(void) {}
 
+void __weak __init late_arch_platform_init(void) {}
+
 static __init void mm_init(void)
 {
 	free_area_init_nodes();
@@ -120,6 +122,7 @@ asmlinkage __visible void __init start_kernel(void)
 
 	ipc_init();
 
+	late_arch_platform_init();
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();
 }

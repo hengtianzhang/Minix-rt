@@ -19,7 +19,21 @@
 #define __ASM_TRAP_H_
 
 #include <base/compiler.h>
+#include <base/list.h>
 
+struct pt_regs;
+
+struct undef_hook {
+	struct list_head node;
+	u32 instr_mask;
+	u32 instr_val;
+	u64 pstate_mask;
+	u64 pstate_val;
+	int (*fn)(struct pt_regs *regs, u32 instr);
+};
+
+void register_undef_hook(struct undef_hook *hook);
+void unregister_undef_hook(struct undef_hook *hook);
 void arm64_force_sig_fault(int signo, int code, void __user *addr, const char *str);
 void arm64_force_sig_mceerr(int code, void __user *addr, short lsb, const char *str);
 void arm64_skip_faulting_instruction(struct pt_regs *regs, unsigned long size);

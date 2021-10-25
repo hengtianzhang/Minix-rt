@@ -2,6 +2,7 @@
 #include <minix_rt/sched.h>
 #include <minix_rt/page.h>
 #include <minix_rt/mmap.h>
+#include <minix_rt/syscalls.h>
 
 static inline void brk_populate_mess(message_t *m, int state, u64 brk)
 {
@@ -139,4 +140,31 @@ void system_brk(endpoint_t ep, message_t *m)
 		default:
 			break;
 	}
+}
+
+SYSCALL_DEFINE1(brk, unsigned long, brk)
+{
+	int ret;
+	unsigned long retval;
+	unsigned long origbrk;
+	unsigned long min_brk;
+	struct mm_struct *mm = current->mm;
+	message_t m;
+
+	origbrk = mm->brk;
+	min_brk = mm->start_brk;
+	retval = origbrk;
+	if (brk < min_brk)
+		goto out;
+
+	memset(&m, 0, sizeof (message_t));
+	m.m_type = IPC_M_TYPE_SYSTEM_BRK;
+	m.m_sys_brk.brk = brk;
+	ret = __ipc_send(ENDPOINT_SYSTEM, &m);
+	if (ret)
+		return retval;
+
+	return m.m_sys_brk.retval == 0 ? brk : retval;
+out:
+	return retval;
 }

@@ -7,7 +7,6 @@
 
 #define __NR_rt_sigreturn (139)
 __SYSCALL(__NR_rt_sigreturn, sys_rt_sigreturn)
-
 #define __NR_getuid 174
 __SYSCALL(__NR_getuid, sys_getuid)
 #define __NR_geteuid 175
@@ -16,6 +15,8 @@ __SYSCALL(__NR_geteuid, sys_geteuid)
 __SYSCALL(__NR_getgid, sys_getgid)
 #define __NR_getegid 177
 __SYSCALL(__NR_getegid, sys_getegid)
+#define __NR_brk 214
+__SYSCALL(__NR_brk, sys_brk)
 
 #define __NR_notifier (295)
 __SYSCALL(__NR_notifier, sys_notifier)

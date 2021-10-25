@@ -61,9 +61,10 @@ struct user_arg_ptr {
 /*
  * count() counts the number of strings in array ARGV.
  */
-static int count(struct user_arg_ptr argv, int max, pid_t pid, int *size)
+static int __count(struct user_arg_ptr argv, int max, pid_t pid,
+					struct minix_rt_binprm *bprm, int flags)
 {
-	int ret, i;
+	int ret, i, j;
 	const char **native;
 
 	native = malloc(argv.len);
@@ -76,55 +77,135 @@ static int count(struct user_arg_ptr argv, int max, pid_t pid, int *size)
 		goto free;
 	}
 
+	if (flags) {
+		bprm->argvs = malloc(sizeof (void *) * argv.len);
+		if (!bprm->argvs) {
+			ret = -ENOMEM;
+			goto free;
+		}
+	} else {
+		bprm->envps = malloc(sizeof (void *) * argv.len);
+		if (!bprm->envps) {
+			ret = -ENOMEM;
+			goto free;
+		}
+	}
+
 	i = 0;
 	for (;;) {
 		const char *p = native[i];
+		size_t len;
 
 		if (!p)
 			break;
 
 		if (i >= max) {
 			ret = -E2BIG;
-			goto free;
+			goto free_str;
 		}
 
-		if (size) {
-			ret = message_strlen(p, pid);
-			if (ret <= 0)
-				goto free;
-			*size += ret;
+		ret = message_strlen(p, pid);
+		if (ret <= 0)
+			goto free_str;
+
+		if (flags) {
+			bprm->argvs[i] = malloc(ret);
+			if (!bprm->argvs[i]) {
+				ret = -ENOMEM;
+				goto free_str;
+			}
+
+			len = message_memcpy(bprm->argvs[i], p, ret, pid);
+			if (ret != len) {
+				ret = -EINVAL;
+				++i;
+				goto free_str;
+			}
+		} else {
+			bprm->envps[i] = malloc(ret);
+			if (!bprm->envps[i]) {
+				ret = -ENOMEM;
+				goto free_str;
+			}
+
+			len = message_memcpy(bprm->envps[i], p, ret, pid);
+			if (ret != len) {
+				ret = -EINVAL;
+				++i;
+				goto free_str;
+			}	
 		}
+
+		bprm->p += len;
 		++i;
 	}
 
 	ret = i;
+
 free:
 	free(native);
 	return ret;
+
+free_str:
+	if (flags) {
+		for (j = 0; j < i; j++) {
+			free(bprm->argvs[j]);
+		}
+		free(bprm->argvs);
+	} else {
+		for (j = 0; j < i; j++) {
+			free(bprm->envps[j]);
+		}
+		free(bprm->envps);
+	}
+
+	goto free;
+}
+
+/*
+ * count() counts the number of strings in array ARGV.
+ */
+static int arg_count(struct user_arg_ptr argv, int max, pid_t pid, struct minix_rt_binprm *bprm)
+{
+	return __count(argv, max, pid, bprm, 1);
+}
+
+/*
+ * count() counts the number of strings in array ARGV.
+ */
+static int env_count(struct user_arg_ptr argv, int max, pid_t pid, struct minix_rt_binprm *bprm)
+{
+	return __count(argv, max, pid, bprm, 0);
+}
+
+static void free_count(struct minix_rt_binprm *bprm)
+{
+	int i;
+
+	for (i = 0; i < bprm->argc; i++)
+		free(bprm->argvs[i]);
+	free(bprm->argvs);
+
+	for (i = 0; i < bprm->envc; i++)
+		free(bprm->envps[i]);
+	free(bprm->envps);
 }
 
 static int prepare_arg_pages(struct minix_rt_binprm *bprm, message_t *m)
 {
 	struct user_arg_ptr argv;
-	int size;
 
 	argv.ptr.native = m->m_vfs_exec.argv;
 	argv.len = m->m_vfs_exec.argv_len;
-	size = 0;
-	bprm->argc = count(argv, MAX_ARG_STRINGS, m->m_source, &size);
+	bprm->argc = arg_count(argv, MAX_ARG_STRINGS, m->m_source, bprm);
 	if (bprm->argc < 0)
 		return bprm->argc;
-	bprm->argv_p = size;
-	bprm->p += size;
 
 	argv.ptr.native = m->m_vfs_exec.envp;
 	argv.len = m->m_vfs_exec.envp_len;
-	size = 0;
-	bprm->envc = count(argv, MAX_ARG_STRINGS, m->m_source, &size);
+	bprm->envc = env_count(argv, MAX_ARG_STRINGS, m->m_source, bprm);
 	if (bprm->envc < 0)
 		return bprm->argc;
-	bprm->env_p = size;
-	bprm->p += size;
 
 	return 0;
 }
@@ -151,8 +232,6 @@ static int do_execve_file(struct filename *filename, message_t *m)
 		goto out;
 
 	bprm->p = 0;
-	bprm->argv_p = 0;
-	bprm->env_p = 0;
 	retval = prepare_arg_pages(bprm, m);
 	if (retval < 0)
 		goto out_free;
@@ -172,6 +251,7 @@ static int do_execve_file(struct filename *filename, message_t *m)
 
 	retval = exec_binprm(bprm);
 
+	free_count(bprm);
 out_free:
 	free(bprm);
 out:

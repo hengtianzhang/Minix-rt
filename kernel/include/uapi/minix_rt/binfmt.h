@@ -51,7 +51,8 @@ struct minix_rt_binprm {
 
 	unsigned long saved_auxv[AT_VECTOR_SIZE];
 
-	unsigned long p, env_p, argv_p;
+	unsigned long p, malloc_p;
+	unsigned long **argvs, **envps;
 
 	pid_t pid;
 };

@@ -969,6 +969,7 @@ static int __mmap_memcpy_vma(void *buffer, unsigned long addr, unsigned long siz
 		for (i = start_index; i < end_index + 1; i++) {
 			page = vma->pages[i];
 			virt = page_to_virt(page);
+			start_offset = 0;
 			if (i == start_index) {
 				start_offset = (start - vma->vm_start) % PAGE_SIZE;
 				virt += start_offset;

@@ -272,7 +272,7 @@ __init struct task_struct *service_core_init(int type,
 	tsk->mm->elf_bss = elf_bss;
 	tsk->mm->elf_brk = elf_brk;
 	tsk->mm->start_stack = stack_top;
-	tsk->mm->start_brk = tsk->mm->brk =  PAGE_ALIGN(elf_brk);
+	tsk->mm->start_brk = tsk->mm->brk = PAGE_ALIGN(elf_brk);
 	tsk->mm->mmap_base = tsk->mm->mmap_end = stack_base;
 
 	elf_entry = loc->elf_ex.e_entry;

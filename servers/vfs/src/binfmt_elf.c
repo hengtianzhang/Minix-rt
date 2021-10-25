@@ -108,31 +108,30 @@ static int elf_map(struct minix_rt_binprm *bprm, const void *file, unsigned long
 static int
 create_elf_tables(struct minix_rt_binprm *bprm, unsigned long task_size)
 {
-	unsigned long p = bprm->p, top = task_size;
+	unsigned long top = task_size;
 	const char *k_platform = ELF_PLATFORM;
 	const char *k_base_platform = ELF_BASE_PLATFORM;
 	elf_addr_t *u_platform;
 	elf_addr_t *u_base_platform;
 	elf_addr_t *u_rand_bytes;
-	elf_addr_t *u_envp, *u_argv;
+	unsigned long u_envp = 0, u_argv = 0;
 	unsigned char k_rand_bytes[16];
 	elf_addr_t *elf_info;
 	int cnt, ret, i;
 	int ei_index = 0;
 	int items, argc, envc;
 	elf_addr_t *addr;
+	size_t len;
 
 	u_platform = NULL;
 	if (k_platform) {
-		size_t len = strlen(k_platform) + 1;
-
+		len = strlen(k_platform) + 1;
 		u_platform = (elf_addr_t *)STACK_ALLOC(top, len);
 	}
 
 	u_base_platform = NULL;
 	if (k_base_platform) {
-		size_t len = strlen(k_base_platform) + 1;
-
+		len = strlen(k_base_platform) + 1;
 		u_base_platform = (elf_addr_t *)STACK_ALLOC(top, len);
 	}
 
@@ -140,15 +139,23 @@ create_elf_tables(struct minix_rt_binprm *bprm, unsigned long task_size)
 	u_rand_bytes = (elf_addr_t *)
 		       STACK_ALLOC(top, sizeof(k_rand_bytes));
 
-	u_envp = (elf_addr_t *)
-		STACK_ALLOC(top, ALIGN(bprm->env_p, sizeof (void *)));
-	bprm->env_start = (unsigned long)u_envp;
-	bprm->env_end = bprm->env_start + ALIGN(bprm->env_p, sizeof (void *));
+	STACK_ALLOC(top, sizeof (void *));
 
-	u_argv = (elf_addr_t *)
-		STACK_ALLOC(top, ALIGN(bprm->argv_p, sizeof (void *)));
+	bprm->env_end = top;
+	for (i = bprm->envc - 1; i >= 0; i--) {
+		u_envp = (elf_addr_t)
+		STACK_ALLOC(top, ALIGN(strlen((const char *)bprm->envps[i]) + 1, sizeof (void *)));
+	}
+	bprm->env_start = (unsigned long)u_envp;
+
+	bprm->arg_end = top;
+	for (i = bprm->argc - 1; i >= 0; i--) {
+		u_argv = (elf_addr_t)
+		STACK_ALLOC(top, ALIGN(strlen((const char *)bprm->argvs[i]) + 1, sizeof (void *)));
+	}
+	u_argv = (elf_addr_t)
+		STACK_ALLOC(top, ALIGN(strlen(bprm->filename) + 1, sizeof (void *)));
 	bprm->arg_start = (unsigned long)u_argv;
-	bprm->arg_end = bprm->arg_start + ALIGN(bprm->argv_p, sizeof (void *));
 
 	elf_info = (elf_addr_t *)bprm->saved_auxv;
 	/* update AT_VECTOR_SIZE_BASE if the number of NEW_AUX_ENT() changes */
@@ -191,46 +198,88 @@ create_elf_tables(struct minix_rt_binprm *bprm, unsigned long task_size)
 	/* AT_NULL is zero; clear the rest too */
 	memset(&elf_info[ei_index], 0,
 	       sizeof (bprm->saved_auxv) - ei_index * sizeof elf_info[0]);
-
 	/* And advance past the AT_NULL entry.  */
 	ei_index += 2;
-
 	top = (unsigned long)STACK_ADD(top, ei_index);
 
-	items = bprm->argc + 1 + bprm->envc + 1 + 1;
-	top = STACK_ROUND(top, items);
+	items = (bprm->argc + 1) + (bprm->envc + 1) + 1 + 1;
+	top = (unsigned long)STACK_ADD(top, items);
 
 	addr = (elf_addr_t *)malloc(task_size - top);
 	if (!addr)
 		return -ENOMEM;
 
-	*addr++ = bprm->argc;
+	bprm->malloc_p = (unsigned long)addr;
+	bprm->p = top;
+
+	*addr++ = bprm->argc + 1;
 	top += sizeof (elf_addr_t);
 	argc = bprm->argc;
-	bprm->arg_start = bprm->arg_end = u_argv;
-	while (argc-- > 0) {
-		size_t len;
 
+	*addr++ = u_argv;
+	top += sizeof (elf_addr_t);
+
+	u_argv += ALIGN(strlen(bprm->filename) + 1, sizeof (void *));
+	for (i = 0; i < bprm->argc; i++) {
 		*addr = u_argv;
-
-		/* TODO */
+		u_argv += ALIGN(strlen((const char *)bprm->argvs[i]) + 1, sizeof (void *));
+		addr++;
+		top += sizeof (elf_addr_t);
 	}
-
-	bprm->env_start = bprm->env_end = u_envp;
-	while (argc-- > 0) {
-		size_t len;
-
-		*addr = u_envp;
-
-		/* TODO */
-	}
-
 	*addr++ = 0;
+	top += sizeof (elf_addr_t);
+
+	envc = bprm->envc;
+	for (i = 0; i < bprm->envc; i++) {
+		*addr = u_envp;
+		u_envp += ALIGN(strlen((const char *)bprm->envps[i]) + 1, sizeof (void *));
+		addr++;
+		top += sizeof (elf_addr_t);
+	}
+	*addr++ = 0;
+	top += sizeof (elf_addr_t);
 
 	memcpy(addr, elf_info, ei_index * sizeof (elf_addr_t));
+	addr += ei_index;
 	top += ei_index * sizeof (elf_addr_t);
 
-	printf("AA addr 0x%lx\n", top);
+	memcpy(addr, bprm->filename, strlen(bprm->filename) + 1);
+	addr = (void *)((unsigned long)addr + ALIGN(strlen(bprm->filename) + 1, sizeof (void *)));
+	top += ALIGN(strlen(bprm->filename) + 1, sizeof (void *));
+
+	argc = bprm->argc;
+	for (i = 0; i < argc; i++) {
+		memcpy(addr, bprm->argvs[i], strlen((const char *)bprm->argvs[i]) + 1);
+		addr = (void *)((unsigned long)addr + ALIGN(strlen((const char *)bprm->argvs[i]) + 1, sizeof (void *)));
+		top += ALIGN(strlen((const char *)bprm->argvs[i]) + 1, sizeof (void *));
+	}
+
+	envc = bprm->envc;
+	for (i = 0; i < envc; i++) {
+		memcpy(addr, bprm->envps[i], strlen((const char *)bprm->envps[i]) + 1);
+		addr = (void *)((unsigned long)addr + ALIGN(strlen((const char *)bprm->envps[i]) + 1, sizeof (void *)));
+		top += ALIGN(strlen((const char *)bprm->envps[i]) + 1, sizeof (void *));
+
+	}
+	*addr++ = 0;
+	top += sizeof (elf_addr_t);
+
+	memcpy(addr, k_rand_bytes, sizeof (k_rand_bytes));
+	addr = (void *)((unsigned long)addr + sizeof (k_rand_bytes));
+	top += sizeof (k_rand_bytes);
+
+	if (k_base_platform) {
+		memcpy(addr, k_base_platform, strlen(k_base_platform) + 1);
+		addr = (void *)((unsigned long)addr + ALIGN(strlen(k_base_platform) + 1, sizeof (void *)));
+		top += ALIGN(strlen(k_base_platform) + 1, sizeof (void *));
+	}
+
+	if (k_platform) {
+		memcpy(addr, k_platform, strlen(k_platform) + 1);
+		addr = (void *)((unsigned long)addr + ALIGN(strlen(k_platform) + 1, sizeof (void *)));
+		top += ALIGN(strlen(k_platform) + 1, sizeof (void *));
+	}
+
 	return 0;
 }
 
@@ -384,6 +433,8 @@ static int load_elf_binary(struct minix_rt_binprm *bprm)
 		goto free_elf_phdata;
 
 	retval = execve(bprm);
+
+	free((void *)bprm->malloc_p);
 free_elf_phdata:
 	next = bprm->binprm_info;
 	while (next) {

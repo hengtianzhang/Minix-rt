@@ -109,6 +109,15 @@ asmlinkage __visible int printf(const char *fmt, ...)
     return r;
 }
 
+void syscall_printf(const char *buf)
+{
+	u64 flags;
+
+	raw_spin_lock_irqsave(&printk_lock, flags);
+	puts_q(buf);
+	raw_spin_unlock_irqrestore(&printk_lock, flags);
+}
+
 SYSCALL_DEFINE2(debug_printf, const char __user *, ptr, int, len)
 {
 	u64 flags;

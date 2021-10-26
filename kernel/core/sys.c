@@ -1,4 +1,5 @@
 #include <minix_rt/syscalls.h>
+#include <minix_rt/uts.h>
 
 SYSCALL_DEFINE0(getuid)
 {
@@ -21,5 +22,16 @@ SYSCALL_DEFINE0(getgid)
 SYSCALL_DEFINE0(getegid)
 {
 	/* Only we change this so SMP safe */
+	return 0;
+}
+
+SYSCALL_DEFINE1(newuname, struct new_utsname __user *, name)
+{
+	struct new_utsname tmp;
+
+	memcpy(&tmp, &utsname, sizeof(tmp));
+	if (copy_to_user(name, &tmp, sizeof(tmp)))
+		return -EFAULT;
+
 	return 0;
 }

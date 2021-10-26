@@ -24,3 +24,12 @@ const char linux_banner[] =
 	KERNEL_COMPILE_HOST ") (" KERNEL_COMPILER ") " UTS_VERSION "\n";
 
 BUILD_SALT;
+
+const struct new_utsname utsname = {
+	.sysname 	= UTS_SYSNAME,
+	.nodename 	= UTS_NODENAME,
+	.release	= MINIX_RT_VERSION_STRING,
+	.version	= UTS_VERSION,
+	.machine	= UTS_MACHINE,
+	.domainname	= UTS_DOMAINNAME,
+};

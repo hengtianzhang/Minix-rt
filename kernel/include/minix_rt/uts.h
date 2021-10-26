@@ -2,6 +2,8 @@
 #ifndef __MINIX_RT_UTS_H_
 #define __MINIX_RT_UTS_H_
 
+#include <uapi/minix_rt/utsname.h>
+
 /*
  * Defines for what uname() should return 
  */
@@ -16,5 +18,7 @@
 #ifndef UTS_DOMAINNAME
 #define UTS_DOMAINNAME "(none)"	/* set by setdomainname() */
 #endif
+
+extern const struct new_utsname utsname;
 
 #endif /* !__MINIX_RT_UTS_H_ */

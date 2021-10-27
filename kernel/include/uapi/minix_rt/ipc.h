@@ -129,7 +129,12 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_SYSTEM_AUXVEC		9
 #define IPC_M_TYPE_SYSTEM_ELF_HWCAP		10
 
-#define IPC_M_TYPE_VFS_EXEC				11
+#define IPC_M_TYPE_PM_GETUID			11
+#define IPC_M_TYPE_PM_GETEUID			12
+#define IPC_M_TYPE_PM_GETGID			13
+#define IPC_M_TYPE_PM_GETEGID			14
+
+#define IPC_M_TYPE_VFS_EXEC				15
 
 enum {
 	ENDPOINT_SYSTEM,

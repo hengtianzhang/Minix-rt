@@ -52,6 +52,7 @@ noinline void rest_init(void)
 
 	mm_init();
 
+	services_task_init_init();
 	system_task_init();	
 	services_task_init();
 

@@ -425,6 +425,7 @@ extern struct task_struct *create_system_task(int flags, kthread_t kthread, char
 				void *data, cpumask_t mask);
 extern void system_task_init(void);
 extern void services_task_init(void);
+extern void services_task_init_init(void);
 extern void task_do_exit(struct task_struct *tsk, int flags);
 
 #define INIT_SERVICE_COMM "rootService"

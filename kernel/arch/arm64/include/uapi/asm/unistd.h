@@ -13,6 +13,8 @@ __SYSCALL(__NR_writev, sys_writev)
 __SYSCALL(__NR_rt_sigreturn, sys_rt_sigreturn)
 #define __NR_uname 160
 __SYSCALL(__NR_uname, sys_newuname)
+#define __NR_getpid 172
+__SYSCALL(__NR_getpid, sys_getpid)
 #define __NR_getuid 174
 __SYSCALL(__NR_getuid, sys_getuid)
 #define __NR_geteuid 175

@@ -284,9 +284,16 @@ __init struct task_struct *service_core_init(int type,
 	task_thread_info(tsk)->addr_limit = USER_DS;
 
 	tsk->state = TASK_RUNNING;
-	ret = pid_alloc_pid(tsk);
-	if (ret)
-		goto fail_service_stack;
+
+	if (type != TYPE_INIT) {
+		ret = pid_alloc_pid(tsk);
+		if (ret)
+			goto fail_service_stack;
+	} else {
+		tsk->pid.pid = 1;
+		ret = pid_insert_process_by_pid(tsk);
+		BUG_ON(ret == false);
+	}
 
 	tsk->services_type = type;
 
@@ -371,8 +378,25 @@ void __init services_task_init(void)
 		if (strncmp(name, "init", 5) != 0)
 			tsk = service_core_init(TYPE_SERVERS, (unsigned long)elf_start, name);
 		else
-			tsk = service_core_init(TYPE_INIT, (unsigned long)elf_start, name);
+			continue;
 		BUG_ON(!tsk);
 		wake_up_new_task(tsk, 0);
 	}
+}
+
+void __init services_task_init_init(void)
+{
+	unsigned long start_archive, size;
+	unsigned long len;
+	const void *elf_start;
+	struct task_struct *tsk;
+
+	len = __end_archive - __start_archive;
+	start_archive = (unsigned long)__start_archive;
+
+	elf_start = cpio_get_file((const void *)start_archive, len, "init", &size);
+	BUG_ON(!elf_start);
+	tsk = service_core_init(TYPE_INIT, (unsigned long)elf_start, "init");
+	BUG_ON(!tsk);
+	wake_up_new_task(tsk, 0);
 }

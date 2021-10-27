@@ -1,5 +1,11 @@
 #include <minix_rt/syscalls.h>
 #include <minix_rt/uts.h>
+#include <minix_rt/sched.h>
+
+SYSCALL_DEFINE0(getpid)
+{
+	return current->pid.pid;
+}
 
 SYSCALL_DEFINE0(getuid)
 {

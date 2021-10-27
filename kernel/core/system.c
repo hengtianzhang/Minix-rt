@@ -76,14 +76,9 @@ struct task_struct *create_system_task(int flags, kthread_t kthread, char *name,
 
 	task_set_stack_end_magic(tsk);
 	tsk->state = TASK_RUNNING;
-	if (flags == CREATE_SYSTEM_THREAD) {
-		tsk->pid.pid = 1;
-		ret = pid_insert_process_by_pid(tsk);
-		BUG_ON(ret == false);
-	} else {
-		ret = pid_alloc_pid(tsk);
-		BUG_ON(ret);
-	}
+
+	ret = pid_alloc_pid(tsk);
+	BUG_ON(ret);
 
 	if (flags == CREATE_SYSTEM_THREAD)
 		BUG_ON(ipc_register_endpoint_by_tsk(tsk));

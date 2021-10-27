@@ -18,6 +18,7 @@ void system_exec(endpoint_t ep, message_t *m)
 	struct mmap_binprm_info binprm_info, *next;
 	void *file, *tmp_buf;
 	unsigned long stack_size = THREAD_SIZE;
+	unsigned long mmap_off, mmap_size, mmap_base, off;
 
 	src_tsk = pid_find_process_by_pid(m->m_source);
 	BUG_ON(!src_tsk);
@@ -155,6 +156,47 @@ void system_exec(endpoint_t ep, message_t *m)
 		goto free_tmp_buf;
 	}
 
+	mm->mmap_base = mm->mmap_base - PAGE_SIZE;
+	vma = mmap_get_vmap_area(mm->mmap_base, PAGE_SIZE,
+						VM_READ | VM_WRITE, mm, 0);
+	if (!vma) {
+		m->m_sys_exec.retval = -EINVAL;
+		goto free_tmp_buf;
+	}
+	i = vmap_page_range(vma);
+	if (i <= 0) {
+		mmap_free_vmap_area(mm->mmap_base, mm);
+		m->m_sys_exec.retval = -ENOMEM;
+		goto free_tmp_buf;
+	}
+
+	mmap_off = *(u64 *)(tmp_buf +8) - bprm->p;
+	mmap_size = TASK_SIZE - *(u64 *)(tmp_buf +8);
+
+
+	memcpy(page_to_virt(vma->pages[0]), tmp_buf + mmap_off, mmap_size);
+
+	exec_tsk->mm->arg_start = mm->mmap_base;
+	mmap_base = *(unsigned long *)(tmp_buf + 8);
+	for (i = 0; i < bprm->argc + 1; i++) {
+		off = *(u64 *)(tmp_buf +8 + i * sizeof (void *)) - mmap_base;
+		*(u64 *)(tmp_buf +8 + i * sizeof (void *)) = mm->mmap_base + off;
+	}
+
+	exec_tsk->mm->arg_end = mm->mmap_base +
+				*(u64 *)(tmp_buf +8 + (i - 1) * sizeof (void *)) - mmap_base;
+	i++;
+	bprm->envc += i;
+	exec_tsk->mm->env_start = mm->mmap_base +
+				*(u64 *)(tmp_buf +8 + i * sizeof (void *)) - mmap_base;
+
+	for (; i < bprm->envc; i++) {
+		off = *(u64 *)(tmp_buf +8 + i * sizeof (void *)) - mmap_base;
+		*(u64 *)(tmp_buf +8 + i * sizeof (void *)) = mm->mmap_base + off;
+	}
+	exec_tsk->mm->env_end = mm->mmap_base +
+				*(u64 *)(tmp_buf +8 + (i - 1) * sizeof (void *)) - mmap_base;
+
 	old_mm = exec_tsk->mm;
 	exec_tsk->mm = mm;
 
@@ -173,10 +215,6 @@ void system_exec(endpoint_t ep, message_t *m)
 	exec_tsk->mm->end_code = bprm->end_code;
 	exec_tsk->mm->start_data = bprm->start_data;
 	exec_tsk->mm->end_data = bprm->end_data;
-	exec_tsk->mm->arg_start = bprm->arg_start;
-	exec_tsk->mm->arg_end = bprm->arg_end;
-	exec_tsk->mm->env_start = bprm->env_start;
-	exec_tsk->mm->env_end = bprm->env_end;
 	exec_tsk->mm->elf_brk = bprm->brk;
 	exec_tsk->mm->elf_bss = bprm->bss;
 	exec_tsk->mm->start_brk = exec_tsk->mm->brk = PAGE_ALIGN(bprm->brk);

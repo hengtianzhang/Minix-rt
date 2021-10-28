@@ -44,6 +44,7 @@ struct task_struct *task_create_tsk(unsigned int flags)
 	atomic_set(&tsk->usage, 2);
 	spin_lock_init(&tsk->pi_lock);
 	tsk->parent = NULL;
+	spin_lock_init(&tsk->notifier.siglock);
 	INIT_LIST_HEAD(&tsk->children);
 	INIT_LIST_HEAD(&tsk->children_list);
 	INIT_LIST_HEAD(&tsk->children_exit);

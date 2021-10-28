@@ -1,11 +1,15 @@
 #ifndef __UAPI_ASM_GENERIC_SIGNAL_H_
 #define __UAPI_ASM_GENERIC_SIGNAL_H_
 
-#ifndef __ASSEMBLY__
-typedef unsigned long sigset_t;
-#endif /* !__ASSEMBLY__ */
-
 #define _NSIG		64
+#define _NSIG_BPW	__BITS_PER_LONG
+#define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
+
+#ifndef __ASSEMBLY__
+typedef struct {
+	unsigned long sig[_NSIG_WORDS];
+} sigset_t;
+#endif /* !__ASSEMBLY__ */
 
 #define SIGHUP		 1
 #define SIGINT		 2

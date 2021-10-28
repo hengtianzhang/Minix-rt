@@ -87,6 +87,63 @@ bool get_signal(struct ksignal *ksig)
 	return false;
 }
 
+static void __set_task_blocked(struct task_struct *tsk, const sigset_t *newset)
+{
+/* TODO */
+//	if (signal_pending(tsk) && !thread_group_empty(tsk)) {
+	if (signal_pending(tsk)) {
+		sigset_t newblocked;
+		/* A set of now blocked but previously unblocked signals. */
+		sigandnsets(&newblocked, newset, &current->notifier.blocked);
+	//	retarget_shared_pending(tsk, &newblocked);
+	}
+	tsk->notifier.blocked = *newset;
+//	recalc_sigpending();
+}
+
+void __set_current_blocked(const sigset_t *newset)
+{
+	struct task_struct *tsk = current;
+
+	/*
+	 * In case the signal mask hasn't changed, there is nothing we need
+	 * to do. The current->blocked shouldn't be modified by other task.
+	 */
+	if (sigequalsets(&tsk->notifier.blocked, newset))
+		return;
+
+	spin_lock_irq(&tsk->notifier.siglock);
+	__set_task_blocked(tsk, newset);
+	spin_unlock_irq(&tsk->notifier.siglock);
+}
+
+int sigprocmask(int how, sigset_t *set, sigset_t *oldset)
+{
+	struct task_struct *tsk = current;
+	sigset_t newset;
+
+	/* Lockless, only current can change ->blocked, never from irq */
+	if (oldset)
+		*oldset = tsk->notifier.blocked;
+
+	switch (how) {
+	case SIG_BLOCK:
+		sigorsets(&newset, &tsk->notifier.blocked, set);
+		break;
+	case SIG_UNBLOCK:
+		sigandnsets(&newset, &tsk->notifier.blocked, set);
+		break;
+	case SIG_SETMASK:
+		newset = *set;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	__set_current_blocked(&newset);
+	return 0;
+}
+
 void signal_setup_done(int failed, struct ksignal *ksig, int stepping)
 {
 }
@@ -135,7 +192,27 @@ SYSCALL_DEFINE6(notifier, enum notifier_type, table,
 SYSCALL_DEFINE4(rt_sigprocmask, int, how, sigset_t __user *, nset,
 		sigset_t __user *, oset, size_t, sigsetsize)
 {
-	printf("sssss\n");
-	while (1);
+	sigset_t old_set, new_set;
+	int error;
+
+	if (sigsetsize != sizeof (sigset_t))
+		return -EINVAL;
+
+	old_set = current->notifier.blocked;
+	if (nset) {
+		if (copy_from_user(&new_set, nset, sizeof (sigset_t)))
+			return -EFAULT;
+		sigdelsetmask(&new_set, sigmask(SIGKILL) | sigmask(SIGSTOP));
+
+		error = sigprocmask(how, &new_set, NULL);
+		if (error)
+			return error;
+	}
+
+	if (oset) {
+		if (copy_to_user(oset, &old_set, sizeof(sigset_t)))
+			return -EFAULT;
+	}
+
 	return 0;
 }

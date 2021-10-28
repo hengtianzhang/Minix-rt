@@ -399,6 +399,16 @@ static inline unsigned int notifier_table_size(void)
 	[0] =  1UL						\
 }}
 
+#ifndef SIG_BLOCK
+#define SIG_BLOCK          0	/* for blocking signals */
+#endif
+#ifndef SIG_UNBLOCK
+#define SIG_UNBLOCK        1	/* for unblocking signals */
+#endif
+#ifndef SIG_SETMASK
+#define SIG_SETMASK        2	/* for setting the signal mask */
+#endif
+
 typedef void __signalfn_t(int, void *, pid_t);
 typedef __signalfn_t __user *__sighandler_t;
 

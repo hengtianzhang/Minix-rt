@@ -12,6 +12,8 @@ struct task_struct idle_threads[CONFIG_NR_CPUS] = {
 		.notifier 		= {
 			.notifier_table = NOTIFIER_TABLE_MASK_NONE,
 			.action			= { { { .sa_handler = NOTIFIER_DFL, }, }, },
+			.blocked		= {{0}},
+			.siglock		= __SPIN_LOCK_UNLOCKED(init_sighand.siglock),
 		},
 		.prio			= MAX_PRIO,
 		.static_prio	= MAX_PRIO,

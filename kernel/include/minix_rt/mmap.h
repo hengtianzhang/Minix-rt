@@ -22,6 +22,8 @@ extern struct vm_area_struct *
 mmap_find_vma_area(unsigned long addr, struct mm_struct *mm);
 extern int vmap_page_range(struct vm_area_struct *vma);
 extern void vumap_page_range(struct vm_area_struct *vma);
+extern int mmap_mprotect_fixup(struct vm_area_struct *vma, unsigned long start,
+				unsigned long end, unsigned long flags);
 
 extern struct mm_struct *mmap_alloc_mm_struct(void);
 extern void mmap_free_mm_struct(struct mm_struct *mm);

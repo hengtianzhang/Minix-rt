@@ -657,6 +657,82 @@ err:
 	return err;
 }
 
+static void mprotect_fixup_pte_range(struct vm_area_struct *vma, pmd_t *pmdp,
+					unsigned long addr, unsigned long end, pgprot_t newprot)
+{
+	pte_t *pte;
+	struct page *page;
+
+	BUG_ON(pmd_none(*pmdp));
+
+	pte = pte_offset_kernel(pmdp, addr);
+	BUG_ON(!pte);
+	do {
+		page = pfn_to_page(__phys_to_pfn(__pte_to_phys(*pte)));
+		set_pte(pte, mk_pte(page, newprot));
+	} while (pte++, addr += PAGE_SIZE, addr != end);
+}
+
+static void mprotect_fixup_pmd_range(struct vm_area_struct *vma, pud_t *pudp,
+					unsigned long addr, unsigned long end, pgprot_t newprot)
+{
+	pmd_t *pmd;
+	unsigned long next;
+
+	BUG_ON(pud_none(*pudp));
+
+	pmd = pmd_offset(pudp, addr);
+	BUG_ON(!pmd);
+
+	do {
+		next = pmd_addr_end(addr, end);
+		mprotect_fixup_pte_range(vma, pmd, addr, next, newprot);
+	} while (pmd++, addr = next, addr != end);
+}
+
+static void mprotect_fixup_pud_range(struct vm_area_struct *vma, pgd_t *pgdp,
+					unsigned long addr, unsigned long end, pgprot_t newprot)
+{
+	pud_t *pud;
+	unsigned long next;
+
+	BUG_ON(pgd_none(*pgdp));
+
+	pud = pud_offset(pgdp, addr);
+	BUG_ON(!pud);
+
+	do {
+		next = pud_addr_end(addr, end);
+		mprotect_fixup_pmd_range(vma, pud, addr, next, newprot);
+	} while (pud++, addr = next, addr != end);
+}
+
+int mmap_mprotect_fixup(struct vm_area_struct *vma, unsigned long start,
+				unsigned long end, unsigned long flags)
+{
+	pgd_t *pgdp;
+	unsigned long next;
+	unsigned long addr = start;
+	pgprot_t newprot = vm_get_page_prot(flags | VM_SHARED);
+
+	if (!vma)
+		return -EINVAL;
+
+	if (start < vma->vm_start || end > vma->vm_end ||
+			start >= end || !PAGE_ALIGNED(start) || !PAGE_ALIGNED(end))
+		return -EINVAL;
+
+	pgdp = pgd_offset(vma->vm_mm->pgd, addr);
+	do {
+		next = pgd_addr_end(addr, end);
+		mprotect_fixup_pud_range(vma, pgdp, addr, next, newprot);
+	} while (pgdp++, addr = next, addr != end);
+
+	flush_tlb_range(vma->vm_mm, start, end);
+
+	return 0;
+}
+
 static bool __insert_vma_area(struct vm_area_struct *vma)
 {
 	struct rb_node **new = &(vma->vm_mm->vma_rb_root.rb_node), *parent = NULL;

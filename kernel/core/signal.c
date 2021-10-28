@@ -124,3 +124,18 @@ SYSCALL_DEFINE6(notifier, enum notifier_type, table,
 
 	return -EINVAL;
 }
+
+/**
+ *  sys_rt_sigprocmask - change the list of currently blocked signals
+ *  @how: whether to add, remove, or set signals
+ *  @nset: stores pending signals
+ *  @oset: previous value of signal mask if non-null
+ *  @sigsetsize: size of sigset_t type
+ */
+SYSCALL_DEFINE4(rt_sigprocmask, int, how, sigset_t __user *, nset,
+		sigset_t __user *, oset, size_t, sigsetsize)
+{
+	printf("sssss\n");
+	while (1);
+	return 0;
+}

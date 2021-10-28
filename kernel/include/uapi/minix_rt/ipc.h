@@ -28,6 +28,15 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_u64);
 
 typedef struct {
+	u64 start;
+	u64 len;
+	u64 prot;
+	int retval;
+	u8 padding[28];
+} mess_system_mprotect;
+IPC_ASSERT_MSG_SIZE(mess_system_mprotect);
+
+typedef struct {
 	u64 brk;
 	int retval;
 	u8 padding[44];
@@ -101,12 +110,13 @@ typedef struct {
 		mess_u32	m_u32;
 		mess_u64	m_u64;
 
-		mess_system_brk		m_sys_brk;
-		mess_system_string	m_sys_string;
-		mess_system_mmap	m_sys_mmap;
-		mess_system_exec	m_sys_exec;
+		mess_system_mprotect	m_sys_mprotect;
+		mess_system_brk			m_sys_brk;
+		mess_system_string		m_sys_string;
+		mess_system_mmap		m_sys_mmap;
+		mess_system_exec		m_sys_exec;
 
-		mess_vfs_exec		m_vfs_exec;
+		mess_vfs_exec			m_vfs_exec;
 
 		u8			size[IPC_MAX_MESSAGE_BYPE];	/* message payload may have 56 bytes at most */
 	};
@@ -118,23 +128,24 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_MASK			0x7fffffff
 #define IPC_M_TYPE_NOTIFIER 	0x80000000
 
-#define IPC_M_TYPE_SYSTEM_SBRK			1
-#define IPC_M_TYPE_SYSTEM_BRK			2
-#define IPC_M_TYPE_SYSTEM_STRING		3
-#define IPC_M_TYPE_SYSTEM_MMAP			4
-#define IPC_M_TYPE_SYSTEM_EXEC			5
-#define IPC_M_TYPE_SYSTEM_TASK_SIZE		6
-#define IPC_M_TYPE_SYSTEM_SEED			7
-#define IPC_M_TYPE_SYSTEM_AUXVEC_CNT	8
-#define IPC_M_TYPE_SYSTEM_AUXVEC		9
-#define IPC_M_TYPE_SYSTEM_ELF_HWCAP		10
+#define IPC_M_TYPE_SYSTEM_MPROTECT		1
+#define IPC_M_TYPE_SYSTEM_SBRK			2
+#define IPC_M_TYPE_SYSTEM_BRK			3
+#define IPC_M_TYPE_SYSTEM_STRING		4
+#define IPC_M_TYPE_SYSTEM_MMAP			5
+#define IPC_M_TYPE_SYSTEM_EXEC			6
+#define IPC_M_TYPE_SYSTEM_TASK_SIZE		7
+#define IPC_M_TYPE_SYSTEM_SEED			8
+#define IPC_M_TYPE_SYSTEM_AUXVEC_CNT	9
+#define IPC_M_TYPE_SYSTEM_AUXVEC		10
+#define IPC_M_TYPE_SYSTEM_ELF_HWCAP		11
 
-#define IPC_M_TYPE_PM_GETUID			11
-#define IPC_M_TYPE_PM_GETEUID			12
-#define IPC_M_TYPE_PM_GETGID			13
-#define IPC_M_TYPE_PM_GETEGID			14
+#define IPC_M_TYPE_PM_GETUID			12
+#define IPC_M_TYPE_PM_GETEUID			13
+#define IPC_M_TYPE_PM_GETGID			14
+#define IPC_M_TYPE_PM_GETEGID			15
 
-#define IPC_M_TYPE_VFS_EXEC				15
+#define IPC_M_TYPE_VFS_EXEC				16
 
 enum {
 	ENDPOINT_SYSTEM,

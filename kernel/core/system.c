@@ -34,6 +34,9 @@ static void system_handle_ipc_message(endpoint_t ep, message_t *m)
 		case IPC_M_TYPE_SYSTEM_EXEC:
 			system_exec(ep, m);
 			break;
+		case IPC_M_TYPE_SYSTEM_MPROTECT:
+			system_mprotect(ep, m);
+			break;
 		default:
 			system_misc(ep, m);
 			break;

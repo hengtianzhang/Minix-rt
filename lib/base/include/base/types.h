@@ -24,6 +24,8 @@ typedef unsigned long		size_t;
 typedef __signed__ long		ssize_t;
 #endif
 
+typedef unsigned short		umode_t;
+
 typedef _Bool	bool;
 
 typedef u8			uint8_t;

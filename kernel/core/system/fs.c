@@ -10,51 +10,60 @@ extern void syscall_printf(const char *buf);
 SYSCALL_DEFINE3(write, unsigned int, fd, const char __user *, buf,
 		size_t, count)
 {
-	if (fd <= 2) {
-		void *str = kmalloc(count, GFP_KERNEL | GFP_ZERO);
-		if (!str)
-			return -ENOMEM;
-		if (copy_from_user(str, buf, count)) {
-			kfree(str);
-			return -EINVAL;
-		}
-		syscall_printf((const char *)str);
-		kfree(str);
-		return count;
-	} else {
-		/* TODO */
-		printf("write fd 0x%x\n", fd);
-		while (1);
-	}
+	int ret;
+	message_t m;
 
-	return 0;
+	memset(&m, 0, sizeof (message_t));
+
+	m.m_type = IPC_M_TYPE_VFS_WRITE;
+	m.m_vfs_write.fd = fd;
+	m.m_vfs_write.buf = buf;
+	m.m_vfs_write.count = count;
+
+	ret = __ipc_send(ENDPOINT_VFS, &m);
+	if (ret)
+		return ret;
+
+	return m.m_vfs_write.retval;
 }
 
 SYSCALL_DEFINE3(writev, unsigned long, fd, const struct iovec __user *, vec,
 		unsigned long, vlen)
 {
-	int i;
-	ssize_t size = 0;
+	int ret;
+	message_t m;
 
-	if (fd <= 2) {
-		for (i = 0; i < vlen; i++) {
-			void *buf = kmalloc(vec->iov_len, GFP_KERNEL | GFP_ZERO);
-			if (!buf)
-				return -ENOMEM;
-			if (copy_from_user(buf, vec->iov_base, vec->iov_len)) {
-				kfree(buf);
-				return -EINVAL;
-			}
-			syscall_printf((const char *)buf);
-			kfree(buf);
-			size += vec->iov_len;
-		}
-		return size;
-	} else {
-		/* TODO */
-		printf("writev fd 0x%lx\n", fd);
-		while (1);
-	}
+	memset(&m, 0, sizeof (message_t));
 
-	return 0;
+	m.m_type = IPC_M_TYPE_VFS_WRITEV;
+	m.m_vfs_writev.fd = fd;
+	m.m_vfs_writev.vec = vec;
+	m.m_vfs_writev.vlen = vlen;
+
+	ret = __ipc_send(ENDPOINT_VFS, &m);
+	if (ret)
+		return ret;
+
+	return m.m_vfs_write.retval;
+}
+
+SYSCALL_DEFINE4(openat, int, dfd, const char __user *, filename, int, flags,
+		umode_t, mode)
+{
+	int ret;
+	message_t m;
+
+	memset(&m, 0, sizeof (message_t));
+
+	m.m_type = IPC_M_TYPE_VFS_OPENAT;
+	m.m_vfs_openat.dfd = dfd;
+	m.m_vfs_openat.filename = filename;
+	m.m_vfs_openat.flags = flags;
+	m.m_vfs_openat.mode = mode;
+
+	ret = __ipc_send(ENDPOINT_VFS, &m);
+	if (ret)
+		return ret;
+
+	return m.m_vfs_write.retval;
 }

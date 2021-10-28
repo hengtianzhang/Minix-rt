@@ -5,6 +5,8 @@
 #define __SYSCALL(x, y)
 #endif
 
+#define __NR_openat 56
+__SYSCALL(__NR_openat, sys_openat)
 #define __NR_write 64
 __SYSCALL(__NR_write, sys_write)
 #define __NR_writev 66
@@ -14,6 +16,9 @@ __SYSCALL(__NR_writev, sys_writev)
 __SYSCALL(__NR_rt_sigprocmask, sys_rt_sigprocmask)
 #define __NR_rt_sigreturn (139)
 __SYSCALL(__NR_rt_sigreturn, sys_rt_sigreturn)
+
+#define __NR_reboot 142
+__SYSCALL(__NR_reboot, sys_reboot)
 
 #define __NR_uname 160
 __SYSCALL(__NR_uname, sys_newuname)

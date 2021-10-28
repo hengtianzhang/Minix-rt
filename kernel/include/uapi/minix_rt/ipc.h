@@ -3,8 +3,10 @@
 
 #ifndef __KERNEL__
 #include <minix_rt/ipcconst.h>
+#include <minix_rt/uio.h>
 #else
 #include <uapi/minix_rt/ipcconst.h>
+#include <uapi/minix_rt/uio.h>
 #endif
 
 typedef struct {
@@ -102,6 +104,46 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_vfs_exec);
 
 typedef struct {
+	const char *buf;
+	s64 count;
+	s64 retval;
+	int fd;
+#if BITS_PER_LONG == 64
+	u8 padding[28];
+#else 
+	u8 padding[32];
+#endif
+} mess_vfs_write;
+IPC_ASSERT_MSG_SIZE(mess_vfs_write);
+
+typedef struct {
+	unsigned long fd;
+	const struct iovec *vec;
+	unsigned long vlen;
+	s64 retval;
+#if BITS_PER_LONG == 64
+	u8 padding[24];
+#else 
+	u8 padding[28];
+#endif
+} mess_vfs_writev;
+IPC_ASSERT_MSG_SIZE(mess_vfs_writev);
+
+typedef struct {
+	const char *filename;
+	s64 retval;
+	int flags;
+	int dfd;
+	umode_t mode;
+#if BITS_PER_LONG == 64
+	u8 padding[30];
+#else 
+	u8 padding[34];
+#endif
+} mess_vfs_openat;
+IPC_ASSERT_MSG_SIZE(mess_vfs_openat);
+
+typedef struct {
 	pid_t m_source; /* who sent the message */
 	int	m_type;		/* what kind of message is it */
 	union {
@@ -117,6 +159,9 @@ typedef struct {
 		mess_system_exec		m_sys_exec;
 
 		mess_vfs_exec			m_vfs_exec;
+		mess_vfs_write			m_vfs_write;
+		mess_vfs_writev			m_vfs_writev;
+		mess_vfs_openat			m_vfs_openat;
 
 		u8			size[IPC_MAX_MESSAGE_BYPE];	/* message payload may have 56 bytes at most */
 	};
@@ -146,6 +191,9 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_PM_GETEGID			15
 
 #define IPC_M_TYPE_VFS_EXEC				16
+#define IPC_M_TYPE_VFS_WRITE			17
+#define IPC_M_TYPE_VFS_WRITEV			18
+#define IPC_M_TYPE_VFS_OPENAT			19
 
 enum {
 	ENDPOINT_SYSTEM,

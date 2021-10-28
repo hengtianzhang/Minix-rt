@@ -7,6 +7,8 @@
 
 #include "binfmt.h"
 #include "exec.h"
+#include "read_write.h"
+#include "open.h"
 
 static void vfs_handle_ipc_message(endpoint_t ep, message_t *m)
 {
@@ -14,6 +16,15 @@ static void vfs_handle_ipc_message(endpoint_t ep, message_t *m)
 		case IPC_M_TYPE_VFS_EXEC:
 			do_exec(ep, m);
 			break;
+		case IPC_M_TYPE_VFS_WRITE:
+			do_write(ep, m);
+			break;
+		case IPC_M_TYPE_VFS_WRITEV:
+			do_writev(ep, m);
+			break;
+		case IPC_M_TYPE_VFS_OPENAT:
+			do_openat(ep, m);
+			break;	
 		default:
 			break;
 	}

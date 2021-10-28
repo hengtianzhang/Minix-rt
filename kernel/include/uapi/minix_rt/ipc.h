@@ -25,6 +25,11 @@ typedef struct {
 IPC_ASSERT_MSG_SIZE(mess_u32);
 
 typedef struct {
+	s32 data[14];
+} mess_s32;
+IPC_ASSERT_MSG_SIZE(mess_s32);
+
+typedef struct {
 	u64 data[7];
 } mess_u64;
 IPC_ASSERT_MSG_SIZE(mess_u64);
@@ -134,14 +139,36 @@ typedef struct {
 	s64 retval;
 	int flags;
 	int dfd;
+	int filename_size;
 	umode_t mode;
 #if BITS_PER_LONG == 64
-	u8 padding[30];
+	u8 padding[26];
 #else 
-	u8 padding[34];
+	u8 padding[30];
 #endif
 } mess_vfs_openat;
 IPC_ASSERT_MSG_SIZE(mess_vfs_openat);
+
+typedef struct {
+	unsigned long arg;
+	int cmd;
+	int fd;
+	int retval;
+	u8 padding[32];
+} mess_vfs_ioctl;
+IPC_ASSERT_MSG_SIZE(mess_vfs_ioctl);
+
+typedef struct {
+	const char *filename;
+	unsigned long filename_size;
+	int retval;
+#if BITS_PER_LONG == 64
+	u8 padding[36];
+#else 
+	u8 padding[40];
+#endif
+} mess_vfs_chdir;
+IPC_ASSERT_MSG_SIZE(mess_vfs_chdir);
 
 typedef struct {
 	pid_t m_source; /* who sent the message */
@@ -150,6 +177,7 @@ typedef struct {
 		mess_u8		m_u8;
 		mess_u16	m_u16;
 		mess_u32	m_u32;
+		mess_s32	m_s32;
 		mess_u64	m_u64;
 
 		mess_system_mprotect	m_sys_mprotect;
@@ -162,6 +190,8 @@ typedef struct {
 		mess_vfs_write			m_vfs_write;
 		mess_vfs_writev			m_vfs_writev;
 		mess_vfs_openat			m_vfs_openat;
+		mess_vfs_ioctl			m_vfs_ioctl;
+		mess_vfs_chdir			m_vfs_chdir;
 
 		u8			size[IPC_MAX_MESSAGE_BYPE];	/* message payload may have 56 bytes at most */
 	};
@@ -189,11 +219,14 @@ typedef int _ASSERT_message_t[/* CONSTCOND */sizeof(message_t) == 64 ? 1 : -1];
 #define IPC_M_TYPE_PM_GETEUID			13
 #define IPC_M_TYPE_PM_GETGID			14
 #define IPC_M_TYPE_PM_GETEGID			15
+#define IPC_M_TYPE_PM_SETSID			16
 
-#define IPC_M_TYPE_VFS_EXEC				16
-#define IPC_M_TYPE_VFS_WRITE			17
-#define IPC_M_TYPE_VFS_WRITEV			18
-#define IPC_M_TYPE_VFS_OPENAT			19
+#define IPC_M_TYPE_VFS_EXEC				17
+#define IPC_M_TYPE_VFS_WRITE			18
+#define IPC_M_TYPE_VFS_WRITEV			19
+#define IPC_M_TYPE_VFS_OPENAT			20
+#define IPC_M_TYPE_VFS_IOCTL			21
+#define IPC_M_TYPE_VFS_CHDIR			22
 
 enum {
 	ENDPOINT_SYSTEM,

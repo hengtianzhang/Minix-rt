@@ -40,6 +40,10 @@ static void pm_get_tsk_id(int type, message_t *m)
 		case IPC_M_TYPE_PM_GETEGID:
 			m->m_u64.data[0] = tsk->egid;
 			break;
+		case IPC_M_TYPE_PM_SETSID:
+			tsk->sid += 1;
+			m->m_s32.data[0] = tsk->sid;
+			break;
 		default:
 				break;
 	}
@@ -71,6 +75,7 @@ int main(void)
 	tsk->euid = 0;
 	tsk->gid = 0;
 	tsk->egid = 0;
+	tsk->sid = 0;
 	tsk->pid.pid = 1;
 	BUG_ON(!pid_insert(&tsk->pid));
 

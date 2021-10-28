@@ -5,6 +5,11 @@
 #define __SYSCALL(x, y)
 #endif
 
+/* fs/ioctl.c */
+#define __NR_ioctl 29
+__SYSCALL(__NR_ioctl, sys_ioctl)
+#define __NR_chdir 49
+__SYSCALL(__NR_chdir, sys_chdir)
 #define __NR_openat 56
 __SYSCALL(__NR_openat, sys_openat)
 #define __NR_write 64
@@ -20,6 +25,8 @@ __SYSCALL(__NR_rt_sigreturn, sys_rt_sigreturn)
 #define __NR_reboot 142
 __SYSCALL(__NR_reboot, sys_reboot)
 
+#define __NR_setsid 157
+__SYSCALL(__NR_setsid, sys_setsid)
 #define __NR_uname 160
 __SYSCALL(__NR_uname, sys_newuname)
 #define __NR_getpid 172

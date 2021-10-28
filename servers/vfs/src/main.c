@@ -10,6 +10,17 @@
 #include "read_write.h"
 #include "open.h"
 
+struct task_struct *vfs_find_task(pid_t pid)
+{
+	struct pid_struct *pids;
+
+	pids = pid_find(pid);
+	if (!pids)
+		return NULL;
+
+	return container_of(pids, struct task_struct, pid);
+}
+
 static void vfs_handle_ipc_message(endpoint_t ep, message_t *m)
 {
 	switch (m->m_type & IPC_M_TYPE_MASK) {
@@ -25,6 +36,12 @@ static void vfs_handle_ipc_message(endpoint_t ep, message_t *m)
 		case IPC_M_TYPE_VFS_OPENAT:
 			do_openat(ep, m);
 			break;	
+		case IPC_M_TYPE_VFS_IOCTL:
+			do_ioctl(ep, m);
+			break;
+		case IPC_M_TYPE_VFS_CHDIR:
+			do_chdir(ep, m);
+			break;
 		default:
 			break;
 	}
@@ -34,6 +51,15 @@ int main(void)
 {
 	int ret = 0;
 	message_t m;
+	struct task_struct *tsk;
+
+	tsk = malloc(sizeof (struct task_struct));
+	BUG_ON(!tsk);
+	tsk->pid.pid = 1;
+	__set_bit(0, tsk->file.fdtable);
+	__set_bit(1, tsk->file.fdtable);
+	__set_bit(2, tsk->file.fdtable);
+	BUG_ON(!pid_insert(&tsk->pid));
 
 	init_elf_binfmt();
 

@@ -4,7 +4,7 @@
 #include <libminix_rt/pid.h>
 
 struct task_struct {
-	pid_t uid, euid, gid, egid;
+	pid_t uid, euid, gid, egid, sid;
 	struct pid_struct pid;
 };
 
